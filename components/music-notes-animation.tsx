@@ -39,7 +39,7 @@ export default function MusicNotes() {
               delay: note.delay,
               ease: "linear",
             }}
-            className="absolute text-amber-600/30"
+            className="absolute text-[#C8A97E]/30"
           >
             <Music className="w-8 h-8" />
           </motion.div>

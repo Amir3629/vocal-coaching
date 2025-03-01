@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   title: "Melanie Wainwright | Jazz Vocal Coaching in Berlin",
   description:
     "Professional jazz vocal coaching services in Berlin. Private lessons, workshops, and performance coaching for all levels.",
-    generator: 'v0.dev'
+  generator: 'v0.dev'
 }
 
 export default function RootLayout({

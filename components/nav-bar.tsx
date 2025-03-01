@@ -43,7 +43,7 @@ export default function NavBar() {
           <div className="flex items-center justify-between h-20">
             <button
               onClick={() => scrollToSection("top")}
-              className="text-2xl font-bold text-white hover:text-amber-600 transition-colors"
+              className="text-2xl font-bold text-white hover:text-[#C8A97E] transition-colors"
             >
               MW
             </button>
@@ -52,33 +52,40 @@ export default function NavBar() {
             <div className="hidden md:flex items-center space-x-8">
               <button
                 onClick={() => scrollToSection("services")}
-                className="text-white hover:text-amber-600 transition-colors"
+                className="text-white hover:text-[#C8A97E] transition-colors"
               >
                 Services
               </button>
               <button
                 onClick={() => scrollToSection("about")}
-                className="text-white hover:text-amber-600 transition-colors"
+                className="text-white hover:text-[#C8A97E] transition-colors"
               >
                 About
               </button>
               <button
                 onClick={() => scrollToSection("gallery")}
-                className="text-white hover:text-amber-600 transition-colors"
+                className="text-white hover:text-[#C8A97E] transition-colors"
               >
                 Gallery
               </button>
               <button
                 onClick={() => scrollToSection("testimonials")}
-                className="text-white hover:text-amber-600 transition-colors"
+                className="text-white hover:text-[#C8A97E] transition-colors"
               >
                 Testimonials
               </button>
               <Button
                 onClick={() => scrollToSection("contact")}
-                className="bg-amber-600 hover:bg-amber-700 text-white rounded-full px-6"
+                className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-6"
               >
                 Contact
+              </Button>
+              <Button
+                onClick={() => window.open('https://chornextdoor.de', '_blank')}
+                variant="outline"
+                className="border-2 border-[#C8A97E] text-[#C8A97E] hover:bg-[#C8A97E] hover:text-black rounded-full px-6"
+              >
+                Chor Next Door
               </Button>
             </div>
 
@@ -103,33 +110,40 @@ export default function NavBar() {
             <div className="flex flex-col items-center space-y-8 p-8">
               <button
                 onClick={() => scrollToSection("services")}
-                className="text-xl text-white hover:text-amber-600 transition-colors"
+                className="text-xl text-white hover:text-[#C8A97E] transition-colors"
               >
                 Services
               </button>
               <button
                 onClick={() => scrollToSection("about")}
-                className="text-xl text-white hover:text-amber-600 transition-colors"
+                className="text-xl text-white hover:text-[#C8A97E] transition-colors"
               >
                 About
               </button>
               <button
                 onClick={() => scrollToSection("gallery")}
-                className="text-xl text-white hover:text-amber-600 transition-colors"
+                className="text-xl text-white hover:text-[#C8A97E] transition-colors"
               >
                 Gallery
               </button>
               <button
                 onClick={() => scrollToSection("testimonials")}
-                className="text-xl text-white hover:text-amber-600 transition-colors"
+                className="text-xl text-white hover:text-[#C8A97E] transition-colors"
               >
                 Testimonials
               </button>
               <Button
                 onClick={() => scrollToSection("contact")}
-                className="bg-amber-600 hover:bg-amber-700 text-white rounded-full px-8 py-2"
+                className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8 py-2"
               >
                 Contact
+              </Button>
+              <Button
+                onClick={() => window.open('https://chornextdoor.de', '_blank')}
+                variant="outline"
+                className="border-2 border-[#C8A97E] text-[#C8A97E] hover:bg-[#C8A97E] hover:text-black rounded-full px-8 py-2"
+              >
+                Chor Next Door
               </Button>
             </div>
           </motion.div>

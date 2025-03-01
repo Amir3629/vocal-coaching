@@ -104,7 +104,7 @@ export default function TestimonialSlider() {
           >
             <div className="bg-[#1a1a1a] rounded-xl p-8 md:p-12 shadow-xl border border-gray-800">
               <div className="flex flex-col items-center text-center">
-                <div className="w-20 h-20 rounded-full overflow-hidden mb-6 border-2 border-amber-600">
+                <div className="w-20 h-20 rounded-full overflow-hidden mb-6 border-2 border-[#C8A97E]">
                   <img
                     src={testimonials[current].image || "/placeholder.svg"}
                     alt={testimonials[current].name}
@@ -114,7 +114,7 @@ export default function TestimonialSlider() {
                 <p className="text-lg md:text-xl text-gray-300 mb-6 italic">"{testimonials[current].content}"</p>
                 <div>
                   <h4 className="text-xl font-semibold">{testimonials[current].name}</h4>
-                  <p className="text-amber-600">{testimonials[current].role}</p>
+                  <p className="text-[#C8A97E]">{testimonials[current].role}</p>
                 </div>
               </div>
             </div>
@@ -152,7 +152,7 @@ export default function TestimonialSlider() {
               setCurrent(index)
             }}
             className={`w-2 h-2 rounded-full transition-colors duration-300 ${
-              index === current ? "bg-amber-600" : "bg-gray-600"
+              index === current ? "bg-[#C8A97E]" : "bg-gray-600"
             }`}
           >
             <span className="sr-only">Go to slide {index + 1}</span>

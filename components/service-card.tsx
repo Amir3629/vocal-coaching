@@ -12,6 +12,12 @@ interface ServiceCardProps {
   icon: ReactNode
   price: string
   features: string[]
+  details: {
+    includes: string[]
+    suitable: string[]
+    duration: string
+    location: string
+  }
   image: string
   delay?: number
 }
@@ -37,7 +43,7 @@ const FloatingSymbol = ({ children }: { children: ReactNode }) => {
   )
 }
 
-export default function ServiceCard({ title, description, icon, price, features, image, delay = 0 }: ServiceCardProps) {
+export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
 
   return (
