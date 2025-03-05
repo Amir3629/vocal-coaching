@@ -5,7 +5,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
     loader: 'custom',
-    loaderFile: './image-loader.js',
+    loaderFile: './image-loader-test.js',
     path: 'https://amir3629.github.io/vocal-coaching-website',
     domains: ['amir3629.github.io'],
     remotePatterns: [
