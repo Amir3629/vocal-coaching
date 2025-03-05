@@ -1,9 +1,9 @@
 module.exports = function imageLoader({ src, width, quality }) {
-  // Remove any leading slashes
+  // Remove leading slash if present
   const cleanSrc = src.startsWith('/') ? src.slice(1) : src;
   
-  // If the src is already an absolute URL or an SVG file, return it as is
-  if (cleanSrc.startsWith('http') || cleanSrc.endsWith('.svg')) {
+  // If the src is already an absolute URL, return it as is
+  if (cleanSrc.startsWith('http')) {
     return src;
   }
   
@@ -12,6 +12,6 @@ module.exports = function imageLoader({ src, width, quality }) {
     return `/${cleanSrc}`;
   }
   
-  // For production, use the full URL
-  return `https://amir3629.github.io/vocal-coaching-website/${cleanSrc}`;
+  // For production, use the basePath
+  return `/vocal-coaching-website/${cleanSrc}`;
 } 
