@@ -4,11 +4,10 @@ const nextConfig = {
   basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
   images: {
     unoptimized: true,
-    dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
-  assetPrefix: process.env.NODE_ENV === 'production' ? '/vocal-coaching/' : '',
+  // Remove trailing slash for GitHub Pages
+  trailingSlash: false,
+  // Disable server-side features
   experimental: {
     images: {
       unoptimized: true,
