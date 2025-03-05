@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   output: 'export',
-  basePath: '/vocal-coaching',
+  basePath: '/vocal-coaching-website',
   images: {
     unoptimized: true,
     dangerouslyAllowSVG: true,
@@ -9,7 +9,7 @@ const nextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
   // This is required for GitHub Pages
-  assetPrefix: '/vocal-coaching/',
+  assetPrefix: '/vocal-coaching-website/',
 }
 
 module.exports = nextConfig
