@@ -1,15 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  basePath: '/vocal-coaching',
+  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
+  basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
   images: {
     unoptimized: true,
-  },
-  // Disable server-side features
-  experimental: {
-    images: {
-      unoptimized: true,
-    },
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 }
 
