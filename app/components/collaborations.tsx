@@ -6,37 +6,37 @@ import Image from "next/image"
 const collaborations = [
   {
     name: "B-Flat Jazz Club Berlin",
-    logo: "/images/collaborations/bflat.svg",
+    logo: "/vocal-coaching-website/images/collaborations/bflat.svg",
     link: "https://b-flat-berlin.de",
     isPlaceholder: true
   },
   {
     name: "Complete Vocal Institute Copenhagen",
-    logo: "/images/collaborations/cvi.svg",
+    logo: "/vocal-coaching-website/images/collaborations/cvi.svg",
     link: "https://completevocal.institute",
     isPlaceholder: true
   },
   {
     name: "Blue Note Tokyo",
-    logo: "/images/collaborations/bluenote.svg",
+    logo: "/vocal-coaching-website/images/collaborations/bluenote.svg",
     link: "https://www.bluenote.co.jp/tokyo",
     isPlaceholder: true
   },
   {
     name: "Jazz Institut Berlin",
-    logo: "/images/collaborations/jib.svg",
+    logo: "/vocal-coaching-website/images/collaborations/jib.svg",
     link: "https://www.jazz-institut-berlin.de",
     isPlaceholder: true
   },
   {
     name: "A-Trane Jazz Club",
-    logo: "/images/collaborations/atrane.svg",
+    logo: "/vocal-coaching-website/images/collaborations/atrane.svg",
     link: "https://www.a-trane.de",
     isPlaceholder: true
   },
   {
     name: "Berliner Philharmonie",
-    logo: "/images/collaborations/philharmonie.svg",
+    logo: "/vocal-coaching-website/images/collaborations/philharmonie.svg",
     link: "https://www.berliner-philharmoniker.de",
     isPlaceholder: true
   }

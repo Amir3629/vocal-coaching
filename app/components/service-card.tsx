@@ -25,7 +25,7 @@ export default function ServiceCard({ title, description, icon, price, features,
   const [isHovered, setIsHovered] = useState(false)
   const [imageError, setImageError] = useState(false)
 
-  const fallbackImage = "https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?q=80&w=2070&auto=format&fit=crop"
+  const fallbackImage = "/vocal-coaching-website/images/placeholder.jpg"
 
   return (
     <motion.div

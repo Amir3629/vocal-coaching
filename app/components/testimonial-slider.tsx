@@ -120,10 +120,12 @@ export default function TestimonialSlider() {
                   <div className="relative w-32 h-32 mb-8">
                     <div className="absolute inset-0 bg-gradient-radial from-[#C8A97E]/20 to-transparent rounded-full blur-2xl"></div>
                     <Image
-                      src={testimonials[currentIndex].image}
+                      src={testimonials[currentIndex].image || "/vocal-coaching-website/images/placeholder.jpg"}
                       alt={testimonials[currentIndex].name}
                       fill
                       className="object-cover rounded-full ring-2 ring-[#C8A97E]/20"
+                      sizes="(max-width: 768px) 100vw, 50vw"
+                      priority
                     />
                   </div>
                   <div className="max-w-2xl mx-auto">

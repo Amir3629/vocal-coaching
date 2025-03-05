@@ -16,7 +16,7 @@ interface GalleryImage {
 
 const galleryImages: GalleryImage[] = [
   {
-    src: "/images/photo_1_2025-02-27_12-05-55.jpg",
+    src: "/vocal-coaching-website/images/photo_1_2025-02-27_12-05-55.jpg",
     alt: "Jazz Performance",
     span: "col-span-1 md:col-span-2",
     description: "Live Performance im B-Flat Jazz Club",
@@ -24,7 +24,7 @@ const galleryImages: GalleryImage[] = [
     location: "Berlin-Mitte"
   },
   {
-    src: "/images/photo_4_2025-02-27_12-05-55.jpg",
+    src: "/vocal-coaching-website/images/photo_4_2025-02-27_12-05-55.jpg",
     alt: "Studio Session",
     span: "col-span-1",
     description: "Aufnahmesession im Studio",
@@ -32,7 +32,7 @@ const galleryImages: GalleryImage[] = [
     location: "Recording Studio Berlin"
   },
   {
-    src: "/images/photo_8_2025-02-27_12-05-55.jpg",
+    src: "/vocal-coaching-website/images/photo_8_2025-02-27_12-05-55.jpg",
     alt: "Live Concert",
     span: "col-span-1",
     description: "Jazz Festival Auftritt",
@@ -40,7 +40,7 @@ const galleryImages: GalleryImage[] = [
     location: "Jazztage Berlin"
   },
   {
-    src: "/images/photo_12_2025-02-27_12-05-55.jpg",
+    src: "/vocal-coaching-website/images/photo_12_2025-02-27_12-05-55.jpg",
     alt: "Teaching Session",
     span: "col-span-1 md:col-span-2",
     description: "Gesangsunterricht & Workshop",
@@ -48,7 +48,7 @@ const galleryImages: GalleryImage[] = [
     location: "Vocal Studio"
   },
   {
-    src: "/images/photo_5_2025-02-27_12-05-55.jpg",
+    src: "/vocal-coaching-website/images/photo_5_2025-02-27_12-05-55.jpg",
     alt: "Piano Performance",
     span: "col-span-1 md:col-span-2",
     description: "Piano & Vocal Performance",
@@ -56,7 +56,7 @@ const galleryImages: GalleryImage[] = [
     location: "Jazz Club Berlin"
   },
   {
-    src: "/images/photo_15_2025-02-27_12-05-55.jpg",
+    src: "/vocal-coaching-website/images/photo_15_2025-02-27_12-05-55.jpg",
     alt: "Stage Performance",
     span: "col-span-1 md:col-span-2",
     description: "Live Konzert mit Band",
@@ -64,7 +64,7 @@ const galleryImages: GalleryImage[] = [
     location: "Konzerthaus Berlin"
   },
   {
-    src: "/images/photo_3_2025-02-23_22-12-02.jpg",
+    src: "/vocal-coaching-website/images/photo_3_2025-02-23_22-12-02.jpg",
     alt: "Vocal Workshop",
     span: "col-span-1",
     description: "Vocal Workshop Session",
@@ -72,7 +72,7 @@ const galleryImages: GalleryImage[] = [
     location: "Studio Berlin"
   },
   {
-    src: "/images/photo_4_2025-02-23_22-12-02.jpg",
+    src: "/vocal-coaching-website/images/photo_4_2025-02-23_22-12-02.jpg",
     alt: "Jazz Club",
     span: "col-span-1",
     description: "Jazz Club Performance",
