@@ -65,7 +65,7 @@ const galleryImages: GalleryImage[] = [
     location: "Konzerthaus Berlin"
   },
   {
-    src: getImageUrl("images/photo_3_2025-02-23_22-12-02.jpg"),
+    src: getImageUrl("images/gallery/performance7.jpg"),
     alt: "Vocal Workshop",
     span: "col-span-1",
     description: "Vocal Workshop Session",
@@ -73,7 +73,7 @@ const galleryImages: GalleryImage[] = [
     location: "Studio Berlin"
   },
   {
-    src: getImageUrl("images/photo_4_2025-02-23_22-12-02.jpg"),
+    src: getImageUrl("images/gallery/performance8.jpg"),
     alt: "Jazz Club",
     span: "col-span-1",
     description: "Jazz Club Performance",
