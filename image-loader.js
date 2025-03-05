@@ -2,9 +2,9 @@ module.exports = function imageLoader({ src, width, quality }) {
   // Remove any leading slashes
   const cleanSrc = src.startsWith('/') ? src.slice(1) : src;
   
-  // If the src is already an absolute URL, return it as is
-  if (cleanSrc.startsWith('http')) {
-    return cleanSrc;
+  // If the src is already an absolute URL or an SVG file, return it as is
+  if (cleanSrc.startsWith('http') || cleanSrc.endsWith('.svg')) {
+    return src;
   }
   
   // In development, use relative paths
