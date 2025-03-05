@@ -2,21 +2,31 @@
 
 import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
-import { motion, useScroll, useTransform } from "framer-motion"
-import { ChevronDown } from "lucide-react"
+import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
+import { ChevronDown, MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import ServiceCard from "@/components/service-card"
-import TestimonialSlider from "@/components/testimonial-slider"
-import NavBar from "@/components/nav-bar"
-import EnhancedMusicPlayer from "@/components/enhanced-music-player"
-import VideoPreview from "@/components/video-preview"
+import ServiceCard from "@/app/components/service-card"
+import TestimonialSlider from "@/app/components/testimonial-slider"
+import NavBar from "@/app/components/nav-bar"
+import EnhancedMusicPlayer from "@/app/components/enhanced-music-player"
+import VideoPreview from "@/app/components/video-preview"
 import { Music, Mic, Theater, BookOpen } from "lucide-react"
-import ParallaxBackground from "@/components/parallax-background"
+import ParallaxBackground from "@/app/components/parallax-background"
+import AboutSection from "@/app/components/about-section"
+import Certifications from "@/app/components/certifications"
+import GallerySection from "@/app/components/gallery-section"
+import MusicNotes from "@/app/components/music-notes-animation"
+import ContactForm from "@/app/components/contact-form"
+import BookingModal from "@/app/components/booking-modal"
+import Collaborations from "@/app/components/collaborations"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
   const heroRef = useRef<HTMLDivElement>(null)
   const parallaxRef = useRef<HTMLDivElement>(null)
+  const levelDropdownRef = useRef<HTMLDivElement>(null)
+  const serviceDropdownRef = useRef<HTMLDivElement>(null)
   
   const { scrollYProgress } = useScroll({
     target: parallaxRef,
@@ -25,8 +35,49 @@ export default function Home() {
 
   const y = useTransform(scrollYProgress, [0, 1], ["0%", "50%"])
 
+  const [isLevelOpen, setIsLevelOpen] = useState(false)
+  const [isServiceOpen, setIsServiceOpen] = useState(false)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    message: "",
+    level: "",
+    service: ""
+  })
+
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false)
+
+  const levels = [
+    { value: "beginner", label: "Anfänger" },
+    { value: "intermediate", label: "Fortgeschritten" },
+    { value: "advanced", label: "Profi" }
+  ]
+
+  const services = [
+    { value: "private", label: "Private Gesangsstunden" },
+    { value: "jazz", label: "Jazz Improvisation" },
+    { value: "performance", label: "Aufführungs Coaching" },
+    { value: "piano", label: "Piano/Vocal-Koordination" }
+  ]
+
   useEffect(() => {
     setIsLoaded(true)
+  }, [])
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (levelDropdownRef.current && !levelDropdownRef.current.contains(event.target as Node)) {
+        setIsLevelOpen(false)
+      }
+      if (serviceDropdownRef.current && !serviceDropdownRef.current.contains(event.target as Node)) {
+        setIsServiceOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
   const scrollToSection = (id: string) => {
@@ -39,14 +90,20 @@ export default function Home() {
     }
   }
 
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    // Handle form submission
+    console.log(formData)
+  }
+
   return (
-    <div className="min-h-screen overflow-x-hidden bg-gradient-to-b from-black via-[#121212] to-black">
+    <div className="min-h-screen overflow-x-hidden bg-[#0A0A0A]">
       <NavBar />
 
       {/* Hero Section with Parallax Piano Background */}
       <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
         <ParallaxBackground 
-          imageUrl="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_1_2025-02-27_12-05-55.jpg-vHy1xAg4cTBDQj5oywjYg7zrddMHHL.jpeg"
+          imageUrl="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_11_2025-02-27_12-05-55.jpg-6rTsVwAFGiPlAxk7xymEzMrRGZwQnm.jpeg"
           opacity={0.4}
           speed={0.5}
         />
@@ -82,17 +139,14 @@ export default function Home() {
             <Button 
               size="lg" 
               className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black border-2 border-[#C8A97E] hover:border-[#B89A6F] rounded-full px-8 transition-all duration-300"
-              onClick={() => scrollToSection("contact")}
+              onClick={() => {
+                const element = document.getElementById("services")
+                if (element) {
+                  element.scrollIntoView({ behavior: "smooth" })
+                }
+              }}
             >
               Jetzt Buchen
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-2 border-[#C8A97E] text-[#C8A97E] hover:bg-[#C8A97E] hover:text-black rounded-full px-8 transition-all duration-300"
-              onClick={() => window.open('https://chornextdoor.de', '_blank')}
-            >
-              Chor Next Door
             </Button>
           </motion.div>
         </motion.div>
@@ -116,7 +170,7 @@ export default function Home() {
       </section>
 
       {/* Music Preview Section */}
-      <section className="py-20 px-4">
+      <section className="py-20 px-4 bg-[#0A0A0A]">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             className="text-center mb-16"
@@ -125,15 +179,15 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Meine Musik</h2>
-            <div className="w-24 h-1 bg-[#C8A97E] mx-auto"></div>
+            <h2 className="section-heading mb-4">Meine Musik</h2>
+            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
           <EnhancedMusicPlayer />
         </div>
       </section>
 
       {/* Video Preview Section */}
-      <section className="py-20 px-4 bg-[#121212]">
+      <section className="py-20 px-4 bg-[#0A0A0A]">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             className="text-center mb-16"
@@ -142,28 +196,34 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Video Preview</h2>
-            <div className="w-24 h-1 bg-[#C8A97E] mx-auto"></div>
+            <h2 className="section-heading mb-4">Video Preview</h2>
+            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
           <VideoPreview />
         </div>
       </section>
 
+      {/* Services and About Combined Background Section */}
+      <div className="relative bg-[#0A0A0A]">
       {/* Services Section */}
-      <section id="services" className="py-20 px-4 bg-gradient-to-b from-black to-[#121212]">
-        <div className="max-w-7xl mx-auto">
+        <section id="services" className="relative w-full min-h-screen bg-black py-16">
+          <ParallaxBackground
+            imageUrl="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070&auto=format&fit=crop"
+            opacity={0.2}
+            speed={0.2}
+          />
+          <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             className="text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+              viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Meine Dienstleistungen</h2>
-            <div className="w-24 h-1 bg-[#C8A97E] mx-auto"></div>
+              <h2 className="section-heading mb-4">Vocal Excellence</h2>
+              <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             <ServiceCard 
               title="Private Gesangsstunden"
               description="Personalisierte Einzelstunden, die auf Ihre einzigartige Stimme und Ziele zugeschnitten sind."
@@ -191,7 +251,7 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_11_2025-02-27_12-05-55.jpg-6rTsVwAFGiPlAxk7xymEzMrRGZwQnm.jpeg"
+                image="/images/photo_1_2025-02-27_12-05-55.jpg"
               delay={0.1}
             />
             
@@ -209,9 +269,9 @@ export default function Home() {
               details={{
                 includes: [
                   "Gehörbildung & Rhythmustraining",
-                  "Harmonische Konzepte verstehen",
+                    "Harmonische Konzepte",
                   "Improvisationsübungen",
-                  "Feedback zu Ihren Scat-Soli"
+                    "Aufnahmen der Sessions"
                 ],
                 suitable: [
                   "Sänger mit Vorkenntnissen",
@@ -222,8 +282,8 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_4_2025-02-23_22-12-02.jpg-8OuJRul2KzJEJFH6jdcKErEnyECvlE.jpeg"
-              delay={0.3}
+                image="/images/photo_4_2025-02-27_12-05-55.jpg"
+                delay={0.2}
             />
             
             <ServiceCard 
@@ -233,73 +293,72 @@ export default function Home() {
               price="Ab €75/Stunde"
               features={[
                 "Mikrophon-Technik",
-                "Bühnenbewegung & Präsenz",
+                  "Bühnenpräsenz",
                 "Publikumsverbindung",
                 "Umgang mit Auftrittsangst"
               ]}
               details={{
                 includes: [
                   "Analyse Ihrer Bühnenpräsenz",
-                  "Entwicklung einer Performance-Persona",
+                    "Performance-Persona",
                   "Umgang mit Lampenfieber",
-                  "Tipps zur Interaktion mit dem Publikum"
+                    "Publikumsinteraktion"
                 ],
                 suitable: [
                   "Sänger vor Auftritten",
                   "Schauspieler",
                   "Redner",
-                  "Alle, die selbstbewusster auftreten möchten"
+                    "Performer"
                 ],
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-              image="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_8_2025-02-27_12-05-55.jpg-sNRaMlRVbFZELWanLPs38g3xYoEsnk.jpeg"
-              delay={0.5}
+                image="/images/photo_8_2025-02-27_12-05-55.jpg"
+                delay={0.3}
             />
             
             <ServiceCard 
               title="Piano/Vocal-Koordination"
-              description="Erlernen Sie sich beim Singen mit Stil und Selbstvertrauen zu begleiten."
+                description="Erlernen Sie sich beim Singen selbst zu begleiten."
               icon={<BookOpen />}
               price="Ab €80/Stunde"
               features={[
                 "Grundlegende Klaviertechnik",
                 "Vokale Unabhängigkeit",
-                "Jazz-Akkorde & Begleitung",
+                  "Jazz-Akkorde",
                 "Arrangementsfähigkeiten"
               ]}
               details={{
                 includes: [
-                  "Grundlagen der Klavierbegleitung",
+                    "Klavierbegleitung",
                   "Akkordlehre für Sänger",
-                  "Rhythmus- und Timing-Übungen",
-                  "Song-Arrangement-Techniken"
+                    "Timing-Übungen",
+                    "Song-Arrangement"
                 ],
                 suitable: [
-                  "Sänger mit Interesse am Klavier",
-                  "Pianisten, die ihre Gesangsfähigkeiten verbessern möchten",
+                    "Sänger am Klavier",
+                    "Pianisten mit Gesang",
                   "Songwriter",
-                  "Musiker, die ihre musikalischen Fähigkeiten erweitern möchten"
+                    "Musiker"
                 ],
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-              image="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_5_2025-02-27_12-05-55.jpg-G6fdVmyiPkIniCeOYYUOudawTxqxV3.jpeg"
-              delay={0.7}
+                image="/images/photo_12_2025-02-27_12-05-55.jpg"
+                delay={0.4}
             />
           </div>
           
           <motion.div 
-            className="text-center mt-12"
+              className="mt-12 text-center"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8, delay: 0.8 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.4 }}
           >
             <Button 
-              size="lg" 
-              className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black border-2 border-[#C8A97E] hover:border-[#B89A6F] rounded-full px-8 transition-all duration-300"
-              onClick={() => scrollToSection("contact")}
+                onClick={() => setIsBookingModalOpen(true)}
+                className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black font-medium px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105"
             >
               Jetzt Buchen
             </Button>
@@ -308,305 +367,55 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <section id="about" className="relative py-20 px-4 bg-[#121212]">
-        <ParallaxBackground 
-          imageUrl="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_2_2025-02-27_12-05-55.jpg-ANum1NM236GBAqcRIe3qApeR3q8f0w.jpeg"
-          opacity={0.8}
-          speed={0.3}
-        />
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-12 items-center">
-            <motion.div 
-              className="relative h-[500px] rounded-lg overflow-hidden"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8 }}
-            >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_2_2025-02-27_12-05-55.jpg-ANum1NM236GBAqcRIe3qApeR3q8f0w.jpeg"
-                alt="Melanie Wainwright"
-                fill
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
-            </motion.div>
-            
-            <motion.div 
-              className="space-y-6"
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8 }}
-            >
-              <h2 className="text-4xl md:text-5xl font-bold mb-6">Über Mich</h2>
-              <div className="w-24 h-1 bg-[#C8A97E] mb-6"></div>
-              <p className="text-lg text-gray-300">
-                Mit über 15 Jahren Erfahrung als professionelle Jazzsängerin und engagierte Gesangslehrerin bringe ich eine einzigartige Perspektive in meinen Unterricht. Mein Ansatz verbindet technisches Fachwissen mit künstlerischem Ausdruck und hilft jedem Schüler, seine authentische Stimme zu entdecken.
-              </p>
-              <p className="text-lg text-gray-300">
-                Nach meinem Studium an renommierten Musikinstitutionen in New York und Berlin habe ich in Jazzclubs in ganz Europa aufgetreten und mit bekannten Musikern der Branche zusammengearbeitet. Diese Erfahrungen aus der Praxis fließen in meinen Unterricht ein und ermöglichen es mir, Schüler nicht nur auf das Singen, sondern auch auf die Realitäten von Auftritten und künstlerischer Karriereentwicklung vorzubereiten.
-              </p>
-              <p className="text-lg text-gray-300">
-                Meine Unterrichtsphilosophie basiert auf Individualisierung. Ich glaube, dass jede Stimme einzigartig ist, und meine Aufgabe ist es, dir zu helfen, deinen unverwechselbaren Klang zu entdecken und dir gleichzeitig die technische Grundlage zu vermitteln, um dich selbstbewusst und authentisch auszudrücken.
-              </p>
-              <Button 
-                className="bg-[#C8A97E] hover:bg-[#B89A6F] text-white border-2 border-[#C8A97E] hover:border-[#B89A6F] rounded-full px-8 transition-all duration-300 mt-4"
-              >
-                Mehr Erfahren
-              </Button>
-            </motion.div>
-          </div>
+        <AboutSection />
         </div>
-      </section>
 
       {/* Gallery Section */}
-      <section id="gallery" className="relative py-20 px-4 bg-gradient-to-b from-[#121212] to-black">
-        <ParallaxBackground 
-          imageUrl="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_8_2025-02-27_12-05-55.jpg-sNRaMlRVbFZELWanLPs38g3xYoEsnk.jpeg"
-          opacity={0.9}
-          speed={0.2}
-        />
-        <div className="relative z-10 max-w-7xl mx-auto">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Galerie</h2>
-            <div className="w-24 h-1 bg-[#C8A97E] mx-auto"></div>
-          </motion.div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <motion.div 
-              className="relative h-80 rounded-lg overflow-hidden group"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-            >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_12_2025-02-27_12-05-55.jpg-ryaVh9GGT4MXcnF9crtCIDQnCaGbJO.jpeg"
-                alt="Melanie performing at The Hat"
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p className="text-white text-lg font-medium">Live at The Hat Jazz Club</p>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="relative h-80 rounded-lg overflow-hidden group"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.2 }}
-            >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_7_2025-02-27_12-05-55.jpg-6FwWNn89RJcZ5orl5wUfNqP2vJPoAo.jpeg"
-                alt="Melanie with her band"
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p className="text-white text-lg font-medium">Melanie Wainwright Quintet</p>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="relative h-80 rounded-lg overflow-hidden group"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.3 }}
-            >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_8_2025-02-27_12-05-55.jpg-sNRaMlRVbFZELWanLPs38g3xYoEsnk.jpeg"
-                alt="Melanie performing with bassist"
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p className="text-white text-lg font-medium">Jazz Duo Performance</p>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="relative h-80 rounded-lg overflow-hidden group"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-            >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_3_2025-02-27_12-05-55.jpg-hDIOA09gY6nflcoMU7aMIF3QqrwUco.jpeg"
-                alt="Melanie in recording studio"
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p className="text-white text-lg font-medium">Studio Recording Session</p>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="relative h-80 rounded-lg overflow-hidden group"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.5 }}
-            >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_5_2025-02-27_12-05-55.jpg-G6fdVmyiPkIniCeOYYUOudawTxqxV3.jpeg"
-                alt="Melanie with student"
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p className="text-white text-lg font-medium">Coaching Session</p>
-              </div>
-            </motion.div>
-            
-            <motion.div 
-              className="relative h-80 rounded-lg overflow-hidden group"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-100px" }}
-              transition={{ duration: 0.8, delay: 0.6 }}
-            >
-              <Image
-                src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_4_2025-02-23_22-12-02.jpg-8OuJRul2KzJEJFH6jdcKErEnyECvlE.jpeg"
-                alt="Melanie with light installation"
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
-                <p className="text-white text-lg font-medium">Artistic Performance</p>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
+      <GallerySection />
+
+      {/* Certifications Section */}
+      <Certifications />
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-20 px-4 bg-black">
-        <div className="max-w-7xl mx-auto">
+      <section id="testimonials" className="relative w-full bg-black py-16">
+        <div className="container mx-auto px-4">
           <motion.div 
             className="text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Testimonials</h2>
-            <div className="w-24 h-1 bg-[#C8A97E] mx-auto"></div>
+            <h2 className="section-heading mb-4">Was meine Schüler sagen</h2>
+            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
-          
           <TestimonialSlider />
-        </div>
-      </section>
-
-      {/* Contact Section */}
-      <section id="contact" className="py-20 px-4 bg-gradient-to-b from-black to-[#121212]">
-        <div className="max-w-5xl mx-auto">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">Kontakt</h2>
-            <div className="w-24 h-1 bg-[#C8A97E] mx-auto mb-6"></div>
-            <p className="text-lg text-gray-300 max-w-2xl mx-auto">
-              Haben Sie Fragen oder möchten Sie eine Unterrichtsstunde buchen? Füllen Sie das Formular aus, und ich werde mich so schnell wie möglich bei Ihnen melden.
-            </p>
-          </motion.div>
           
-          <motion.div 
-            className="bg-[#1a1a1a] rounded-xl p-8 shadow-xl border border-gray-800"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-100px" }}
-            transition={{ duration: 0.8 }}
-          >
-            <form className="space-y-6">
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label htmlFor="name" className="block text-sm font-medium text-gray-300">
-                    Name
-                  </label>
-                  <input
-                    type="text"
-                    id="name"
-                    className="w-full px-4 py-3 bg-[#252525] border border-gray-700 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] transition-colors duration-300"
-                    required
-                  />
-                </div>
-                <div className="space-y-2">
-                  <label htmlFor="email" className="block text-sm font-medium text-gray-300">
-                    Email
-                  </label>
-                  <input
-                    type="email"
-                    id="email"
-                    className="w-full px-4 py-3 bg-[#252525] border border-gray-700 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] transition-colors duration-300"
-                    required
-                  />
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="subject" className="block text-sm font-medium text-gray-300">
-                  Betreff
-                </label>
-                <input
-                  type="text"
-                  id="subject"
-                  className="w-full px-4 py-3 bg-[#252525] border border-gray-700 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] transition-colors duration-300"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="message" className="block text-sm font-medium text-gray-300">
-                  Nachricht
-                </label>
-                <textarea
-                  id="message"
-                  rows={5}
-                  className="w-full px-4 py-3 bg-[#252525] border border-gray-700 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] transition-colors duration-300"
-                  required
-                ></textarea>
-              </div>
-              
-              <div>
-                <Button 
-                  type="submit" 
-                  className="w-full bg-[#C8A97E] hover:bg-[#B89A6F] text-black border-2 border-[#C8A97E] hover:border-[#B89A6F] rounded-full py-3 transition-all duration-300"
-                >
-                  Nachricht Senden
-                </Button>
-              </div>
-            </form>
-          </motion.div>
+          <Collaborations />
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-12 px-4 bg-[#121212] border-t border-gray-800">
+      {/* Contact Form Section */}
+      <section id="contact" className="relative w-full bg-black/95 py-20">
+        <ContactForm />
+      </section>
+
+      {/* Footer with Policy Links */}
+      <footer className="py-12 px-4 bg-[#0A0A0A] border-t border-gray-800">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div>
               <h3 className="text-2xl font-bold mb-4">Melanie Wainwright</h3>
               <p className="text-gray-400 mb-4">Jazz Vocal Coaching in Berlin</p>
               <div className="flex space-x-4">
-                <a href="#" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                <a href="https://m.facebook.com/singingJazz/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
                   <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd"></path>
+                    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
+                  </svg>
+                </a>
+                <a href="https://www.instagram.com/jazzamell/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                    <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" />
                   </svg>
                 </a>
                 <a href="https://chornextdoor.de" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
@@ -614,9 +423,62 @@ export default function Home() {
                 </a>
               </div>
             </div>
+
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Institutionen & Partner</h4>
+              <ul className="space-y-2">
+                <li>
+                  <a href="https://completevocalinstitute.com" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                    Complete Vocal Institute
+                  </a>
+                </li>
+                <li>
+                  <a href="https://cvtdeutschland.de" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                    CVT Deutschland
+                  </a>
+                </li>
+                <li>
+                  <a href="https://www.b-flat-berlin.de" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                    B-Flat Jazz Club Berlin
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Rechtliches</h4>
+              <ul className="space-y-2">
+                <li>
+                  <a href="/datenschutz" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                    Datenschutzerklärung
+                  </a>
+                </li>
+                <li>
+                  <a href="/impressum" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                    Impressum
+                  </a>
+                </li>
+                <li>
+                  <a href="/agb" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                    AGB
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <div className="mt-12 pt-8 border-t border-gray-800">
+            <p className="text-sm text-gray-400 text-center">
+              © {new Date().getFullYear()} Melanie Wainwright. Alle Rechte vorbehalten.
+            </p>
           </div>
         </div>
       </footer>
+
+      <BookingModal
+        isOpen={isBookingModalOpen}
+        onClose={() => setIsBookingModalOpen(false)}
+      />
     </div>
   )
 }

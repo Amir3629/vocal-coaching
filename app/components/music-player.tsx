@@ -1,0 +1,1 @@
+className="bg-[#0A0A0A] rounded-xl p-6 border border-[#C8A97E]/20" 

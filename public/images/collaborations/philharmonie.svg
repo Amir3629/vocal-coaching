@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g transform="translate(20, 10)">
+    <path d="M20,20 h120 M30,10 h100 M40,30 h80" stroke="currentColor" stroke-width="1"/>
+    <path d="M60,5 L100,35 M100,5 L60,35" stroke="currentColor" stroke-width="0.5"/>
+    <text x="80" y="45" font-family="Arial" font-weight="normal" font-size="11" fill="currentColor" text-anchor="middle" style="letter-spacing: 1px">BERLINER PHILHARMONIKER</text>
+  </g>
+</svg>

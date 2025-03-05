@@ -1,9 +1,13 @@
 import type React from "react"
 import "./globals.css"
 import type { Metadata } from "next"
-import { Inter } from "next/font/google"
+import { Inter, Playfair_Display } from "next/font/google"
 
 const inter = Inter({ subsets: ["latin"] })
+const playfair = Playfair_Display({ 
+  subsets: ["latin"],
+  variable: '--font-playfair'
+})
 
 export const metadata: Metadata = {
   title: "Melanie Wainwright | Jazz Vocal Coaching in Berlin",
@@ -18,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className="dark">
+    <html lang="en" className={`dark ${playfair.variable}`}>
       <body className={inter.className}>{children}</body>
     </html>
   )
