@@ -1,13 +1,15 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: process.env.NODE_ENV === 'production' ? 'export' : undefined,
-  basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
+  output: 'export',
+  basePath: '/vocal-coaching',
   images: {
     unoptimized: true,
     dangerouslyAllowSVG: true,
     contentDispositionType: 'attachment',
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
+  // This is required for GitHub Pages
+  assetPrefix: '/vocal-coaching/',
 }
 
 module.exports = nextConfig
