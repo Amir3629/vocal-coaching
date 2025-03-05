@@ -19,6 +19,7 @@ import MusicNotes from "@/app/components/music-notes-animation"
 import ContactForm from "@/app/components/contact-form"
 import BookingModal from "@/app/components/booking-modal"
 import Collaborations from "@/app/components/collaborations"
+import { getImageUrl } from "@/lib/config"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -103,7 +104,7 @@ export default function Home() {
       {/* Hero Section with Parallax Piano Background */}
       <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
         <ParallaxBackground 
-          imageUrl="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/photo_11_2025-02-27_12-05-55.jpg-6rTsVwAFGiPlAxk7xymEzMrRGZwQnm.jpeg"
+          imageUrl={getImageUrl("images/gallery/performance1.jpg")}
           opacity={0.4}
           speed={0.5}
         />
@@ -251,7 +252,7 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-                image="/images/photo_1_2025-02-27_12-05-55.jpg"
+                image={getImageUrl("images/gallery/performance2.jpg")}
               delay={0.1}
             />
             
@@ -282,7 +283,7 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-                image="/images/photo_4_2025-02-27_12-05-55.jpg"
+                image={getImageUrl("images/gallery/performance3.jpg")}
                 delay={0.2}
             />
             
@@ -313,7 +314,7 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-                image="/images/photo_8_2025-02-27_12-05-55.jpg"
+                image={getImageUrl("images/gallery/performance4.jpg")}
                 delay={0.3}
             />
             
@@ -344,7 +345,7 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-                image="/images/photo_12_2025-02-27_12-05-55.jpg"
+                image={getImageUrl("images/gallery/performance5.jpg")}
                 delay={0.4}
             />
           </div>
