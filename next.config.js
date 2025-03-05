@@ -7,19 +7,15 @@ const nextConfig = {
     loader: 'custom',
     loaderFile: './image-loader.js',
     path: '/vocal-coaching-website',
-    domains: ['amir3629.github.io'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'amir3629.github.io',
-        pathname: '/vocal-coaching-website/**',
-      },
-    ],
   },
   // This is required for GitHub Pages
   assetPrefix: '/vocal-coaching-website/',
   // Add trailing slash to match GitHub Pages behavior
   trailingSlash: true,
+  // Disable server-side features
+  experimental: {
+    appDir: true,
+  },
 }
 
 module.exports = nextConfig

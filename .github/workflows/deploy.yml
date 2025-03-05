@@ -2,53 +2,45 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: ["main"]
+    branches: [gh-pages]
   workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
   id-token: write
-  deployments: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  deploy:
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v3
         with:
-          node-version: "20"
-          cache: npm
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        with:
-          static_site_generator: next
+          node-version: '18'
+          
       - name: Install dependencies
         run: npm ci
-      - name: Build with Next.js
+        
+      - name: Build
         run: npm run build
+        env:
+          NEXT_PUBLIC_ROOT_URL: 'https://amir3629.github.io/vocal-coaching-website'
+          
+      - name: Configure Pages
+        uses: actions/configure-pages@v3
+        
       - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v2
         with:
-          path: ./out
-
-  deploy:
-    needs: build
-    runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    steps:
+          path: './out'
+          
       - name: Deploy to GitHub Pages
         id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: actions/deploy-pages@v2 
