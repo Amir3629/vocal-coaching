@@ -7,6 +7,14 @@ const nextConfig = {
     loader: 'custom',
     loaderFile: './image-loader.js',
     path: 'https://amir3629.github.io/vocal-coaching-website',
+    domains: ['amir3629.github.io'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'amir3629.github.io',
+        pathname: '/vocal-coaching-website/**',
+      },
+    ],
   },
   // This is required for GitHub Pages
   assetPrefix: '/vocal-coaching-website/',

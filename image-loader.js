@@ -1,5 +1,5 @@
 module.exports = function imageLoader({ src, width, quality }) {
-  // Remove leading slash if present
+  // Remove any leading slashes
   const cleanSrc = src.startsWith('/') ? src.slice(1) : src;
   
   // If the src is already an absolute URL, return it as is
@@ -12,6 +12,6 @@ module.exports = function imageLoader({ src, width, quality }) {
     return `/${cleanSrc}`;
   }
   
-  // For production, use the basePath
-  return `/vocal-coaching-website/${cleanSrc}`;
+  // For production, use the full GitHub Pages URL
+  return `https://amir3629.github.io/vocal-coaching-website/${cleanSrc}`;
 } 

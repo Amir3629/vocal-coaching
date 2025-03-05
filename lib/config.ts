@@ -7,6 +7,6 @@ export const getImageUrl = (path: string): string => {
     return `/${cleanPath}`;
   }
   
-  // For production, use the basePath
-  return `/vocal-coaching-website/${cleanPath}`;
+  // For production, use the full GitHub Pages URL
+  return `https://amir3629.github.io/vocal-coaching-website/${cleanPath}`;
 }; 
