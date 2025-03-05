@@ -113,7 +113,7 @@ export default function Certifications() {
     <section id="certifications" className="relative w-full py-20 bg-black">
       {/* Musical AI Background */}
       <div className="absolute inset-0">
-        <div className="absolute inset-0 bg-[url('/vocal-coaching-website/images/musical-ai-bg.jpg')] bg-cover bg-center opacity-10" />
+        <div className="absolute inset-0 bg-[url('/vocal-coaching-website/images/backgrounds/hero-bg.jpg')] bg-cover bg-center opacity-10" />
         <div className="absolute inset-0 bg-gradient-to-b from-black via-black/90 to-black" />
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#C8A97E]/10 via-transparent to-transparent opacity-30" />
       </div>
