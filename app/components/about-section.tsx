@@ -20,7 +20,7 @@ export default function AboutSection() {
             className="relative h-[600px] rounded-lg overflow-hidden"
           >
             <Image
-              src="/images/photo_4_2025-02-27_12-05-55.jpg"
+              src="/vocal-coaching-website/images/about/profile.jpg"
               alt="Melanie Wainwright"
               fill
               className="object-cover"

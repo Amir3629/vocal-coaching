@@ -24,14 +24,22 @@ export default function ContactForm() {
     <>
       <section id="contact" className="relative py-20">
         <div className="absolute inset-0">
-          <Image
-            src="/images/photo_5_2025-02-27_12-05-55.jpg"
-            alt="Music Studio Background"
-            fill
-            className="object-cover object-center"
-            style={{ objectPosition: "center 30%" }}
-            priority
-          />
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="relative h-[600px] rounded-lg overflow-hidden"
+          >
+            <Image
+              src="/vocal-coaching-website/images/backgrounds/hero-bg.jpg"
+              alt="Contact background"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+            />
+          </motion.div>
           <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/80 to-black/70" />
         </div>
         
