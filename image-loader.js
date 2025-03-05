@@ -12,6 +12,6 @@ module.exports = function imageLoader({ src, width, quality }) {
     return `/${cleanSrc}`;
   }
   
-  // For production, use the basePath from next.config.js
-  return `/vocal-coaching-website/${cleanSrc}`;
+  // For production, use the full URL
+  return `https://amir3629.github.io/vocal-coaching-website/${cleanSrc}`;
 } 

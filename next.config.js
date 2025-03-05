@@ -6,7 +6,7 @@ const nextConfig = {
     unoptimized: true,
     loader: 'custom',
     loaderFile: './image-loader.js',
-    path: '/vocal-coaching-website',
+    path: 'https://amir3629.github.io/vocal-coaching-website',
   },
   // This is required for GitHub Pages
   assetPrefix: '/vocal-coaching-website/',
