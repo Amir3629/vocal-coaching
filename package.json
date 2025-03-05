@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "node scripts/check-images.js && next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "check-images": "node scripts/check-images.js",
+    "deploy": "npm run build && New-Item -Path out/.nojekyll -ItemType File -Force"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "latest",

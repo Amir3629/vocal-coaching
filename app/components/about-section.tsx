@@ -4,6 +4,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { ChevronDown, ChevronUp } from "lucide-react"
+import { getImageUrl } from "@/lib/config"
 
 export default function AboutSection() {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -21,7 +22,7 @@ export default function AboutSection() {
           >
             <div className="relative h-[600px] rounded-lg overflow-hidden">
               <Image
-                src="/vocal-coaching-website/images/about/profile.jpg"
+                src={getImageUrl("images/about/profile.jpg")}
                 alt="Melanie Wainwright"
                 fill
                 className="object-cover"
