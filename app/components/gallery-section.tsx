@@ -17,7 +17,7 @@ interface GalleryImage {
 
 const galleryImages: GalleryImage[] = [
   {
-    src: getImageUrl("images/photo_1_2025-02-27_12-05-55.jpg"),
+    src: getImageUrl("images/gallery/performance1.jpg"),
     alt: "Jazz Performance",
     span: "col-span-1 md:col-span-2",
     description: "Live Performance im B-Flat Jazz Club",
@@ -25,7 +25,7 @@ const galleryImages: GalleryImage[] = [
     location: "Berlin-Mitte"
   },
   {
-    src: getImageUrl("images/photo_4_2025-02-27_12-05-55.jpg"),
+    src: getImageUrl("images/gallery/performance2.jpg"),
     alt: "Studio Session",
     span: "col-span-1",
     description: "Aufnahmesession im Studio",
@@ -33,7 +33,7 @@ const galleryImages: GalleryImage[] = [
     location: "Recording Studio Berlin"
   },
   {
-    src: getImageUrl("images/photo_8_2025-02-27_12-05-55.jpg"),
+    src: getImageUrl("images/gallery/performance3.jpg"),
     alt: "Live Concert",
     span: "col-span-1",
     description: "Jazz Festival Auftritt",
@@ -41,7 +41,7 @@ const galleryImages: GalleryImage[] = [
     location: "Jazztage Berlin"
   },
   {
-    src: getImageUrl("images/photo_12_2025-02-27_12-05-55.jpg"),
+    src: getImageUrl("images/gallery/performance4.jpg"),
     alt: "Teaching Session",
     span: "col-span-1 md:col-span-2",
     description: "Gesangsunterricht & Workshop",
@@ -49,7 +49,7 @@ const galleryImages: GalleryImage[] = [
     location: "Vocal Studio"
   },
   {
-    src: getImageUrl("images/photo_5_2025-02-27_12-05-55.jpg"),
+    src: getImageUrl("images/gallery/performance5.jpg"),
     alt: "Piano Performance",
     span: "col-span-1 md:col-span-2",
     description: "Piano & Vocal Performance",
@@ -57,7 +57,7 @@ const galleryImages: GalleryImage[] = [
     location: "Jazz Club Berlin"
   },
   {
-    src: getImageUrl("images/photo_15_2025-02-27_12-05-55.jpg"),
+    src: getImageUrl("images/gallery/performance6.jpg"),
     alt: "Stage Performance",
     span: "col-span-1 md:col-span-2",
     description: "Live Konzert mit Band",
