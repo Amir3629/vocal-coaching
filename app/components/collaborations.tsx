@@ -58,18 +58,20 @@ export default function Collaborations() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="relative w-full aspect-[3/1]">
+              <div className="relative w-full aspect-[3/1] bg-black/20 rounded-lg p-4">
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                   <div className="absolute inset-0 bg-[#C8A97E]/20 blur-2xl rounded-full transform-gpu scale-150" />
                   <div className="absolute inset-0 bg-gradient-radial from-[#C8A97E]/30 via-transparent to-transparent blur-xl" />
                 </div>
-                <Image
-                  src={collab.logo}
-                  alt={collab.name}
-                  fill
-                  className="object-contain transition-all duration-500 relative z-10"
-                  sizes="(max-width: 768px) 40vw, 20vw"
-                />
+                <div className="relative w-full h-full">
+                  <Image
+                    src={collab.logo}
+                    alt={collab.name}
+                    fill
+                    className="object-contain transition-all duration-500 relative z-10"
+                    sizes="(max-width: 768px) 40vw, 20vw"
+                  />
+                </div>
               </div>
             </motion.a>
           ))}

@@ -13,6 +13,7 @@ export default function ContactForm() {
     message: ""
   })
   const [showSuccess, setShowSuccess] = useState(false)
+  const [bgImageError, setBgImageError] = useState(false)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -23,16 +24,23 @@ export default function ContactForm() {
   return (
     <>
       <section id="contact" className="relative min-h-screen py-20">
-        {/* Background Image */}
+        {/* Background */}
         <div className="absolute inset-0 z-0">
-          <Image
-            src="/vocal-coaching/images/backgrounds/contact-bg.jpg"
-            alt="Contact Background"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+          {!bgImageError ? (
+            <>
+              <Image
+                src="/vocal-coaching/images/backgrounds/contact-bg.jpg"
+                alt="Contact Background"
+                fill
+                className="object-cover"
+                priority
+                onError={() => setBgImageError(true)}
+              />
+              <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-gradient-to-b from-black via-gray-900 to-black" />
+          )}
         </div>
 
         {/* Content */}
