@@ -6,41 +6,31 @@ import Image from "next/image"
 const collaborations = [
   {
     name: "CVT Authorised Teacher",
-    logo: process.env.NODE_ENV === 'production' 
-      ? "/vocal-coaching/images/collaborations/cvt-teacher.svg"
-      : "/images/collaborations/cvt-teacher.svg",
+    logo: "/images/collaborations/cvt-teacher.svg",
     link: "https://completevocal.institute",
     isPlaceholder: false
   },
   {
     name: "CVT Deutschland",
-    logo: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/collaborations/cvt-deutschland.svg"
-      : "/images/collaborations/cvt-deutschland.svg",
+    logo: "/images/collaborations/cvt-deutschland.svg",
     link: "https://cvtdeutschland.de",
     isPlaceholder: false
   },
   {
     name: "B-Flat Jazz Club Berlin",
-    logo: process.env.NODE_ENV === 'production' 
-      ? "/vocal-coaching/images/collaborations/bflat.svg"
-      : "/images/collaborations/bflat.svg",
+    logo: "/images/collaborations/bflat.svg",
     link: "https://b-flat-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Jazz Institut Berlin",
-    logo: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/collaborations/jib.svg"
-      : "/images/collaborations/jib.svg",
+    logo: "/images/collaborations/jib.svg",
     link: "https://www.jazz-institut-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Berliner Philharmonie",
-    logo: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/collaborations/philharmonie.svg"
-      : "/images/collaborations/philharmonie.svg",
+    logo: "/images/collaborations/philharmonie.svg",
     link: "https://www.berliner-philharmoniker.de",
     isPlaceholder: false
   }

@@ -24,7 +24,7 @@ interface ServiceCardProps {
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [imageError, setImageError] = useState(false)
-  const processedImageUrl = `/vocal-coaching${image}`
+  const processedImageUrl = image
 
   useEffect(() => {
     console.log('ServiceCard mounted:', title)
