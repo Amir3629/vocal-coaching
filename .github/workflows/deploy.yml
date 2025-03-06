@@ -32,7 +32,11 @@ jobs:
       - name: Add .nojekyll file
         run: touch ./out/.nojekyll
       - name: Copy public directory
-        run: cp -r public/* out/
+        run: |
+          cp -r public/* out/
+          ls -la out/images
+          ls -la out/images/about
+          ls -la out/images/gallery
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
