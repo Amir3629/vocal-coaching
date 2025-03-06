@@ -53,14 +53,18 @@ const timeSlots = {
   afternoon: {
     label: "Nachmittags",
     description: "15:00 - 18:00 Uhr"
+  },
+  evening: {
+    label: "Abends",
+    description: "18:00 - 21:00 Uhr"
   }
 }
 
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [step, setStep] = useState(1)
   const [selectedService, setSelectedService] = useState("")
-  const [selectedDay, setSelectedDay] = useState("")
-  const [selectedTimeSlot, setSelectedTimeSlot] = useState("")
+  const [selectedDays, setSelectedDays] = useState<string[]>([])
+  const [selectedTimeSlots, setSelectedTimeSlots] = useState<string[]>([])
   const [showSuccess, setShowSuccess] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
@@ -68,6 +72,26 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     phone: "",
     message: ""
   })
+
+  const handleDaySelect = (dayId: string) => {
+    setSelectedDays(prev => {
+      if (prev.includes(dayId)) {
+        return prev.filter(d => d !== dayId)
+      }
+      return [...prev, dayId]
+    })
+  }
+
+  const handleTimeSlotSelect = (slotId: string) => {
+    setSelectedTimeSlots(prev => {
+      if (prev.includes(slotId)) {
+        return prev.filter(s => s !== slotId)
+      }
+      return [...prev, slotId]
+    })
+  }
+
+  const canProceedToStep3 = selectedDays.length > 0 && selectedTimeSlots.length > 0
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
@@ -77,8 +101,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const resetAndClose = () => {
     setStep(1)
     setSelectedService("")
-    setSelectedDay("")
-    setSelectedTimeSlot("")
+    setSelectedDays([])
+    setSelectedTimeSlots([])
     setFormData({
       name: "",
       email: "",
@@ -163,35 +187,36 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         exit={{ opacity: 0 }}
                         className="space-y-6"
                       >
-                        <h3 className="text-lg font-medium text-white mb-4">Wählen Sie Tag und Zeit</h3>
+                        <h3 className="text-lg font-medium text-white mb-4">Wählen Sie Ihre bevorzugten Tage und Zeiten</h3>
                         
-                        <div className="grid grid-cols-5 gap-2 mb-6">
-                          {weekDays.map((day) => (
-                            <button
-                              key={day.id}
-                              onClick={() => setSelectedDay(day.id)}
-                              className={`p-3 rounded-lg text-center transition-all ${
-                                selectedDay === day.id
-                                  ? "bg-[#C8A97E] text-black"
-                                  : "bg-[#C8A97E]/10 text-white hover:bg-[#C8A97E]/20"
-                              }`}
-                            >
-                              <span className="block text-sm font-medium">{day.label}</span>
-                            </button>
-                          ))}
+                        <div>
+                          <label className="text-sm text-gray-400 mb-2 block">Tage (Mehrfachauswahl möglich)</label>
+                          <div className="grid grid-cols-5 gap-2 mb-6">
+                            {weekDays.map((day) => (
+                              <button
+                                key={day.id}
+                                onClick={() => handleDaySelect(day.id)}
+                                className={`p-3 rounded-lg text-center transition-all ${
+                                  selectedDays.includes(day.id)
+                                    ? "bg-[#C8A97E] text-black"
+                                    : "bg-[#C8A97E]/10 text-white hover:bg-[#C8A97E]/20"
+                                }`}
+                              >
+                                <span className="block text-sm font-medium">{day.label}</span>
+                              </button>
+                            ))}
+                          </div>
                         </div>
 
-                        {selectedDay && (
+                        <div>
+                          <label className="text-sm text-gray-400 mb-2 block">Zeiten (Mehrfachauswahl möglich)</label>
                           <div className="grid grid-cols-1 gap-4">
                             {Object.entries(timeSlots).map(([slot, { label, description }]) => (
                               <button
                                 key={slot}
-                                onClick={() => {
-                                  setSelectedTimeSlot(slot)
-                                  setStep(3)
-                                }}
+                                onClick={() => handleTimeSlotSelect(slot)}
                                 className={`p-4 rounded-lg border text-left transition-all ${
-                                  selectedTimeSlot === slot
+                                  selectedTimeSlots.includes(slot)
                                     ? "border-[#C8A97E] bg-[#C8A97E]/10"
                                     : "border-white/10 hover:border-[#C8A97E]/50"
                                 }`}
@@ -206,7 +231,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                               </button>
                             ))}
                           </div>
-                        )}
+                        </div>
 
                         <div className="flex justify-between mt-6">
                           <button
@@ -215,6 +240,14 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           >
                             Zurück
                           </button>
+                          {selectedDays.length > 0 && selectedTimeSlots.length > 0 && (
+                            <button
+                              onClick={() => setStep(3)}
+                              className="px-6 py-2 rounded-lg bg-[#C8A97E] hover:bg-[#B89A6F] text-black font-medium transition-all"
+                            >
+                              Weiter
+                            </button>
+                          )}
                         </div>
                       </motion.div>
                     )}
@@ -235,8 +268,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             <h4 className="text-[#C8A97E] font-medium mb-2">Zusammenfassung</h4>
                             <div className="space-y-2 text-gray-300">
                               <p>Service: {services.find(s => s.id === selectedService)?.title}</p>
-                              <p>Tag: {weekDays.find(d => d.id === selectedDay)?.label}</p>
-                              <p>Zeit: {timeSlots[selectedTimeSlot as keyof typeof timeSlots]?.description}</p>
+                              <p>Tage: {selectedDays.map(d => weekDays.find(day => day.id === d)?.label).join(", ")}</p>
+                              <p>Zeiten: {selectedTimeSlots.map(s => timeSlots[s as keyof typeof timeSlots]?.label).join(", ")}</p>
                             </div>
                           </div>
 
