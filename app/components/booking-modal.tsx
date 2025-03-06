@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X } from "lucide-react"
+import { X, Clock, Calendar as CalendarIcon } from "lucide-react"
 import SuccessMessage from "./success-message"
 
 interface BookingModalProps {
@@ -33,15 +33,18 @@ const services = [
   }
 ]
 
-const timeSlots = [
-  { id: "morning", label: "Vormittags", time: "09:00 - 12:00" },
-  { id: "afternoon", label: "Nachmittags", time: "12:00 - 16:00" },
-  { id: "evening", label: "Abends", time: "16:00 - 21:00" }
+const weekDays = [
+  { id: "monday", label: "Montag", times: ["10:00", "14:00", "16:00", "18:00"] },
+  { id: "tuesday", label: "Dienstag", times: ["11:00", "15:00", "17:00", "19:00"] },
+  { id: "wednesday", label: "Mittwoch", times: ["10:00", "14:00", "16:00", "18:00"] },
+  { id: "thursday", label: "Donnerstag", times: ["11:00", "15:00", "17:00", "19:00"] },
+  { id: "friday", label: "Freitag", times: ["10:00", "14:00", "16:00", "18:00"] }
 ]
 
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [step, setStep] = useState(1)
   const [selectedService, setSelectedService] = useState("")
+  const [selectedDay, setSelectedDay] = useState("")
   const [selectedTime, setSelectedTime] = useState("")
   const [showSuccess, setShowSuccess] = useState(false)
   const [formData, setFormData] = useState({
@@ -58,6 +61,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const resetAndClose = () => {
     setStep(1)
     setSelectedService("")
+    setSelectedDay("")
     setSelectedTime("")
     setFormData({
       name: "",
@@ -81,7 +85,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               onClick={onClose}
             />
             
-            <div className="fixed inset-0 z-[9999] flex items-center justify-center">
+            <div className="fixed inset-0 z-[9999] flex items-center justify-center overflow-y-auto py-10">
               <motion.div
                 initial={{ opacity: 0, scale: 0.9, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -142,8 +146,70 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                     )}
 
                     {step === 2 && (
-                      <motion.form
+                      <motion.div
                         key="step2"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="space-y-6"
+                      >
+                        <div className="flex items-center gap-2 mb-4">
+                          <CalendarIcon className="w-5 h-5 text-[#C8A97E]" />
+                          <h3 className="text-lg font-medium text-white">Wählen Sie einen Tag</h3>
+                        </div>
+
+                        <div className="grid gap-4">
+                          {weekDays.map((day) => (
+                            <motion.div
+                              key={day.id}
+                              className={`p-4 rounded-lg border transition-all ${
+                                selectedDay === day.id
+                                  ? "border-[#C8A97E] bg-[#C8A97E]/10"
+                                  : "border-white/10 hover:border-[#C8A97E]/50"
+                              }`}
+                            >
+                              <div className="flex items-center justify-between mb-3">
+                                <h4 className="text-white font-medium">{day.label}</h4>
+                                <Clock className="w-4 h-4 text-[#C8A97E]" />
+                              </div>
+                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                                {day.times.map((time) => (
+                                  <button
+                                    key={`${day.id}-${time}`}
+                                    onClick={() => {
+                                      setSelectedDay(day.id)
+                                      setSelectedTime(time)
+                                      setStep(3)
+                                    }}
+                                    className={`px-3 py-2 rounded text-sm transition-all ${
+                                      selectedDay === day.id && selectedTime === time
+                                        ? "bg-[#C8A97E] text-black"
+                                        : "bg-black/20 text-gray-300 hover:bg-[#C8A97E]/20 hover:text-white"
+                                    }`}
+                                  >
+                                    {time}
+                                  </button>
+                                ))}
+                              </div>
+                            </motion.div>
+                          ))}
+                        </div>
+
+                        <div className="flex justify-between mt-6">
+                          <button
+                            onClick={() => setStep(1)}
+                            className="px-6 py-2 rounded-lg border border-white/10 hover:border-[#C8A97E]/50 text-white transition-all"
+                          >
+                            Zurück
+                          </button>
+                        </div>
+                      </motion.div>
+                    )}
+
+                    {step === 3 && (
+                      <motion.form
+                        key="step3"
                         onSubmit={handleSubmit}
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
@@ -151,91 +217,68 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         transition={{ duration: 0.3 }}
                         className="space-y-6"
                       >
-                        <div className="grid grid-cols-3 gap-4 mb-6">
-                          {timeSlots.map((slot) => (
-                            <button
-                              key={slot.id}
-                              type="button"
-                              onClick={() => setSelectedTime(slot.id)}
-                              className={`p-4 rounded-lg border text-center transition-all ${
-                                selectedTime === slot.id
-                                  ? "border-[#C8A97E] bg-[#C8A97E]/10"
-                                  : "border-white/10 hover:border-[#C8A97E]/50"
-                              }`}
-                            >
-                              <div className="text-white font-medium">{slot.label}</div>
-                              <div className="text-sm text-gray-400">{slot.time}</div>
-                            </button>
-                          ))}
+                        <div className="space-y-4">
+                          <div className="p-4 rounded-lg border border-[#C8A97E]/20 bg-black/20">
+                            <h4 className="text-[#C8A97E] font-medium mb-2">Zusammenfassung</h4>
+                            <div className="space-y-2 text-gray-300">
+                              <p>Service: {services.find(s => s.id === selectedService)?.title}</p>
+                              <p>Tag: {weekDays.find(d => d.id === selectedDay)?.label}</p>
+                              <p>Zeit: {selectedTime} Uhr</p>
+                            </div>
+                          </div>
+
+                          <div className="space-y-4">
+                            <input
+                              type="text"
+                              placeholder="Name"
+                              value={formData.name}
+                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                              className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all"
+                            />
+                            <input
+                              type="email"
+                              placeholder="Email"
+                              value={formData.email}
+                              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                              className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all"
+                            />
+                            <textarea
+                              placeholder="Nachricht (optional)"
+                              value={formData.message}
+                              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                              className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all h-32 resize-none"
+                            />
+                          </div>
                         </div>
 
-                        <div>
-                          <label className="block text-sm text-gray-400 mb-1">Name</label>
-                          <input
-                            type="text"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            required
-                            className="w-full bg-white/5 border-b border-[#C8A97E]/20 px-4 py-3 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E]"
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm text-gray-400 mb-1">Email</label>
-                          <input
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                            required
-                            className="w-full bg-white/5 border-b border-[#C8A97E]/20 px-4 py-3 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E]"
-                          />
-                        </div>
-                        
-                        <div>
-                          <label className="block text-sm text-gray-400 mb-1">Nachricht</label>
-                          <textarea
-                            value={formData.message}
-                            onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                            required
-                            rows={4}
-                            className="w-full bg-white/5 border-b border-[#C8A97E]/20 px-4 py-3 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E] resize-none"
-                          ></textarea>
-                        </div>
-
-                        <div className="flex justify-between items-center pt-4">
+                        <div className="flex justify-between mt-6">
                           <button
                             type="button"
-                            onClick={() => setStep(1)}
-                            className="text-gray-400 hover:text-white transition-colors"
+                            onClick={() => setStep(2)}
+                            className="px-6 py-2 rounded-lg border border-white/10 hover:border-[#C8A97E]/50 text-white transition-all"
                           >
                             Zurück
                           </button>
                           <button
                             type="submit"
-                            className="px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black text-sm font-medium rounded-lg transition-colors"
+                            className="px-6 py-2 rounded-lg bg-[#C8A97E] hover:bg-[#B89A6F] text-black font-medium transition-all"
                           >
-                            Absenden
+                            Buchung abschließen
                           </button>
                         </div>
                       </motion.form>
                     )}
                   </AnimatePresence>
+
+                  {showSuccess && (
+                    <SuccessMessage onClose={resetAndClose} />
+                  )}
                 </div>
               </motion.div>
             </div>
           </>
         )}
       </AnimatePresence>
-
-      <SuccessMessage
-        isOpen={showSuccess}
-        onClose={() => {
-          setShowSuccess(false)
-          resetAndClose()
-        }}
-        title="Buchung erfolgreich!"
-        message="Vielen Dank für Ihre Anfrage. Ich werde mich in Kürze bei Ihnen melden."
-      />
     </>
   )
 } 
