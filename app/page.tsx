@@ -125,7 +125,7 @@ export default function Home() {
           <p>Base path: {process.env.NEXT_PUBLIC_BASE_PATH || ''}</p>
         </div>
 
-        <motion.div 
+        <motion.div
           className="relative z-10 text-center px-4 max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -168,7 +168,7 @@ export default function Home() {
           </motion.div>
         </motion.div>
 
-        <motion.div 
+        <motion.div
           className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -220,135 +220,131 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Services and About Combined Background Section */}
-      <div className="relative bg-[#0A0A0A]">
       {/* Services Section */}
-        <section id="services" className="relative w-full min-h-screen bg-black py-16">
-          <ParallaxBackground
-            imageUrl="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070&auto=format&fit=crop"
-            opacity={0.2}
-            speed={0.2}
-          />
-          <div className="container mx-auto px-4 relative z-10">
+      <section id="services" className="relative w-full min-h-screen bg-black py-16">
+        <ParallaxBackground
+          imageUrl="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070&auto=format&fit=crop"
+          opacity={0.2}
+          speed={0.2}
+        />
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             className="text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
+            viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-              <h2 className="section-heading mb-4">Vocal Excellence</h2>
-              <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
+            <h2 className="section-heading mb-4">Vocal Excellence</h2>
+            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <ServiceCard 
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+            <ServiceCard
               title="Private Gesangsstunden"
-              description="Personalisierte Einzelstunden, die auf Ihre einzigartige Stimme und Ziele zugeschnitten sind."
-              icon={<Mic />}
-              price="Ab €60/Stunde"
+              description="Individueller Unterricht für alle Levels"
+              icon={<Mic className="w-6 h-6" />}
+              price="ab €60"
               features={[
-                "Atem- & Technikentwicklung",
-                "Erweiterung des Stimmumfangs",
-                "Stil & Interpretation",
-                "Aufführungs-Vorbereitung"
+                "Stimmtechnik & Atemübungen",
+                "Repertoire-Entwicklung",
+                "Individuelle Zielsetzung",
+                "Flexible Terminplanung"
               ]}
               details={{
                 includes: [
-                  "Individuelle Stimmanalyse",
+                  "Stimmanalyse",
                   "Personalisierter Übungsplan",
                   "Aufnahmen der Übungen",
-                  "E-Mail Support zwischen den Stunden"
+                  "E-Mail Support"
                 ],
                 suitable: [
                   "Anfänger",
                   "Fortgeschrittene",
-                  "Professionelle Sänger",
+                  "Profis",
                   "Hobby-Sänger"
                 ],
-                duration: "60 Minuten",
+                duration: "60 oder 90 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
               image="/images/services/private-lessons.jpg"
-              delay={0.1}
+              delay={0.2}
             />
-            
             <ServiceCard
               title="Jazz Improvisation"
-              description="Meistern Sie die Kunst des Jazz-Scattens und der melodischen Improvisation."
-              icon={<Music />}
-              price="Ab €70/Stunde"
+              description="Entdecke die Kunst des Jazz-Gesangs"
+              icon={<Music className="w-6 h-6" />}
+              price="ab €65"
               features={[
-                "Scat-Vokabuläraufbau",
-                "Chord Scale-Beziehungen",
-                "Rhythmische Entwicklung",
-                "Transkription & Analyse"
+                "Scat-Gesang",
+                "Harmonielehre",
+                "Rhythmische Übungen",
+                "Jazz-Standards"
               ]}
               details={{
                 includes: [
-                  "Gehörbildung & Rhythmustraining",
+                  "Gehörbildung",
                   "Harmonische Konzepte",
                   "Improvisationsübungen",
-                  "Aufnahmen der Sessions"
+                  "Session-Aufnahmen"
                 ],
                 suitable: [
-                  "Sänger mit Vorkenntnissen",
+                  "Fortgeschrittene",
                   "Instrumentalisten",
                   "Musikstudenten",
                   "Jazz-Enthusiasten"
                 ],
-                duration: "60 Minuten",
+                duration: "60 oder 90 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image="/images/services/performance.jpg"
-              delay={0.2}
+              image="/images/services/jazz.jpg"
+              delay={0.4}
             />
-            
             <ServiceCard
               title="Aufführungs Coaching"
-              description="Entwickeln Sie eine fesselnde Bühnenpräsenz und Aufführungskompetenz."
-              icon={<Theater />}
-              price="Ab €75/Stunde"
+              description="Perfektioniere deine Bühnenpräsenz"
+              icon={<Theater className="w-6 h-6" />}
+              price="ab €70"
               features={[
-                "Mikrophon-Technik",
-                "Bühnenpräsenz",
-                "Publikumsverbindung",
-                "Umgang mit Auftrittsangst"
+                "Bühnenperformance",
+                "Mikrofonarbeit",
+                "Gestik & Mimik",
+                "Auftrittsvorbereitung"
               ]}
               details={{
                 includes: [
-                  "Analyse Ihrer Bühnenpräsenz",
-                  "Performance-Persona",
-                  "Umgang mit Lampenfieber",
+                  "Performance-Analyse",
+                  "Bühnenpräsenz-Training",
+                  "Lampenfieber-Management",
                   "Publikumsinteraktion"
                 ],
                 suitable: [
-                  "Sänger vor Auftritten",
+                  "Performer",
+                  "Sänger",
                   "Schauspieler",
-                  "Redner",
-                  "Performer"
+                  "Redner"
                 ],
-                duration: "60 Minuten",
+                duration: "90 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-              image="/images/services/workshop.jpg"
-              delay={0.3}
+              image="/images/services/performance.jpg"
+              delay={0.6}
             />
-            
             <ServiceCard
               title="Piano/Vocal-Koordination"
-              description="Erlernen Sie sich beim Singen selbst zu begleiten."
-              icon={<BookOpen />}
-              price="Ab €80/Stunde"
+              description="Lerne dich selbst zu begleiten"
+              icon={<BookOpen className="w-6 h-6" />}
+              price="ab €65"
               features={[
                 "Grundlegende Klaviertechnik",
-                "Vokale Unabhängigkeit",
-                "Jazz-Akkorde",
-                "Arrangementsfähigkeiten"
+                "Begleitpatterns",
+                "Rhythmische Koordination",
+                "Song-Arrangements"
               ]}
               details={{
                 includes: [
                   "Klavierbegleitung",
-                  "Akkordlehre für Sänger",
+                  "Akkordlehre",
                   "Timing-Übungen",
                   "Song-Arrangement"
                 ],
@@ -358,24 +354,25 @@ export default function Home() {
                   "Songwriter",
                   "Musiker"
                 ],
-                duration: "60 Minuten",
+                duration: "60 oder 90 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
               image="/images/services/piano.jpg"
-              delay={0.4}
+              delay={0.8}
             />
           </div>
-          
-          <motion.div 
-              className="mt-12 text-center"
+
+          <motion.div
+            className="text-center mt-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.4 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 1 }}
           >
-            <Button 
-                onClick={() => setIsBookingModalOpen(true)}
-                className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black font-medium px-8 py-3 rounded-full transition-all duration-300 transform hover:scale-105"
+            <Button
+              size="lg"
+              className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8"
+              onClick={() => setIsBookingModalOpen(true)}
             >
               Jetzt Buchen
             </Button>
@@ -384,8 +381,7 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-        <AboutSection />
-        </div>
+      <AboutSection />
 
       {/* Gallery Section */}
       <GallerySection />
@@ -407,7 +403,6 @@ export default function Home() {
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
           <TestimonialSlider />
-          
           <Collaborations />
         </div>
       </section>
@@ -417,7 +412,7 @@ export default function Home() {
         <ContactForm />
       </section>
 
-      {/* Footer with Policy Links */}
+      {/* Footer */}
       <footer className="py-12 px-4 bg-[#0A0A0A] border-t border-gray-800">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
@@ -426,19 +421,41 @@ export default function Home() {
               <p className="text-gray-400 mb-4">Jazz Vocal Coaching in Berlin</p>
               <div className="flex space-x-4">
                 <a href="https://m.facebook.com/singingJazz/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M22 12c0-5.523-4.477-10-10-10S2 6.477 2 12c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V12h2.54V9.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V12h2.773l-.443 2.89h-2.33v6.988C18.343 21.128 22 16.991 22 12z" clipRule="evenodd" />
-                  </svg>
+                  <Facebook className="w-6 h-6" />
                 </a>
-                <a href="https://www.instagram.com/jazzamell/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d="M12.315 2c2.43 0 2.784.013 3.808.06 1.064.049 1.791.218 2.427.465a4.902 4.902 0 011.772 1.153 4.902 4.902 0 011.153 1.772c.247.636.416 1.363.465 2.427.048 1.067.06 1.407.06 4.123v.08c0 2.643-.012 2.987-.06 4.043-.049 1.064-.218 1.791-.465 2.427a4.902 4.902 0 01-1.153 1.772 4.902 4.902 0 01-1.772 1.153c-.636.247-1.363.416-2.427.465-1.067.048-1.407.06-4.123.06h-.08c-2.643 0-2.987-.012-4.043-.06-1.064-.049-1.791-.218-2.427-.465a4.902 4.902 0 01-1.772-1.153 4.902 4.902 0 01-1.153-1.772c-.247-.636-.416-1.363-.465-2.427-.047-1.024-.06-1.379-.06-3.808v-.63c0-2.43.013-2.784.06-3.808.049-1.064.218-1.791.465-2.427a4.902 4.902 0 011.153-1.772A4.902 4.902 0 015.45 2.525c.636-.247 1.363-.416 2.427-.465C8.901 2.013 9.256 2 11.685 2h.63zm-.081 1.802h-.468c-2.456 0-2.784.011-3.807.058-.975.045-1.504.207-1.857.344-.467.182-.8.398-1.15.748-.35.35-.566.683-.748 1.15-.137.353-.3.882-.344 1.857-.047 1.023-.058 1.351-.058 3.807v.468c0 2.456.011 2.784.058 3.807.045.975.207 1.504.344 1.857.182.466.399.8.748 1.15.35.35.683.566 1.15.748.353.137.882.3 1.857.344 1.054.048 1.37.058 4.041.058h.08c2.597 0 2.917-.01 3.96-.058.976-.045 1.505-.207 1.858-.344.466-.182.8-.398 1.15-.748.35-.35.566-.683.748-1.15.137-.353.3-.882.344-1.857.048-1.055.058-1.37.058-4.041v-.08c0-2.597-.01-2.917-.058-3.96-.045-.976-.207-1.505-.344-1.858a3.097 3.097 0 00-.748-1.15 3.098 3.098 0 00-1.15-.748c-.353-.137-.882-.3-1.857-.344-1.023-.047-1.351-.058-3.807-.058zM12 6.865a5.135 5.135 0 110 10.27 5.135 5.135 0 010-10.27zm0 1.802a3.333 3.333 0 100 6.666 3.333 3.333 0 000-6.666zm5.338-3.205a1.2 1.2 0 110 2.4 1.2 1.2 0 010-2.4z" clipRule="evenodd" />
-                  </svg>
+                <a href="https://www.instagram.com/melanie_wainwright_jazz/" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                  <Instagram className="w-6 h-6" />
                 </a>
-                <a href="https://chornextdoor.de" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
-                  Chor Next Door
+                <a href="https://www.youtube.com/@melaniewainwright" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                  <Youtube className="w-6 h-6" />
                 </a>
               </div>
+            </div>
+
+            <div>
+              <h4 className="text-lg font-semibold mb-4">Kontakt</h4>
+              <ul className="space-y-4">
+                <li className="flex items-center text-gray-400">
+                  <MapPin className="w-5 h-5 mr-2 text-[#C8A97E]" />
+                  <span>Berlin-Mitte, Deutschland</span>
+                </li>
+                <li className="flex items-center text-gray-400">
+                  <Mail className="w-5 h-5 mr-2 text-[#C8A97E]" />
+                  <a href="mailto:info@melaniewainwright.com" className="hover:text-[#C8A97E] transition-colors duration-300">
+                    info@melaniewainwright.com
+                  </a>
+                </li>
+                <li className="flex items-center text-gray-400">
+                  <Phone className="w-5 h-5 mr-2 text-[#C8A97E]" />
+                  <a href="tel:+491234567890" className="hover:text-[#C8A97E] transition-colors duration-300">
+                    +49 123 456 7890
+                  </a>
+                </li>
+                <li className="flex items-center text-gray-400">
+                  <Clock className="w-5 h-5 mr-2 text-[#C8A97E]" />
+                  <span>Mo-Fr: 10:00-20:00</span>
+                </li>
+              </ul>
             </div>
 
             <div>
@@ -459,43 +476,18 @@ export default function Home() {
                     B-Flat Jazz Club Berlin
                   </a>
                 </li>
-              </ul>
-            </div>
-
-            <div>
-              <h4 className="text-lg font-semibold mb-4">Rechtliches</h4>
-              <ul className="space-y-2">
                 <li>
-                  <a href="/datenschutz" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
-                    Datenschutzerklärung
-                  </a>
-                </li>
-                <li>
-                  <a href="/impressum" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
-                    Impressum
-                  </a>
-                </li>
-                <li>
-                  <a href="/agb" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
-                    AGB
+                  <a href="https://chornextdoor.de" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-[#C8A97E] transition-colors duration-300">
+                    Chor Next Door
                   </a>
                 </li>
               </ul>
             </div>
-          </div>
-
-          <div className="mt-12 pt-8 border-t border-gray-800">
-            <p className="text-sm text-gray-400 text-center">
-              © {new Date().getFullYear()} Melanie Wainwright. Alle Rechte vorbehalten.
-            </p>
           </div>
         </div>
       </footer>
 
-      <BookingModal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-      />
+      <BookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
     </div>
   )
 }
