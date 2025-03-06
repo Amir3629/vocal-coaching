@@ -1,17 +1,7 @@
-module.exports = function imageLoader({ src, width, quality }) {
-  // Remove any leading slashes
-  const cleanSrc = src.startsWith('/') ? src.slice(1) : src;
+export default function imageLoader({ src, width, quality }) {
+  const baseUrl = process.env.NODE_ENV === 'production' 
+    ? 'https://amir3629.github.io/vocal-coaching'
+    : ''
   
-  // If the src is already an absolute URL or is an SVG file, return it as is
-  if (cleanSrc.startsWith('http') || cleanSrc.endsWith('.svg')) {
-    return src;
-  }
-  
-  // In development, use relative paths
-  if (process.env.NODE_ENV === 'development') {
-    return `/${cleanSrc}`;
-  }
-  
-  // For production, use the full GitHub Pages URL
-  return `https://amir3629.github.io/vocal-coaching-website/${cleanSrc}`;
+  return `${baseUrl}${src}?w=${width}&q=${quality || 75}`
 } 
