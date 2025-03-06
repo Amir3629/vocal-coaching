@@ -47,6 +47,12 @@ export default function ServiceCard({ title, description, icon, price, features,
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay }}
       className="relative overflow-hidden rounded-xl h-full"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      style={{
+        transform: isHovered ? 'scale(1.05)' : 'scale(1)',
+        transition: 'transform 0.3s ease-in-out'
+      }}
     >
       {/* Background container */}
       <div className="absolute inset-0 w-full h-full">
@@ -75,8 +81,6 @@ export default function ServiceCard({ title, description, icon, price, features,
       {/* Content */}
       <div 
         className="relative z-10 p-6 h-full flex flex-col"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
       >
         <div className="flex items-center justify-between mb-4">
           <div className="p-2 rounded-lg bg-[#C8A97E]/20 text-[#C8A97E]">

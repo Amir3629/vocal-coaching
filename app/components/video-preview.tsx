@@ -14,6 +14,38 @@ export default function VideoPreview() {
   const [hasError, setHasError] = useState(false)
   const [isLoading, setIsLoading] = useState(true)
 
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const handleLoadStart = () => {
+      setIsLoading(true)
+      console.log('Video loading started')
+    }
+
+    const handleLoadedData = () => {
+      setIsLoading(false)
+      console.log('Video loaded successfully')
+    }
+
+    const handleError = (e: Event) => {
+      const target = e.target as HTMLVideoElement
+      console.error('Video error:', target.error)
+      setHasError(true)
+      setIsLoading(false)
+    }
+
+    video.addEventListener('loadstart', handleLoadStart)
+    video.addEventListener('loadeddata', handleLoadedData)
+    video.addEventListener('error', handleError)
+
+    return () => {
+      video.removeEventListener('loadstart', handleLoadStart)
+      video.removeEventListener('loadeddata', handleLoadedData)
+      video.removeEventListener('error', handleError)
+    }
+  }, [])
+
   // Initial setup
   useEffect(() => {
     const video = videoRef.current
@@ -139,6 +171,9 @@ export default function VideoPreview() {
               <div className="text-center">
                 <p>Sorry, the video is currently unavailable.</p>
                 <p className="text-sm mt-2">Please try again later.</p>
+                <p className="text-xs mt-1 text-gray-500">Error loading video from: {process.env.NODE_ENV === 'production'
+                  ? "/vocal-coaching/videos/preview.mp4"
+                  : "/videos/preview.mp4"}</p>
               </div>
             </div>
           ) : (
@@ -150,13 +185,16 @@ export default function VideoPreview() {
               )}
               <video
                 ref={videoRef}
-                className={`w-full h-full object-cover ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                className={`w-full h-full object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
                 src={process.env.NODE_ENV === 'production'
                   ? "/vocal-coaching/videos/preview.mp4"
                   : "/videos/preview.mp4"}
                 playsInline
                 muted={isMuted}
-                autoPlay
+                preload="auto"
+                poster={process.env.NODE_ENV === 'production'
+                  ? "/vocal-coaching/videos/preview-poster.jpg"
+                  : "/videos/preview-poster.jpg"}
                 style={{
                   objectFit: 'contain',
                   backgroundColor: '#080505'
