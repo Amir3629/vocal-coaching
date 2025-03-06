@@ -176,7 +176,7 @@ export default function EnhancedMusicPlayer() {
 
   return (
     <div ref={containerRef} className="w-full max-w-4xl mx-auto">
-      <Card className="bg-[#0A0A0A]/80 backdrop-blur-sm border-[#C8A97E]/20 p-6">
+      <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-6">
         <div id="youtube-player" className="hidden"></div>
         
         <div className="flex items-center gap-6 mb-8">

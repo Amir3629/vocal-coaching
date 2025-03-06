@@ -4,7 +4,6 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { ChevronDown, ChevronUp } from "lucide-react"
-import { getImageUrl } from "@/lib/config"
 
 export default function AboutSection() {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -20,16 +19,14 @@ export default function AboutSection() {
             transition={{ duration: 0.8 }}
             className="relative h-[600px] rounded-lg overflow-hidden"
           >
-            <div className="relative h-[600px] rounded-lg overflow-hidden">
-              <Image
-                src={getImageUrl("images/about/profile.jpg")}
-                alt="Melanie Wainwright"
-                fill
-                className="object-cover"
-                sizes="(max-width: 768px) 100vw, 50vw"
-                priority
-              />
-            </div>
+            <Image
+              src="/images/about/profile.jpg"
+              alt="Melanie Wainwright"
+              fill
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 50vw"
+              priority
+            />
           </motion.div>
 
           <motion.div
@@ -39,7 +36,7 @@ export default function AboutSection() {
             transition={{ duration: 0.8 }}
             className="space-y-6"
           >
-            <h2 className="text-4xl font-light tracking-wide text-white">Über Mich</h2>
+            <h2 className="section-heading mb-4">Über Mich</h2>
             <div className="w-12 h-0.5 bg-[#C8A97E]"></div>
             
             <div className="text-gray-300 space-y-4">

@@ -1,28 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  output: 'export',
-  basePath: '/vocal-coaching-website',
   images: {
     unoptimized: true,
-    loader: 'custom',
-    loaderFile: './image-loader-test.js',
-    path: 'https://amir3629.github.io/vocal-coaching-website',
-    domains: ['amir3629.github.io'],
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: 'amir3629.github.io',
-        pathname: '/vocal-coaching-website/**',
-      },
-    ],
-  },
-  // This is required for GitHub Pages
-  assetPrefix: '/vocal-coaching-website/',
-  // Add trailing slash to match GitHub Pages behavior
-  trailingSlash: true,
-  // Disable server-side features
-  experimental: {
-    appDir: true,
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
   },
 }
 

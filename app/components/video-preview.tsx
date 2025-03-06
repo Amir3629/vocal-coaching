@@ -1,135 +1,138 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import { motion } from "framer-motion"
-import { Play } from "lucide-react"
-import VideoControls from "./video-controls"
+import { useRef, useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { VolumeX, Volume2 } from "lucide-react"
 
 export default function VideoPreview() {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [isMuted, setIsMuted] = useState(false)
-  const [currentTime, setCurrentTime] = useState(0)
-  const [duration, setDuration] = useState(0)
   const videoRef = useRef<HTMLVideoElement>(null)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [isMuted, setIsMuted] = useState(false)
+  const [showControls, setShowControls] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
 
+  // Initial autoplay setup
   useEffect(() => {
-    if (videoRef.current) {
-      setDuration(videoRef.current.duration)
-    }
-  }, [videoRef.current])
+    const video = videoRef.current
+    if (!video) return
 
-  const handlePlayPause = () => {
-    if (videoRef.current) {
-      if (isPlaying) {
-        videoRef.current.pause()
-      } else {
-        videoRef.current.play()
-      }
-      setIsPlaying(!isPlaying)
-    }
-  }
-
-  const handleMuteToggle = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted
-      setIsMuted(!isMuted)
-    }
-  }
-
-  const handleSeek = (time: number) => {
-    if (videoRef.current) {
-      videoRef.current.currentTime = time
-      setCurrentTime(time)
-    }
-  }
-
-  const handleFullScreen = () => {
-    if (videoRef.current) {
-      if (document.fullscreenElement) {
-        document.exitFullscreen()
-      } else {
-        videoRef.current.requestFullscreen()
+    const playVideo = async () => {
+      try {
+        await video.play()
+      } catch (error) {
+        console.log("Autoplay prevented:", error)
+        setIsPlaying(false)
       }
     }
+
+    playVideo()
+  }, [])
+
+  // Handle video end
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    const handleEnded = () => {
+      setIsPlaying(false)
+      setIsExpanded(false)
+      if (video) {
+        video.currentTime = 0
+      }
+    }
+
+    video.addEventListener('ended', handleEnded)
+    return () => video.removeEventListener('ended', handleEnded)
+  }, [])
+
+  // Handle play/pause changes
+  useEffect(() => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (isPlaying) {
+      video.play()
+      setIsExpanded(true)
+    } else {
+      video.pause()
+    }
+  }, [isPlaying])
+
+  const handleVideoClick = () => {
+    const video = videoRef.current
+    if (!video) return
+
+    if (!isPlaying) {
+      video.currentTime = 0
+    }
+    setIsPlaying(!isPlaying)
   }
 
-  const handleTimeUpdate = () => {
-    if (videoRef.current) {
-      setCurrentTime(videoRef.current.currentTime)
-    }
+  const handleMuteToggle = (e: React.MouseEvent) => {
+    e.stopPropagation()
+    if (!videoRef.current) return
+    setIsMuted(!isMuted)
+    videoRef.current.muted = !isMuted
   }
 
   return (
-    <section className="relative w-full py-12">
-      <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="relative mx-auto"
-        >
-          <motion.div
-            layout
-            animate={{
-              width: isPlaying ? "100%" : "300px",
-              maxWidth: isPlaying ? "1200px" : "300px"
-            }}
-            transition={{
-              type: "spring",
-              stiffness: 200,
-              damping: 25
-            }}
-            className="mx-auto overflow-hidden rounded-xl relative group"
-          >
-            <div className="relative aspect-video bg-black">
-              <video
-                ref={videoRef}
-                src="/videos/video_2025-03-02_18-41-30.mp4"
-                className="absolute inset-0 w-full h-full object-contain"
-                playsInline
-                onTimeUpdate={handleTimeUpdate}
-                onLoadedMetadata={() => {
-                  if (videoRef.current) {
-                    setDuration(videoRef.current.duration)
-                  }
-                }}
-              />
+    <div className="w-full max-w-2xl mx-auto">
+      <motion.div 
+        className="relative rounded-xl overflow-hidden cursor-pointer bg-[#080505]"
+        initial={{ scale: 0.7 }}
+        animate={{ 
+          scale: isExpanded ? 1 : 0.7
+        }}
+        transition={{ 
+          type: "spring",
+          stiffness: 100,
+          damping: 20,
+          duration: 0.6
+        }}
+        onMouseEnter={() => setShowControls(true)}
+        onMouseLeave={() => setShowControls(false)}
+        onClick={handleVideoClick}
+      >
+        <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+          <div className="absolute inset-0">
+            <video
+              ref={videoRef}
+              className="w-full h-full object-cover"
+              src="/videos/preview.mp4"
+              playsInline
+              muted={isMuted}
+              autoPlay
+              style={{
+                objectFit: 'contain',
+                backgroundColor: '#080505'
+              }}
+            />
+          </div>
+        </div>
 
-              {!isPlaying && (
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center cursor-pointer"
-                  onClick={handlePlayPause}
-                >
-                  <div className="absolute inset-0 bg-black/60 transition-opacity group-hover:bg-black/40" />
-                  <motion.div 
-                    className="relative z-10"
-                    whileHover={{ scale: 1.1 }}
-                  >
-                    <div className="absolute inset-0 bg-[#C8A97E] rounded-full blur-xl opacity-30 group-hover:opacity-50 transition-opacity" />
-                    <div className="relative w-16 h-16 rounded-full bg-[#C8A97E] flex items-center justify-center">
-                      <Play className="w-8 h-8 text-black ml-1" />
-                    </div>
-                  </motion.div>
-                </motion.div>
-              )}
-
-              {isPlaying && (
-                <VideoControls
-                  isPlaying={isPlaying}
-                  isMuted={isMuted}
-                  currentTime={currentTime}
-                  duration={duration}
-                  onPlayPause={handlePlayPause}
-                  onMuteToggle={handleMuteToggle}
-                  onSeek={handleSeek}
-                  onFullScreen={handleFullScreen}
-                />
-              )}
-            </div>
-          </motion.div>
-        </motion.div>
-      </div>
-    </section>
+        <AnimatePresence>
+          {showControls && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute top-4 right-4 z-10"
+            >
+              <button
+                onClick={handleMuteToggle}
+                className="p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+              >
+                {isMuted ? (
+                  <VolumeX className="w-5 h-5 text-white" />
+                ) : (
+                  <Volume2 className="w-5 h-5 text-white" />
+                )}
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </motion.div>
+    </div>
   )
 } 

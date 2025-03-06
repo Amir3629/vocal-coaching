@@ -22,28 +22,22 @@ export default function ContactForm() {
 
   return (
     <>
-      <section id="contact" className="relative py-20">
+      <section id="contact" className="relative min-h-screen py-20">
+        {/* Background Image */}
         <div className="absolute inset-0">
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="relative h-[600px] rounded-lg overflow-hidden"
-          >
-            <Image
-              src="/vocal-coaching-website/images/backgrounds/hero-bg.jpg"
-              alt="Contact background"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
-          </motion.div>
-          <div className="absolute inset-0 bg-gradient-to-br from-black/90 via-black/80 to-black/70" />
+          <Image
+            src="/images/contact/background.jpg"
+            alt="Contact Background"
+            fill
+            className="object-cover"
+            sizes="100vw"
+            priority
+          />
+          <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]"></div>
         </div>
-        
-        <div className="container relative z-10 max-w-4xl mx-auto px-4">
+
+        {/* Content */}
+        <div className="relative z-10 container mx-auto px-4">
           <motion.div 
             className="text-center mb-12"
             initial={{ opacity: 0, y: 20 }}
@@ -60,7 +54,7 @@ export default function ContactForm() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-white/5 backdrop-blur-md rounded-2xl p-8 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)]"
+            className="bg-black/40 backdrop-blur-md rounded-2xl p-8 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)]"
           >
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
               <div className="space-y-8">

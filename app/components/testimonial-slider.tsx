@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 import Image from "next/image"
@@ -63,8 +63,20 @@ const testimonials = [
 ]
 
 export default function TestimonialSlider() {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [direction, setDirection] = useState(0)
+  const [page, setPage] = useState(0)
+  const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+
+  useEffect(() => {
+    if (isAutoPlaying) {
+      const interval = setInterval(() => {
+        paginate(1);
+      }, 5000); // Changed to 5000ms (5 seconds)
+      return () => clearInterval(interval);
+    }
+  }, [isAutoPlaying]);
+
+  const handleMouseEnter = () => setIsAutoPlaying(false);
+  const handleMouseLeave = () => setIsAutoPlaying(true);
 
   const slideVariants = {
     enter: (direction: number) => ({
@@ -88,22 +100,33 @@ export default function TestimonialSlider() {
 
   const swipeConfidenceThreshold = 10000
   const swipePower = (offset: number, velocity: number) => {
-    return Math.abs(offset) * velocity
-  }
+    return Math.abs(offset) * velocity;
+  };
 
   const paginate = (newDirection: number) => {
-    setDirection(newDirection)
-    setCurrentIndex((prevIndex) => (prevIndex + newDirection + testimonials.length) % testimonials.length)
-  }
+    setPage((prevPage) => {
+      let nextPage = prevPage + newDirection;
+      if (nextPage < 0) nextPage = testimonials.length - 1;
+      if (nextPage >= testimonials.length) nextPage = 0;
+      return nextPage;
+    });
+  };
+
+  // Get the current testimonial safely
+  const currentTestimonial = testimonials[Math.abs(page % testimonials.length)];
 
   return (
-    <section className="w-full py-20">
+    <div 
+      className="relative w-full max-w-4xl mx-auto overflow-hidden"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
       <div className="container mx-auto px-4">
         <div className="relative max-w-3xl mx-auto">
-          <AnimatePresence initial={false} custom={direction} mode="wait">
+          <AnimatePresence initial={false} custom={page} mode="wait">
             <motion.div
-              key={currentIndex}
-              custom={direction}
+              key={page}
+              custom={page}
               variants={slideVariants}
               initial="enter"
               animate="center"
@@ -115,27 +138,25 @@ export default function TestimonialSlider() {
               }}
               className="relative"
             >
-              <div className="bg-[#0A0A0A]/40 backdrop-blur-md rounded-2xl p-8 md:p-12 transition-all duration-300">
+              <div className="bg-black rounded-2xl p-8 md:p-12 transition-all duration-300 border border-[#C8A97E]/10">
                 <div className="flex flex-col items-center text-center">
                   <div className="relative w-32 h-32 mb-8">
                     <div className="absolute inset-0 bg-gradient-radial from-[#C8A97E]/20 to-transparent rounded-full blur-2xl"></div>
                     <Image
-                      src={testimonials[currentIndex].image || "/vocal-coaching-website/images/placeholder.jpg"}
-                      alt={testimonials[currentIndex].name}
+                      src={currentTestimonial.image}
+                      alt={currentTestimonial.name}
                       fill
                       className="object-cover rounded-full ring-2 ring-[#C8A97E]/20"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                      priority
                     />
                   </div>
                   <div className="max-w-2xl mx-auto">
                     <p className="text-gray-300 text-lg md:text-xl italic mb-6">
-                      "{testimonials[currentIndex].text}"
+                      "{currentTestimonial.text}"
                     </p>
                     <div className="flex items-center justify-center gap-3">
                       <span className="w-8 h-[1px] bg-[#C8A97E]/50"></span>
                       <p className="text-[#C8A97E] font-medium">
-                        {testimonials[currentIndex].name}
+                        {currentTestimonial.name}
                       </p>
                       <span className="w-8 h-[1px] bg-[#C8A97E]/50"></span>
                     </div>
@@ -145,39 +166,48 @@ export default function TestimonialSlider() {
             </motion.div>
           </AnimatePresence>
 
-          {/* Bottom Navigation */}
-          <div className="mt-8 flex items-center justify-center gap-4">
-            <button
-              onClick={() => paginate(-1)}
-              className="w-10 h-10 bg-[#0A0A0A] rounded-full flex items-center justify-center border border-[#C8A97E]/20 text-white/80"
-            >
-              <ChevronLeft className="w-5 h-5" />
-            </button>
-
-            <div className="flex items-center gap-2">
-              {testimonials.map((_, index) => (
+          {/* Navigation Container */}
+          <div className="absolute inset-0 pointer-events-none">
+            {/* Desktop Navigation */}
+            <div className="hidden md:block h-full">
+              <div className="absolute top-1/2 -translate-y-1/2 -left-16">
                 <button
-                  key={index}
-                  onClick={() => {
-                    setDirection(index > currentIndex ? 1 : -1);
-                    setCurrentIndex(index);
-                  }}
-                  className={`w-2 h-2 rounded-full transition-colors ${
-                    index === currentIndex ? "bg-[#C8A97E]" : "bg-[#C8A97E]/20"
-                  }`}
-                />
-              ))}
+                  onClick={() => paginate(-1)}
+                  className="w-12 h-12 rounded-full bg-[#0A0A0A]/80 border border-[#C8A97E]/20 flex items-center justify-center text-white/80 pointer-events-auto"
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+              </div>
+
+              <div className="absolute top-1/2 -translate-y-1/2 -right-16">
+                <button
+                  onClick={() => paginate(1)}
+                  className="w-12 h-12 rounded-full bg-[#0A0A0A]/80 border border-[#C8A97E]/20 flex items-center justify-center text-white/80 pointer-events-auto"
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
+              </div>
             </div>
 
-            <button
-              onClick={() => paginate(1)}
-              className="w-10 h-10 bg-[#0A0A0A] rounded-full flex items-center justify-center border border-[#C8A97E]/20 text-white/80"
-            >
-              <ChevronRight className="w-5 h-5" />
-            </button>
+            {/* Mobile Navigation */}
+            <div className="md:hidden absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4">
+              <button
+                onClick={() => paginate(-1)}
+                className="w-10 h-10 rounded-full bg-[#0A0A0A]/80 border border-[#C8A97E]/20 flex items-center justify-center text-white/80 pointer-events-auto"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              
+              <button
+                onClick={() => paginate(1)}
+                className="w-10 h-10 rounded-full bg-[#0A0A0A]/80 border border-[#C8A97E]/20 flex items-center justify-center text-white/80 pointer-events-auto"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   )
 } 

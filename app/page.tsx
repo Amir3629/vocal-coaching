@@ -19,7 +19,6 @@ import MusicNotes from "@/app/components/music-notes-animation"
 import ContactForm from "@/app/components/contact-form"
 import BookingModal from "@/app/components/booking-modal"
 import Collaborations from "@/app/components/collaborations"
-import { getImageUrl } from "@/lib/config"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -104,9 +103,9 @@ export default function Home() {
       {/* Hero Section with Parallax Piano Background */}
       <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
         <ParallaxBackground 
-          imageUrl={getImageUrl("images/gallery/performance1.jpg")}
-          opacity={0.4}
-          speed={0.5}
+          imageUrl="/images/backgrounds/hero-bg.jpg"
+          opacity={0.3}
+          speed={0.3}
         />
 
         <motion.div 
@@ -171,7 +170,7 @@ export default function Home() {
       </section>
 
       {/* Music Preview Section */}
-      <section className="py-20 px-4 bg-[#0A0A0A]">
+      <section className="py-20 px-4 bg-[#080505]">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             className="text-center mb-16"
@@ -188,7 +187,7 @@ export default function Home() {
       </section>
 
       {/* Video Preview Section */}
-      <section className="py-20 px-4 bg-[#0A0A0A]">
+      <section className="py-20 px-4 bg-[#080505]">
         <div className="max-w-7xl mx-auto">
           <motion.div 
             className="text-center mb-16"
@@ -252,7 +251,7 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-                image={getImageUrl("images/gallery/performance2.jpg")}
+              image="/images/services/private-lessons.jpg"
               delay={0.1}
             />
             
@@ -270,9 +269,9 @@ export default function Home() {
               details={{
                 includes: [
                   "Gehörbildung & Rhythmustraining",
-                    "Harmonische Konzepte",
+                  "Harmonische Konzepte",
                   "Improvisationsübungen",
-                    "Aufnahmen der Sessions"
+                  "Aufnahmen der Sessions"
                 ],
                 suitable: [
                   "Sänger mit Vorkenntnissen",
@@ -283,8 +282,8 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-                image={getImageUrl("images/gallery/performance3.jpg")}
-                delay={0.2}
+              image="/images/services/performance.jpg"
+              delay={0.2}
             />
             
             <ServiceCard 
@@ -294,59 +293,59 @@ export default function Home() {
               price="Ab €75/Stunde"
               features={[
                 "Mikrophon-Technik",
-                  "Bühnenpräsenz",
+                "Bühnenpräsenz",
                 "Publikumsverbindung",
                 "Umgang mit Auftrittsangst"
               ]}
               details={{
                 includes: [
                   "Analyse Ihrer Bühnenpräsenz",
-                    "Performance-Persona",
+                  "Performance-Persona",
                   "Umgang mit Lampenfieber",
-                    "Publikumsinteraktion"
+                  "Publikumsinteraktion"
                 ],
                 suitable: [
                   "Sänger vor Auftritten",
                   "Schauspieler",
                   "Redner",
-                    "Performer"
+                  "Performer"
                 ],
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-                image={getImageUrl("images/gallery/performance4.jpg")}
-                delay={0.3}
+              image="/images/services/workshop.jpg"
+              delay={0.3}
             />
             
             <ServiceCard 
               title="Piano/Vocal-Koordination"
-                description="Erlernen Sie sich beim Singen selbst zu begleiten."
+              description="Erlernen Sie sich beim Singen selbst zu begleiten."
               icon={<BookOpen />}
               price="Ab €80/Stunde"
               features={[
                 "Grundlegende Klaviertechnik",
                 "Vokale Unabhängigkeit",
-                  "Jazz-Akkorde",
+                "Jazz-Akkorde",
                 "Arrangementsfähigkeiten"
               ]}
               details={{
                 includes: [
-                    "Klavierbegleitung",
+                  "Klavierbegleitung",
                   "Akkordlehre für Sänger",
-                    "Timing-Übungen",
-                    "Song-Arrangement"
+                  "Timing-Übungen",
+                  "Song-Arrangement"
                 ],
                 suitable: [
-                    "Sänger am Klavier",
-                    "Pianisten mit Gesang",
+                  "Sänger am Klavier",
+                  "Pianisten mit Gesang",
                   "Songwriter",
-                    "Musiker"
+                  "Musiker"
                 ],
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-                image={getImageUrl("images/gallery/performance5.jpg")}
-                delay={0.4}
+              image="/images/services/piano.jpg"
+              delay={0.4}
             />
           </div>
           

@@ -74,7 +74,7 @@ input:focus, textarea:focus {
   }
   body {
     @apply bg-background text-foreground;
-    background-color: #0A0A0A;
+    background-color: #080404;
     color: white;
     overflow-x: hidden;
   }
@@ -116,6 +116,22 @@ input:focus, textarea:focus {
 
   .section-spacing {
     @apply py-20 px-4 md:py-32;
+  }
+
+  .fixed-nav-button {
+    position: fixed !important;
+    transform: translateY(-50%) !important;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    perspective: 1000;
+    -webkit-perspective: 1000;
+    will-change: transform;
+    transition: transform 0.3s ease !important;
+  }
+
+  .fixed-nav-button:hover {
+    transform: translateY(-50%) scale(1.1) !important;
   }
 }
 
