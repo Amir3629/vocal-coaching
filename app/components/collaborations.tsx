@@ -2,7 +2,7 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 
 const collaborations = [
   {
@@ -49,17 +49,47 @@ const collaborations = [
 
 export default function Collaborations() {
   const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
+  const [loadedImages, setLoadedImages] = useState<{[key: string]: boolean}>({})
+  const imageRefs = useRef<{[key: string]: HTMLImageElement | null}>({})
 
   const handleImageError = (name: string) => {
     console.error(`Failed to load logo for ${name}`)
+    console.error('Current image path:', collaborations.find(c => c.name === name)?.logo)
     setImageErrors(prev => ({ ...prev, [name]: true }))
   }
 
+  const handleImageLoad = (name: string) => {
+    console.log(`Successfully loaded logo for ${name}`)
+    setLoadedImages(prev => ({ ...prev, [name]: true }))
+    
+    // Debug: Log computed styles
+    const img = imageRefs.current[name]
+    if (img) {
+      const styles = window.getComputedStyle(img)
+      console.log(`Styles for ${name}:`, {
+        fill: styles.fill,
+        color: styles.color,
+        filter: styles.filter,
+        opacity: styles.opacity
+      })
+    }
+  }
+
   useEffect(() => {
-    // Log the environment and image paths for debugging
+    // Debug logging
     console.log('Environment:', process.env.NODE_ENV)
+    console.log('Base Path:', process.env.NEXT_PUBLIC_BASE_PATH)
+    
     collaborations.forEach(collab => {
       console.log(`${collab.name} logo path:`, collab.logo)
+    })
+
+    // Check if images are cached
+    collaborations.forEach(collab => {
+      const img = new Image()
+      img.src = collab.logo
+      img.onload = () => console.log(`${collab.name} logo is cached`)
+      img.onerror = () => console.log(`${collab.name} logo is not cached or failed to load`)
     })
   }, [])
 
@@ -76,6 +106,13 @@ export default function Collaborations() {
           <h2 className="section-heading mb-4">Partner & Kooperationen</h2>
           <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
+
+        {/* Debug info */}
+        <div className="text-white text-xs mb-4 opacity-50">
+          <p>Environment: {process.env.NODE_ENV}</p>
+          <p>Loaded images: {Object.keys(loadedImages).filter(k => loadedImages[k]).length}</p>
+          <p>Error images: {Object.keys(imageErrors).filter(k => imageErrors[k]).length}</p>
+        </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center max-w-6xl mx-auto">
           {collaborations.map((collab, index) => (
@@ -100,16 +137,20 @@ export default function Collaborations() {
                     {imageErrors[collab.name] ? (
                       <div className="w-full h-full flex items-center justify-center text-[#C8A97E] text-sm text-center p-2">
                         {collab.name}
+                        <br />
+                        <span className="text-xs opacity-50">Failed to load</span>
                       </div>
                     ) : (
-                      <div className="text-white">
+                      <div className="text-white [&_svg]:text-white [&_svg]:fill-white [&_svg]:stroke-white">
                         <Image
+                          ref={el => imageRefs.current[collab.name] = el}
                           src={collab.logo}
                           alt={collab.name}
                           fill
-                          className="object-contain transition-all duration-500 relative z-10 opacity-70 group-hover:opacity-100 group-hover:brightness-125 [&>*]:fill-white [&>*]:stroke-white"
+                          className="object-contain transition-all duration-500 relative z-10 opacity-70 group-hover:opacity-100 group-hover:brightness-125"
                           sizes="(max-width: 768px) 40vw, 20vw"
                           onError={() => handleImageError(collab.name)}
+                          onLoad={() => handleImageLoad(collab.name)}
                         />
                       </div>
                     )}
