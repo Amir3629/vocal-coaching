@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -25,18 +25,18 @@ jobs:
         with:
           node-version: "20"
           cache: npm
-      - name: Setup Pages
-        uses: actions/configure-pages@v4
-        with:
-          static_site_generator: next
       - name: Install dependencies
         run: npm ci
       - name: Build with Next.js
         run: npm run build
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
+      - name: Add .nojekyll file
+        run: touch ./out/.nojekyll
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4
         with:
-          path: ./out
+          folder: out
+          branch: gh-pages
+          clean: true
 
   deploy:
     environment:
