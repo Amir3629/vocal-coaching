@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const https = require('https');
 
 const requiredImages = {
   'public/images/backgrounds/hero-bg.jpg': 'Hero background',
@@ -12,6 +13,33 @@ const requiredImages = {
   'public/images/testimonials/anna.jpg': 'Anna testimonial',
   'public/favicon.ico': 'Favicon'
 };
+
+const imagePaths = [
+  // Gallery images
+  '/vocal-coaching/images/gallery/performance1.jpg',
+  '/vocal-coaching/images/gallery/performance2.jpg',
+  '/vocal-coaching/images/gallery/performance3.jpg',
+  '/vocal-coaching/images/gallery/performance4.jpg',
+  '/vocal-coaching/images/gallery/performance5.jpg',
+  '/vocal-coaching/images/gallery/performance6.jpg',
+  '/vocal-coaching/images/gallery/performance7.jpg',
+  '/vocal-coaching/images/gallery/performance8.jpg',
+  '/vocal-coaching/images/gallery/performance9.jpg',
+  
+  // Collaboration logos
+  '/vocal-coaching/images/collaborations/bflat.svg',
+  '/vocal-coaching/images/collaborations/cvi.svg',
+  '/vocal-coaching/images/collaborations/jib.svg',
+  '/vocal-coaching/images/collaborations/philharmonie.svg',
+  
+  // Service images
+  '/vocal-coaching/images/services/private-lessons.jpg',
+  '/vocal-coaching/images/services/performance.jpg',
+  '/vocal-coaching/images/services/workshop.jpg',
+  '/vocal-coaching/images/services/piano.jpg'
+];
+
+const baseUrl = 'https://amir3629.github.io';
 
 // Create directories if they don't exist
 function ensureDirectoryExists(filePath) {
@@ -63,4 +91,33 @@ Object.entries(requiredImages).forEach(([filePath, label]) => {
   } else {
     console.log(`Found: ${filePath}`);
   }
-}); 
+});
+
+async function checkImage(path) {
+  return new Promise((resolve) => {
+    const url = baseUrl + path;
+    https.get(url, (res) => {
+      console.log(`${path}: ${res.statusCode === 200 ? '✅ OK' : '❌ Failed'} (${res.statusCode})`);
+      resolve(res.statusCode === 200);
+    }).on('error', (err) => {
+      console.log(`${path}: ❌ Error - ${err.message}`);
+      resolve(false);
+    });
+  });
+}
+
+async function checkAllImages() {
+  console.log('Checking image accessibility on GitHub Pages...\n');
+  
+  const results = await Promise.all(imagePaths.map(checkImage));
+  
+  const successful = results.filter(Boolean).length;
+  const total = imagePaths.length;
+  
+  console.log(`\nSummary:`);
+  console.log(`✅ ${successful} images accessible`);
+  console.log(`❌ ${total - successful} images not accessible`);
+  console.log(`Total: ${total} images checked`);
+}
+
+checkAllImages(); 

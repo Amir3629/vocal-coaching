@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
@@ -125,6 +125,18 @@ export default function GallerySection() {
     }, 300)
   }
 
+  const handleKeyDown = (e: KeyboardEvent) => {
+    if (!selectedImage) return
+    if (e.key === 'ArrowRight') handleNext(e as unknown as React.MouseEvent)
+    if (e.key === 'ArrowLeft') handlePrev(e as unknown as React.MouseEvent)
+    if (e.key === 'Escape') handleClose()
+  }
+
+  useEffect(() => {
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [selectedImage])
+
   return (
     <section id="gallery" className="relative py-20 bg-[#000000]">
       <div className="container mx-auto px-4">
@@ -151,11 +163,14 @@ export default function GallerySection() {
               onClick={() => handleImageClick(image)}
             >
               <div className="relative aspect-square">
-                <img
+                <Image
                   src={image.src}
                   alt={image.alt}
-                  className="w-full h-full object-cover rounded-lg"
+                  fill
+                  className="object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                 />
+                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
               </div>
             </motion.div>
           ))}
@@ -165,71 +180,73 @@ export default function GallerySection() {
       <AnimatePresence>
         {selectedImage && (
           <motion.div
-            initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-            animate={{ 
-              opacity: 1,
-              backdropFilter: "blur(20px)",
-              transition: { duration: 0.5, ease: "easeInOut" }
-            }}
-            exit={{ 
-              opacity: 0,
-              backdropFilter: "blur(0px)",
-              transition: { duration: 0.3, ease: "easeInOut" }
-            }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95"
             onClick={handleClose}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/90"
           >
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ 
-                scale: 1,
-                opacity: 1,
-                transition: { duration: 0.4, ease: "easeOut" }
-              }}
-              exit={{ 
-                scale: 0.9,
-                opacity: 0,
-                transition: { duration: 0.3, ease: "easeIn" }
-              }}
-              className="relative max-w-[90vw] max-h-[90vh] rounded-lg overflow-hidden"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="relative h-[80vh]">
-                <img
-                  src={selectedImage.src}
-                  alt={selectedImage.alt}
-                  className="w-full h-full object-contain"
-                />
-              </div>
-              
-              <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#000000]/90 via-[#000000]/50 to-transparent">
-                <p className="text-white text-xl font-medium">{selectedImage.description}</p>
-                <p className="text-[#C8A97E] text-sm mt-2">{selectedImage.date} • {selectedImage.location}</p>
-              </div>
-            </motion.div>
+            <div className="relative w-full h-full flex items-center justify-center p-4">
+              <motion.div
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.3 }}
+                className="relative max-w-7xl w-full h-[80vh] flex flex-col items-center justify-center"
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className="relative w-full h-full">
+                  <Image
+                    src={selectedImage.src}
+                    alt={selectedImage.alt}
+                    fill
+                    className="object-contain"
+                    sizes="100vw"
+                    priority
+                  />
+                </div>
 
-            {/* Navigation buttons - Outside the image frame */}
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={(e) => handlePrev(e)}
-              className="fixed left-8 top-1/2 -translate-y-1/2 z-50 bg-[#C8A97E] hover:bg-[#B89A6F] text-black p-3 rounded-full transition-colors"
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-              </svg>
-            </motion.button>
+                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/50 to-transparent">
+                  <div className="max-w-3xl mx-auto">
+                    <h3 className="text-white text-xl font-medium mb-2">{selectedImage.description}</h3>
+                    <p className="text-[#C8A97E] text-sm">{selectedImage.date} • {selectedImage.location}</p>
+                  </div>
+                </div>
 
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={(e) => handleNext(e)}
-              className="fixed right-8 top-1/2 -translate-y-1/2 z-50 bg-[#C8A97E] hover:bg-[#B89A6F] text-black p-3 rounded-full transition-colors"
-            >
-              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-              </svg>
-            </motion.button>
+                {/* Navigation Arrows */}
+                <button
+                  onClick={handlePrev}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#C8A97E] text-black hover:bg-[#B89A6F] transition-colors"
+                  aria-label="Previous image"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+
+                <button
+                  onClick={handleNext}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#C8A97E] text-black hover:bg-[#B89A6F] transition-colors"
+                  aria-label="Next image"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+
+                {/* Close button */}
+                <button
+                  onClick={handleClose}
+                  className="absolute top-4 right-4 p-2 text-white hover:text-[#C8A97E] transition-colors"
+                  aria-label="Close gallery"
+                >
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>

@@ -24,31 +24,28 @@ export default function ContactForm() {
     <>
       <section id="contact" className="relative min-h-screen py-20">
         {/* Background Image */}
-        <div className="absolute inset-0">
+        <div className="absolute inset-0 z-0">
           <Image
-            src={process.env.NODE_ENV === 'production' 
-              ? '/vocal-coaching/images/contact/background.jpg'
-              : '/images/contact/background.jpg'}
+            src="/vocal-coaching/images/backgrounds/contact-bg.jpg"
             alt="Contact Background"
             fill
             className="object-cover"
-            sizes="100vw"
             priority
           />
-          <div className="absolute inset-0 bg-black/75 backdrop-blur-[2px]"></div>
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
         </div>
 
         {/* Content */}
-        <div className="relative z-10 container mx-auto px-4">
+        <div className="container mx-auto px-4 relative z-10">
           <motion.div 
-            className="text-center mb-12"
+            className="text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
             <h2 className="section-heading mb-4">Kontakt</h2>
-            <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
+            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
 
           <motion.div

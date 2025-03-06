@@ -46,29 +46,36 @@ export default function ServiceCard({ title, description, icon, price, features,
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay }}
-      className="relative overflow-hidden rounded-xl h-full p-6"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      className="relative overflow-hidden rounded-xl h-full"
     >
-      <div className="absolute inset-0">
+      {/* Background container */}
+      <div className="absolute inset-0 w-full h-full">
         {!imageError ? (
-          <Image
-            src={processedImageUrl}
-            alt={title}
-            fill
-            className="object-cover transform scale-110"
-            quality={60}
-            sizes="(max-width: 768px) 100vw, 25vw"
-            onError={handleImageError}
-            onLoad={handleImageLoad}
-          />
+          <div className="relative w-full h-full">
+            <Image
+              src={processedImageUrl}
+              alt={title}
+              fill
+              className="object-cover transform scale-125 transition-transform duration-700"
+              quality={90}
+              sizes="(max-width: 768px) 100vw, 25vw"
+              onError={handleImageError}
+              onLoad={handleImageLoad}
+              priority
+            />
+            <div className="absolute inset-0 bg-black/75 backdrop-blur-xl" />
+          </div>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800" />
         )}
-        <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
       </div>
 
-      <div className="relative z-10">
+      {/* Content */}
+      <div 
+        className="relative z-10 p-6 h-full"
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+      >
         <div className="flex items-center justify-between mb-4">
           <div className="p-2 rounded-lg bg-[#C8A97E]/20 text-[#C8A97E]">
             {icon}
