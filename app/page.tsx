@@ -222,13 +222,7 @@ export default function Home() {
 
       {/* Services Section */}
       <section id="services" className="relative w-full min-h-screen bg-black py-16">
-        <ParallaxBackground
-          imageUrl={process.env.NODE_ENV === 'production'
-            ? "/vocal-coaching/images/backgrounds/services-bg.jpg"
-            : "/images/backgrounds/services-bg.jpg"}
-          opacity={0.2}
-          speed={0.2}
-        />
+        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black"></div>
         <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             className="text-center mb-16"
@@ -248,16 +242,25 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="group relative overflow-hidden rounded-xl"
+              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm"
             >
-              <div className="absolute inset-0">
+              <div className="absolute inset-0 w-full h-full">
                 <Image
-                  src={process.env.NODE_ENV === 'production'
-                    ? "/vocal-coaching/images/services/studio.jpg"
-                    : "/images/services/studio.jpg"}
+                  src="/images/services/studio.jpg"
                   alt="Private Lessons"
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  priority
+                  onError={(e) => {
+                    console.error('Error loading image:', e);
+                    const target = e.target as HTMLImageElement;
+                    target.style.opacity = '0';
+                  }}
+                  onLoad={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.opacity = '1';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
               </div>
@@ -305,16 +308,25 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="group relative overflow-hidden rounded-xl"
+              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm"
             >
-              <div className="absolute inset-0">
+              <div className="absolute inset-0 w-full h-full">
                 <Image
-                  src={process.env.NODE_ENV === 'production'
-                    ? "/vocal-coaching/images/services/jazz.jpg"
-                    : "/images/services/jazz.jpg"}
+                  src="/images/services/jazz.jpg"
                   alt="Jazz Improvisation"
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  priority
+                  onError={(e) => {
+                    console.error('Error loading image:', e);
+                    const target = e.target as HTMLImageElement;
+                    target.style.opacity = '0';
+                  }}
+                  onLoad={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.opacity = '1';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
               </div>
@@ -362,16 +374,25 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="group relative overflow-hidden rounded-xl"
+              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm"
             >
-              <div className="absolute inset-0">
+              <div className="absolute inset-0 w-full h-full">
                 <Image
-                  src={process.env.NODE_ENV === 'production'
-                    ? "/vocal-coaching/images/services/performance.jpg"
-                    : "/images/services/performance.jpg"}
+                  src="/images/services/performance.jpg"
                   alt="Performance Coaching"
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  priority
+                  onError={(e) => {
+                    console.error('Error loading image:', e);
+                    const target = e.target as HTMLImageElement;
+                    target.style.opacity = '0';
+                  }}
+                  onLoad={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.opacity = '1';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
               </div>
@@ -419,16 +440,25 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="group relative overflow-hidden rounded-xl"
+              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm"
             >
-              <div className="absolute inset-0">
+              <div className="absolute inset-0 w-full h-full">
                 <Image
-                  src={process.env.NODE_ENV === 'production'
-                    ? "/vocal-coaching/images/services/piano.jpg"
-                    : "/images/services/piano.jpg"}
+                  src="/images/services/piano.jpg"
                   alt="Piano/Vocal Coordination"
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  priority
+                  onError={(e) => {
+                    console.error('Error loading image:', e);
+                    const target = e.target as HTMLImageElement;
+                    target.style.opacity = '0';
+                  }}
+                  onLoad={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.opacity = '1';
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
               </div>
