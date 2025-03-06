@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "check-images": "node scripts/check-images.js",
-    "deploy": "next build && touch out/.nojekyll && gh-pages -d out"
+    "deploy": "next build && type nul > out/.nojekyll && gh-pages -d out"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
