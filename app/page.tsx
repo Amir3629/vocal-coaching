@@ -269,7 +269,7 @@ export default function Home() {
                 duration: "60 oder 90 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image="/images/services/private-lessons.jpg"
+              image="/images/services/studio.jpg"
               delay={0.2}
             />
             <ServiceCard

@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { useState } from "react"
 
 const collaborations = [
   {
@@ -37,6 +38,13 @@ const collaborations = [
 ]
 
 export default function Collaborations() {
+  const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
+
+  const handleImageError = (name: string) => {
+    console.error(`Failed to load logo for ${name}`)
+    setImageErrors(prev => ({ ...prev, [name]: true }))
+  }
+
   return (
     <section className="py-20 bg-black">
       <div className="container mx-auto px-4">
@@ -71,13 +79,20 @@ export default function Collaborations() {
                 </div>
                 <div className="relative w-full h-full flex items-center justify-center">
                   <div className="w-full h-full relative">
-                    <Image
-                      src={collab.logo}
-                      alt={collab.name}
-                      fill
-                      className="object-contain transition-all duration-500 relative z-10 invert opacity-70 group-hover:opacity-100 group-hover:brightness-125"
-                      sizes="(max-width: 768px) 40vw, 20vw"
-                    />
+                    {imageErrors[collab.name] ? (
+                      <div className="w-full h-full flex items-center justify-center text-[#C8A97E] text-sm text-center p-2">
+                        {collab.name}
+                      </div>
+                    ) : (
+                      <Image
+                        src={collab.logo}
+                        alt={collab.name}
+                        fill
+                        className="object-contain transition-all duration-500 relative z-10 invert opacity-70 group-hover:opacity-100 group-hover:brightness-125"
+                        sizes="(max-width: 768px) 40vw, 20vw"
+                        onError={() => handleImageError(collab.name)}
+                      />
+                    )}
                   </div>
                 </div>
               </div>
