@@ -120,14 +120,36 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 20 }}
                         transition={{ duration: 0.3 }}
+                        className="space-y-6"
                       >
+                        <div className="mb-6">
+                          <input
+                            type="text"
+                            placeholder="Ihr Name"
+                            value={formData.name}
+                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                            className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all"
+                          />
+                        </div>
+
                         <div className="grid grid-cols-2 gap-4">
                           {services.map((service) => (
                             <motion.button
                               key={service.id}
                               onClick={() => {
-                                setSelectedService(service.id)
-                                setStep(2)
+                                if (formData.name.trim()) {
+                                  setSelectedService(service.id)
+                                  setStep(2)
+                                } else {
+                                  // Add visual feedback for empty name
+                                  const input = document.querySelector('input[type="text"]') as HTMLInputElement
+                                  if (input) {
+                                    input.classList.add('border-red-500', 'animate-shake')
+                                    setTimeout(() => {
+                                      input.classList.remove('border-red-500', 'animate-shake')
+                                    }, 1000)
+                                  }
+                                }
                               }}
                               className={`p-4 rounded-lg border text-left transition-all ${
                                 selectedService === service.id
@@ -229,13 +251,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                           <div className="space-y-4">
                             <input
-                              type="text"
-                              placeholder="Name"
-                              value={formData.name}
-                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                              className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all"
-                            />
-                            <input
                               type="email"
                               placeholder="Email"
                               value={formData.email}
@@ -271,7 +286,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   </AnimatePresence>
 
                   {showSuccess && (
-                    <SuccessMessage onClose={resetAndClose} />
+                    <SuccessMessage 
+                      onClose={resetAndClose}
+                      title="Buchung erfolgreich!"
+                      message={`Vielen Dank für Ihre Buchung, ${formData.name}! Wir werden uns in Kürze bei Ihnen melden.`}
+                      isOpen={showSuccess}
+                    />
                   )}
                 </div>
               </motion.div>

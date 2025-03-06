@@ -2,7 +2,7 @@
 
 import { useRef, useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { VolumeX, Volume2 } from "lucide-react"
+import { VolumeX, Volume2, Play, Pause } from "lucide-react"
 
 export default function VideoPreview() {
   const videoRef = useRef<HTMLVideoElement>(null)
@@ -26,6 +26,10 @@ export default function VideoPreview() {
     const handleLoadedData = () => {
       setIsLoading(false)
       console.log('Video loaded successfully')
+      // Try to play the video if it's supposed to be playing
+      if (isPlaying && !video.playing) {
+        video.play().catch(console.error)
+      }
     }
 
     const handleError = (e: Event) => {
@@ -39,55 +43,20 @@ export default function VideoPreview() {
     video.addEventListener('loadeddata', handleLoadedData)
     video.addEventListener('error', handleError)
 
+    // Set initial source
+    const videoPath = process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/videos/preview.mp4"
+      : "/videos/preview.mp4"
+    
+    video.src = videoPath
+    video.load()
+
     return () => {
       video.removeEventListener('loadstart', handleLoadStart)
       video.removeEventListener('loadeddata', handleLoadedData)
       video.removeEventListener('error', handleError)
     }
-  }, [])
-
-  // Initial setup
-  useEffect(() => {
-    const video = videoRef.current
-    if (!video) return
-
-    video.muted = true // Ensure video is muted initially
-    
-    const playVideo = async () => {
-      try {
-        if (hasInteracted) {
-          await video.play()
-          setIsPlaying(true)
-        }
-      } catch (error) {
-        console.log("Video playback prevented:", error)
-        setIsPlaying(false)
-        setHasError(true)
-      }
-    }
-
-    const handleLoadedData = () => {
-      setIsLoading(false)
-    }
-
-    const handleError = () => {
-      console.error('Video failed to load')
-      setHasError(true)
-      setIsLoading(false)
-    }
-
-    video.addEventListener('loadeddata', handleLoadedData)
-    video.addEventListener('error', handleError)
-
-    if (hasInteracted) {
-      playVideo()
-    }
-
-    return () => {
-      video.removeEventListener('loadeddata', handleLoadedData)
-      video.removeEventListener('error', handleError)
-    }
-  }, [hasInteracted])
+  }, [isPlaying])
 
   // Handle video end
   useEffect(() => {
@@ -119,20 +88,27 @@ export default function VideoPreview() {
     }
   }, [isPlaying])
 
-  const handleVideoClick = () => {
+  const handleVideoClick = async () => {
     const video = videoRef.current
     if (!video) return
 
     setHasInteracted(true)
     
-    if (!isPlaying) {
-      video.currentTime = 0
-      video.play()
-      setIsPlaying(true)
-      setIsExpanded(true)
-    } else {
-      video.pause()
-      setIsPlaying(false)
+    try {
+      if (!isPlaying) {
+        setIsLoading(true)
+        await video.play()
+        setIsPlaying(true)
+        setIsExpanded(true)
+      } else {
+        await video.pause()
+        setIsPlaying(false)
+      }
+    } catch (error) {
+      console.error("Video playback error:", error)
+      setHasError(true)
+    } finally {
+      setIsLoading(false)
     }
   }
 
@@ -148,9 +124,9 @@ export default function VideoPreview() {
   }
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
+    <div className="w-full max-w-4xl mx-auto">
       <motion.div 
-        className="relative rounded-xl overflow-hidden cursor-pointer bg-[#080505]"
+        className="relative rounded-xl overflow-hidden cursor-pointer bg-[#080505] group"
         initial={{ scale: 0.7 }}
         animate={{ 
           scale: isExpanded ? 1 : 0.7
@@ -171,24 +147,18 @@ export default function VideoPreview() {
               <div className="text-center">
                 <p>Sorry, the video is currently unavailable.</p>
                 <p className="text-sm mt-2">Please try again later.</p>
-                <p className="text-xs mt-1 text-gray-500">Error loading video from: {process.env.NODE_ENV === 'production'
-                  ? "/vocal-coaching/videos/preview.mp4"
-                  : "/videos/preview.mp4"}</p>
               </div>
             </div>
           ) : (
             <div className="absolute inset-0">
               {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#080505]">
+                <div className="absolute inset-0 flex items-center justify-center bg-[#080505] z-10">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#C8A97E]"></div>
                 </div>
               )}
               <video
                 ref={videoRef}
                 className={`w-full h-full object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-                src={process.env.NODE_ENV === 'production'
-                  ? "/vocal-coaching/videos/preview.mp4"
-                  : "/videos/preview.mp4"}
                 playsInline
                 muted={isMuted}
                 preload="auto"
@@ -200,6 +170,23 @@ export default function VideoPreview() {
                   backgroundColor: '#080505'
                 }}
               />
+
+              {/* Play/Pause Overlay */}
+              <div className={`absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity duration-300 ${
+                showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
+              }`}>
+                <motion.button
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                  className="w-16 h-16 rounded-full bg-[#C8A97E]/90 flex items-center justify-center text-black"
+                >
+                  {isPlaying ? (
+                    <Pause className="w-8 h-8" />
+                  ) : (
+                    <Play className="w-8 h-8 ml-1" />
+                  )}
+                </motion.button>
+              </div>
             </div>
           )}
         </div>
