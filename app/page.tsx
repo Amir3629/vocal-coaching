@@ -246,23 +246,14 @@ export default function Home() {
             >
               <div className="absolute inset-0 w-full h-full">
                 <Image
-                  src="/images/services/studio.jpg"
+                  src="/vocal-coaching/images/services/studio.jpg"
                   alt="Private Lessons"
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
-                  onError={(e) => {
-                    console.error('Error loading image:', e);
-                    const target = e.target as HTMLImageElement;
-                    target.style.opacity = '0';
-                  }}
-                  onLoad={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.opacity = '1';
-                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
               </div>
               <div className="relative p-6 flex flex-col h-full min-h-[400px]">
                 <div className="flex items-center gap-4 mb-4">
@@ -273,7 +264,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white">Private Gesangsstunden</h3>
                 <p className="text-gray-300 mb-4">Individueller Unterricht für alle Levels</p>
-                <ul className="space-y-2 mb-8 flex-grow">
+                <ul className="space-y-2 flex-grow">
                   <li className="flex items-center text-gray-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Stimmtechnik & Atemübungen
@@ -291,14 +282,6 @@ export default function Home() {
                     Flexible Terminplanung
                   </li>
                 </ul>
-                <div className="mt-auto">
-                  <Button
-                    className="w-full bg-[#C8A97E] hover:bg-[#B89A6F] text-black"
-                    onClick={() => setIsBookingModalOpen(true)}
-                  >
-                    Jetzt Buchen
-                  </Button>
-                </div>
               </div>
             </motion.div>
 
@@ -312,23 +295,14 @@ export default function Home() {
             >
               <div className="absolute inset-0 w-full h-full">
                 <Image
-                  src="/images/services/jazz.jpg"
+                  src="/vocal-coaching/images/services/jazz.jpg"
                   alt="Jazz Improvisation"
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
-                  onError={(e) => {
-                    console.error('Error loading image:', e);
-                    const target = e.target as HTMLImageElement;
-                    target.style.opacity = '0';
-                  }}
-                  onLoad={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.opacity = '1';
-                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
               </div>
               <div className="relative p-6 flex flex-col h-full min-h-[400px]">
                 <div className="flex items-center gap-4 mb-4">
@@ -339,7 +313,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white">Jazz Improvisation</h3>
                 <p className="text-gray-300 mb-4">Entdecke die Kunst des Jazz-Gesangs</p>
-                <ul className="space-y-2 mb-8 flex-grow">
+                <ul className="space-y-2 flex-grow">
                   <li className="flex items-center text-gray-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Scat-Gesang
@@ -357,14 +331,6 @@ export default function Home() {
                     Jazz-Standards
                   </li>
                 </ul>
-                <div className="mt-auto">
-                  <Button
-                    className="w-full bg-[#C8A97E] hover:bg-[#B89A6F] text-black"
-                    onClick={() => setIsBookingModalOpen(true)}
-                  >
-                    Jetzt Buchen
-                  </Button>
-                </div>
               </div>
             </motion.div>
 
@@ -378,23 +344,14 @@ export default function Home() {
             >
               <div className="absolute inset-0 w-full h-full">
                 <Image
-                  src="/images/services/performance.jpg"
+                  src="/vocal-coaching/images/services/performance.jpg"
                   alt="Performance Coaching"
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
-                  onError={(e) => {
-                    console.error('Error loading image:', e);
-                    const target = e.target as HTMLImageElement;
-                    target.style.opacity = '0';
-                  }}
-                  onLoad={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.opacity = '1';
-                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
               </div>
               <div className="relative p-6 flex flex-col h-full min-h-[400px]">
                 <div className="flex items-center gap-4 mb-4">
@@ -405,7 +362,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white">Aufführungs Coaching</h3>
                 <p className="text-gray-300 mb-4">Perfektioniere deine Bühnenpräsenz</p>
-                <ul className="space-y-2 mb-8 flex-grow">
+                <ul className="space-y-2 flex-grow">
                   <li className="flex items-center text-gray-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Bühnenperformance
@@ -423,14 +380,6 @@ export default function Home() {
                     Auftrittsvorbereitung
                   </li>
                 </ul>
-                <div className="mt-auto">
-                  <Button
-                    className="w-full bg-[#C8A97E] hover:bg-[#B89A6F] text-black"
-                    onClick={() => setIsBookingModalOpen(true)}
-                  >
-                    Jetzt Buchen
-                  </Button>
-                </div>
               </div>
             </motion.div>
 
@@ -444,23 +393,14 @@ export default function Home() {
             >
               <div className="absolute inset-0 w-full h-full">
                 <Image
-                  src="/images/services/piano.jpg"
+                  src="/vocal-coaching/images/services/piano.jpg"
                   alt="Piano/Vocal Coordination"
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-110"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
-                  onError={(e) => {
-                    console.error('Error loading image:', e);
-                    const target = e.target as HTMLImageElement;
-                    target.style.opacity = '0';
-                  }}
-                  onLoad={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.opacity = '1';
-                  }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-black/30" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
               </div>
               <div className="relative p-6 flex flex-col h-full min-h-[400px]">
                 <div className="flex items-center gap-4 mb-4">
@@ -471,7 +411,7 @@ export default function Home() {
                 </div>
                 <h3 className="text-xl font-bold mb-3 text-white">Piano/Vocal-Koordination</h3>
                 <p className="text-gray-300 mb-4">Lerne dich selbst zu begleiten</p>
-                <ul className="space-y-2 mb-8 flex-grow">
+                <ul className="space-y-2 flex-grow">
                   <li className="flex items-center text-gray-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Grundlegende Klaviertechnik
@@ -489,14 +429,6 @@ export default function Home() {
                     Song-Arrangements
                   </li>
                 </ul>
-                <div className="mt-auto">
-                  <Button
-                    className="w-full bg-[#C8A97E] hover:bg-[#B89A6F] text-black"
-                    onClick={() => setIsBookingModalOpen(true)}
-                  >
-                    Jetzt Buchen
-                  </Button>
-                </div>
               </div>
             </motion.div>
           </div>
