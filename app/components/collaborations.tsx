@@ -2,46 +2,36 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect } from "react"
 
 const collaborations = [
   {
     name: "CVT Authorised Teacher",
-    logo: process.env.NODE_ENV === 'production' 
-      ? "/vocal-coaching/images/collaborations/cvt-teacher.svg"
-      : "/images/collaborations/cvt-teacher.svg",
+    logo: "/images/collaborations/cvt-teacher.svg",
     link: "https://completevocal.institute",
     isPlaceholder: false
   },
   {
     name: "CVT Deutschland",
-    logo: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/collaborations/cvt-deutschland.svg"
-      : "/images/collaborations/cvt-deutschland.svg",
+    logo: "/images/collaborations/cvt-deutschland.svg",
     link: "https://cvtdeutschland.de",
     isPlaceholder: false
   },
   {
     name: "B-Flat Jazz Club Berlin",
-    logo: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/collaborations/bflat.svg"
-      : "/images/collaborations/bflat.svg",
+    logo: "/images/collaborations/bflat.svg",
     link: "https://b-flat-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Jazz Institut Berlin",
-    logo: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/collaborations/jib.svg"
-      : "/images/collaborations/jib.svg",
+    logo: "/images/collaborations/jib.svg",
     link: "https://www.jazz-institut-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Berliner Philharmonie",
-    logo: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/collaborations/philharmonie.svg"
-      : "/images/collaborations/philharmonie.svg",
+    logo: "/images/collaborations/philharmonie.svg",
     link: "https://www.berliner-philharmoniker.de",
     isPlaceholder: false
   }
@@ -50,29 +40,15 @@ const collaborations = [
 export default function Collaborations() {
   const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
   const [loadedImages, setLoadedImages] = useState<{[key: string]: boolean}>({})
-  const imageRefs = useRef<{[key: string]: HTMLImageElement | null}>({})
 
   const handleImageError = (name: string) => {
     console.error(`Failed to load logo for ${name}`)
-    console.error('Current image path:', collaborations.find(c => c.name === name)?.logo)
     setImageErrors(prev => ({ ...prev, [name]: true }))
   }
 
   const handleImageLoad = (name: string) => {
     console.log(`Successfully loaded logo for ${name}`)
     setLoadedImages(prev => ({ ...prev, [name]: true }))
-    
-    // Debug: Log computed styles
-    const img = imageRefs.current[name]
-    if (img) {
-      const styles = window.getComputedStyle(img)
-      console.log(`Styles for ${name}:`, {
-        fill: styles.fill,
-        color: styles.color,
-        filter: styles.filter,
-        opacity: styles.opacity
-      })
-    }
   }
 
   useEffect(() => {
@@ -81,15 +57,10 @@ export default function Collaborations() {
     console.log('Base Path:', process.env.NEXT_PUBLIC_BASE_PATH)
     
     collaborations.forEach(collab => {
-      console.log(`${collab.name} logo path:`, collab.logo)
-    })
-
-    // Check if images are cached
-    collaborations.forEach(collab => {
-      const img = new Image()
-      img.src = collab.logo
-      img.onload = () => console.log(`${collab.name} logo is cached`)
-      img.onerror = () => console.log(`${collab.name} logo is not cached or failed to load`)
+      const path = process.env.NODE_ENV === 'production'
+        ? `/vocal-coaching${collab.logo}`
+        : collab.logo
+      console.log(`${collab.name} logo path:`, path)
     })
   }, [])
 
@@ -141,17 +112,20 @@ export default function Collaborations() {
                         <span className="text-xs opacity-50">Failed to load</span>
                       </div>
                     ) : (
-                      <div className="text-white [&_svg]:text-white [&_svg]:fill-white [&_svg]:stroke-white">
-                        <Image
-                          ref={el => imageRefs.current[collab.name] = el}
-                          src={collab.logo}
-                          alt={collab.name}
-                          fill
-                          className="object-contain transition-all duration-500 relative z-10 opacity-70 group-hover:opacity-100 group-hover:brightness-125"
-                          sizes="(max-width: 768px) 40vw, 20vw"
+                      <div className="text-white">
+                        <object
+                          data={process.env.NODE_ENV === 'production'
+                            ? `/vocal-coaching${collab.logo}`
+                            : collab.logo}
+                          type="image/svg+xml"
+                          className="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-all duration-500"
                           onError={() => handleImageError(collab.name)}
                           onLoad={() => handleImageLoad(collab.name)}
-                        />
+                        >
+                          <div className="w-full h-full flex items-center justify-center text-[#C8A97E] text-sm">
+                            {collab.name}
+                          </div>
+                        </object>
                       </div>
                     )}
                   </div>
