@@ -29,14 +29,12 @@ jobs:
         run: npm ci
       - name: Build with Next.js
         run: npm run build
-      - name: Add .nojekyll file
-        run: touch ./out/.nojekyll
-      - name: Copy public directory
+      - name: Prepare deployment
         run: |
-          cp -r public/* out/
-          ls -la out/images
-          ls -la out/images/about
-          ls -la out/images/gallery
+          touch out/.nojekyll
+          cp -r public/images out/
+          echo "Verifying image files..."
+          find out/images -type f -name "*.jpg" -o -name "*.png"
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:

@@ -19,14 +19,15 @@ export default function AboutSection() {
             transition={{ duration: 0.8 }}
             className="relative h-[600px] rounded-lg overflow-hidden"
           >
-            <Image
-              src="/images/about/profile.jpg"
-              alt="Melanie Wainwright"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 50vw"
-              priority
-            />
+            <div className="relative w-full h-full">
+              <img
+                src={process.env.NODE_ENV === 'production' 
+                  ? '/vocal-coaching/images/about/profile.jpg'
+                  : '/images/about/profile.jpg'}
+                alt="Melanie Wainwright"
+                className="object-cover w-full h-full"
+              />
+            </div>
           </motion.div>
 
           <motion.div
