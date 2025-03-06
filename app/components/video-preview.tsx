@@ -186,11 +186,15 @@ export default function VideoPreview() {
               <video
                 ref={videoRef}
                 className={`w-full h-full object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-                src="/videos/preview.mp4"
+                src={process.env.NODE_ENV === 'production'
+                  ? "/vocal-coaching/videos/preview.mp4"
+                  : "/videos/preview.mp4"}
                 playsInline
                 muted={isMuted}
                 preload="auto"
-                poster="/videos/preview-poster.jpg"
+                poster={process.env.NODE_ENV === 'production'
+                  ? "/vocal-coaching/videos/preview-poster.jpg"
+                  : "/videos/preview-poster.jpg"}
                 style={{
                   objectFit: 'contain',
                   backgroundColor: '#080505'

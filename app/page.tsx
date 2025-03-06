@@ -257,7 +257,7 @@ export default function Home() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 group-hover:from-black/80 group-hover:via-black/40 group-hover:to-transparent transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60 group-hover:from-black/90 group-hover:via-black/70 group-hover:to-black/50 transition-all duration-500" />
               </div>
               <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
                 <motion.div 
@@ -310,7 +310,7 @@ export default function Home() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 group-hover:from-black/80 group-hover:via-black/40 group-hover:to-transparent transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60 group-hover:from-black/90 group-hover:via-black/70 group-hover:to-black/50 transition-all duration-500" />
               </div>
               <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
                 <motion.div 
@@ -363,7 +363,7 @@ export default function Home() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 group-hover:from-black/80 group-hover:via-black/40 group-hover:to-transparent transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60 group-hover:from-black/90 group-hover:via-black/70 group-hover:to-black/50 transition-all duration-500" />
               </div>
               <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
                 <motion.div 
@@ -416,7 +416,7 @@ export default function Home() {
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 group-hover:from-black/80 group-hover:via-black/40 group-hover:to-transparent transition-all duration-500" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60 group-hover:from-black/90 group-hover:via-black/70 group-hover:to-black/50 transition-all duration-500" />
               </div>
               <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
                 <motion.div 
