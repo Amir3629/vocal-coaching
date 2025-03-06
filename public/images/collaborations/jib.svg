@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .logo-text { fill: currentColor; }
+    .music-note { fill: none; stroke: currentColor; }
+  </style>
   <g transform="translate(20, 10)">
-    <text x="80" y="25" font-family="Arial Black" font-weight="900" font-size="20" fill="currentColor" text-anchor="middle">JIB</text>
-    <text x="80" y="40" font-family="Arial" font-weight="normal" font-size="12" fill="currentColor" text-anchor="middle">JAZZ INSTITUT BERLIN</text>
-    <path d="M20,30 h120" stroke="currentColor" stroke-width="0.5"/>
+    <path class="logo-text" d="M45,15 h10 v20 h-10 v-20 M65,15 h5 v20 h-5 v-20 M80,15 h10 v20 h-10 v-20" fill="currentColor"/>
+    <path class="music-note" d="M100,15 c0,0 5,-10 10,-5 c5,5 -5,10 -10,5 M110,10 v20" stroke-width="0.5"/>
+    <text x="80" y="45" font-family="Arial" font-size="8" fill="currentColor" text-anchor="middle">JAZZ INSTITUT BERLIN</text>
+    <rect x="35" y="5" width="90" height="40" rx="2" stroke="currentColor" stroke-width="0.5" fill="none"/>
   </g>
 </svg>

@@ -2,36 +2,46 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const collaborations = [
   {
     name: "CVT Authorised Teacher",
-    logo: "/vocal-coaching/images/collaborations/cvt-teacher.svg",
+    logo: process.env.NODE_ENV === 'production' 
+      ? "/vocal-coaching/images/collaborations/cvt-teacher.svg"
+      : "/images/collaborations/cvt-teacher.svg",
     link: "https://completevocal.institute",
     isPlaceholder: false
   },
   {
     name: "CVT Deutschland",
-    logo: "/vocal-coaching/images/collaborations/cvt-deutschland.svg",
+    logo: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/collaborations/cvt-deutschland.svg"
+      : "/images/collaborations/cvt-deutschland.svg",
     link: "https://cvtdeutschland.de",
     isPlaceholder: false
   },
   {
     name: "B-Flat Jazz Club Berlin",
-    logo: "/vocal-coaching/images/collaborations/bflat.svg",
+    logo: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/collaborations/bflat.svg"
+      : "/images/collaborations/bflat.svg",
     link: "https://b-flat-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Jazz Institut Berlin",
-    logo: "/vocal-coaching/images/collaborations/jib.svg",
+    logo: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/collaborations/jib.svg"
+      : "/images/collaborations/jib.svg",
     link: "https://www.jazz-institut-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Berliner Philharmonie",
-    logo: "/vocal-coaching/images/collaborations/philharmonie.svg",
+    logo: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/collaborations/philharmonie.svg"
+      : "/images/collaborations/philharmonie.svg",
     link: "https://www.berliner-philharmoniker.de",
     isPlaceholder: false
   }
@@ -44,6 +54,14 @@ export default function Collaborations() {
     console.error(`Failed to load logo for ${name}`)
     setImageErrors(prev => ({ ...prev, [name]: true }))
   }
+
+  useEffect(() => {
+    // Log the environment and image paths for debugging
+    console.log('Environment:', process.env.NODE_ENV)
+    collaborations.forEach(collab => {
+      console.log(`${collab.name} logo path:`, collab.logo)
+    })
+  }, [])
 
   return (
     <section className="py-20 bg-black">
@@ -88,7 +106,7 @@ export default function Collaborations() {
                         src={collab.logo}
                         alt={collab.name}
                         fill
-                        className="object-contain transition-all duration-500 relative z-10 invert opacity-70 group-hover:opacity-100 group-hover:brightness-125"
+                        className="object-contain transition-all duration-500 relative z-10 opacity-70 group-hover:opacity-100 group-hover:brightness-125"
                         sizes="(max-width: 768px) 40vw, 20vw"
                         onError={() => handleImageError(collab.name)}
                       />
