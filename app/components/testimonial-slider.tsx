@@ -9,8 +9,12 @@ const testimonials = [
   {
     id: 1,
     name: "Sarah M.",
-    text: "Melanies Unterricht hat meine Stimme komplett transformiert. Ihre technischen Einblicke und ihre Fähigkeit, komplexe Konzepte einfach zu erklären, sind unübertroffen.",
-    image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=388&h=388&fit=crop"
+    role: "Jazz-Sängerin",
+    content:
+      "Melanies Unterricht hat meine Herangehensweise an den Jazzgesang komplett verändert. Ihre Techniken für Improvisation und Stimmkontrolle waren unglaublich wertvoll für meine Auftritte.",
+    image: process.env.NODE_ENV === 'production'
+      ? '/vocal-coaching/images/testimonials/sarah.jpg'
+      : '/images/testimonials/sarah.jpg',
   },
   {
     id: 2,
@@ -140,18 +144,16 @@ export default function TestimonialSlider() {
             >
               <div className="bg-black rounded-2xl p-8 md:p-12 transition-all duration-300 border border-[#C8A97E]/10">
                 <div className="flex flex-col items-center text-center">
-                  <div className="relative w-32 h-32 mb-8">
-                    <div className="absolute inset-0 bg-gradient-radial from-[#C8A97E]/20 to-transparent rounded-full blur-2xl"></div>
-                    <Image
+                  <div className="w-20 h-20 rounded-full overflow-hidden mb-6 border-2 border-[#C8A97E]">
+                    <img
                       src={currentTestimonial.image}
                       alt={currentTestimonial.name}
-                      fill
-                      className="object-cover rounded-full ring-2 ring-[#C8A97E]/20"
+                      className="w-full h-full object-cover"
                     />
                   </div>
                   <div className="max-w-2xl mx-auto">
                     <p className="text-gray-300 text-lg md:text-xl italic mb-6">
-                      "{currentTestimonial.text}"
+                      "{currentTestimonial.content}"
                     </p>
                     <div className="flex items-center justify-center gap-3">
                       <span className="w-8 h-[1px] bg-[#C8A97E]/50"></span>

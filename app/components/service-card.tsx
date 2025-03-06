@@ -1,7 +1,6 @@
 "use client"
 
 import { type ReactNode, useState } from "react"
-import Image from "next/image"
 import { motion } from "framer-motion"
 import { Card } from "@/components/ui/card"
 
@@ -23,9 +22,10 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
-  const [imageError, setImageError] = useState(false)
 
-  const fallbackImage = "https://images.unsplash.com/photo-1415201364774-f6f0bb35f28f?q=80&w=2070&auto=format&fit=crop"
+  const imageSrc = process.env.NODE_ENV === 'production'
+    ? `/vocal-coaching${image}`
+    : image
 
   return (
     <motion.div
@@ -33,27 +33,27 @@ export default function ServiceCard({ title, description, icon, price, features,
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay }}
-      className="h-[400px] transform transition-transform duration-300 hover:scale-105"
     >
       <Card
-        className={`relative w-full h-full overflow-hidden rounded-xl transition-all duration-300 ${
-          isHovered ? 'bg-[#0A0A0A]/95' : 'bg-[#0A0A0A]/80'
-        }`}
+        className={`group relative overflow-hidden bg-[#0A0A0A]/80 backdrop-blur-sm border-[#C8A97E]/20 hover:border-[#C8A97E]/50 transition-all duration-500 cursor-pointer ${isHovered ? 'scale-105' : 'scale-100'}`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        <div className="absolute inset-0">
-          <Image
-            src={imageError ? fallbackImage : image}
+        <motion.div 
+          className="relative h-48 overflow-hidden"
+          animate={{ height: isHovered ? "12rem" : "12rem" }}
+          transition={{ duration: 0.3 }}
+        >
+          <img
+            src={imageSrc}
             alt={title}
-            fill
-            className="object-cover transition-all duration-500 filter blur-[2px]"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-            onError={() => setImageError(true)}
-            priority
+            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/90 to-transparent" />
-        </div>
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+          <div className="absolute top-4 right-4 bg-[#C8A97E] text-black px-3 py-1 rounded-full text-sm font-medium">
+            {price}
+          </div>
+        </motion.div>
 
         <div className="relative h-full p-6 flex flex-col justify-between">
           <div>

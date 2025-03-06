@@ -14,25 +14,31 @@ interface GalleryImage {
   location: string
 }
 
-const galleryImages: GalleryImage[] = [
+const images: GalleryImage[] = [
   {
-    src: "/images/gallery/performance1.jpg",
-    alt: "Jazz Performance",
+    src: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/gallery/performance1.jpg'
+      : '/images/gallery/performance1.jpg',
+    alt: "Live Performance im B-Flat Jazz Club",
     span: "col-span-1 md:col-span-2",
     description: "Live Performance im B-Flat Jazz Club",
     date: "2024",
     location: "Berlin-Mitte"
   },
   {
-    src: "/images/gallery/performance2.jpg",
-    alt: "Studio Session",
+    src: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/gallery/performance2.jpg'
+      : '/images/gallery/performance2.jpg',
+    alt: "Aufnahmesession im Studio",
     span: "col-span-1",
     description: "Aufnahmesession im Studio",
     date: "2024",
     location: "Recording Studio Berlin"
   },
   {
-    src: "/images/gallery/performance3.jpg",
+    src: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/gallery/performance3.jpg'
+      : '/images/gallery/performance3.jpg',
     alt: "Live Concert",
     span: "col-span-1",
     description: "Jazz Festival Auftritt",
@@ -40,7 +46,9 @@ const galleryImages: GalleryImage[] = [
     location: "Jazztage Berlin"
   },
   {
-    src: "/images/gallery/performance4.jpg",
+    src: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/gallery/performance4.jpg'
+      : '/images/gallery/performance4.jpg',
     alt: "Teaching Session",
     span: "col-span-1 md:col-span-2",
     description: "Gesangsunterricht & Workshop",
@@ -48,7 +56,9 @@ const galleryImages: GalleryImage[] = [
     location: "Vocal Studio"
   },
   {
-    src: "/images/gallery/performance5.jpg",
+    src: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/gallery/performance5.jpg'
+      : '/images/gallery/performance5.jpg',
     alt: "Piano Performance",
     span: "col-span-1 md:col-span-2",
     description: "Piano & Vocal Performance",
@@ -56,7 +66,9 @@ const galleryImages: GalleryImage[] = [
     location: "Jazz Club Berlin"
   },
   {
-    src: "/images/gallery/performance6.jpg",
+    src: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/gallery/performance6.jpg'
+      : '/images/gallery/performance6.jpg',
     alt: "Stage Performance",
     span: "col-span-1 md:col-span-2",
     description: "Live Konzert mit Band",
@@ -64,7 +76,9 @@ const galleryImages: GalleryImage[] = [
     location: "Konzerthaus Berlin"
   },
   {
-    src: "/images/gallery/performance7.jpg",
+    src: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/gallery/performance7.jpg'
+      : '/images/gallery/performance7.jpg',
     alt: "Vocal Workshop",
     span: "col-span-1",
     description: "Vocal Workshop Session",
@@ -72,7 +86,9 @@ const galleryImages: GalleryImage[] = [
     location: "Studio Berlin"
   },
   {
-    src: "/images/gallery/performance8.jpg",
+    src: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/gallery/performance8.jpg'
+      : '/images/gallery/performance8.jpg',
     alt: "Jazz Club",
     span: "col-span-1",
     description: "Jazz Club Performance",
@@ -96,11 +112,11 @@ export default function GallerySection() {
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!selectedImage) return
-    const currentIndex = galleryImages.findIndex(img => img.src === selectedImage.src)
-    const nextIndex = (currentIndex + 1) % galleryImages.length
+    const currentIndex = images.findIndex(img => img.src === selectedImage.src)
+    const nextIndex = (currentIndex + 1) % images.length
     setIsTransitioning(true)
     setTimeout(() => {
-      setSelectedImage(galleryImages[nextIndex])
+      setSelectedImage(images[nextIndex])
       setIsTransitioning(false)
     }, 300)
   }
@@ -108,11 +124,11 @@ export default function GallerySection() {
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!selectedImage) return
-    const currentIndex = galleryImages.findIndex(img => img.src === selectedImage.src)
-    const prevIndex = (currentIndex - 1 + galleryImages.length) % galleryImages.length
+    const currentIndex = images.findIndex(img => img.src === selectedImage.src)
+    const prevIndex = (currentIndex - 1 + images.length) % images.length
     setIsTransitioning(true)
     setTimeout(() => {
-      setSelectedImage(galleryImages[prevIndex])
+      setSelectedImage(images[prevIndex])
       setIsTransitioning(false)
     }, 300)
   }
@@ -132,7 +148,7 @@ export default function GallerySection() {
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {galleryImages.map((image, index) => (
+          {images.map((image, index) => (
             <motion.div
               key={image.src}
               className={`relative cursor-pointer group ${image.span}`}
@@ -142,23 +158,12 @@ export default function GallerySection() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
               onClick={() => handleImageClick(image)}
             >
-              <div className="relative aspect-[4/3] rounded-lg overflow-hidden">
-                <Image
+              <div className="relative aspect-square">
+                <img
                   src={image.src}
                   alt={image.alt}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  quality={75}
-                  loading="lazy"
-                  placeholder="blur"
-                  blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/4gHYSUNDX1BST0ZJTEUAAQEAAAHIAAAAAAQwAABtbnRyUkdCIFhZWiAH4AABAAEAAAAAAABhY3NwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA9tYAAQAAAADTLQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAlkZXNjAAAA8AAAACRyWFlaAAABFAAAABRnWFlaAAABKAAAABRiWFlaAAABPAAAABR3dHB0AAABUAAAABRyVFJDAAABZAAAAChnVFJDAAABZAAAAChiVFJDAAABZAAAAChjcHJ0AAABjAAAADxtbHVjAAAAAAAAAAEAAAAMZW5VUwAAAAgAAAAcAHMAUgBHAEJYWVogAAAAAAAAb6IAADj1AAADkFhZWiAAAAAAAABimQAAt4UAABjaWFlaIAAAAAAAACSgAAAPhAAAts9YWVogAAAAAAAA9tYAAQAAAADTLXBhcmEAAAAAAAQAAAACZmYAAPKnAAANWQAAE9AAAApbAAAAAAAAAABtbHVjAAAAAAAAAAEAAAAMZW5VUwAAACAAAAAcAEcAbwBvAGcAbABlACAASQBuAGMALgAgADIAMAAxADb/2wBDABQODxIPDRQSEBIXFRQdHx4eHRseHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/2wBDAR4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh4eHh7/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAb/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                  className="w-full h-full object-cover rounded-lg"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#000000]/80 via-[#000000]/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                <div className="absolute bottom-0 left-0 right-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                  <p className="text-white text-lg font-medium">{image.description}</p>
-                  <p className="text-[#C8A97E] text-sm mt-1">{image.date} • {image.location}</p>
-                </div>
               </div>
             </motion.div>
           ))}
@@ -196,18 +201,13 @@ export default function GallerySection() {
               }}
               className="relative max-w-[90vw] max-h-[85vh] rounded-lg overflow-hidden"
             >
-              <Image
-                src={selectedImage.src}
-                alt={selectedImage.alt}
-                width={1200}
-                height={800}
-                className={`object-contain w-full h-full transition-opacity duration-300 ${isTransitioning ? 'opacity-0' : 'opacity-100'}`}
-                sizes="(max-width: 768px) 90vw, 1200px"
-                quality={85}
-                loading="eager"
-                onLoadingComplete={() => setIsTransitioning(false)}
-                style={{ maxHeight: '85vh' }}
-              />
+              <div className="fixed-nav-button">
+                <img
+                  src={selectedImage.src}
+                  alt={selectedImage.alt}
+                  className="w-full h-full object-contain"
+                />
+              </div>
               
               <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#000000]/90 via-[#000000]/50 to-transparent">
                 <p className="text-white text-xl font-medium">{selectedImage.description}</p>
