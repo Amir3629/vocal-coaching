@@ -221,8 +221,19 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="relative w-full min-h-screen bg-black py-16">
-        <div className="absolute inset-0 bg-gradient-to-b from-black via-black/95 to-black"></div>
+      <section id="services" className="relative w-full min-h-screen py-16">
+        {/* Background Image */}
+        <div className="absolute inset-0 w-full h-full">
+          <Image
+            src="/vocal-coaching/images/backgrounds/services-bg.jpg"
+            alt="Services Background"
+            fill
+            className="object-cover"
+            priority
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/85 to-black/90 backdrop-blur-sm" />
+        </div>
+
         <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             className="text-center mb-16"
@@ -242,42 +253,46 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.1 }}
-              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm"
+              whileHover={{ scale: 1.03, y: -5 }}
+              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500 shadow-lg hover:shadow-[#C8A97E]/5"
             >
               <div className="absolute inset-0 w-full h-full">
                 <Image
                   src="/vocal-coaching/images/services/studio.jpg"
                   alt="Private Lessons"
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="object-cover transition-all duration-700 scale-110 blur-[2px] group-hover:blur-none group-hover:scale-125"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 group-hover:from-black/80 group-hover:via-black/40 group-hover:to-transparent transition-all duration-500" />
               </div>
-              <div className="relative p-6 flex flex-col h-full min-h-[400px]">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-2 rounded-lg bg-[#C8A97E]/20">
+              <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
+                <motion.div 
+                  className="flex items-center gap-4 mb-4"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
                     <Mic className="w-6 h-6 text-[#C8A97E]" />
                   </div>
                   <span className="text-lg font-semibold text-[#C8A97E]">ab €60</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-white">Private Gesangsstunden</h3>
+                </motion.div>
+                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#C8A97E] transition-colors duration-300">Private Gesangsstunden</h3>
                 <p className="text-gray-300 mb-4">Individueller Unterricht für alle Levels</p>
                 <ul className="space-y-2 flex-grow">
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Stimmtechnik & Atemübungen
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Repertoire-Entwicklung
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Individuelle Zielsetzung
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Flexible Terminplanung
                   </li>
@@ -291,42 +306,46 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm"
+              whileHover={{ scale: 1.03, y: -5 }}
+              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500 shadow-lg hover:shadow-[#C8A97E]/5"
             >
               <div className="absolute inset-0 w-full h-full">
                 <Image
                   src="/vocal-coaching/images/services/jazz.jpg"
                   alt="Jazz Improvisation"
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="object-cover transition-all duration-700 scale-110 blur-[2px] group-hover:blur-none group-hover:scale-125"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 group-hover:from-black/80 group-hover:via-black/40 group-hover:to-transparent transition-all duration-500" />
               </div>
-              <div className="relative p-6 flex flex-col h-full min-h-[400px]">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-2 rounded-lg bg-[#C8A97E]/20">
+              <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
+                <motion.div 
+                  className="flex items-center gap-4 mb-4"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
                     <Music className="w-6 h-6 text-[#C8A97E]" />
                   </div>
                   <span className="text-lg font-semibold text-[#C8A97E]">ab €65</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-white">Jazz Improvisation</h3>
+                </motion.div>
+                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#C8A97E] transition-colors duration-300">Jazz Improvisation</h3>
                 <p className="text-gray-300 mb-4">Entdecke die Kunst des Jazz-Gesangs</p>
                 <ul className="space-y-2 flex-grow">
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Scat-Gesang
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Harmonielehre
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Rhythmische Übungen
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Jazz-Standards
                   </li>
@@ -340,42 +359,46 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm"
+              whileHover={{ scale: 1.03, y: -5 }}
+              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500 shadow-lg hover:shadow-[#C8A97E]/5"
             >
               <div className="absolute inset-0 w-full h-full">
                 <Image
                   src="/vocal-coaching/images/services/performance.jpg"
                   alt="Performance Coaching"
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="object-cover transition-all duration-700 scale-110 blur-[2px] group-hover:blur-none group-hover:scale-125"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 group-hover:from-black/80 group-hover:via-black/40 group-hover:to-transparent transition-all duration-500" />
               </div>
-              <div className="relative p-6 flex flex-col h-full min-h-[400px]">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-2 rounded-lg bg-[#C8A97E]/20">
+              <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
+                <motion.div 
+                  className="flex items-center gap-4 mb-4"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
                     <Theater className="w-6 h-6 text-[#C8A97E]" />
                   </div>
                   <span className="text-lg font-semibold text-[#C8A97E]">ab €70</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-white">Aufführungs Coaching</h3>
+                </motion.div>
+                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#C8A97E] transition-colors duration-300">Aufführungs Coaching</h3>
                 <p className="text-gray-300 mb-4">Perfektioniere deine Bühnenpräsenz</p>
                 <ul className="space-y-2 flex-grow">
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Bühnenperformance
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Mikrofonarbeit
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Gestik & Mimik
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Auftrittsvorbereitung
                   </li>
@@ -389,42 +412,46 @@ export default function Home() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: 0.4 }}
-              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-sm"
+              whileHover={{ scale: 1.03, y: -5 }}
+              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500 shadow-lg hover:shadow-[#C8A97E]/5"
             >
               <div className="absolute inset-0 w-full h-full">
                 <Image
                   src="/vocal-coaching/images/services/piano.jpg"
                   alt="Piano/Vocal Coordination"
                   fill
-                  className="object-cover transition-transform duration-500 group-hover:scale-110"
+                  className="object-cover transition-all duration-700 scale-110 blur-[2px] group-hover:blur-none group-hover:scale-125"
                   sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
                   priority
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 group-hover:from-black/80 group-hover:via-black/40 group-hover:to-transparent transition-all duration-500" />
               </div>
-              <div className="relative p-6 flex flex-col h-full min-h-[400px]">
-                <div className="flex items-center gap-4 mb-4">
-                  <div className="p-2 rounded-lg bg-[#C8A97E]/20">
+              <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
+                <motion.div 
+                  className="flex items-center gap-4 mb-4"
+                  whileHover={{ scale: 1.05 }}
+                >
+                  <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
                     <BookOpen className="w-6 h-6 text-[#C8A97E]" />
                   </div>
                   <span className="text-lg font-semibold text-[#C8A97E]">ab €65</span>
-                </div>
-                <h3 className="text-xl font-bold mb-3 text-white">Piano/Vocal-Koordination</h3>
+                </motion.div>
+                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#C8A97E] transition-colors duration-300">Piano/Vocal-Koordination</h3>
                 <p className="text-gray-300 mb-4">Lerne dich selbst zu begleiten</p>
                 <ul className="space-y-2 flex-grow">
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Grundlegende Klaviertechnik
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Begleitpatterns
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Rhythmische Koordination
                   </li>
-                  <li className="flex items-center text-gray-300">
+                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
                     <span className="mr-2 text-[#C8A97E]">•</span>
                     Song-Arrangements
                   </li>
@@ -442,7 +469,7 @@ export default function Home() {
           >
             <Button
               size="lg"
-              className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8"
+              className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8 transform hover:scale-105 transition-all duration-300"
               onClick={() => setIsBookingModalOpen(true)}
             >
               Jetzt Buchen
