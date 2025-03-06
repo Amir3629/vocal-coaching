@@ -6,8 +6,8 @@ const nextConfig = {
     loader: 'custom',
     loaderFile: './image-loader.js',
   },
-  basePath: '/vocal-coaching',
-  assetPrefix: '/vocal-coaching/',
+  basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
+  assetPrefix: process.env.NODE_ENV === 'production' ? '/vocal-coaching/' : '',
   trailingSlash: true,
 }
 
