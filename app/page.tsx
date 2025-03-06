@@ -251,7 +251,9 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image="/images/services/private-lessons.jpg"
+              image={process.env.NODE_ENV === 'production' 
+                ? '/vocal-coaching/images/services/private-lessons.jpg'
+                : '/images/services/private-lessons.jpg'}
               delay={0.1}
             />
             
@@ -282,7 +284,9 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image="/images/services/performance.jpg"
+              image={process.env.NODE_ENV === 'production' 
+                ? '/vocal-coaching/images/services/performance.jpg'
+                : '/images/services/performance.jpg'}
               delay={0.2}
             />
             
@@ -313,7 +317,9 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-              image="/images/services/workshop.jpg"
+              image={process.env.NODE_ENV === 'production' 
+                ? '/vocal-coaching/images/services/workshop.jpg'
+                : '/images/services/workshop.jpg'}
               delay={0.3}
             />
             
@@ -344,7 +350,9 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-              image="/images/services/piano.jpg"
+              image={process.env.NODE_ENV === 'production' 
+                ? '/vocal-coaching/images/services/piano.jpg'
+                : '/images/services/piano.jpg'}
               delay={0.4}
             />
           </div>

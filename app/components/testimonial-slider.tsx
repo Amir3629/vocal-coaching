@@ -20,49 +20,65 @@ const testimonials = [
     id: 2,
     name: "Michael K.",
     text: "Als Jazz-Enthusiast suchte ich lange nach der richtigen Lehrerin. Melanie versteht es perfekt, die Essenz des Jazz-Gesangs zu vermitteln und dabei individuell auf jeden Schüler einzugehen.",
-    image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=388&h=388&fit=crop"
+    image: process.env.NODE_ENV === 'production'
+      ? '/vocal-coaching/images/testimonials/michael.jpg'
+      : '/images/testimonials/michael.jpg'
   },
   {
     id: 3,
     name: "Lisa R.",
     text: "Die Stunden bei Melanie sind der Höhepunkt meiner Woche. Ihre positive Energie und ihr umfangreiches Wissen machen jeden Unterricht zu einem inspirierenden Erlebnis.",
-    image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=388&h=388&fit=crop"
+    image: process.env.NODE_ENV === 'production'
+      ? '/vocal-coaching/images/testimonials/lisa.jpg'
+      : '/images/testimonials/lisa.jpg'
   },
   {
     id: 4,
     name: "Emily W.",
     text: "Coming from London, I was thrilled to find such an exceptional vocal coach in Berlin. Melanie's approach to jazz vocals is both technical and intuitive, helping me develop my own unique style.",
-    image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=388&h=388&fit=crop"
+    image: process.env.NODE_ENV === 'production'
+      ? '/vocal-coaching/images/testimonials/emily.jpg'
+      : '/images/testimonials/emily.jpg'
   },
   {
     id: 5,
     name: "Thomas H.",
     text: "Der Unterricht bei Melanie hat mir nicht nur gesanglich, sondern auch musikalisch völlig neue Perspektiven eröffnet. Ihre Methodik ist präzise und gleichzeitig sehr inspirierend.",
-    image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=388&h=388&fit=crop"
+    image: process.env.NODE_ENV === 'production'
+      ? '/vocal-coaching/images/testimonials/thomas.jpg'
+      : '/images/testimonials/thomas.jpg'
   },
   {
     id: 6,
     name: "Julia B.",
     text: "Durch Melanies Coaching habe ich gelernt, meine Stimme richtig einzusetzen. Ihre Expertise in der Jazztechnik ist beeindruckend und ihre Lehrmethoden sind sehr effektiv.",
-    image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=388&h=388&fit=crop"
+    image: process.env.NODE_ENV === 'production'
+      ? '/vocal-coaching/images/testimonials/julia.jpg'
+      : '/images/testimonials/julia.jpg'
   },
   {
     id: 7,
     name: "David S.",
     text: "Als Anfänger war ich zunächst skeptisch, aber Melanie hat es geschafft, meine Begeisterung für Jazz zu wecken. Ihre geduldige Art und ihr strukturierter Unterricht sind goldwert.",
-    image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=388&h=388&fit=crop"
+    image: process.env.NODE_ENV === 'production'
+      ? '/vocal-coaching/images/testimonials/david.jpg'
+      : '/images/testimonials/david.jpg'
   },
   {
     id: 8,
     name: "James R.",
     text: "Melanie's teaching style is truly transformative. Her deep understanding of jazz and vocal techniques, combined with her ability to communicate effectively, makes her an outstanding coach.",
-    image: "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?q=80&w=388&h=388&fit=crop"
+    image: process.env.NODE_ENV === 'production'
+      ? '/vocal-coaching/images/testimonials/james.jpg'
+      : '/images/testimonials/james.jpg'
   },
   {
     id: 9,
     name: "Anna L.",
     text: "Die Atmosphäre in Melanies Unterricht ist einzigartig. Sie schafft es, eine perfekte Balance zwischen technischer Präzision und künstlerischer Freiheit zu finden.",
-    image: "https://images.unsplash.com/photo-1531746020798-e6953c6e8e04?q=80&w=388&h=388&fit=crop"
+    image: process.env.NODE_ENV === 'production'
+      ? '/vocal-coaching/images/testimonials/anna.jpg'
+      : '/images/testimonials/anna.jpg'
   }
 ]
 
