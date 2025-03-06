@@ -94,6 +94,16 @@ const images: GalleryImage[] = [
     description: "Jazz Club Performance",
     date: "2024",
     location: "A-Trane Berlin"
+  },
+  {
+    src: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/gallery/performance9.jpg'
+      : '/images/gallery/performance9.jpg',
+    alt: "Concert Performance",
+    span: "col-span-1 md:col-span-2",
+    description: "Jazz Concert Evening",
+    date: "2024",
+    location: "Philharmonie Berlin"
   }
 ]
 
@@ -185,7 +195,7 @@ export default function GallerySection() {
               transition: { duration: 0.3, ease: "easeInOut" }
             }}
             onClick={handleClose}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/70"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-[#000000]/90"
           >
             <motion.div
               initial={{ scale: 0.9, opacity: 0 }}
@@ -199,9 +209,10 @@ export default function GallerySection() {
                 opacity: 0,
                 transition: { duration: 0.3, ease: "easeIn" }
               }}
-              className="relative max-w-[90vw] max-h-[85vh] rounded-lg overflow-hidden"
+              className="relative max-w-[90vw] max-h-[90vh] rounded-lg overflow-hidden"
+              onClick={(e) => e.stopPropagation()}
             >
-              <div className="fixed-nav-button">
+              <div className="relative h-[80vh]">
                 <img
                   src={selectedImage.src}
                   alt={selectedImage.alt}
@@ -213,30 +224,30 @@ export default function GallerySection() {
                 <p className="text-white text-xl font-medium">{selectedImage.description}</p>
                 <p className="text-[#C8A97E] text-sm mt-2">{selectedImage.date} • {selectedImage.location}</p>
               </div>
-
-              {/* Navigation buttons */}
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handlePrev}
-                className="absolute left-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 p-2 rounded-full transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-              </motion.button>
-
-              <motion.button
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={handleNext}
-                className="absolute right-4 top-1/2 -translate-y-1/2 z-10 bg-black/50 hover:bg-black/70 p-2 rounded-full transition-colors"
-              >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </motion.button>
             </motion.div>
+
+            {/* Navigation buttons - Outside the image frame */}
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => handlePrev(e)}
+              className="fixed left-8 top-1/2 -translate-y-1/2 z-50 bg-[#C8A97E] hover:bg-[#B89A6F] text-black p-3 rounded-full transition-colors"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
+              </svg>
+            </motion.button>
+
+            <motion.button
+              whileHover={{ scale: 1.1 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={(e) => handleNext(e)}
+              className="fixed right-8 top-1/2 -translate-y-1/2 z-50 bg-[#C8A97E] hover:bg-[#B89A6F] text-black p-3 rounded-full transition-colors"
+            >
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
+              </svg>
+            </motion.button>
           </motion.div>
         )}
       </AnimatePresence>

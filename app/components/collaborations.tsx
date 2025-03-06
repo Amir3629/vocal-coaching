@@ -6,39 +6,51 @@ import Image from "next/image"
 const collaborations = [
   {
     name: "B-Flat Jazz Club Berlin",
-    logo: "/images/collaborations/bflat.svg",
+    logo: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/collaborations/bflat.svg'
+      : '/images/collaborations/bflat.svg',
     link: "https://b-flat-berlin.de",
-    isPlaceholder: true
+    isPlaceholder: false
   },
   {
     name: "Complete Vocal Institute Copenhagen",
-    logo: "/images/collaborations/cvi.svg",
+    logo: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/collaborations/cvi.svg'
+      : '/images/collaborations/cvi.svg',
     link: "https://completevocal.institute",
-    isPlaceholder: true
+    isPlaceholder: false
   },
   {
     name: "Blue Note Tokyo",
-    logo: "/images/collaborations/bluenote.svg",
+    logo: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/collaborations/bluenote.svg'
+      : '/images/collaborations/bluenote.svg',
     link: "https://www.bluenote.co.jp/tokyo",
-    isPlaceholder: true
+    isPlaceholder: false
   },
   {
     name: "Jazz Institut Berlin",
-    logo: "/images/collaborations/jib.svg",
+    logo: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/collaborations/jib.svg'
+      : '/images/collaborations/jib.svg',
     link: "https://www.jazz-institut-berlin.de",
-    isPlaceholder: true
+    isPlaceholder: false
   },
   {
     name: "A-Trane Jazz Club",
-    logo: "/images/collaborations/atrane.svg",
+    logo: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/collaborations/atrane.svg'
+      : '/images/collaborations/atrane.svg',
     link: "https://www.a-trane.de",
-    isPlaceholder: true
+    isPlaceholder: false
   },
   {
     name: "Berliner Philharmonie",
-    logo: "/images/collaborations/philharmonie.svg",
+    logo: process.env.NODE_ENV === 'production' 
+      ? '/vocal-coaching/images/collaborations/philharmonie.svg'
+      : '/images/collaborations/philharmonie.svg',
     link: "https://www.berliner-philharmoniker.de",
-    isPlaceholder: true
+    isPlaceholder: false
   }
 ]
 
@@ -71,7 +83,7 @@ export default function Collaborations() {
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
               {/* Main logo container */}
-              <div className="relative w-full h-12 transform-gpu transition-all duration-500 group-hover:scale-110">
+              <div className="relative w-full aspect-[3/1]">
                 {/* Glow effect behind logo */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                   <div className="absolute inset-0 bg-[#C8A97E]/20 blur-2xl rounded-full transform-gpu scale-150" />

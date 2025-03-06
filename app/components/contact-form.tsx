@@ -26,7 +26,9 @@ export default function ContactForm() {
         {/* Background Image */}
         <div className="absolute inset-0">
           <Image
-            src="/images/contact/background.jpg"
+            src={process.env.NODE_ENV === 'production' 
+              ? '/vocal-coaching/images/contact/background.jpg'
+              : '/images/contact/background.jpg'}
             alt="Contact Background"
             fill
             className="object-cover"

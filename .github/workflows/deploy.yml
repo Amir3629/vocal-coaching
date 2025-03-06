@@ -35,12 +35,10 @@ jobs:
           cp -r public/images out/
           echo "Verifying image files..."
           find out/images -type f -name "*.jpg" -o -name "*.png"
-      - name: Deploy to GitHub Pages
-        uses: JamesIves/github-pages-deploy-action@v4
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          folder: out
-          branch: gh-pages
-          clean: true
+          path: out
 
   deploy:
     environment:
