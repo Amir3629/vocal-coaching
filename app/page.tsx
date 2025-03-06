@@ -223,7 +223,9 @@ export default function Home() {
       {/* Services Section */}
       <section id="services" className="relative w-full min-h-screen bg-black py-16">
         <ParallaxBackground
-          imageUrl="https://images.unsplash.com/photo-1511379938547-c1f69419868d?q=80&w=2070&auto=format&fit=crop"
+          imageUrl={process.env.NODE_ENV === 'production'
+            ? "/vocal-coaching/images/backgrounds/services-bg.jpg"
+            : "/images/backgrounds/services-bg.jpg"}
           opacity={0.2}
           speed={0.2}
         />

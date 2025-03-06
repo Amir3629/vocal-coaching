@@ -102,38 +102,57 @@ export default function EnhancedMusicPlayer() {
 
   useEffect(() => {
     if (isAPIReady && !playerRef.current) {
-      playerRef.current = new window.YT.Player("youtube-player", {
-        height: "0",
-        width: "0",
-        videoId: currentTrack.youtubeId,
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          disablekb: 1,
-          fs: 0,
-          rel: 0
-        },
-        events: {
-          onStateChange: (event: any) => {
-            setIsPlaying(event.data === window.YT.PlayerState.PLAYING);
+      try {
+        playerRef.current = new window.YT.Player("youtube-player", {
+          height: "0",
+          width: "0",
+          videoId: currentTrack.youtubeId,
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            rel: 0
           },
-          onReady: () => {
-            console.log("Player ready");
+          events: {
+            onStateChange: (event: any) => {
+              if (event.data === window.YT.PlayerState.PLAYING) {
+                setIsPlaying(true);
+              } else if (event.data === window.YT.PlayerState.PAUSED) {
+                setIsPlaying(false);
+              }
+            },
+            onReady: () => {
+              console.log("Player ready");
+              if (isPlaying) {
+                playerRef.current?.playVideo();
+              }
+            },
+            onError: (event: any) => {
+              console.error("YouTube player error:", event);
+              setIsPlaying(false);
+            }
           }
-        }
-      });
+        });
+      } catch (error) {
+        console.error("Error initializing YouTube player:", error);
+      }
     }
   }, [isAPIReady, currentTrack]);
 
   useEffect(() => {
-    if (isAPIReady && playerRef.current) {
-      playerRef.current.loadVideoById(currentTrack.youtubeId);
-      if (isPlaying) {
-        playerRef.current.playVideo();
-      } else {
-        playerRef.current.pauseVideo();
+    if (isAPIReady && playerRef.current?.loadVideoById) {
+      try {
+        playerRef.current.loadVideoById(currentTrack.youtubeId);
+        if (isPlaying) {
+          playerRef.current.playVideo();
+        } else {
+          playerRef.current.pauseVideo();
+        }
+        setProgress(0);
+      } catch (error) {
+        console.error("Error loading video:", error);
       }
-      setProgress(0);
     }
   }, [currentTrack, isAPIReady]);
 

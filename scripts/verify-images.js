@@ -3,14 +3,17 @@ const path = require('path');
 const https = require('https');
 
 const requiredImages = {
-  'public/images/backgrounds/hero-bg.jpg': 'Hero background',
-  'public/images/services/private-lessons.jpg': 'Private lessons service',
-  'public/images/services/performance.jpg': 'Performance service',
-  'public/images/services/workshop.jpg': 'Workshop service',
-  'public/images/services/piano.jpg': 'Piano service',
-  'public/images/testimonials/david.jpg': 'David testimonial',
-  'public/images/testimonials/james.jpg': 'James testimonial',
-  'public/images/testimonials/anna.jpg': 'Anna testimonial',
+  'backgrounds/hero-bg.jpg': 'Hero background',
+  'backgrounds/services-bg.jpg': 'Services background',
+  'backgrounds/contact-bg.jpg': 'Contact background',
+  'services/private-lessons.jpg': 'Private lessons service',
+  'services/jazz.jpg': 'Jazz service',
+  'services/performance.jpg': 'Performance service',
+  'services/piano.jpg': 'Piano service',
+  'collaborations/bflat.svg': 'B-Flat logo',
+  'collaborations/cvi.svg': 'CVI logo',
+  'collaborations/jib.svg': 'JIB logo',
+  'collaborations/philharmonie.svg': 'Philharmonie logo',
   'public/favicon.ico': 'Favicon'
 };
 
@@ -50,46 +53,38 @@ function ensureDirectoryExists(filePath) {
   fs.mkdirSync(dirname, { recursive: true });
 }
 
-// Create a simple placeholder image
+// Create a placeholder image
 function createPlaceholderImage(filePath, label) {
-  ensureDirectoryExists(filePath);
+  const ext = path.extname(filePath).toLowerCase();
   
-  if (filePath.endsWith('.ico')) {
-    // Copy a default favicon if it doesn't exist
-    if (!fs.existsSync(filePath)) {
-      console.log(`Creating placeholder favicon at ${filePath}`);
-      // Create a simple 16x16 ICO file
-      const faviconData = Buffer.from([
-        0,0,1,0,1,0,16,16,0,0,1,0,24,0,68,3,0,0,22,0,0,0,
-        // ... more favicon data ...
-      ]);
-      fs.writeFileSync(filePath, faviconData);
-    }
-    return;
-  }
-
-  if (!fs.existsSync(filePath)) {
-    console.log(`Creating placeholder image at ${filePath}`);
-    // Create a simple colored rectangle with text
-    const svgContent = `
-      <svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
-        <rect width="100%" height="100%" fill="#2a2a2a"/>
-        <text x="50%" y="50%" font-family="Arial" font-size="24" fill="white" text-anchor="middle">
-          ${label} Placeholder
-        </text>
-      </svg>
-    `;
-    fs.writeFileSync(filePath, svgContent);
+  if (ext === '.svg') {
+    const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="200" fill="#2A2A2A"/>
+  <text x="100" y="100" font-family="Arial" font-size="16" fill="white" text-anchor="middle">${label}</text>
+</svg>`;
+    fs.writeFileSync(filePath, svg);
+  } else {
+    // Create a simple colored rectangle for JPG
+    const svg = `<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" xmlns="http://www.w3.org/2000/svg">
+  <rect width="100%" height="100%" fill="#2A2A2A"/>
+  <text x="50%" y="50%" font-family="Arial" font-size="24" fill="white" text-anchor="middle">${label}</text>
+</svg>`;
+    fs.writeFileSync(filePath.replace(/\.jpg$/, '.svg'), svg);
   }
 }
 
 // Verify all required images
-Object.entries(requiredImages).forEach(([filePath, label]) => {
-  if (!fs.existsSync(filePath)) {
-    console.log(`Missing: ${filePath}`);
-    createPlaceholderImage(filePath, label);
+Object.entries(requiredImages).forEach(([imagePath, label]) => {
+  const fullPath = path.join(process.cwd(), 'public/images', imagePath);
+  
+  if (!fs.existsSync(fullPath)) {
+    console.log(`Missing: ${imagePath}`);
+    ensureDirectoryExists(fullPath);
+    createPlaceholderImage(fullPath, label);
   } else {
-    console.log(`Found: ${filePath}`);
+    console.log(`Found: ${imagePath}`);
   }
 });
 

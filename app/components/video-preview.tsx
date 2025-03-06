@@ -6,27 +6,35 @@ import { VolumeX, Volume2 } from "lucide-react"
 
 export default function VideoPreview() {
   const videoRef = useRef<HTMLVideoElement>(null)
-  const [isPlaying, setIsPlaying] = useState(true)
-  const [isMuted, setIsMuted] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [isMuted, setIsMuted] = useState(true)
   const [showControls, setShowControls] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
+  const [hasInteracted, setHasInteracted] = useState(false)
 
-  // Initial autoplay setup
+  // Initial setup
   useEffect(() => {
     const video = videoRef.current
     if (!video) return
 
+    video.muted = true // Ensure video is muted initially
+    
     const playVideo = async () => {
       try {
-        await video.play()
+        if (hasInteracted) {
+          await video.play()
+          setIsPlaying(true)
+        }
       } catch (error) {
-        console.log("Autoplay prevented:", error)
+        console.log("Video playback prevented:", error)
         setIsPlaying(false)
       }
     }
 
-    playVideo()
-  }, [])
+    if (hasInteracted) {
+      playVideo()
+    }
+  }, [hasInteracted])
 
   // Handle video end
   useEffect(() => {
@@ -62,17 +70,28 @@ export default function VideoPreview() {
     const video = videoRef.current
     if (!video) return
 
+    setHasInteracted(true)
+    
     if (!isPlaying) {
       video.currentTime = 0
+      video.play()
+      setIsPlaying(true)
+      setIsExpanded(true)
+    } else {
+      video.pause()
+      setIsPlaying(false)
     }
-    setIsPlaying(!isPlaying)
   }
 
   const handleMuteToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
     if (!videoRef.current) return
+    
+    setHasInteracted(true)
     setIsMuted(!isMuted)
-    videoRef.current.muted = !isMuted
+    if (videoRef.current) {
+      videoRef.current.muted = !isMuted
+    }
   }
 
   return (
