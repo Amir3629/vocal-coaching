@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: write
+  contents: read
   pages: write
   id-token: write
 
@@ -17,6 +17,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    environment: github-pages
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -29,12 +30,15 @@ jobs:
         run: npm ci
       - name: Build with Next.js
         run: npm run build
+        env:
+          NEXT_PUBLIC_BASE_PATH: /vocal-coaching
       - name: Prepare deployment
         run: |
           touch out/.nojekyll
-          cp -r public/images out/
+          mkdir -p out/images
+          cp -r public/images/* out/images/
           echo "Verifying image files..."
-          find out/images -type f -name "*.jpg" -o -name "*.png"
+          find out/images -type f -name "*.jpg" -o -name "*.png" -o -name "*.svg"
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
