@@ -269,7 +269,9 @@ export default function Home() {
                 duration: "60 oder 90 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image="/images/services/studio.jpg"
+              image={process.env.NODE_ENV === 'production'
+                ? "/vocal-coaching/images/services/studio.jpg"
+                : "/images/services/studio.jpg"}
               delay={0.2}
             />
             <ServiceCard
@@ -299,7 +301,9 @@ export default function Home() {
                 duration: "60 oder 90 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image="/images/services/jazz.jpg"
+              image={process.env.NODE_ENV === 'production'
+                ? "/vocal-coaching/images/services/jazz.jpg"
+                : "/images/services/jazz.jpg"}
               delay={0.4}
             />
             <ServiceCard
@@ -329,7 +333,9 @@ export default function Home() {
                 duration: "90 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-              image="/images/services/performance.jpg"
+              image={process.env.NODE_ENV === 'production'
+                ? "/vocal-coaching/images/services/performance.jpg"
+                : "/images/services/performance.jpg"}
               delay={0.6}
             />
             <ServiceCard
@@ -359,7 +365,9 @@ export default function Home() {
                 duration: "60 oder 90 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-              image="/images/services/piano.jpg"
+              image={process.env.NODE_ENV === 'production'
+                ? "/vocal-coaching/images/services/piano.jpg"
+                : "/images/services/piano.jpg"}
               delay={0.8}
             />
           </div>

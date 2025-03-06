@@ -24,11 +24,14 @@ interface ServiceCardProps {
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [imageError, setImageError] = useState(false)
-  const processedImageUrl = image
+  const processedImageUrl = process.env.NODE_ENV === 'production'
+    ? `/vocal-coaching${image}`
+    : image
 
   useEffect(() => {
     console.log('ServiceCard mounted:', title)
-  }, [title])
+    console.log('Image path:', processedImageUrl)
+  }, [title, processedImageUrl])
 
   const handleImageError = () => {
     console.error('Failed to load image:', processedImageUrl)
