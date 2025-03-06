@@ -98,7 +98,9 @@ export default function VideoPreview() {
             <video
               ref={videoRef}
               className="w-full h-full object-cover"
-              src="/videos/preview.mp4"
+              src={process.env.NODE_ENV === 'production'
+                ? "/vocal-coaching/videos/preview.mp4"
+                : "/videos/preview.mp4"}
               playsInline
               muted={isMuted}
               autoPlay

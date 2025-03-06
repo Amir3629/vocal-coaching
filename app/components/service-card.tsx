@@ -56,14 +56,14 @@ export default function ServiceCard({ title, description, icon, price, features,
               src={processedImageUrl}
               alt={title}
               fill
-              className={`object-cover transform scale-110 transition-transform duration-700 ${isHovered ? 'scale-125' : 'scale-110'}`}
+              className={`object-cover transition-all duration-700 ${isHovered ? 'scale-110' : 'scale-100'}`}
               quality={90}
               sizes="(max-width: 768px) 100vw, 25vw"
               onError={handleImageError}
               onLoad={handleImageLoad}
               priority
             />
-            <div className={`absolute inset-0 bg-black/60 backdrop-blur-[2px] transition-all duration-300 ${isHovered ? 'bg-black/50 backdrop-blur-[1px]' : ''}`} />
+            <div className={`absolute inset-0 bg-black/40 backdrop-blur-[1px] transition-all duration-300 ${isHovered ? 'bg-black/30 backdrop-blur-0' : ''}`} />
           </div>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800">
@@ -74,7 +74,7 @@ export default function ServiceCard({ title, description, icon, price, features,
 
       {/* Content */}
       <div 
-        className="relative z-10 p-6 h-full"
+        className="relative z-10 p-6 h-full flex flex-col"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
@@ -86,9 +86,9 @@ export default function ServiceCard({ title, description, icon, price, features,
         </div>
 
         <h3 className="text-xl font-bold mb-2 text-white">{title}</h3>
-        <p className="text-gray-300 mb-4 flex-grow">{description}</p>
+        <p className="text-gray-300 mb-4">{description}</p>
 
-        <ul className="space-y-2 mb-4">
+        <ul className="space-y-2 mb-4 flex-grow">
           {features.map((feature, index) => (
             <li key={index} className="flex items-center text-gray-300">
               <span className="mr-2 text-[#C8A97E]">•</span>

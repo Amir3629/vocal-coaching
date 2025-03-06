@@ -126,19 +126,35 @@ export default function EnhancedMusicPlayer() {
   }, [isAPIReady, currentTrack]);
 
   useEffect(() => {
+    if (isAPIReady && playerRef.current) {
+      playerRef.current.loadVideoById(currentTrack.youtubeId);
+      if (isPlaying) {
+        playerRef.current.playVideo();
+      } else {
+        playerRef.current.pauseVideo();
+      }
+      setProgress(0);
+    }
+  }, [currentTrack, isAPIReady]);
+
+  useEffect(() => {
     if (isPlaying) {
       progressInterval.current = setInterval(() => {
-        setProgress((prev) => (prev >= 100 ? 0 : prev + 0.1))
-      }, 100)
+        if (playerRef.current) {
+          const currentTime = playerRef.current.getCurrentTime() || 0;
+          const duration = playerRef.current.getDuration() || 0;
+          setProgress((currentTime / duration) * 100);
+        }
+      }, 100);
     } else if (progressInterval.current) {
-      clearInterval(progressInterval.current)
+      clearInterval(progressInterval.current);
     }
     return () => {
       if (progressInterval.current) {
-        clearInterval(progressInterval.current)
+        clearInterval(progressInterval.current);
       }
-    }
-  }, [isPlaying])
+    };
+  }, [isPlaying]);
 
   const handlePlay = () => {
     setIsPlaying(!isPlaying);
@@ -155,12 +171,14 @@ export default function EnhancedMusicPlayer() {
     const currentIndex = tracks.findIndex(track => track.id === currentTrack.id);
     const prevIndex = (currentIndex - 1 + tracks.length) % tracks.length;
     setCurrentTrack(tracks[prevIndex]);
+    setProgress(0);
   };
 
   const handleNextTrack = () => {
     const currentIndex = tracks.findIndex(track => track.id === currentTrack.id);
     const nextIndex = (currentIndex + 1) % tracks.length;
     setCurrentTrack(tracks[nextIndex]);
+    setProgress(0);
   };
 
   const toggleMute = () => {

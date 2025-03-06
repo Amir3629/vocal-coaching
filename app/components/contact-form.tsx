@@ -27,7 +27,8 @@ export default function ContactForm() {
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#C8A97E]/10 via-transparent to-transparent opacity-30" />
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#C8A97E]/20 via-[#C8A97E]/5 to-transparent opacity-40" />
+            <div className="absolute inset-0 bg-[conic-gradient(from_0deg_at_50%_50%,rgba(200,169,126,0.1)_0deg,transparent_60deg,rgba(200,169,126,0.1)_120deg,transparent_180deg,rgba(200,169,126,0.1)_240deg,transparent_300deg,rgba(200,169,126,0.1)_360deg)]" />
           </div>
           {!bgImageError && (
             <div className="absolute inset-0">
@@ -37,11 +38,11 @@ export default function ContactForm() {
                   : "/images/backgrounds/contact-bg.jpg"}
                 alt="Contact Background"
                 fill
-                className="object-cover mix-blend-overlay opacity-60"
+                className="object-cover mix-blend-overlay opacity-40"
                 priority
                 onError={() => setBgImageError(true)}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
             </div>
           )}
         </div>
