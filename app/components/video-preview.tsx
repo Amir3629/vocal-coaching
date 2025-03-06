@@ -11,6 +11,8 @@ export default function VideoPreview() {
   const [showControls, setShowControls] = useState(false)
   const [isExpanded, setIsExpanded] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
+  const [hasError, setHasError] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Initial setup
   useEffect(() => {
@@ -28,11 +30,30 @@ export default function VideoPreview() {
       } catch (error) {
         console.log("Video playback prevented:", error)
         setIsPlaying(false)
+        setHasError(true)
       }
     }
 
+    const handleLoadedData = () => {
+      setIsLoading(false)
+    }
+
+    const handleError = () => {
+      console.error('Video failed to load')
+      setHasError(true)
+      setIsLoading(false)
+    }
+
+    video.addEventListener('loadeddata', handleLoadedData)
+    video.addEventListener('error', handleError)
+
     if (hasInteracted) {
       playVideo()
+    }
+
+    return () => {
+      video.removeEventListener('loadeddata', handleLoadedData)
+      video.removeEventListener('error', handleError)
     }
   }, [hasInteracted])
 
@@ -113,22 +134,36 @@ export default function VideoPreview() {
         onClick={handleVideoClick}
       >
         <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
-          <div className="absolute inset-0">
-            <video
-              ref={videoRef}
-              className="w-full h-full object-cover"
-              src={process.env.NODE_ENV === 'production'
-                ? "/vocal-coaching/videos/preview.mp4"
-                : "/videos/preview.mp4"}
-              playsInline
-              muted={isMuted}
-              autoPlay
-              style={{
-                objectFit: 'contain',
-                backgroundColor: '#080505'
-              }}
-            />
-          </div>
+          {hasError ? (
+            <div className="absolute inset-0 flex items-center justify-center bg-[#080505] text-gray-400">
+              <div className="text-center">
+                <p>Sorry, the video is currently unavailable.</p>
+                <p className="text-sm mt-2">Please try again later.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="absolute inset-0">
+              {isLoading && (
+                <div className="absolute inset-0 flex items-center justify-center bg-[#080505]">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#C8A97E]"></div>
+                </div>
+              )}
+              <video
+                ref={videoRef}
+                className={`w-full h-full object-cover ${isLoading ? 'opacity-0' : 'opacity-100'}`}
+                src={process.env.NODE_ENV === 'production'
+                  ? "/vocal-coaching/videos/preview.mp4"
+                  : "/videos/preview.mp4"}
+                playsInline
+                muted={isMuted}
+                autoPlay
+                style={{
+                  objectFit: 'contain',
+                  backgroundColor: '#080505'
+                }}
+              />
+            </div>
+          )}
         </div>
 
         <AnimatePresence>

@@ -71,23 +71,33 @@ export default function EnhancedMusicPlayer() {
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
   const [isAPIReady, setIsAPIReady] = useState(false);
+  const [hasError, setHasError] = useState(false);
   const playerRef = useRef<Window['YT']['Player'] | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const loadYouTubeAPI = () => {
-      if (!window.YT) {
-        const tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+      try {
+        if (!window.YT) {
+          const tag = document.createElement('script');
+          tag.src = 'https://www.youtube.com/iframe_api';
+          tag.onerror = () => {
+            console.error('Failed to load YouTube API');
+            setHasError(true);
+          };
+          const firstScriptTag = document.getElementsByTagName('script')[0];
+          firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
-        window.onYouTubeIframeAPIReady = () => {
+          window.onYouTubeIframeAPIReady = () => {
+            setIsAPIReady(true);
+          };
+        } else {
           setIsAPIReady(true);
-        };
-      } else {
-        setIsAPIReady(true);
+        }
+      } catch (error) {
+        console.error('Error loading YouTube API:', error);
+        setHasError(true);
       }
     };
 
@@ -116,26 +126,38 @@ export default function EnhancedMusicPlayer() {
           },
           events: {
             onStateChange: (event: any) => {
-              if (event.data === window.YT.PlayerState.PLAYING) {
-                setIsPlaying(true);
-              } else if (event.data === window.YT.PlayerState.PAUSED) {
+              try {
+                if (event.data === window.YT.PlayerState.PLAYING) {
+                  setIsPlaying(true);
+                } else if (event.data === window.YT.PlayerState.PAUSED) {
+                  setIsPlaying(false);
+                }
+              } catch (error) {
+                console.error('Error in onStateChange:', error);
                 setIsPlaying(false);
               }
             },
             onReady: () => {
               console.log("Player ready");
               if (isPlaying) {
-                playerRef.current?.playVideo();
+                try {
+                  playerRef.current?.playVideo();
+                } catch (error) {
+                  console.error('Error playing video:', error);
+                  setIsPlaying(false);
+                }
               }
             },
             onError: (event: any) => {
               console.error("YouTube player error:", event);
               setIsPlaying(false);
+              setHasError(true);
             }
           }
         });
       } catch (error) {
         console.error("Error initializing YouTube player:", error);
+        setHasError(true);
       }
     }
   }, [isAPIReady, currentTrack]);
@@ -213,195 +235,204 @@ export default function EnhancedMusicPlayer() {
 
   return (
     <div ref={containerRef} className="w-full max-w-4xl mx-auto">
-      <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-6">
-        <div id="youtube-player" className="hidden"></div>
-        
-        <div className="flex items-center gap-6 mb-8">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentTrack.id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-              className="relative w-24 h-24 rounded-lg overflow-hidden"
-            >
-              <Image
-                src={currentTrack.thumbnail}
-                alt={currentTrack.title}
-                fill
-                className="object-cover"
-              />
-            </motion.div>
-          </AnimatePresence>
-
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentTrack.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="flex-1"
-            >
-              <h3 className="text-2xl font-light text-white mb-2">{currentTrack.title}</h3>
-              <p className="text-[#C8A97E] text-sm mb-1">{currentTrack.artist}</p>
-              <p className="text-gray-400 text-sm">{currentTrack.description}</p>
-            </motion.div>
-          </AnimatePresence>
-
-          <div className="flex items-center gap-6">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handlePrevTrack}
-              className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-            >
-              <SkipBack className="w-5 h-5" />
-            </motion.button>
-
-            <div className="relative">
-              <svg className="w-16 h-16" viewBox="0 0 48 48">
-                <circle
-                  cx="24"
-                  cy="24"
-                  r="23"
-                  className="fill-[#C8A97E]/10"
-                />
-                <motion.circle
-                  cx="24"
-                  cy="24"
-                  r="23"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  fill="none"
-                  className="text-[#C8A97E]"
-                  strokeDasharray="144.51326206513048"
-                  strokeDashoffset={144.51326206513048 * (1 - progress / 100)}
-                  transform="rotate(-90 24 24)"
-                />
-                <motion.circle
-                  cx="24"
-                  cy="24"
-                  r="21"
-                  className="fill-[#C8A97E] cursor-pointer"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handlePlay}
-                />
-              </svg>
-              <motion.div
-                className="absolute inset-0 flex items-center justify-center text-black"
-                onClick={handlePlay}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                {isPlaying ? (
-                  <Pause className="w-6 h-6" />
-                ) : (
-                  <Play className="w-6 h-6 ml-1" />
-                )}
-              </motion.div>
-              
-              {isPlaying && (
-                <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-1">
-                  {[0, 1, 2].map((i) => (
-                    <motion.div
-                      key={i}
-                      className="w-1 h-1 bg-[#C8A97E] rounded-full"
-                      animate={{
-                        scaleY: [1, 2, 1],
-                        opacity: [0.5, 1, 0.5],
-                      }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        delay: i * 0.2,
-                      }}
-                    />
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleNextTrack}
-              className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-            >
-              <SkipForward className="w-5 h-5" />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={toggleMute}
-              className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-            >
-              {isMuted ? (
-                <VolumeX className="w-5 h-5" />
-              ) : (
-                <Volume2 className="w-5 h-5" />
-              )}
-            </motion.button>
+      {hasError ? (
+        <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-6">
+          <div className="text-center text-gray-400 py-8">
+            <p>Sorry, the music player is currently unavailable.</p>
+            <p className="text-sm mt-2">Please try again later.</p>
           </div>
-        </div>
-
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-          {tracks.map((track) => (
-            <motion.div
-              key={track.id}
-              className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
-                track.id === currentTrack.id 
-                  ? "ring-2 ring-[#C8A97E] scale-[1.02]" 
-                  : "hover:ring-2 hover:ring-[#C8A97E]/50"
-              }`}
-              onClick={() => {
-                setCurrentTrack(track)
-                if (!isPlaying) setIsPlaying(true)
-              }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <div className="relative aspect-video">
+        </Card>
+      ) : (
+        <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-6">
+          <div id="youtube-player" className="hidden"></div>
+          
+          <div className="flex items-center gap-6 mb-8">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentTrack.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                className="relative w-24 h-24 rounded-lg overflow-hidden"
+              >
                 <Image
-                  src={track.thumbnail}
-                  alt={track.title}
+                  src={currentTrack.thumbnail}
+                  alt={currentTrack.title}
                   fill
                   className="object-cover"
                 />
-                <div className={`absolute inset-0 transition-opacity duration-300 ${
-                  track.id === currentTrack.id && isPlaying
-                    ? "bg-black/40"
-                    : "bg-black/20"
-                }`} />
-                <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-                  <p className="text-white text-sm font-medium mb-1">{track.title}</p>
-                  <p className="text-[#C8A97E] text-xs">{track.description}</p>
-                </div>
+              </motion.div>
+            </AnimatePresence>
+
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentTrack.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                transition={{ duration: 0.3 }}
+                className="flex-1"
+              >
+                <h3 className="text-2xl font-light text-white mb-2">{currentTrack.title}</h3>
+                <p className="text-[#C8A97E] text-sm mb-1">{currentTrack.artist}</p>
+                <p className="text-gray-400 text-sm">{currentTrack.description}</p>
+              </motion.div>
+            </AnimatePresence>
+
+            <div className="flex items-center gap-6">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePrevTrack}
+                className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+              >
+                <SkipBack className="w-5 h-5" />
+              </motion.button>
+
+              <div className="relative">
+                <svg className="w-16 h-16" viewBox="0 0 48 48">
+                  <circle
+                    cx="24"
+                    cy="24"
+                    r="23"
+                    className="fill-[#C8A97E]/10"
+                  />
+                  <motion.circle
+                    cx="24"
+                    cy="24"
+                    r="23"
+                    stroke="currentColor"
+                    strokeWidth="2"
+                    fill="none"
+                    className="text-[#C8A97E]"
+                    strokeDasharray="144.51326206513048"
+                    strokeDashoffset={144.51326206513048 * (1 - progress / 100)}
+                    transform="rotate(-90 24 24)"
+                  />
+                  <motion.circle
+                    cx="24"
+                    cy="24"
+                    r="21"
+                    className="fill-[#C8A97E] cursor-pointer"
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handlePlay}
+                  />
+                </svg>
+                <motion.div
+                  className="absolute inset-0 flex items-center justify-center text-black"
+                  onClick={handlePlay}
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.9 }}
+                >
+                  {isPlaying ? (
+                    <Pause className="w-6 h-6" />
+                  ) : (
+                    <Play className="w-6 h-6 ml-1" />
+                  )}
+                </motion.div>
                 
-                {track.id === currentTrack.id && isPlaying && (
-                  <div className="absolute top-2 right-2">
-                    <motion.div
-                      className="w-2 h-2 bg-[#C8A97E] rounded-full"
-                      animate={{
-                        scale: [1, 1.5, 1],
-                        opacity: [1, 0.5, 1],
-                      }}
-                      transition={{
-                        duration: 1,
-                        repeat: Infinity,
-                        ease: "easeInOut",
-                      }}
-                    />
+                {isPlaying && (
+                  <div className="absolute -bottom-4 left-1/2 -translate-x-1/2 flex gap-1">
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        className="w-1 h-1 bg-[#C8A97E] rounded-full"
+                        animate={{
+                          scaleY: [1, 2, 1],
+                          opacity: [0.5, 1, 0.5],
+                        }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          delay: i * 0.2,
+                        }}
+                      />
+                    ))}
                   </div>
                 )}
               </div>
-            </motion.div>
-          ))}
-        </div>
-      </Card>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleNextTrack}
+                className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+              >
+                <SkipForward className="w-5 h-5" />
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={toggleMute}
+                className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+              >
+                {isMuted ? (
+                  <VolumeX className="w-5 h-5" />
+                ) : (
+                  <Volume2 className="w-5 h-5" />
+                )}
+              </motion.button>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            {tracks.map((track) => (
+              <motion.div
+                key={track.id}
+                className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 ${
+                  track.id === currentTrack.id 
+                    ? "ring-2 ring-[#C8A97E] scale-[1.02]" 
+                    : "hover:ring-2 hover:ring-[#C8A97E]/50"
+                }`}
+                onClick={() => {
+                  setCurrentTrack(track)
+                  if (!isPlaying) setIsPlaying(true)
+                }}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+              >
+                <div className="relative aspect-video">
+                  <Image
+                    src={track.thumbnail}
+                    alt={track.title}
+                    fill
+                    className="object-cover"
+                  />
+                  <div className={`absolute inset-0 transition-opacity duration-300 ${
+                    track.id === currentTrack.id && isPlaying
+                      ? "bg-black/40"
+                      : "bg-black/20"
+                  }`} />
+                  <div className="absolute bottom-0 left-0 right-0 p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+                    <p className="text-white text-sm font-medium mb-1">{track.title}</p>
+                    <p className="text-[#C8A97E] text-xs">{track.description}</p>
+                  </div>
+                  
+                  {track.id === currentTrack.id && isPlaying && (
+                    <div className="absolute top-2 right-2">
+                      <motion.div
+                        className="w-2 h-2 bg-[#C8A97E] rounded-full"
+                        animate={{
+                          scale: [1, 1.5, 1],
+                          opacity: [1, 0.5, 1],
+                        }}
+                        transition={{
+                          duration: 1,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                        }}
+                      />
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </Card>
+      )}
     </div>
   );
 } 

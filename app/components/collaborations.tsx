@@ -5,19 +5,27 @@ import Image from "next/image"
 
 const collaborations = [
   {
+    name: "CVT Authorised Teacher",
+    logo: process.env.NODE_ENV === 'production' 
+      ? "/vocal-coaching/images/collaborations/cvt-teacher.svg"
+      : "/images/collaborations/cvt-teacher.svg",
+    link: "https://completevocal.institute",
+    isPlaceholder: false
+  },
+  {
+    name: "CVT Deutschland",
+    logo: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/collaborations/cvt-deutschland.svg"
+      : "/images/collaborations/cvt-deutschland.svg",
+    link: "https://cvtdeutschland.de",
+    isPlaceholder: false
+  },
+  {
     name: "B-Flat Jazz Club Berlin",
     logo: process.env.NODE_ENV === 'production' 
       ? "/vocal-coaching/images/collaborations/bflat.svg"
       : "/images/collaborations/bflat.svg",
     link: "https://b-flat-berlin.de",
-    isPlaceholder: false
-  },
-  {
-    name: "Complete Vocal Institute Copenhagen",
-    logo: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/collaborations/cvi.svg"
-      : "/images/collaborations/cvi.svg",
-    link: "https://completevocal.institute",
     isPlaceholder: false
   },
   {
@@ -53,7 +61,7 @@ export default function Collaborations() {
           <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-2 gap-x-16 gap-y-12 items-center max-w-4xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center max-w-6xl mx-auto">
           {collaborations.map((collab, index) => (
             <motion.a
               key={collab.name}
@@ -66,7 +74,7 @@ export default function Collaborations() {
               viewport={{ once: true }}
               transition={{ duration: 0.5, delay: index * 0.1 }}
             >
-              <div className="relative w-full aspect-[3/1] bg-black/20 rounded-lg p-4">
+              <div className="relative w-full aspect-[3/2] bg-black/20 rounded-lg p-4">
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
                   <div className="absolute inset-0 bg-[#C8A97E]/20 blur-2xl rounded-full transform-gpu scale-150" />
                   <div className="absolute inset-0 bg-gradient-radial from-[#C8A97E]/30 via-transparent to-transparent blur-xl" />
@@ -77,7 +85,7 @@ export default function Collaborations() {
                       src={collab.logo}
                       alt={collab.name}
                       fill
-                      className="object-contain transition-all duration-500 relative z-10 invert opacity-70 group-hover:opacity-100 group-hover:invert-0 group-hover:brightness-125"
+                      className="object-contain transition-all duration-500 relative z-10 opacity-70 group-hover:opacity-100 group-hover:brightness-125"
                       sizes="(max-width: 768px) 40vw, 20vw"
                     />
                   </div>
