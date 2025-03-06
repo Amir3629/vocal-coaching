@@ -41,15 +41,32 @@ const weekDays = [
   { id: "friday", label: "Freitag", times: ["10:00", "14:00", "16:00", "18:00"] }
 ]
 
+const timeSlots = {
+  morning: {
+    label: "Morgens",
+    times: ["09:00", "10:00", "11:00"]
+  },
+  noon: {
+    label: "Mittags",
+    times: ["12:00", "13:00", "14:00"]
+  },
+  afternoon: {
+    label: "Nachmittags",
+    times: ["15:00", "16:00", "17:00", "18:00"]
+  }
+}
+
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [step, setStep] = useState(1)
   const [selectedService, setSelectedService] = useState("")
   const [selectedDay, setSelectedDay] = useState("")
+  const [selectedTimeSlot, setSelectedTimeSlot] = useState("")
   const [selectedTime, setSelectedTime] = useState("")
   const [showSuccess, setShowSuccess] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     message: ""
   })
 
@@ -62,10 +79,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     setStep(1)
     setSelectedService("")
     setSelectedDay("")
+    setSelectedTimeSlot("")
     setSelectedTime("")
     setFormData({
       name: "",
       email: "",
+      phone: "",
       message: ""
     })
     onClose()
@@ -112,6 +131,24 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                     <div className="w-12 h-0.5 bg-[#C8A97E] mt-2"></div>
                   </div>
 
+                  {/* Progress Steps */}
+                  <div className="flex items-center justify-between mb-8">
+                    {[1, 2, 3].map((stepNumber) => (
+                      <div key={stepNumber} className="flex items-center">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                          step >= stepNumber ? 'bg-[#C8A97E] text-black' : 'bg-[#C8A97E]/20 text-[#C8A97E]'
+                        }`}>
+                          {stepNumber}
+                        </div>
+                        {stepNumber < 3 && (
+                          <div className={`w-full h-0.5 mx-2 ${
+                            step > stepNumber ? 'bg-[#C8A97E]' : 'bg-[#C8A97E]/20'
+                          }`} />
+                        )}
+                      </div>
+                    ))}
+                  </div>
+
                   <AnimatePresence mode="wait">
                     {step === 1 && (
                       <motion.div
@@ -122,34 +159,14 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         transition={{ duration: 0.3 }}
                         className="space-y-6"
                       >
-                        <div className="mb-6">
-                          <input
-                            type="text"
-                            placeholder="Ihr Name"
-                            value={formData.name}
-                            onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                            className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all"
-                          />
-                        </div>
-
+                        <h3 className="text-lg font-medium text-white mb-4">Wählen Sie einen Service</h3>
                         <div className="grid grid-cols-2 gap-4">
                           {services.map((service) => (
                             <motion.button
                               key={service.id}
                               onClick={() => {
-                                if (formData.name.trim()) {
-                                  setSelectedService(service.id)
-                                  setStep(2)
-                                } else {
-                                  // Add visual feedback for empty name
-                                  const input = document.querySelector('input[type="text"]') as HTMLInputElement
-                                  if (input) {
-                                    input.classList.add('border-red-500', 'animate-shake')
-                                    setTimeout(() => {
-                                      input.classList.remove('border-red-500', 'animate-shake')
-                                    }, 1000)
-                                  }
-                                }
+                                setSelectedService(service.id)
+                                setStep(2)
                               }}
                               className={`p-4 rounded-lg border text-left transition-all ${
                                 selectedService === service.id
@@ -176,47 +193,54 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         transition={{ duration: 0.3 }}
                         className="space-y-6"
                       >
-                        <div className="flex items-center gap-2 mb-4">
-                          <CalendarIcon className="w-5 h-5 text-[#C8A97E]" />
-                          <h3 className="text-lg font-medium text-white">Wählen Sie einen Tag</h3>
-                        </div>
-
-                        <div className="grid gap-4">
+                        <h3 className="text-lg font-medium text-white mb-4">Wählen Sie Tag und Zeit</h3>
+                        
+                        {/* Day Selection */}
+                        <div className="grid grid-cols-5 gap-2 mb-6">
                           {weekDays.map((day) => (
-                            <motion.div
+                            <button
                               key={day.id}
-                              className={`p-4 rounded-lg border transition-all ${
+                              onClick={() => setSelectedDay(day.id)}
+                              className={`p-3 rounded-lg text-center transition-all ${
                                 selectedDay === day.id
-                                  ? "border-[#C8A97E] bg-[#C8A97E]/10"
-                                  : "border-white/10 hover:border-[#C8A97E]/50"
+                                  ? "bg-[#C8A97E] text-black"
+                                  : "bg-[#C8A97E]/10 text-white hover:bg-[#C8A97E]/20"
                               }`}
                             >
-                              <div className="flex items-center justify-between mb-3">
-                                <h4 className="text-white font-medium">{day.label}</h4>
-                                <Clock className="w-4 h-4 text-[#C8A97E]" />
-                              </div>
-                              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                                {day.times.map((time) => (
-                                  <button
-                                    key={`${day.id}-${time}`}
-                                    onClick={() => {
-                                      setSelectedDay(day.id)
-                                      setSelectedTime(time)
-                                      setStep(3)
-                                    }}
-                                    className={`px-3 py-2 rounded text-sm transition-all ${
-                                      selectedDay === day.id && selectedTime === time
-                                        ? "bg-[#C8A97E] text-black"
-                                        : "bg-black/20 text-gray-300 hover:bg-[#C8A97E]/20 hover:text-white"
-                                    }`}
-                                  >
-                                    {time}
-                                  </button>
-                                ))}
-                              </div>
-                            </motion.div>
+                              <span className="block text-sm font-medium">{day.label}</span>
+                            </button>
                           ))}
                         </div>
+
+                        {/* Time Slots */}
+                        {selectedDay && (
+                          <div className="space-y-4">
+                            {Object.entries(timeSlots).map(([slot, { label, times }]) => (
+                              <div key={slot} className="p-4 rounded-lg border border-white/10">
+                                <h4 className="text-[#C8A97E] mb-3">{label}</h4>
+                                <div className="grid grid-cols-3 gap-2">
+                                  {times.map((time) => (
+                                    <button
+                                      key={time}
+                                      onClick={() => {
+                                        setSelectedTimeSlot(slot)
+                                        setSelectedTime(time)
+                                        setStep(3)
+                                      }}
+                                      className={`px-4 py-2 rounded text-sm transition-all ${
+                                        selectedTime === time
+                                          ? "bg-[#C8A97E] text-black"
+                                          : "bg-black/20 text-gray-300 hover:bg-[#C8A97E]/20 hover:text-white"
+                                      }`}
+                                    >
+                                      {time}
+                                    </button>
+                                  ))}
+                                </div>
+                              </div>
+                            ))}
+                          </div>
+                        )}
 
                         <div className="flex justify-between mt-6">
                           <button
@@ -239,8 +263,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         transition={{ duration: 0.3 }}
                         className="space-y-6"
                       >
+                        <h3 className="text-lg font-medium text-white mb-4">Ihre Informationen</h3>
+
                         <div className="space-y-4">
-                          <div className="p-4 rounded-lg border border-[#C8A97E]/20 bg-black/20">
+                          <div className="p-4 rounded-lg border border-[#C8A97E]/20 bg-black/20 mb-6">
                             <h4 className="text-[#C8A97E] font-medium mb-2">Zusammenfassung</h4>
                             <div className="space-y-2 text-gray-300">
                               <p>Service: {services.find(s => s.id === selectedService)?.title}</p>
@@ -251,10 +277,26 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                           <div className="space-y-4">
                             <input
+                              type="text"
+                              placeholder="Name"
+                              value={formData.name}
+                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                              required
+                              className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all"
+                            />
+                            <input
                               type="email"
                               placeholder="Email"
                               value={formData.email}
                               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                              required
+                              className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all"
+                            />
+                            <input
+                              type="tel"
+                              placeholder="Telefon (optional)"
+                              value={formData.phone}
+                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                               className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all"
                             />
                             <textarea
