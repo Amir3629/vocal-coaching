@@ -102,14 +102,16 @@ export default function Collaborations() {
                         {collab.name}
                       </div>
                     ) : (
-                      <Image
-                        src={collab.logo}
-                        alt={collab.name}
-                        fill
-                        className="object-contain transition-all duration-500 relative z-10 opacity-70 group-hover:opacity-100 group-hover:brightness-125"
-                        sizes="(max-width: 768px) 40vw, 20vw"
-                        onError={() => handleImageError(collab.name)}
-                      />
+                      <div className="text-white">
+                        <Image
+                          src={collab.logo}
+                          alt={collab.name}
+                          fill
+                          className="object-contain transition-all duration-500 relative z-10 opacity-70 group-hover:opacity-100 group-hover:brightness-125 [&>*]:fill-white [&>*]:stroke-white"
+                          sizes="(max-width: 768px) 40vw, 20vw"
+                          onError={() => handleImageError(collab.name)}
+                        />
+                      </div>
                     )}
                   </div>
                 </div>

@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <style>
-    .logo-text { fill: currentColor; }
-  </style>
-  <g transform="translate(20, 10)">
-    <path d="M30,5 L130,5 L130,45 L30,45 Z" stroke="currentColor" stroke-width="0.5" fill="none"/>
-    <path class="logo-text" d="M40,15 h15 v5 h-5 v15 h5 v5 h-15 v-25 M65,15 h10 v25 h-10 v-25 M85,15 h15 l-15,25 h15 M110,15 h10 v25 h-10 v-25" fill="currentColor"/>
-    <text x="80" y="48" font-family="Arial" font-size="6" fill="currentColor" text-anchor="middle">JAZZ CLUB BERLIN</text>
-    <path d="M35,10 L125,10 M35,40 L125,40" stroke="currentColor" stroke-width="0.25"/>
-  </g>
+<svg width="100%" height="100%" viewBox="0 0 200 100" version="1.1" xmlns="http://www.w3.org/2000/svg">
+    <g fill="white" stroke="white">
+        <text x="50%" y="50%" text-anchor="middle" dominant-baseline="middle" font-family="Arial" font-size="16" font-weight="bold">
+            B-Flat Jazz Club
+        </text>
+    </g>
 </svg>
