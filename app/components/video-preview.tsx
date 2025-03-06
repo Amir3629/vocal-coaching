@@ -27,7 +27,7 @@ export default function VideoPreview() {
       setIsLoading(false)
       console.log('Video loaded successfully')
       // Try to play the video if it's supposed to be playing
-      if (isPlaying && !video.playing) {
+      if (isPlaying) {
         video.play().catch(console.error)
       }
     }
