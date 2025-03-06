@@ -4,7 +4,6 @@ import { type ReactNode, useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Card } from "@/components/ui/card"
 import Image from "next/image"
-import { getImagePath, debugImagePath } from "@/utils/image-path"
 
 interface ServiceCardProps {
   title: string
@@ -25,13 +24,11 @@ interface ServiceCardProps {
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [imageError, setImageError] = useState(false)
-  const processedImageUrl = getImagePath(image)
+  const processedImageUrl = `/vocal-coaching${image}`
 
-  // Add debug logging
   useEffect(() => {
     console.log('ServiceCard mounted:', title)
-    debugImagePath(image)
-  }, [title, image])
+  }, [title])
 
   const handleImageError = () => {
     console.error('Failed to load image:', processedImageUrl)
@@ -53,7 +50,6 @@ export default function ServiceCard({ title, description, icon, price, features,
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background Image or Fallback */}
       <div className="absolute inset-0">
         {!imageError ? (
           <Image
@@ -72,7 +68,6 @@ export default function ServiceCard({ title, description, icon, price, features,
         <div className="absolute inset-0 bg-black/80 backdrop-blur-md" />
       </div>
 
-      {/* Content */}
       <div className="relative z-10">
         <div className="flex items-center justify-between mb-4">
           <div className="p-2 rounded-lg bg-[#C8A97E]/20 text-[#C8A97E]">
