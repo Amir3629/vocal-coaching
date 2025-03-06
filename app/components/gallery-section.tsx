@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { Dialog, DialogContent } from "@/components/ui/dialog"
+import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
 interface GalleryImage {
   src: string
@@ -175,28 +176,25 @@ export default function GallerySection() {
             </motion.div>
           ))}
         </div>
-      </div>
 
-      <AnimatePresence>
-        {selectedImage && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/95"
-            onClick={handleClose}
-          >
-            <div className="relative w-full h-full flex items-center justify-center p-4">
+        {/* Modal */}
+        <AnimatePresence>
+          {selectedImage && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={handleClose}
+              className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+            >
               <motion.div
-                initial={{ scale: 0.9, opacity: 0 }}
+                initial={{ scale: 0.8, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ duration: 0.3 }}
-                className="relative max-w-7xl w-full h-[80vh] flex flex-col items-center justify-center"
+                exit={{ scale: 0.8, opacity: 0 }}
+                className="relative max-w-7xl w-full mx-auto"
                 onClick={(e) => e.stopPropagation()}
               >
-                <div className="relative w-full h-full">
+                <div className="relative aspect-[16/9] w-full">
                   <Image
                     src={selectedImage.src}
                     alt={selectedImage.alt}
@@ -207,49 +205,49 @@ export default function GallerySection() {
                   />
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-black via-black/50 to-transparent">
-                  <div className="max-w-3xl mx-auto">
-                    <h3 className="text-white text-xl font-medium mb-2">{selectedImage.description}</h3>
-                    <p className="text-[#C8A97E] text-sm">{selectedImage.date} • {selectedImage.location}</p>
-                  </div>
-                </div>
-
                 {/* Navigation Arrows */}
                 <button
-                  onClick={handlePrev}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#C8A97E] text-black hover:bg-[#B89A6F] transition-colors"
-                  aria-label="Previous image"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrev(e as React.MouseEvent);
+                  }}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 flex items-center justify-center text-white/90 hover:bg-black/70 transition-colors"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M15 19l-7-7 7-7" />
-                  </svg>
+                  <ChevronLeft className="w-6 h-6" />
                 </button>
 
                 <button
-                  onClick={handleNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-3 rounded-full bg-[#C8A97E] text-black hover:bg-[#B89A6F] transition-colors"
-                  aria-label="Next image"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNext(e as React.MouseEvent);
+                  }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 flex items-center justify-center text-white/90 hover:bg-black/70 transition-colors"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                  </svg>
+                  <ChevronRight className="w-6 h-6" />
                 </button>
 
-                {/* Close button */}
+                {/* Close Button */}
                 <button
                   onClick={handleClose}
-                  className="absolute top-4 right-4 p-2 text-white hover:text-[#C8A97E] transition-colors"
-                  aria-label="Close gallery"
+                  className="absolute -top-12 right-0 text-white/90 hover:text-white"
                 >
-                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                  </svg>
+                  <X className="w-6 h-6" />
                 </button>
+
+                {/* Image Info */}
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
+                  <p className="text-white font-medium text-lg">{selectedImage.description}</p>
+                  <div className="flex items-center gap-4 text-sm text-white/70 mt-2">
+                    <span>{selectedImage.date}</span>
+                    <span>•</span>
+                    <span>{selectedImage.location}</span>
+                  </div>
+                </div>
               </motion.div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </section>
   )
 } 

@@ -51,22 +51,24 @@ export default function ServiceCard({ title, description, icon, price, features,
       {/* Background container */}
       <div className="absolute inset-0 w-full h-full">
         {!imageError ? (
-          <div className="relative w-full h-full">
+          <div className="relative w-full h-full overflow-hidden">
             <Image
               src={processedImageUrl}
               alt={title}
               fill
-              className="object-cover transform scale-125 transition-transform duration-700"
+              className="object-cover transform scale-125 transition-transform duration-700 group-hover:scale-150"
               quality={90}
               sizes="(max-width: 768px) 100vw, 25vw"
               onError={handleImageError}
               onLoad={handleImageLoad}
               priority
             />
-            <div className="absolute inset-0 bg-black/75 backdrop-blur-xl" />
+            <div className="absolute inset-0 bg-black/75 backdrop-blur-[10px]" />
           </div>
         ) : (
-          <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800" />
+          <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#C8A97E]/10 via-transparent to-transparent opacity-30" />
+          </div>
         )}
       </div>
 

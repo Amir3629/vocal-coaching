@@ -6,25 +6,33 @@ import Image from "next/image"
 const collaborations = [
   {
     name: "B-Flat Jazz Club Berlin",
-    logo: "/vocal-coaching/images/collaborations/bflat.svg",
+    logo: process.env.NODE_ENV === 'production' 
+      ? "/vocal-coaching/images/collaborations/bflat.svg"
+      : "/images/collaborations/bflat.svg",
     link: "https://b-flat-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Complete Vocal Institute Copenhagen",
-    logo: "/vocal-coaching/images/collaborations/cvi.svg",
+    logo: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/collaborations/cvi.svg"
+      : "/images/collaborations/cvi.svg",
     link: "https://completevocal.institute",
     isPlaceholder: false
   },
   {
     name: "Jazz Institut Berlin",
-    logo: "/vocal-coaching/images/collaborations/jib.svg",
+    logo: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/collaborations/jib.svg"
+      : "/images/collaborations/jib.svg",
     link: "https://www.jazz-institut-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Berliner Philharmonie",
-    logo: "/vocal-coaching/images/collaborations/philharmonie.svg",
+    logo: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/collaborations/philharmonie.svg"
+      : "/images/collaborations/philharmonie.svg",
     link: "https://www.berliner-philharmoniker.de",
     isPlaceholder: false
   }
@@ -63,14 +71,16 @@ export default function Collaborations() {
                   <div className="absolute inset-0 bg-[#C8A97E]/20 blur-2xl rounded-full transform-gpu scale-150" />
                   <div className="absolute inset-0 bg-gradient-radial from-[#C8A97E]/30 via-transparent to-transparent blur-xl" />
                 </div>
-                <div className="relative w-full h-full">
-                  <Image
-                    src={collab.logo}
-                    alt={collab.name}
-                    fill
-                    className="object-contain transition-all duration-500 relative z-10"
-                    sizes="(max-width: 768px) 40vw, 20vw"
-                  />
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <div className="w-full h-full relative">
+                    <Image
+                      src={collab.logo}
+                      alt={collab.name}
+                      fill
+                      className="object-contain transition-all duration-500 relative z-10"
+                      sizes="(max-width: 768px) 40vw, 20vw"
+                    />
+                  </div>
                 </div>
               </div>
             </motion.a>

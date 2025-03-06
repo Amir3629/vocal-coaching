@@ -12,7 +12,9 @@ const testimonials = [
     role: "Jazz-Sängerin",
     content:
       "Melanies Unterricht hat meine Herangehensweise an den Jazzgesang komplett verändert. Ihre Techniken für Improvisation und Stimmkontrolle waren unglaublich wertvoll für meine Auftritte.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=sarah&backgroundColor=b69a6e&accessories=kurt,prescription02&top=shortHair,longHair&clothingColor=b69a6e"
+    image: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/testimonials/sarah.svg"
+      : "/images/testimonials/sarah.svg"
   },
   {
     id: 2,
@@ -20,7 +22,9 @@ const testimonials = [
     role: "Musikstudent",
     content:
       "Als Anfänger war ich nervös, Gesangsunterricht zu nehmen, aber Melanie schaffte eine so unterstützende Atmosphäre. Ihre Geduld und Expertise halfen mir, schnell Selbstvertrauen aufzubauen.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=michael&backgroundColor=b69a6e&accessories=round&top=shortHair&clothingColor=b69a6e"
+    image: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/testimonials/michael.svg"
+      : "/images/testimonials/michael.svg"
   },
   {
     id: 3,
@@ -28,28 +32,36 @@ const testimonials = [
     role: "Professionelle Sängerin",
     content:
       "Melanies Coaching geht über die Technik hinaus. Sie half mir, meine eigene Stimme und meinen Stil zu finden, was für meine Karriereentwicklung in der Berliner Jazzszene entscheidend war.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=elena&backgroundColor=b69a6e&accessories=prescription02&top=longHair&clothingColor=b69a6e"
+    image: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/testimonials/elena.svg"
+      : "/images/testimonials/elena.svg"
   },
   {
     id: 4,
     name: "Emily W.",
     role: "Jazz Vocalist",
     content: "Coming from London, I was thrilled to find such an exceptional vocal coach in Berlin. Melanie's approach to jazz vocals is both technical and intuitive, helping me develop my own unique style.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=emily&backgroundColor=b69a6e&accessories=round&top=longHair&clothingColor=b69a6e"
+    image: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/testimonials/emily.svg"
+      : "/images/testimonials/emily.svg"
   },
   {
     id: 5,
     name: "Thomas H.",
     role: "Hobby-Sänger",
     content: "Der Unterricht bei Melanie hat mir nicht nur gesanglich, sondern auch musikalisch völlig neue Perspektiven eröffnet. Ihre Methodik ist präzise und gleichzeitig sehr inspirierend.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=thomas&backgroundColor=b69a6e&accessories=prescription01&top=shortHair&clothingColor=b69a6e"
+    image: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/testimonials/thomas.svg"
+      : "/images/testimonials/thomas.svg"
   },
   {
     id: 6,
     name: "Julia B.",
     role: "Musikstudentin",
     content: "Durch Melanies Coaching habe ich gelernt, meine Stimme richtig einzusetzen. Ihre Expertise in der Jazztechnik ist beeindruckend und ihre Lehrmethoden sind sehr effektiv.",
-    image: "https://api.dicebear.com/7.x/avataaars/svg?seed=julia&backgroundColor=b69a6e&accessories=kurt&top=longHair&clothingColor=b69a6e"
+    image: process.env.NODE_ENV === 'production'
+      ? "/vocal-coaching/images/testimonials/julia.svg"
+      : "/images/testimonials/julia.svg"
   },
   {
     id: 7,
