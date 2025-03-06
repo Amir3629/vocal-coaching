@@ -7,31 +7,31 @@ import { useState } from "react"
 const collaborations = [
   {
     name: "CVT Authorised Teacher",
-    logo: "/images/collaborations/cvt-teacher.svg",
+    logo: "/vocal-coaching/images/collaborations/cvt-teacher.svg",
     link: "https://completevocal.institute",
     isPlaceholder: false
   },
   {
     name: "CVT Deutschland",
-    logo: "/images/collaborations/cvt-deutschland.svg",
+    logo: "/vocal-coaching/images/collaborations/cvt-deutschland.svg",
     link: "https://cvtdeutschland.de",
     isPlaceholder: false
   },
   {
     name: "B-Flat Jazz Club Berlin",
-    logo: "/images/collaborations/bflat.svg",
+    logo: "/vocal-coaching/images/collaborations/bflat.svg",
     link: "https://b-flat-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Jazz Institut Berlin",
-    logo: "/images/collaborations/jib.svg",
+    logo: "/vocal-coaching/images/collaborations/jib.svg",
     link: "https://www.jazz-institut-berlin.de",
     isPlaceholder: false
   },
   {
     name: "Berliner Philharmonie",
-    logo: "/images/collaborations/philharmonie.svg",
+    logo: "/vocal-coaching/images/collaborations/philharmonie.svg",
     link: "https://www.berliner-philharmoniker.de",
     isPlaceholder: false
   }
