@@ -111,18 +111,10 @@ export default function Home() {
               console.error('Image failed to load');
               const target = e.target as HTMLImageElement;
               target.style.backgroundColor = '#000';
-              target.style.border = '1px solid red';
             }}
             onLoad={() => console.log('Image loaded successfully')}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70" />
-        </div>
-
-        {/* Debug information */}
-        <div className="absolute top-4 left-4 bg-black/80 p-4 rounded text-xs text-white z-50">
-          <p>Environment: {process.env.NODE_ENV}</p>
-          <p>Image path: /vocal-coaching/images/backgrounds/hero-bg.jpg</p>
-          <p>Base path: {process.env.NEXT_PUBLIC_BASE_PATH || ''}</p>
         </div>
 
         <motion.div
