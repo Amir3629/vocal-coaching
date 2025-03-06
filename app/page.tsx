@@ -102,11 +102,28 @@ export default function Home() {
 
       {/* Hero Section with Parallax Piano Background */}
       <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
-        <ParallaxBackground 
-          imageUrl="/images/backgrounds/hero-bg.jpg"
-          opacity={0.3}
-          speed={0.3}
-        />
+        <div className="absolute inset-0">
+          <img
+            src="/vocal-coaching/images/backgrounds/hero-bg.jpg"
+            alt="Background"
+            className="w-full h-full object-cover"
+            onError={(e) => {
+              console.error('Image failed to load');
+              const target = e.target as HTMLImageElement;
+              target.style.backgroundColor = '#000';
+              target.style.border = '1px solid red';
+            }}
+            onLoad={() => console.log('Image loaded successfully')}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70" />
+        </div>
+
+        {/* Debug information */}
+        <div className="absolute top-4 left-4 bg-black/80 p-4 rounded text-xs text-white z-50">
+          <p>Environment: {process.env.NODE_ENV}</p>
+          <p>Image path: /vocal-coaching/images/backgrounds/hero-bg.jpg</p>
+          <p>Base path: {process.env.NEXT_PUBLIC_BASE_PATH || ''}</p>
+        </div>
 
         <motion.div 
           className="relative z-10 text-center px-4 max-w-4xl mx-auto"
@@ -251,13 +268,11 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image={process.env.NODE_ENV === 'production' 
-                ? '/vocal-coaching/images/services/private-lessons.jpg'
-                : '/images/services/private-lessons.jpg'}
+              image="/images/services/private-lessons.jpg"
               delay={0.1}
             />
             
-            <ServiceCard 
+            <ServiceCard
               title="Jazz Improvisation"
               description="Meistern Sie die Kunst des Jazz-Scattens und der melodischen Improvisation."
               icon={<Music />}
@@ -284,13 +299,11 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte oder Online"
               }}
-              image={process.env.NODE_ENV === 'production' 
-                ? '/vocal-coaching/images/services/performance.jpg'
-                : '/images/services/performance.jpg'}
+              image="/images/services/performance.jpg"
               delay={0.2}
             />
             
-            <ServiceCard 
+            <ServiceCard
               title="Aufführungs Coaching"
               description="Entwickeln Sie eine fesselnde Bühnenpräsenz und Aufführungskompetenz."
               icon={<Theater />}
@@ -317,13 +330,11 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-              image={process.env.NODE_ENV === 'production' 
-                ? '/vocal-coaching/images/services/workshop.jpg'
-                : '/images/services/workshop.jpg'}
+              image="/images/services/workshop.jpg"
               delay={0.3}
             />
             
-            <ServiceCard 
+            <ServiceCard
               title="Piano/Vocal-Koordination"
               description="Erlernen Sie sich beim Singen selbst zu begleiten."
               icon={<BookOpen />}
@@ -350,9 +361,7 @@ export default function Home() {
                 duration: "60 Minuten",
                 location: "Studio Berlin-Mitte"
               }}
-              image={process.env.NODE_ENV === 'production' 
-                ? '/vocal-coaching/images/services/piano.jpg'
-                : '/images/services/piano.jpg'}
+              image="/images/services/piano.jpg"
               delay={0.4}
             />
           </div>
