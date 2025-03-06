@@ -26,23 +26,22 @@ export default function ContactForm() {
       <section id="contact" className="relative min-h-screen py-20">
         {/* Background */}
         <div className="absolute inset-0 z-0">
-          {!bgImageError ? (
-            <>
+          <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#C8A97E]/10 via-transparent to-transparent opacity-30" />
+          </div>
+          {!bgImageError && (
+            <div className="absolute inset-0">
               <Image
                 src={process.env.NODE_ENV === 'production'
                   ? "/vocal-coaching/images/backgrounds/contact-bg.jpg"
                   : "/images/backgrounds/contact-bg.jpg"}
                 alt="Contact Background"
                 fill
-                className="object-cover"
+                className="object-cover mix-blend-overlay opacity-60"
                 priority
                 onError={() => setBgImageError(true)}
               />
-              <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-            </>
-          ) : (
-            <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#C8A97E]/10 via-transparent to-transparent opacity-30" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent" />
             </div>
           )}
         </div>

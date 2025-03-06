@@ -77,7 +77,7 @@ export default function Collaborations() {
                       src={collab.logo}
                       alt={collab.name}
                       fill
-                      className="object-contain transition-all duration-500 relative z-10"
+                      className="object-contain transition-all duration-500 relative z-10 invert opacity-70 group-hover:opacity-100 group-hover:invert-0 group-hover:brightness-125"
                       sizes="(max-width: 768px) 40vw, 20vw"
                     />
                   </div>

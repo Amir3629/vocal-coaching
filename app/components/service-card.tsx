@@ -56,14 +56,14 @@ export default function ServiceCard({ title, description, icon, price, features,
               src={processedImageUrl}
               alt={title}
               fill
-              className="object-cover transform scale-125 transition-transform duration-700 group-hover:scale-150"
+              className={`object-cover transform scale-110 transition-transform duration-700 ${isHovered ? 'scale-125' : 'scale-110'}`}
               quality={90}
               sizes="(max-width: 768px) 100vw, 25vw"
               onError={handleImageError}
               onLoad={handleImageLoad}
               priority
             />
-            <div className="absolute inset-0 bg-black/75 backdrop-blur-[10px]" />
+            <div className={`absolute inset-0 bg-black/60 backdrop-blur-[2px] transition-all duration-300 ${isHovered ? 'bg-black/50 backdrop-blur-[1px]' : ''}`} />
           </div>
         ) : (
           <div className="w-full h-full bg-gradient-to-br from-gray-900 to-gray-800">
