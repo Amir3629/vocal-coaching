@@ -23,8 +23,8 @@ export default function ImpressumPage() {
       <section className="mb-8">
         <h2 className="text-2xl font-semibold mb-4">Kontakt</h2>
         <div className="mb-4">
-          <p>Telefon: +49 (0) 123 456789</p>
-          <p>E-Mail: contact@melaniewainwright.de</p>
+          <p>E-Mail: info@melanie-wainwright.de</p>
+          <p>Website: www.melanie-wainwright.de</p>
         </div>
       </section>
 

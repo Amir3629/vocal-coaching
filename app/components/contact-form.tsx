@@ -97,7 +97,7 @@ export default function ContactForm() {
                   </div>
                   <div>
                     <h3 className="text-sm font-medium text-white/80 mb-1">Email</h3>
-                    <p className="text-base text-gray-400">contact@melaniewainwright.de</p>
+                    <p className="text-base text-gray-400">info@melanie-wainwright.de</p>
                   </div>
                 </div>
               </div>

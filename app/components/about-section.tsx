@@ -42,50 +42,39 @@ export default function AboutSection() {
             
             <div className="text-gray-300 space-y-4">
               <p>
-                Als leidenschaftliche Jazzsängerin und erfahrene Gesangslehrerin widme ich mich der Entwicklung und Förderung von Stimmen. Mit meiner Expertise in der Complete Vocal Technique (CVT) und jahrelanger Erfahrung in der Berliner Jazzszene biete ich einen einzigartigen und effektiven Ansatz im Gesangsunterricht.
+                Halb Britin, halb Deutsche - und 100%ige Rheinländerin lebe ich freiwillig in Berlin. Meine musikalische Reise begann früh: vom Kinderchor über den Gospelchor "Crescendo" bis hin zu "Die Männer", einer der ersten Girl Bands in Deutschland. Die Entdeckung von Ella Fitzgerald's "Airmail Special" öffnete mir die Tür zur Welt des Jazz - eine Liebe auf den ersten Blick.
               </p>
               
-              <AnimatePresence>
-                {isExpanded && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.8, ease: "easeInOut" }}
-                    className="space-y-4 overflow-hidden"
-                  >
-                    <div>
-                      <h3 className="text-xl font-semibold text-white mb-3">Ausbildung & Expertise</h3>
-                      <ul className="list-disc list-inside text-gray-300 space-y-2">
-                        <li>Zertifizierte Complete Vocal Technique Lehrerin</li>
-                        <li>Jahrelange Erfahrung in der Berliner Jazzszene</li>
-                        <li>Spezialisierung auf Jazz-Gesang und Improvisation</li>
-                        <li>Regelmäßige Weiterbildungen und Workshops</li>
-                      </ul>
-                    </div>
+              {isExpanded && (
+                <motion.div
+                  initial={{ opacity: 0, height: 0 }}
+                  animate={{ opacity: 1, height: "auto" }}
+                  exit={{ opacity: 0, height: 0 }}
+                  transition={{ duration: 0.8, ease: "easeInOut" }}
+                  className="space-y-4 overflow-hidden"
+                >
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-3">Ausbildung & Expertise</h3>
+                    <p className="mb-4">
+                      Um meiner Leidenschaft eine professionelle Grundlage zu geben, studierte ich Jazzgesang und Pädagogik in Kopenhagen und Köln. Am Complete Vocal Technique Institut schloss ich mein zweites Studium als authorised singer & teacher ab. Seit 2000 arbeite ich als Sängerin und Vocal Coach, mit drei veröffentlichten CDs und zahlreichen Kompositionen im Chanson-Fach.
+                    </p>
+                  </div>
 
-                    <div>
-                      <h3 className="text-xl font-semibold text-white mb-3">Unterrichtsmethode</h3>
-                      <ul className="list-disc list-inside text-gray-300 space-y-2">
-                        <li>Individuell angepasster Unterricht</li>
-                        <li>Fokus auf gesunde Stimmtechnik</li>
-                        <li>Integration von Theorie und Praxis</li>
-                        <li>Entwicklung persönlicher Ausdrucksweise</li>
-                      </ul>
-                    </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-3">Internationale Erfahrung</h3>
+                    <p className="mb-4">
+                      Meine Auftritte führten mich von Tokyo über Belgien und die Niederlande bis nach Österreich. Ich sang in unzähligen Jazzclubs, auf Festivals, Schiffen, Open Air und On Air, in Kirchen und auf Ämtern, in Kneipen und Kulturhäusern, auf Vernissagen und Privatfeiern, Roof Tops, im Zirkus, Pianohäusern und auf Balkonen.
+                    </p>
+                  </div>
 
-                    <div>
-                      <h3 className="text-xl font-semibold text-white mb-3">Auftritte & Projekte</h3>
-                      <ul className="list-disc list-inside text-gray-300 space-y-2">
-                        <li>Regelmäßige Auftritte im B-Flat Jazz Club</li>
-                        <li>Chorleiterin bei "Chor Next Door"</li>
-                        <li>Zusammenarbeit mit diversen Jazzbands</li>
-                        <li>Workshop-Leiterin für Vokalimprovisation</li>
-                      </ul>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  <div>
+                    <h3 className="text-xl font-semibold text-white mb-3">Aktuelle Projekte</h3>
+                    <p className="mb-4">
+                      Als stolzes Mitglied der internationalen Berliner Jazzszene bin ich nicht nur als Sängerin aktiv, sondern auch als Vocal Coach bei der Bandleiter Ausbildung in Wiesbaden tätig. Meine vierte CD ist fertig und wartet auf das Start Signal - mit schönen Standards in bunte Farben getaucht und Originals mit eigenen Texten.
+                    </p>
+                  </div>
+                </motion.div>
+              )}
             </div>
 
             <motion.button
