@@ -84,6 +84,9 @@ export default function Footer() {
               <Link href="/legal/agb" className="text-gray-400 hover:text-[#C8A97E] transition-colors">
                 AGB
               </Link>
+              <Link href="/legal/meine-rechte" className="text-gray-400 hover:text-[#C8A97E] transition-colors">
+                Meine Rechte
+              </Link>
             </div>
           </div>
         </div>
