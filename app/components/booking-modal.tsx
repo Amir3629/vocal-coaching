@@ -305,70 +305,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           />
                         </div>
 
-                        {/* Legal Acknowledgments */}
-                        <div className="space-y-4 mt-6 border-t border-[#C8A97E]/20 pt-6">
-                          <div className="flex items-start gap-3">
-                            <input
-                              type="checkbox"
-                              id="agb"
-                              required
-                              className="mt-1 h-4 w-4 rounded border-gray-300 text-[#C8A97E] focus:ring-[#C8A97E]"
-                            />
-                            <label htmlFor="agb" className="text-sm text-gray-300">
-                              Ich akzeptiere die{" "}
-                              <Link href="/legal/agb" className="text-[#C8A97E] hover:underline">
-                                Allgemeinen Geschäftsbedingungen
-                              </Link>
-                              {" "}des Anbieters.
-                            </label>
-                          </div>
-
-                          <div className="flex items-start gap-3">
-                            <input
-                              type="checkbox"
-                              id="withdrawal"
-                              required
-                              className="mt-1 h-4 w-4 rounded border-gray-300 text-[#C8A97E] focus:ring-[#C8A97E]"
-                            />
-                            <label htmlFor="withdrawal" className="text-sm text-gray-300">
-                              Ich bin über mein 14-tägiges Widerrufsrecht als Verbraucher informiert und akzeptiere die{" "}
-                              <Link href="/legal/meine-rechte" className="text-[#C8A97E] hover:underline">
-                                Widerrufsbelehrung
-                              </Link>
-                              .
-                            </label>
-                          </div>
-
-                          <div className="flex items-start gap-3">
-                            <input
-                              type="checkbox"
-                              id="privacy"
-                              required
-                              className="mt-1 h-4 w-4 rounded border-gray-300 text-[#C8A97E] focus:ring-[#C8A97E]"
-                            />
-                            <label htmlFor="privacy" className="text-sm text-gray-300">
-                              Ich stimme der{" "}
-                              <Link href="/legal/datenschutz" className="text-[#C8A97E] hover:underline">
-                                Datenschutzerklärung
-                              </Link>
-                              {" "}zu und akzeptiere die Verwendung von Cookies.
-                            </label>
-                          </div>
-                        </div>
-
-                        <div className="flex justify-between mt-6">
-                          <button
-                            type="button"
-                            onClick={() => setStep(2)}
-                            className="px-6 py-2 rounded-lg border border-white/10 hover:border-[#C8A97E]/50 text-white transition-all"
-                          >
-                            Zurück
-                          </button>
+                        <div className="mt-4">
                           <button
                             type="submit"
-                            className="px-6 py-2 rounded-lg bg-[#C8A97E] hover:bg-[#B89A6F] text-black font-medium transition-all"
+                            className="w-full bg-[#C8A97E] text-white px-4 py-2 rounded hover:bg-[#B89A6E] transition-colors"
                           >
-                            Buchung abschließen
+                            Jetzt Buchen
                           </button>
                         </div>
                       </motion.form>

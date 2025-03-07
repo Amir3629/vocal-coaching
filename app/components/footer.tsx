@@ -51,43 +51,51 @@ export default function Footer() {
           {/* Column 3 - Institutions & Partners */}
           <div>
             <h3 className="text-lg font-medium text-white mb-4">Institutionen & Partner</h3>
-            <ul className="space-y-2 text-gray-400">
-              <li>
-                <a href="#" className="hover:text-[#C8A97E] transition-colors">Complete Vocal Institute</a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#C8A97E] transition-colors">CVT Deutschland</a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#C8A97E] transition-colors">B-Flat Jazz Club Berlin</a>
-              </li>
-              <li>
-                <a href="#" className="hover:text-[#C8A97E] transition-colors">Chor Next Door</a>
-              </li>
-            </ul>
+            <div className="grid grid-cols-2 gap-x-4">
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <a href="#" className="hover:text-[#C8A97E] transition-colors">Complete Vocal Institute</a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-[#C8A97E] transition-colors">CVT Deutschland</a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-[#C8A97E] transition-colors">B-Flat Jazz Club Berlin</a>
+                </li>
+                <li>
+                  <a href="#" className="hover:text-[#C8A97E] transition-colors">Chor Next Door</a>
+                </li>
+              </ul>
+              <ul className="space-y-2 text-gray-400">
+                <li>
+                  <Link href="/legal/datenschutz" className="hover:text-[#C8A97E] transition-colors">
+                    Datenschutz
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/legal/agb" className="hover:text-[#C8A97E] transition-colors">
+                    AGB
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/legal/impressum" className="hover:text-[#C8A97E] transition-colors">
+                    Impressum
+                  </Link>
+                </li>
+                <li>
+                  <Link href="/legal/meine-rechte" className="hover:text-[#C8A97E] transition-colors">
+                    Meine Rechte
+                  </Link>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 
-        {/* Legal Links & Copyright */}
+        {/* Copyright */}
         <div className="mt-12 pt-6 border-t border-white/10">
-          <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <div className="text-gray-400 text-sm">
-              © 2024 Melanie Wainwright. Alle Rechte vorbehalten.
-            </div>
-            <div className="flex space-x-6 text-sm">
-              <Link href="/legal/impressum" className="text-gray-400 hover:text-[#C8A97E] transition-colors">
-                Impressum
-              </Link>
-              <Link href="/legal/datenschutz" className="text-gray-400 hover:text-[#C8A97E] transition-colors">
-                Datenschutz
-              </Link>
-              <Link href="/legal/agb" className="text-gray-400 hover:text-[#C8A97E] transition-colors">
-                AGB
-              </Link>
-              <Link href="/legal/meine-rechte" className="text-gray-400 hover:text-[#C8A97E] transition-colors">
-                Meine Rechte
-              </Link>
-            </div>
+          <div className="text-center text-gray-400 text-sm">
+            © 2024 Melanie Wainwright. Alle Rechte vorbehalten.
           </div>
         </div>
       </div>
