@@ -1,24 +1,39 @@
 "use client"
 
+import { motion } from "framer-motion"
+
 export default function AGBPage() {
   return (
-    <>
-      <h1>Allgemeine Geschäftsbedingungen</h1>
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="container mx-auto px-4 py-8 max-w-4xl"
+    >
+      <h1 className="text-3xl font-bold mb-6">Allgemeine Geschäftsbedingungen</h1>
       
-      <h2>1. Geltungsbereich</h2>
-      <p>
-        Diese Allgemeinen Geschäftsbedingungen (AGB) gelten für alle Verträge zwischen Melanie Wainwright Vocal Coaching (nachfolgend "Anbieter") und den Kunden über Gesangsunterricht und damit verbundene Dienstleistungen.
-      </p>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">1. Geltungsbereich</h2>
+        <p className="mb-4">
+          Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge zwischen Melanie Wainwright Vocal Coaching 
+          und ihren Kunden bezüglich der Durchführung von Gesangsunterricht und Coaching-Leistungen.
+        </p>
+      </section>
 
-      <h2>2. Vertragsschluss</h2>
-      <p>
-        Der Vertrag kommt durch die Buchung einer Unterrichtsstunde oder eines Kurses und deren Bestätigung durch den Anbieter zustande. Die Buchung kann persönlich, telefonisch, schriftlich oder über das Online-Buchungssystem erfolgen.
-      </p>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">2. Vertragsschluss</h2>
+        <p className="mb-4">
+          Der Vertrag kommt durch die Anmeldung des Kunden und die Bestätigung durch Melanie Wainwright Vocal Coaching 
+          zustande. Die Anmeldung kann schriftlich, per E-Mail oder über das Online-Buchungssystem erfolgen.
+        </p>
+      </section>
 
-      <h2>3. Leistungen</h2>
-      <p>
-        Der Anbieter erbringt Gesangsunterricht und Coaching-Leistungen nach den vereinbarten Modalitäten. Die genauen Leistungsinhalte ergeben sich aus der jeweiligen Kursbeschreibung oder Vereinbarung.
-      </p>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">3. Unterrichtsgebühren</h2>
+        <p className="mb-4">
+          Die Unterrichtsgebühren sind im Voraus zu entrichten. Bei Verhinderung ist eine Absage mindestens 24 Stunden 
+          vor dem vereinbarten Termin erforderlich, andernfalls wird die Unterrichtsstunde berechnet.
+        </p>
+      </section>
 
       <h2>4. Preise und Zahlungsbedingungen</h2>
       <p>
@@ -55,6 +70,6 @@ export default function AGBPage() {
         <p>Melanie Wainwright Vocal Coaching</p>
         <p>Torstraße 177, 10115 Berlin</p>
       </div>
-    </>
+    </motion.div>
   )
 } 
