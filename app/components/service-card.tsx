@@ -27,17 +27,17 @@ export default function ServiceCard({ title, description, icon, price, features,
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
-      className="relative h-[400px] perspective-1000"
+      className="relative h-[450px] perspective-1000"
     >
       <div
-        className="relative w-full h-full transition-all duration-700 preserve-3d cursor-pointer hover:rotate-y-180"
+        className="relative w-full h-full transition-all duration-700 preserve-3d cursor-pointer hover:rotate-y-180 group"
         style={{
           transformStyle: "preserve-3d",
         }}
       >
         {/* Front of card */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500"
+          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500"
           style={{ backfaceVisibility: "hidden" }}
         >
           <div className="absolute inset-0 w-full h-full">
@@ -45,7 +45,7 @@ export default function ServiceCard({ title, description, icon, price, features,
               src={image}
               alt={title}
               fill
-              className="object-cover transition-all duration-700 scale-110 blur-[2px] group-hover:blur-none"
+              className="object-cover object-center transition-all duration-700 scale-105 group-hover:scale-110"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
               priority
             />
@@ -59,8 +59,8 @@ export default function ServiceCard({ title, description, icon, price, features,
               <span className="text-lg font-semibold text-[#C8A97E]">{price}</span>
             </div>
             <h3 className="text-xl font-bold mb-3 text-white">{title}</h3>
-            <p className="text-gray-300 mb-4">{description}</p>
-            <ul className="space-y-2 flex-grow">
+            <p className="text-gray-300 mb-4 text-sm">{description}</p>
+            <ul className="space-y-2 flex-grow text-sm">
               {features.map((feature, index) => (
                 <li key={index} className="flex items-center text-gray-300">
                   <span className="mr-2 text-[#C8A97E]">•</span>
@@ -74,43 +74,43 @@ export default function ServiceCard({ title, description, icon, price, features,
 
         {/* Back of card */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rounded-xl bg-[#0A0A0A] border border-[#C8A97E]/20 p-6 flex flex-col rotate-y-180"
+          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20 p-6 flex flex-col rotate-y-180"
           style={{ 
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)"
           }}
         >
-          <h3 className="text-xl font-bold text-[#C8A97E] mb-4">{title}</h3>
-          <div className="space-y-6 flex-grow">
+          <h3 className="text-lg font-bold text-[#C8A97E] mb-3">{title}</h3>
+          <div className="space-y-4 flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-[#C8A97E]/20 scrollbar-track-transparent pr-2">
             <div>
-              <h4 className="text-[#C8A97E] font-medium mb-2">Enthält:</h4>
-              <ul className="space-y-2">
+              <h4 className="text-[#C8A97E] font-medium mb-2 text-sm">Enthält:</h4>
+              <ul className="space-y-1.5">
                 {details.includes.map((item, index) => (
-                  <li key={index} className="flex items-center text-gray-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    {item}
+                  <li key={index} className="flex items-start text-gray-300 text-sm">
+                    <span className="mr-2 text-[#C8A97E] mt-1">•</span>
+                    <span className="flex-1">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
             <div>
-              <h4 className="text-[#C8A97E] font-medium mb-2">Geeignet für:</h4>
-              <ul className="space-y-2">
+              <h4 className="text-[#C8A97E] font-medium mb-2 text-sm">Geeignet für:</h4>
+              <ul className="space-y-1.5">
                 {details.suitable.map((item, index) => (
-                  <li key={index} className="flex items-center text-gray-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    {item}
+                  <li key={index} className="flex items-start text-gray-300 text-sm">
+                    <span className="mr-2 text-[#C8A97E] mt-1">•</span>
+                    <span className="flex-1">{item}</span>
                   </li>
                 ))}
               </ul>
             </div>
 
-            <div className="space-y-2">
-              <p className="text-gray-300">
+            <div className="space-y-1.5">
+              <p className="text-sm text-gray-300">
                 <span className="text-[#C8A97E]">Dauer:</span> {details.duration}
               </p>
-              <p className="text-gray-300">
+              <p className="text-sm text-gray-300">
                 <span className="text-[#C8A97E]">Ort:</span> {details.location}
               </p>
             </div>
