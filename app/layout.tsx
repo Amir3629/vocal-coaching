@@ -1,6 +1,6 @@
 import type React from "react"
 import "./globals.css"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import CookieConsent from "./components/cookie-consent"
 import Footer from "./components/footer"
@@ -10,6 +10,14 @@ const playfair = Playfair_Display({
   subsets: ["latin"],
   variable: '--font-playfair'
 })
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  viewportFit: 'cover',
+}
 
 export const metadata: Metadata = {
   title: "Melanie Wainwright | Jazz Vocal Coaching in Berlin",
@@ -25,7 +33,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`dark ${playfair.variable}`}>
-      <body className={inter.className}>
+      <body className={`${inter.className} antialiased`}>
         {children}
         <Footer />
         <CookieConsent />
