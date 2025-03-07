@@ -48,38 +48,55 @@ export default function Footer() {
     <footer className="bg-black border-t border-white/10">
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
-          {/* Brand Column */}
-          <div className="text-center">
-            <h3 className="text-xl text-white mb-4">Melanie Wainwright</h3>
-            <p className="text-gray-400 mb-6">Jazz Vocal Coaching in Berlin</p>
-            <div className="flex justify-center gap-6 mb-6">
-              {socialLinks.map((item) => (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-gray-400 hover:text-[#C8A97E] transition-colors"
-                >
-                  <span className="sr-only">{item.name}</span>
-                  <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                    <path fillRule="evenodd" d={item.icon} clipRule="evenodd" />
-                  </svg>
-                </Link>
-              ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            {/* Brand & Social Column */}
+            <div className="text-center md:text-left">
+              <h3 className="text-xl text-white mb-4">Melanie Wainwright</h3>
+              <p className="text-gray-400 mb-6">Jazz Vocal Coaching in Berlin</p>
+              <div className="flex justify-center md:justify-start gap-6 mb-6">
+                {socialLinks.map((item) => (
+                  <Link
+                    key={item.name}
+                    href={item.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-gray-400 hover:text-[#C8A97E] transition-colors"
+                  >
+                    <span className="sr-only">{item.name}</span>
+                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                      <path fillRule="evenodd" d={item.icon} clipRule="evenodd" />
+                    </svg>
+                  </Link>
+                ))}
+              </div>
             </div>
-            <div className="flex justify-center gap-4 text-sm text-gray-400 mb-6">
-              {legalDocs.map((doc, index) => (
-                <button
-                  key={doc.title}
-                  onClick={() => setSelectedDoc(doc.title)}
-                  className="hover:text-[#C8A97E] transition-colors"
-                >
-                  {doc.title}
-                </button>
-              ))}
+
+            {/* Legal Links Column */}
+            <div className="text-center md:text-left">
+              <h3 className="text-lg text-white mb-4">Rechtliches</h3>
+              <div className="flex flex-col gap-3">
+                {legalDocs.map((doc) => (
+                  <button
+                    key={doc.title}
+                    onClick={() => setSelectedDoc(doc.title)}
+                    className="text-gray-400 hover:text-[#C8A97E] transition-colors text-sm"
+                  >
+                    {doc.title}
+                  </button>
+                ))}
+              </div>
             </div>
-            <p className="text-sm text-gray-400">© 2025 Melanie Wainwright. Alle Rechte vorbehalten.</p>
+
+            {/* Contact & Copyright Column */}
+            <div className="text-center md:text-left">
+              <h3 className="text-lg text-white mb-4">Kontakt</h3>
+              <div className="space-y-2 mb-6">
+                <p className="text-gray-400 text-sm">Torstraße 177</p>
+                <p className="text-gray-400 text-sm">10115 Berlin</p>
+                <p className="text-gray-400 text-sm">contact@melaniewainwright.de</p>
+              </div>
+              <p className="text-sm text-gray-400">© 2025 Melanie Wainwright.<br />Alle Rechte vorbehalten.</p>
+            </div>
           </div>
         </div>
 
