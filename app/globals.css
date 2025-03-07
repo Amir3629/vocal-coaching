@@ -13,6 +13,7 @@
 
   .backface-hidden {
     backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
   }
 
   .rotate-y-180 {
@@ -37,6 +38,24 @@ input:focus, textarea:focus {
 
 ::-moz-selection {
   @apply bg-[#C8A97E] text-black;
+}
+
+/* Card flip animation */
+@media (hover: hover) {
+  .preserve-3d {
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+}
+
+/* Touch device support */
+@media (hover: none) {
+  .preserve-3d {
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .preserve-3d:active {
+    transform: rotateY(180deg);
+  }
 }
 
 @layer base {

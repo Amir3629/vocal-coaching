@@ -28,11 +28,9 @@ export default function ServiceCard({ title, description, icon, price, features,
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
       className="relative h-[400px] perspective-1000"
-      whileHover={{ scale: 1.02 }}
     >
-      <motion.div
-        className="relative w-full h-full transition-all duration-700 preserve-3d cursor-pointer"
-        whileHover={{ rotateY: 180 }}
+      <div
+        className="relative w-full h-full transition-all duration-700 preserve-3d cursor-pointer hover:rotate-y-180"
         style={{
           transformStyle: "preserve-3d",
         }}
@@ -76,7 +74,7 @@ export default function ServiceCard({ title, description, icon, price, features,
 
         {/* Back of card */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rounded-xl bg-[#0A0A0A] border border-[#C8A97E]/20 p-6 flex flex-col"
+          className="absolute inset-0 w-full h-full backface-hidden rounded-xl bg-[#0A0A0A] border border-[#C8A97E]/20 p-6 flex flex-col rotate-y-180"
           style={{ 
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)"
@@ -118,7 +116,7 @@ export default function ServiceCard({ title, description, icon, price, features,
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
     </motion.div>
   )
 } 
