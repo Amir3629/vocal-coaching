@@ -55,9 +55,10 @@ export default function LegalContent({ type }: LegalContentProps) {
           </p>
           <div className="bg-white/5 p-4 rounded-lg mb-6">
             <p>Melanie Wainwright</p>
-            <p>Schützenstrasse 53</p>
-            <p>12163 Berlin</p>
+            <p>Torstraße 177</p>
+            <p>10115 Berlin</p>
             <p>Email: info@melanie-wainwright.de</p>
+            <p>Website: www.melanie-wainwright.de</p>
           </div>
         </Section>
 
@@ -112,9 +113,10 @@ export default function LegalContent({ type }: LegalContentProps) {
         <Section title="Impressum">
           <div className="bg-white/5 p-4 rounded-lg mb-6">
             <p>Melanie Wainwright</p>
-            <p>Schützenstrasse 53</p>
-            <p>12163 Berlin</p>
+            <p>Torstraße 177</p>
+            <p>10115 Berlin</p>
             <p>Email: info@melanie-wainwright.de</p>
+            <p>Website: www.melanie-wainwright.de</p>
           </div>
         </Section>
 
