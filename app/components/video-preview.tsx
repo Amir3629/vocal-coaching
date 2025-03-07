@@ -95,7 +95,7 @@ export default function VideoPreview() {
     setHasInteracted(true)
     
     try {
-      if (!isPlaying) {
+    if (!isPlaying) {
         setIsLoading(true)
         await video.play()
         setIsPlaying(true)
@@ -119,7 +119,7 @@ export default function VideoPreview() {
     setHasInteracted(true)
     setIsMuted(!isMuted)
     if (videoRef.current) {
-      videoRef.current.muted = !isMuted
+    videoRef.current.muted = !isMuted
     }
   }
 
@@ -150,23 +150,23 @@ export default function VideoPreview() {
               </div>
             </div>
           ) : (
-            <div className="absolute inset-0">
+          <div className="absolute inset-0">
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-[#040202] z-10">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#C8A97E]"></div>
                 </div>
               )}
-              <video
-                ref={videoRef}
+            <video
+              ref={videoRef}
                 className={`w-full h-full object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-                playsInline
-                muted={isMuted}
+              playsInline
+              muted={isMuted}
                 preload="auto"
                 poster={process.env.NODE_ENV === 'production'
                   ? "/vocal-coaching/videos/preview-poster.jpg"
                   : "/videos/preview-poster.jpg"}
-                style={{
-                  objectFit: 'contain',
+              style={{
+                objectFit: 'contain',
                   backgroundColor: '#040202'
                 }}
               />
@@ -187,7 +187,7 @@ export default function VideoPreview() {
                   )}
                 </motion.button>
               </div>
-            </div>
+          </div>
           )}
         </div>
 

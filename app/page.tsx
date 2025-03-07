@@ -117,7 +117,7 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/70" />
         </div>
 
-        <motion.div
+        <motion.div 
           className="relative z-10 text-center px-4 max-w-4xl mx-auto"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
@@ -209,243 +209,155 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/85 to-black/90 backdrop-blur-sm" />
         </div>
 
-        <div className="container mx-auto px-4 relative z-10">
+          <div className="container mx-auto px-4 relative z-10">
           <motion.div 
             className="text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+              viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="section-heading mb-4">Vocal Excellence</h2>
-            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
+              <h2 className="section-heading mb-4">Vocal Excellence</h2>
+              <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {/* Private Lessons Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              whileHover={{ scale: 1.03, y: -5 }}
-              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500 shadow-lg hover:shadow-[#C8A97E]/5"
-            >
-              <div className="absolute inset-0 w-full h-full">
-                <Image
-                  src="/vocal-coaching/images/services/studio.jpg"
-                  alt="Private Lessons"
-                  fill
-                  className="object-cover transition-all duration-700 scale-110 blur-[2px] group-hover:blur-none group-hover:scale-125"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60 group-hover:from-black/90 group-hover:via-black/70 group-hover:to-black/50 transition-all duration-500" />
-              </div>
-              <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
-                <motion.div 
-                  className="flex items-center gap-4 mb-4"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
-                    <Mic className="w-6 h-6 text-[#C8A97E]" />
-                  </div>
-                  <span className="text-lg font-semibold text-[#C8A97E]">ab €60</span>
-                </motion.div>
-                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#C8A97E] transition-colors duration-300">Private Gesangsstunden</h3>
-                <p className="text-gray-300 mb-4">Individueller Unterricht für alle Levels</p>
-                <ul className="space-y-2 flex-grow">
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Stimmtechnik & Atemübungen
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Repertoire-Entwicklung
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Individuelle Zielsetzung
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Flexible Terminplanung
-                  </li>
-                </ul>
-              </div>
-            </motion.div>
-
-            {/* Jazz Improvisation Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              whileHover={{ scale: 1.03, y: -5 }}
-              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500 shadow-lg hover:shadow-[#C8A97E]/5"
-            >
-              <div className="absolute inset-0 w-full h-full">
-                <Image
-                  src="/vocal-coaching/images/services/jazz.jpg"
-                  alt="Jazz Improvisation"
-                  fill
-                  className="object-cover transition-all duration-700 scale-110 blur-[2px] group-hover:blur-none group-hover:scale-125"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60 group-hover:from-black/90 group-hover:via-black/70 group-hover:to-black/50 transition-all duration-500" />
-              </div>
-              <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
-                <motion.div 
-                  className="flex items-center gap-4 mb-4"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
-                    <Music className="w-6 h-6 text-[#C8A97E]" />
-                  </div>
-                  <span className="text-lg font-semibold text-[#C8A97E]">ab €65</span>
-                </motion.div>
-                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#C8A97E] transition-colors duration-300">Jazz Improvisation</h3>
-                <p className="text-gray-300 mb-4">Entdecke die Kunst des Jazz-Gesangs</p>
-                <ul className="space-y-2 flex-grow">
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Scat-Gesang
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Harmonielehre
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Rhythmische Übungen
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Jazz-Standards
-                  </li>
-                </ul>
-              </div>
-            </motion.div>
-
-            {/* Performance Coaching Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.3 }}
-              whileHover={{ scale: 1.03, y: -5 }}
-              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500 shadow-lg hover:shadow-[#C8A97E]/5"
-            >
-              <div className="absolute inset-0 w-full h-full">
-                <Image
-                  src="/vocal-coaching/images/services/performance.jpg"
-                  alt="Performance Coaching"
-                  fill
-                  className="object-cover transition-all duration-700 scale-110 blur-[2px] group-hover:blur-none group-hover:scale-125"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60 group-hover:from-black/90 group-hover:via-black/70 group-hover:to-black/50 transition-all duration-500" />
-              </div>
-              <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
-                <motion.div 
-                  className="flex items-center gap-4 mb-4"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
-                    <Theater className="w-6 h-6 text-[#C8A97E]" />
-                  </div>
-                  <span className="text-lg font-semibold text-[#C8A97E]">ab €70</span>
-                </motion.div>
-                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#C8A97E] transition-colors duration-300">Aufführungs Coaching</h3>
-                <p className="text-gray-300 mb-4">Perfektioniere deine Bühnenpräsenz</p>
-                <ul className="space-y-2 flex-grow">
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Bühnenperformance
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Mikrofonarbeit
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Gestik & Mimik
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Auftrittsvorbereitung
-                  </li>
-                </ul>
-              </div>
-            </motion.div>
-
-            {/* Piano/Vocal Card */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: 0.4 }}
-              whileHover={{ scale: 1.03, y: -5 }}
-              className="group relative overflow-hidden rounded-xl bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500 shadow-lg hover:shadow-[#C8A97E]/5"
-            >
-              <div className="absolute inset-0 w-full h-full">
-                <Image
-                  src="/vocal-coaching/images/services/piano.jpg"
-                  alt="Piano/Vocal Coordination"
-                  fill
-                  className="object-cover transition-all duration-700 scale-110 blur-[2px] group-hover:blur-none group-hover:scale-125"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                  priority
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60 group-hover:from-black/90 group-hover:via-black/70 group-hover:to-black/50 transition-all duration-500" />
-              </div>
-              <div className="relative p-6 flex flex-col h-full min-h-[400px] transform transition-transform duration-500">
-                <motion.div 
-                  className="flex items-center gap-4 mb-4"
-                  whileHover={{ scale: 1.05 }}
-                >
-                  <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
-                    <BookOpen className="w-6 h-6 text-[#C8A97E]" />
-                  </div>
-                  <span className="text-lg font-semibold text-[#C8A97E]">ab €65</span>
-                </motion.div>
-                <h3 className="text-xl font-bold mb-3 text-white group-hover:text-[#C8A97E] transition-colors duration-300">Piano/Vocal-Koordination</h3>
-                <p className="text-gray-300 mb-4">Lerne dich selbst zu begleiten</p>
-                <ul className="space-y-2 flex-grow">
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Grundlegende Klaviertechnik
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Begleitpatterns
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Rhythmische Koordination
-                  </li>
-                  <li className="flex items-center text-gray-300 group-hover:text-white transition-colors duration-300">
-                    <span className="mr-2 text-[#C8A97E]">•</span>
-                    Song-Arrangements
-                  </li>
-                </ul>
-              </div>
-            </motion.div>
+            <ServiceCard 
+              title="Private Gesangsstunden"
+              description="Individueller Unterricht für alle Levels"
+              icon={<Mic className="w-6 h-6 text-[#C8A97E]" />}
+              price="ab €60"
+              features={[
+                "Stimmtechnik & Atemübungen",
+                "Repertoire-Entwicklung",
+                "Individuelle Zielsetzung",
+                "Flexible Terminplanung"
+              ]}
+              details={{
+                includes: [
+                  "Personalisierte Übungen",
+                  "Aufnahmen der Stunden",
+                  "Übe-Material",
+                  "Online Support"
+                ],
+                suitable: [
+                  "Anfänger",
+                  "Fortgeschrittene",
+                  "Profis",
+                  "Hobby-Sänger"
+                ],
+                duration: "60 oder 90 Minuten",
+                location: "Studio Berlin-Mitte"
+              }}
+              image="/vocal-coaching/images/services/studio.jpg"
+              delay={0.1}
+            />
+            
+            <ServiceCard
+              title="Jazz Improvisation"
+              description="Entdecke die Kunst des Jazz-Gesangs"
+              icon={<Music className="w-6 h-6 text-[#C8A97E]" />}
+              price="ab €65"
+              features={[
+                "Scat-Gesang",
+                "Harmonielehre",
+                "Rhythmische Übungen",
+                "Jazz-Standards"
+              ]}
+              details={{
+                includes: [
+                  "Jazz-Theorie",
+                  "Improvisationsübungen",
+                  "Repertoire-Aufbau",
+                  "Band-Interaktion"
+                ],
+                suitable: [
+                  "Jazz-Enthusiasten",
+                  "Professionelle Sänger",
+                  "Band-Mitglieder",
+                  "Musikstudenten"
+                ],
+                duration: "60 oder 90 Minuten",
+                location: "Studio oder Online"
+              }}
+              image="/vocal-coaching/images/services/jazz.jpg"
+              delay={0.2}
+            />
+            
+            <ServiceCard
+              title="Aufführungs Coaching"
+              description="Perfektioniere deine Bühnenpräsenz"
+              icon={<Theater className="w-6 h-6 text-[#C8A97E]" />}
+              price="ab €70"
+              features={[
+                "Bühnenperformance",
+                "Mikrofonarbeit",
+                "Gestik & Mimik",
+                "Auftrittsvorbereitung"
+              ]}
+              details={{
+                includes: [
+                  "Präsenz-Training",
+                  "Bewegungscoaching",
+                  "Emotionale Interpretation",
+                  "Auftritts-Simulation"
+                ],
+                suitable: [
+                  "Bühnenkünstler",
+                  "Bands",
+                  "Singer-Songwriter",
+                  "Performer"
+                ],
+                duration: "90 Minuten",
+                location: "Studio mit Bühne"
+              }}
+              image="/vocal-coaching/images/services/performance.jpg"
+              delay={0.3}
+            />
+            
+            <ServiceCard
+              title="Piano/Vocal-Koordination"
+              description="Lerne dich selbst zu begleiten"
+              icon={<BookOpen className="w-6 h-6 text-[#C8A97E]" />}
+              price="ab €65"
+              features={[
+                "Grundlegende Klaviertechnik",
+                "Begleitpatterns",
+                "Rhythmische Koordination",
+                "Song-Arrangements"
+              ]}
+              details={{
+                includes: [
+                  "Klaviergrundlagen",
+                  "Akkordprogressionen",
+                  "Timing-Übungen",
+                  "Song-Begleitung"
+                ],
+                suitable: [
+                  "Sänger",
+                  "Songwriter",
+                  "Pianisten",
+                  "Musiklehrer"
+                ],
+                duration: "60 oder 90 Minuten",
+                location: "Studio mit Flügel"
+              }}
+              image="/vocal-coaching/images/services/piano.jpg"
+              delay={0.4}
+            />
           </div>
-
-          <motion.div
+          
+          <motion.div 
             className="text-center mt-12"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
+              viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 1 }}
           >
-            <Button
+            <Button 
               size="lg"
               className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8 transform hover:scale-105 transition-all duration-300"
-              onClick={() => setIsBookingModalOpen(true)}
+                onClick={() => setIsBookingModalOpen(true)}
             >
               Jetzt Buchen
             </Button>
@@ -454,7 +366,7 @@ export default function Home() {
       </section>
 
       {/* About Section */}
-      <AboutSection />
+        <AboutSection />
 
       {/* Gallery Section */}
       <GallerySection />

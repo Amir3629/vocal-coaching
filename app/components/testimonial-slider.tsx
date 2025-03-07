@@ -132,9 +132,9 @@ export default function TestimonialSlider() {
 
         <div 
           className="relative max-w-4xl mx-auto"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
           <AnimatePresence mode="wait">
             <motion.div
               key={page}
@@ -144,17 +144,17 @@ export default function TestimonialSlider() {
               transition={{ duration: 0.5 }}
               className="bg-black/30 rounded-xl p-8 backdrop-blur-sm border border-[#C8A97E]/10"
             >
-              <div className="flex flex-col items-center text-center">
+                <div className="flex flex-col items-center text-center">
                 <div className="w-20 h-20 rounded-full overflow-hidden mb-4 border-2 border-[#C8A97E]/20">
                   <Image
                     src={testimonials[page].image}
                     alt={testimonials[page].name}
                     width={80}
                     height={80}
-                    className="w-full h-full object-cover"
+                        className="w-full h-full object-cover"
                     onError={() => setImageError(true)}
-                  />
-                </div>
+                      />
+                    </div>
                 <blockquote className="max-w-2xl mx-auto mb-6">
                   <p className="text-gray-300 text-lg italic">"{testimonials[page].content}"</p>
                 </blockquote>
@@ -170,35 +170,35 @@ export default function TestimonialSlider() {
             </motion.div>
           </AnimatePresence>
 
-          <button
+                <button
             onClick={handlePrevious}
             className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all"
-          >
+                >
             <ChevronLeft className="w-6 h-6" />
-          </button>
+                </button>
 
-          <button
+                <button
             onClick={handleNext}
             className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all"
-          >
+                >
             <ChevronRight className="w-6 h-6" />
-          </button>
+                </button>
 
           <div className="flex justify-center mt-6 gap-2">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
+              {testimonials.map((_, index) => (
+                <button
+                  key={index}
                 onClick={() => setPage(index)}
                 className={`w-2 h-2 rounded-full transition-all ${
-                  index === page ? "bg-[#C8A97E]" : "bg-gray-600"
-                }`}
-              >
-                <span className="sr-only">Go to slide {index + 1}</span>
-              </button>
-            ))}
+                    index === page ? "bg-[#C8A97E]" : "bg-gray-600"
+                  }`}
+                >
+                  <span className="sr-only">Go to slide {index + 1}</span>
+                </button>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
     </section>
   )
 } 
