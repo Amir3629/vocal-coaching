@@ -19,14 +19,6 @@
   .rotate-y-180 {
     transform: rotateY(180deg);
   }
-
-  .mobile-safe-animation {
-    @apply motion-safe:transition-transform motion-safe:duration-300;
-  }
-
-  .mobile-hardware-accelerate {
-    @apply transform-gpu will-change-transform;
-  }
 }
 
 /* Custom checkbox styles */
@@ -46,55 +38,6 @@ input:focus, textarea:focus {
 
 ::-moz-selection {
   @apply bg-[#C8A97E] text-black;
-}
-
-/* Modern Scrollbar Styles */
-.custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(200, 169, 126, 0.05);
-  border-radius: 4px;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(200, 169, 126, 0.3);
-  border-radius: 4px;
-  transition: background 0.3s ease;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(200, 169, 126, 0.5);
-}
-
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(200, 169, 126, 0.3) rgba(200, 169, 126, 0.05);
-}
-
-/* Global scrollbar styles */
-::-webkit-scrollbar {
-  width: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: rgba(200, 169, 126, 0.05);
-}
-
-::-webkit-scrollbar-thumb {
-  background: rgba(200, 169, 126, 0.3);
-  border-radius: 4px;
-  transition: background 0.3s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(200, 169, 126, 0.5);
-}
-
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(200, 169, 126, 0.3) rgba(200, 169, 126, 0.05);
 }
 
 /* Card flip animation */
@@ -160,16 +103,6 @@ input:focus, textarea:focus {
     --input: 0 0% 14.9%;
     --ring: 0 0% 83.1%;
   }
-
-  html {
-    font-size: 14px;
-  }
-
-  @media (min-width: 768px) {
-    html {
-      font-size: 16px;
-    }
-  }
 }
 
 @layer base {
@@ -219,7 +152,7 @@ input:focus, textarea:focus {
   }
 
   .section-spacing {
-    @apply py-12 md:py-20 lg:py-32;
+    @apply py-20 px-4 md:py-32;
   }
 
   .fixed-nav-button {
@@ -237,30 +170,17 @@ input:focus, textarea:focus {
   .fixed-nav-button:hover {
     transform: translateY(-50%) scale(1.1) !important;
   }
-
-  .container {
-    @apply px-4 md:px-6 lg:px-8;
-  }
-
-  .section-heading {
-    @apply text-2xl md:text-3xl lg:text-4xl font-light;
-  }
-
-  .responsive-grid {
-    @apply grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8;
-  }
-
-  .mobile-touch-target {
-    @apply min-h-[44px] min-w-[44px];
-  }
-
-  .mobile-card {
-    @apply p-4 md:p-6 rounded-lg;
-  }
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* Custom section heading styles */
+.section-heading {
+  @apply text-4xl font-light tracking-wide text-white;
+  font-family: var(--font-playfair);
+  letter-spacing: 0.03em;
 }
 
 .section-heading-container {
@@ -273,63 +193,55 @@ html {
   opacity: 0.8;
 }
 
-/* Mobile-first responsive styles */
+/* Custom scrollbar styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(200, 169, 126, 0.2);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 169, 126, 0.3);
+}
+
+/* For Firefox */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200, 169, 126, 0.2) transparent;
+}
+
+/* Mobile optimizations */
 @media (max-width: 768px) {
   .section-heading {
-    font-size: 1.875rem !important;
-    line-height: 2.25rem !important;
+    @apply text-3xl;
   }
 
-  .container {
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
+  .prose {
+    font-size: 0.95rem;
   }
 
-  .py-20 {
-    padding-top: 3rem !important;
-    padding-bottom: 3rem !important;
+  input, textarea, button {
+    font-size: 16px !important; /* Prevents iOS zoom on focus */
   }
 
-  .text-5xl {
-    font-size: 2.5rem !important;
-  }
-
-  .text-3xl {
-    font-size: 1.5rem !important;
-  }
-
-  .gap-8 {
-    gap: 1rem !important;
-  }
-
-  .p-8 {
-    padding: 1.25rem !important;
-  }
-
-  .mb-16 {
-    margin-bottom: 2rem !important;
-  }
-
-  .h-48 {
-    height: 12rem !important;
+  /* Improve touch targets */
+  button, 
+  [role="button"],
+  a {
+    @apply min-h-[44px] min-w-[44px];
+    padding: 0.5rem 1rem;
   }
 }
 
-/* Mobile performance optimizations */
-@media (max-width: 768px) {
-  * {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  .mobile-hardware-accelerate {
-    transform: translateZ(0);
-    backface-visibility: hidden;
-    perspective: 1000;
-  }
-
-  .mobile-touch-target {
-    min-height: 44px;
-    min-width: 44px;
-  }
+/* Responsive container padding */
+.container {
+  @apply px-4 md:px-6 lg:px-8;
 }
 
