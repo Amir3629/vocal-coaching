@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="100" cy="100" r="100" fill="#10B981"/>
-  <circle cx="100" cy="80" r="40" fill="white" fill-opacity="0.9"/>
-  <path d="M100 180C66.8629 180 40 153.137 40 120C40 106.745 44.1459 94.4883 51.4721 84.4721C63.4883 96.4883 80.7452 104 100 104C119.255 104 136.512 96.4883 148.528 84.4721C155.854 94.4883 160 106.745 160 120C160 153.137 133.137 180 100 180Z" fill="white" fill-opacity="0.9"/>
+  <defs>
+    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C4A578;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#C4A57899;stop-opacity:0.6" />
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+  
+  <circle cx="100" cy="100" r="98" fill="url(#grad)" stroke="#C4A578" stroke-width="2"/>
+  
+  <!-- Abstract face shape -->
+  <path d="M100 140c-22 0-40-25-40-55s18-55 40-55 40 25 40 55-18 55-40 55z" 
+        fill="#ffffff" fill-opacity="0.9" filter="url(#shadow)"/>
+  
+  <!-- Decorative elements -->
+  <circle cx="85" cy="95" r="4" fill="#C4A578"/>
+  <circle cx="115" cy="95" r="4" fill="#C4A578"/>
+  <path d="M85 115q15 10 30 0" stroke="#C4A578" stroke-width="2" fill="none"/>
 </svg>

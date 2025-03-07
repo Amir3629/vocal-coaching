@@ -122,7 +122,7 @@ export default function TestimonialSlider() {
           transition={{ duration: 0.8 }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+          <h2 className="section-heading mb-4">
             Was meine Schüler sagen
           </h2>
           <div className="w-20 h-0.5 bg-[#C8A97E] mx-auto"></div>
