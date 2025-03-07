@@ -151,42 +151,46 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
                   className="relative w-full max-w-lg bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl"
                 >
                   {/* Header */}
-                  <div className="px-6 py-4 border-b border-[#C8A97E]/10 flex items-center justify-between">
-                    <h2 className="text-xl font-medium text-white">Terminanfrage</h2>
+                  <div className="px-8 py-5 border-b border-[#C8A97E]/10 flex items-center justify-between">
+                    <h2 className="text-2xl font-medium text-[#C8A97E]">Terminanfrage</h2>
                     <button
                       onClick={onClose}
-                      className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                      className="p-2 hover:bg-[#C8A97E]/10 rounded-lg transition-all duration-300"
                     >
-                      <X className="w-5 h-5 text-gray-400" />
+                      <X className="w-5 h-5 text-[#C8A97E]" />
                     </button>
                   </div>
 
                   {/* Content */}
-                  <div className="p-6">
+                  <div className="p-8">
                     <AnimatePresence mode="wait">
                       {/* Step 1: Service Selection */}
                       {step === 1 && (
                         <motion.div
-                          initial={{ opacity: 0, x: -20 }}
+                          initial={{ opacity: 0, x: 50 }}
                           animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 20 }}
-                          transition={{ duration: 0.3 }}
+                          exit={{ opacity: 0, x: -50 }}
+                          transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                           className="space-y-4"
                         >
-                          <h3 className="text-sm font-medium text-gray-400 mb-4">Wählen Sie einen Service</h3>
+                          <h3 className="text-sm font-medium text-[#C8A97E] mb-4">Wählen Sie einen Service</h3>
                           <div className="grid grid-cols-1 gap-3">
-                            {services.map((service) => (
-                              <button
+                            {services.map((service, index) => (
+                              <motion.button
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: index * 0.1 }}
                                 key={service.id}
                                 onClick={() => handleServiceSelect(service.id)}
                                 className={`
-                                  w-full flex flex-col items-start p-4 rounded-lg transition-all duration-200
+                                  w-full flex flex-col items-start p-4 rounded-lg transition-all duration-300
                                   ${selectedService === service.id
-                                    ? 'bg-[#C8A97E] text-black'
-                                    : 'bg-white/5 text-white hover:bg-white/10'
+                                    ? 'bg-[#C8A97E] text-black shadow-lg shadow-[#C8A97E]/20'
+                                    : 'bg-white/5 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-[#C8A97E]/10'
                                   }
                                 `}
                               >
@@ -194,7 +198,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                 <p className={`text-sm ${selectedService === service.id ? 'text-black/70' : 'text-gray-400'}`}>
                                   {service.description}
                                 </p>
-                              </button>
+                              </motion.button>
                             ))}
                           </div>
                         </motion.div>
@@ -203,47 +207,53 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       {/* Step 2: Time Selection */}
                       {step === 2 && (
                         <motion.div
-                          initial={{ opacity: 0, x: -20 }}
+                          initial={{ opacity: 0, x: 50 }}
                           animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 20 }}
-                          transition={{ duration: 0.3 }}
+                          exit={{ opacity: 0, x: -50 }}
+                          transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                           className="space-y-8"
                         >
                           {/* Days Selection */}
                           <div>
-                            <h3 className="text-sm font-medium text-gray-400 mb-4">Bevorzugte Tage</h3>
+                            <h3 className="text-sm font-medium text-[#C8A97E] mb-4">Bevorzugte Tage</h3>
                             <div className="grid grid-cols-5 gap-2">
-                              {weekDays.map((day) => (
-                                <button
+                              {weekDays.map((day, index) => (
+                                <motion.button
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: index * 0.1 }}
                                   key={day.id}
                                   onClick={() => handleDaySelect(day.id)}
                                   className={`
-                                    py-3 rounded-lg text-sm font-medium transition-all duration-200
+                                    py-3 rounded-lg text-sm font-medium transition-all duration-300
                                     ${selectedDays.includes(day.id)
-                                      ? 'bg-[#C8A97E] text-black'
-                                      : 'bg-white/5 text-white hover:bg-white/10'
+                                      ? 'bg-[#C8A97E] text-black shadow-lg shadow-[#C8A97E]/20'
+                                      : 'bg-white/5 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-[#C8A97E]/10'
                                     }
                                   `}
                                 >
                                   {day.label}
-                                </button>
+                                </motion.button>
                               ))}
                             </div>
                           </div>
 
                           {/* Time Slots */}
                           <div>
-                            <h3 className="text-sm font-medium text-gray-400 mb-4">Bevorzugte Zeit</h3>
+                            <h3 className="text-sm font-medium text-[#C8A97E] mb-4">Bevorzugte Zeit</h3>
                             <div className="space-y-2">
-                              {timeSlots.map((slot) => (
-                                <button
+                              {timeSlots.map((slot, index) => (
+                                <motion.button
+                                  initial={{ opacity: 0, y: 20 }}
+                                  animate={{ opacity: 1, y: 0 }}
+                                  transition={{ delay: index * 0.1 }}
                                   key={slot.id}
                                   onClick={() => handleTimeSelect(slot.id)}
                                   className={`
-                                    w-full flex items-center p-4 rounded-lg transition-all duration-200
+                                    w-full flex items-center p-4 rounded-lg transition-all duration-300
                                     ${selectedTime === slot.id
-                                      ? 'bg-[#C8A97E] text-black'
-                                      : 'bg-white/5 text-white hover:bg-white/10'
+                                      ? 'bg-[#C8A97E] text-black shadow-lg shadow-[#C8A97E]/20'
+                                      : 'bg-white/5 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-[#C8A97E]/10'
                                     }
                                   `}
                                 >
@@ -254,7 +264,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                       {slot.time}
                                     </p>
                                   </div>
-                                </button>
+                                </motion.button>
                               ))}
                             </div>
                           </div>
@@ -281,95 +291,137 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                       {/* Step 3: Personal Information */}
                       {step === 3 && (
-                        <motion.form
-                          initial={{ opacity: 0, x: -20 }}
+                        <motion.div
+                          initial={{ opacity: 0, x: 50 }}
                           animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 20 }}
-                          transition={{ duration: 0.3 }}
-                          onSubmit={handleSubmit}
+                          exit={{ opacity: 0, x: -50 }}
+                          transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
                           className="space-y-6"
                         >
-                          {/* Booking Summary */}
-                          <div className="p-4 rounded-lg bg-white/5 space-y-2">
-                            <h4 className="text-[#C8A97E] font-medium mb-2">Zusammenfassung</h4>
-                            <p className="text-sm text-gray-400">
-                              Service: {services.find(s => s.id === selectedService)?.title}
-                            </p>
-                            <p className="text-sm text-gray-400">
-                              Tage: {selectedDays.map(d => weekDays.find(day => day.id === d)?.label).join(", ")}
-                            </p>
-                            <p className="text-sm text-gray-400">
-                              Zeit: {timeSlots.find(t => t.id === selectedTime)?.label} ({timeSlots.find(t => t.id === selectedTime)?.time})
-                            </p>
-                          </div>
-
-                          {/* Form Fields */}
-                          <div className="space-y-4">
-                            <input
-                              type="text"
-                              placeholder="Name"
-                              value={formData.name}
-                              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                              required
-                              className="w-full px-4 py-3 bg-white/5 border-b border-[#C8A97E]/20 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E] transition-all"
-                            />
-                            <input
-                              type="email"
-                              placeholder="Email"
-                              value={formData.email}
-                              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                              required
-                              className="w-full px-4 py-3 bg-white/5 border-b border-[#C8A97E]/20 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E] transition-all"
-                            />
-                            <input
-                              type="tel"
-                              placeholder="Telefon (optional)"
-                              value={formData.phone}
-                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                              className="w-full px-4 py-3 bg-white/5 border-b border-[#C8A97E]/20 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E] transition-all"
-                            />
-                            <textarea
-                              placeholder="Nachricht (optional)"
-                              value={formData.message}
-                              onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                              rows={4}
-                              className="w-full px-4 py-3 bg-white/5 border-b border-[#C8A97E]/20 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E] transition-all resize-none"
-                            />
-                          </div>
-
-                          {/* Legal Text */}
-                          <div className="space-y-2">
-                            <p className="text-xs text-gray-400">
-                              Mit dem Absenden stimmen Sie unseren{" "}
-                              <Link href="#" className="text-[#C8A97E] hover:underline">
-                                AGB
-                              </Link>{" "}
-                              zu.
-                            </p>
-                            <p className="text-xs text-gray-400">
-                              Sie haben ein 14-tägiges Widerrufsrecht.
-                            </p>
-                          </div>
-
-                          {/* Navigation */}
-                          <div className="flex justify-between">
-                            <button
-                              type="button"
-                              onClick={handlePrevStep}
-                              className="px-4 py-2 text-sm text-gray-400 hover:text-white transition-colors"
+                          <h3 className="text-sm font-medium text-[#C8A97E] mb-4">Ihre Kontaktdaten</h3>
+                          <form onSubmit={handleSubmit} className="space-y-4">
+                            <motion.div
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.1 }}
                             >
-                              Zurück
-                            </button>
-                            <button
-                              type="submit"
-                              className="px-6 py-2 bg-[#C8A97E] text-black text-sm font-medium rounded-lg hover:bg-[#B69A6E] transition-colors"
+                              <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
+                                Name
+                              </label>
+                              <input
+                                type="text"
+                                id="name"
+                                value={formData.name}
+                                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                                className="w-full px-4 py-3 bg-white/5 border border-[#C8A97E]/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E]/40 transition-all duration-300"
+                                placeholder="Ihr vollständiger Name"
+                                required
+                              />
+                            </motion.div>
+
+                            <motion.div
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.2 }}
                             >
-                              Jetzt Buchen
-                            </button>
-                          </div>
-                        </motion.form>
+                              <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
+                                Email
+                              </label>
+                              <input
+                                type="email"
+                                id="email"
+                                value={formData.email}
+                                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                                className="w-full px-4 py-3 bg-white/5 border border-[#C8A97E]/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E]/40 transition-all duration-300"
+                                placeholder="Ihre Email-Adresse"
+                                required
+                              />
+                            </motion.div>
+
+                            <motion.div
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.3 }}
+                            >
+                              <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
+                                Telefon (optional)
+                              </label>
+                              <input
+                                type="tel"
+                                id="phone"
+                                value={formData.phone}
+                                onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
+                                className="w-full px-4 py-3 bg-white/5 border border-[#C8A97E]/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E]/40 transition-all duration-300"
+                                placeholder="Ihre Telefonnummer"
+                              />
+                            </motion.div>
+
+                            <motion.div
+                              initial={{ opacity: 0, y: 20 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{ delay: 0.4 }}
+                            >
+                              <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
+                                Nachricht (optional)
+                              </label>
+                              <textarea
+                                id="message"
+                                value={formData.message}
+                                onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                                className="w-full px-4 py-3 bg-white/5 border border-[#C8A97E]/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E]/40 transition-all duration-300 min-h-[100px] resize-none"
+                                placeholder="Ihre Nachricht an uns"
+                              />
+                            </motion.div>
+                          </form>
+                        </motion.div>
                       )}
                     </AnimatePresence>
+
+                    {/* Navigation */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.5 }}
+                      className="mt-8 flex justify-between"
+                    >
+                      {step > 1 && (
+                        <button
+                          onClick={handlePrevStep}
+                          className="px-6 py-2.5 text-sm font-medium text-[#C8A97E] hover:bg-[#C8A97E]/10 rounded-lg transition-all duration-300"
+                        >
+                          Zurück
+                        </button>
+                      )}
+                      {step < 3 ? (
+                        <button
+                          onClick={handleNextStep}
+                          disabled={!selectedService || (step === 2 && (!selectedDays.length || !selectedTime))}
+                          className={`
+                            px-6 py-2.5 text-sm font-medium rounded-lg transition-all duration-300 ml-auto
+                            ${(!selectedService || (step === 2 && (!selectedDays.length || !selectedTime)))
+                              ? 'bg-white/5 text-gray-500 cursor-not-allowed'
+                              : 'bg-[#C8A97E] text-black hover:shadow-lg hover:shadow-[#C8A97E]/20'
+                            }
+                          `}
+                        >
+                          Weiter
+                        </button>
+                      ) : (
+                        <button
+                          onClick={handleSubmit}
+                          disabled={!formData.name || !formData.email}
+                          className={`
+                            px-6 py-2.5 text-sm font-medium rounded-lg transition-all duration-300 ml-auto
+                            ${(!formData.name || !formData.email)
+                              ? 'bg-white/5 text-gray-500 cursor-not-allowed'
+                              : 'bg-[#C8A97E] text-black hover:shadow-lg hover:shadow-[#C8A97E]/20'
+                            }
+                          `}
+                        >
+                          Absenden
+                        </button>
+                      )}
+                    </motion.div>
                   </div>
                 </motion.div>
               </div>
