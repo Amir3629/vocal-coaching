@@ -35,10 +35,34 @@ export default function AGBPage() {
         </p>
       </section>
 
-      <h2>4. Preise und Zahlungsbedingungen</h2>
-      <p>
-        Die Preise für Unterrichtsstunden und Kurse sind der aktuellen Preisliste zu entnehmen. Die Zahlung ist vor Beginn der jeweiligen Leistung fällig, sofern nicht anders vereinbart.
-      </p>
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">3. Widerrufsrecht</h2>
+        <p className="mb-4">
+          Als Verbraucher haben Sie das Recht, binnen vierzehn Tagen ohne Angabe von Gründen diesen Vertrag zu widerrufen. 
+          Die Widerrufsfrist beträgt vierzehn Tage ab dem Tag des Vertragsschlusses.
+        </p>
+        <p className="mb-4">
+          Um Ihr Widerrufsrecht auszuüben, müssen Sie uns mittels einer eindeutigen Erklärung (z.B. ein mit der Post versandter Brief, 
+          Telefax oder E-Mail) über Ihren Entschluss, diesen Vertrag zu widerrufen, informieren.
+        </p>
+        <p className="mb-4">
+          Zur Wahrung der Widerrufsfrist reicht es aus, dass Sie die Mitteilung über die Ausübung des Widerrufsrechts vor Ablauf 
+          der Widerrufsfrist absenden.
+        </p>
+        <p className="mb-4">
+          <strong>Folgen des Widerrufs:</strong><br />
+          Wenn Sie diesen Vertrag widerrufen, haben wir Ihnen alle Zahlungen, die wir von Ihnen erhalten haben, unverzüglich und 
+          spätestens binnen vierzehn Tagen ab dem Tag zurückzuzahlen, an dem die Mitteilung über Ihren Widerruf dieses Vertrags 
+          bei uns eingegangen ist.
+        </p>
+      </section>
+
+      <section className="mb-8">
+        <h2 className="text-2xl font-semibold mb-4">4. Preise und Zahlungsbedingungen</h2>
+        <p className="mb-4">
+          Die Preise für Unterrichtsstunden und Kurse sind der aktuellen Preisliste zu entnehmen. Die Zahlung ist vor Beginn der jeweiligen Leistung fällig, sofern nicht anders vereinbart.
+        </p>
+      </section>
 
       <h2>5. Terminabsagen und Verschiebungen</h2>
       <p>
