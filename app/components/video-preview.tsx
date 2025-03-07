@@ -95,8 +95,11 @@ export default function VideoPreview() {
     setHasInteracted(true)
     
     try {
-    if (!isPlaying) {
+      if (!isPlaying) {
         setIsLoading(true)
+        // Unmute the video when starting playback
+        setIsMuted(false)
+        video.muted = false
         await video.play()
         setIsPlaying(true)
         setIsExpanded(true)
@@ -114,13 +117,12 @@ export default function VideoPreview() {
 
   const handleMuteToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!videoRef.current) return
+    const video = videoRef.current
+    if (!video) return
     
     setHasInteracted(true)
     setIsMuted(!isMuted)
-    if (videoRef.current) {
-    videoRef.current.muted = !isMuted
-    }
+    video.muted = !isMuted
   }
 
   return (
@@ -138,7 +140,7 @@ export default function VideoPreview() {
           duration: 0.6
         }}
         onMouseEnter={() => setShowControls(true)}
-        onMouseLeave={() => setShowControls(false)}
+        onMouseLeave={() => !isPlaying && setShowControls(false)}
         onClick={handleVideoClick}
       >
         <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
@@ -150,31 +152,34 @@ export default function VideoPreview() {
               </div>
             </div>
           ) : (
-          <div className="absolute inset-0">
+            <div className="absolute inset-0">
               {isLoading && (
                 <div className="absolute inset-0 flex items-center justify-center bg-[#040202] z-10">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#C8A97E]"></div>
                 </div>
               )}
-            <video
-              ref={videoRef}
+              <video
+                ref={videoRef}
                 className={`w-full h-full object-cover transition-opacity duration-300 ${isLoading ? 'opacity-0' : 'opacity-100'}`}
-              playsInline
-              muted={isMuted}
+                playsInline
+                muted={isMuted}
                 preload="auto"
                 poster={process.env.NODE_ENV === 'production'
                   ? "/vocal-coaching/videos/preview-poster.jpg"
                   : "/videos/preview-poster.jpg"}
-              style={{
-                objectFit: 'contain',
+                style={{
+                  objectFit: 'contain',
                   backgroundColor: '#040202'
                 }}
               />
 
               {/* Play/Pause Overlay */}
-              <div className={`absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity duration-300 ${
-                showControls || !isPlaying ? 'opacity-100' : 'opacity-0'
-              }`}>
+              <motion.div 
+                className={`absolute inset-0 flex items-center justify-center bg-black/50 transition-opacity duration-300`}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: showControls || !isPlaying ? 1 : 0 }}
+                transition={{ duration: 0.3 }}
+              >
                 <motion.button
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.9 }}
@@ -186,13 +191,13 @@ export default function VideoPreview() {
                     <Play className="w-8 h-8 ml-1" />
                   )}
                 </motion.button>
-              </div>
-          </div>
+              </motion.div>
+            </div>
           )}
         </div>
 
         <AnimatePresence>
-          {showControls && (
+          {(showControls || isPlaying) && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -200,8 +205,10 @@ export default function VideoPreview() {
               transition={{ duration: 0.2 }}
               className="absolute top-4 right-4 z-10"
             >
-              <button
+              <motion.button
                 onClick={handleMuteToggle}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
                 className="p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
               >
                 {isMuted ? (
@@ -209,11 +216,11 @@ export default function VideoPreview() {
                 ) : (
                   <Volume2 className="w-5 h-5 text-white" />
                 )}
-              </button>
+              </motion.button>
             </motion.div>
           )}
         </AnimatePresence>
       </motion.div>
     </div>
   )
-} 
+}
