@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { ChevronLeft, ChevronRight } from "lucide-react"
+import Image from "next/image"
 
 const testimonials = [
   {
@@ -91,6 +92,7 @@ const testimonials = [
 export default function TestimonialSlider() {
   const [page, setPage] = useState(0)
   const [isAutoPlaying, setIsAutoPlaying] = useState(true)
+  const [imageError, setImageError] = useState(false)
 
   useEffect(() => {
     if (isAutoPlaying) {
@@ -144,10 +146,13 @@ export default function TestimonialSlider() {
             >
               <div className="flex flex-col items-center text-center">
                 <div className="w-20 h-20 rounded-full overflow-hidden mb-4 border-2 border-[#C8A97E]/20">
-                  <img
+                  <Image
                     src={testimonials[page].image}
                     alt={testimonials[page].name}
+                    width={80}
+                    height={80}
                     className="w-full h-full object-cover"
+                    onError={() => setImageError(true)}
                   />
                 </div>
                 <blockquote className="max-w-2xl mx-auto mb-6">
