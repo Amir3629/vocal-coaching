@@ -1,7 +1,6 @@
 "use client"
 
 import { createElement } from "react"
-import { Shield, FileText, Scale } from "lucide-react"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import LegalDocumentModal from "./legal-document-modal"
@@ -44,23 +43,14 @@ export default function Footer() {
   const legalDocs = [
     {
       title: "Datenschutz",
-      description: "Datenschutz & Privatsphäre",
-      icon: Shield,
-      color: "from-[#C8A97E]/20 to-[#B69A6E]/20",
       component: DatenschutzContent
     },
     {
       title: "AGB",
-      description: "Geschäftsbedingungen",
-      icon: FileText,
-      color: "from-[#C8A97E]/20 to-[#B69A6E]/20",
       component: AGBContent
     },
     {
       title: "Impressum",
-      description: "Rechtliche Informationen",
-      icon: Scale,
-      color: "from-[#C8A97E]/20 to-[#B69A6E]/20",
       component: ImpressumContent
     }
   ];
@@ -68,7 +58,6 @@ export default function Footer() {
   return (
     <footer className="bg-black border-t border-white/10">
       <div className="container mx-auto px-4 py-16">
-        {/* Legal Documents */}
         <div className="max-w-4xl mx-auto">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
@@ -77,40 +66,28 @@ export default function Footer() {
             transition={{ duration: 0.8 }}
             className="text-center mb-12"
           >
-            <h2 className="section-heading mb-4">Rechtliche Informationen</h2>
+            <h2 className="section-heading mb-4">Institutionen & Partner</h2>
             <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {legalDocs.map((doc, index) => (
-              <motion.button 
-                key={doc.title}
-                onClick={() => setSelectedDoc(doc.title)}
-                className="relative group w-full text-left"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-              >
-                <div 
-                  className={`relative overflow-hidden rounded-xl p-6 border border-[#C8A97E]/10 bg-gradient-to-br ${doc.color}
-                            transition-all duration-300 group-hover:border-[#C8A97E]/30 h-full`}
-                >
-                  <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#C8A97E]/5 via-transparent to-transparent opacity-60" />
-                  <div className="relative z-10">
-                    <div className="p-3 rounded-xl bg-[#C8A97E]/10 inline-block mb-4">
-                      <doc.icon className="w-6 h-6 text-[#C8A97E]" />
-                    </div>
-                    <h4 className="text-xl font-medium text-white mb-2">{doc.title}</h4>
-                    <p className="text-gray-400 text-sm">{doc.description}</p>
-                    <div className="mt-4 text-[#C8A97E] text-sm opacity-0 group-hover:opacity-100 transition-opacity">
-                      Mehr erfahren →
-                    </div>
-                  </div>
-                </div>
-              </motion.button>
-            ))}
+          {/* Legal Links */}
+          <div className="mt-8 text-center">
+            <div className="flex justify-center items-center gap-6 text-sm">
+              {legalDocs.map((doc, index) => (
+                <>
+                  <button
+                    key={doc.title}
+                    onClick={() => setSelectedDoc(doc.title)}
+                    className="text-gray-400 hover:text-[#C8A97E] transition-colors"
+                  >
+                    {doc.title}
+                  </button>
+                  {index < legalDocs.length - 1 && (
+                    <span className="text-gray-600">•</span>
+                  )}
+                </>
+              ))}
+            </div>
           </div>
         </div>
 
