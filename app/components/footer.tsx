@@ -3,6 +3,8 @@
 import { createElement } from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
+import { MapPin, Mail, Phone, Clock } from "lucide-react"
+import Link from "next/link"
 import LegalDocumentModal from "./legal-document-modal"
 import dynamic from "next/dynamic"
 
@@ -11,74 +13,47 @@ const DatenschutzContent = dynamic(
   () => import("@/app/legal/datenschutz/page").catch(() => () => (
     <div className="text-red-500">Failed to load Datenschutz content</div>
   )),
-  {
-    loading: () => <p className="text-gray-400">Loading...</p>,
-    ssr: false
-  }
+  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
 )
 
 const AGBContent = dynamic(
   () => import("@/app/legal/agb/page").catch(() => () => (
     <div className="text-red-500">Failed to load AGB content</div>
   )),
-  {
-    loading: () => <p className="text-gray-400">Loading...</p>,
-    ssr: false
-  }
+  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
 )
 
 const ImpressumContent = dynamic(
   () => import("@/app/legal/impressum/page").catch(() => () => (
     <div className="text-red-500">Failed to load Impressum content</div>
   )),
-  {
-    loading: () => <p className="text-gray-400">Loading...</p>,
-    ssr: false
-  }
+  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
 )
 
 export default function Footer() {
   const [selectedDoc, setSelectedDoc] = useState<string | null>(null);
 
   const legalDocs = [
-    {
-      title: "Datenschutz",
-      component: DatenschutzContent
-    },
-    {
-      title: "AGB",
-      component: AGBContent
-    },
-    {
-      title: "Impressum",
-      component: ImpressumContent
-    }
+    { title: "Datenschutz", component: DatenschutzContent },
+    { title: "AGB", component: AGBContent },
+    { title: "Impressum", component: ImpressumContent }
   ];
 
   return (
     <footer className="bg-black border-t border-white/10">
       <div className="container mx-auto px-4 py-16">
-        <div className="max-w-4xl mx-auto">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="text-center mb-12"
-          >
-            <h2 className="section-heading mb-4">Institutionen & Partner</h2>
-            <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
-          </motion.div>
-
-          {/* Legal Links */}
-          <div className="mt-8 text-center">
-            <div className="flex justify-center items-center gap-6 text-sm">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          {/* Column 1: Brand */}
+          <div>
+            <h3 className="text-xl text-white mb-4">Melanie Wainwright</h3>
+            <p className="text-gray-400 mb-4">Jazz Vocal Coaching in Berlin</p>
+            <div className="flex gap-2 text-sm text-gray-400">
               {legalDocs.map((doc, index) => (
                 <>
                   <button
                     key={doc.title}
                     onClick={() => setSelectedDoc(doc.title)}
-                    className="text-gray-400 hover:text-[#C8A97E] transition-colors"
+                    className="hover:text-[#C8A97E] transition-colors"
                   >
                     {doc.title}
                   </button>
@@ -89,12 +64,27 @@ export default function Footer() {
               ))}
             </div>
           </div>
-        </div>
 
-        {/* Copyright */}
-        <div className="mt-16 pt-8 border-t border-white/10">
-          <div className="text-center text-gray-400 text-sm">
-            © 2024 Melanie Wainwright. Alle Rechte vorbehalten.
+          {/* Column 2: Contact */}
+          <div>
+            <h3 className="text-xl text-white mb-4">Kontakt</h3>
+            <div className="space-y-2 text-gray-400">
+              <p>Berlin-Mitte, Deutschland</p>
+              <p>info@melaniewainwright.com</p>
+              <p>+49 123 456 7890</p>
+              <p>Mo-Fr: 10:00-20:00</p>
+            </div>
+          </div>
+
+          {/* Column 3: Partners */}
+          <div>
+            <h3 className="text-xl text-white mb-4">Institutionen & Partner</h3>
+            <div className="space-y-2 text-gray-400">
+              <p>Complete Vocal Institute</p>
+              <p>CVT Deutschland</p>
+              <p>B-Flat Jazz Club Berlin</p>
+              <p>Chor Next Door</p>
+            </div>
           </div>
         </div>
 
@@ -112,4 +102,4 @@ export default function Footer() {
       </div>
     </footer>
   )
-} 
+}
