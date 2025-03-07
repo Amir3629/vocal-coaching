@@ -64,21 +64,24 @@ export default function LegalContent({ type }: LegalContentProps) {
         <Section title="Erhebung und Speicherung personenbezogener Daten">
           <SubSection title="Beim Besuch der Website">
             <p className="mb-4">
-              Beim Aufrufen unserer Website www.melanie-wainwright.de werden durch den auf Ihrem Endgerät zum Einsatz kommenden Browser automatisch Informationen an den Server unserer Website gesendet. Diese Informationen werden temporär in einem sog. Logfile gespeichert:
+              Beim Aufrufen unserer Website www.melanie-wainwright.de werden durch den auf Ihrem Endgerät zum Einsatz kommenden Browser automatisch Informationen an den Server unserer Website gesendet. Diese Informationen werden temporär in einem sog. Logfile gespeichert. Folgende Informationen werden dabei ohne Ihr Zutun erfasst und bis zur automatisierten Löschung gespeichert:
             </p>
             <ul className="list-none space-y-2 mb-4">
               <ListItem>IP-Adresse des anfragenden Rechners</ListItem>
               <ListItem>Datum und Uhrzeit des Zugriffs</ListItem>
               <ListItem>Name und URL der abgerufenen Datei</ListItem>
               <ListItem>Website, von der aus der Zugriff erfolgt (Referrer-URL)</ListItem>
-              <ListItem>Verwendeter Browser und ggf. das Betriebssystem Ihres Rechners</ListItem>
+              <ListItem>Verwendeter Browser und ggf. das Betriebssystem Ihres Rechners sowie der Name Ihres Access-Providers</ListItem>
             </ul>
           </SubSection>
         </Section>
 
         <Section title="Cookies">
           <p className="mb-4">
-            Wir setzen auf unserer Seite Cookies ein. Hierbei handelt es sich um kleine Dateien, die Ihr Browser automatisch erstellt und die auf Ihrem Endgerät gespeichert werden. Cookies richten auf Ihrem Endgerät keinen Schaden an und enthalten keine Viren oder Schadsoftware.
+            Wir setzen auf unserer Seite Cookies ein. Hierbei handelt es sich um kleine Dateien, die Ihr Browser automatisch erstellt und die auf Ihrem Endgerät gespeichert werden. Cookies richten auf Ihrem Endgerät keinen Schaden an, enthalten keine Viren, Trojaner oder sonstige Schadsoftware.
+          </p>
+          <p className="mb-4">
+            In dem Cookie werden Informationen abgelegt, die sich jeweils im Zusammenhang mit dem spezifisch eingesetzten Endgerät ergeben. Dies bedeutet jedoch nicht, dass wir dadurch unmittelbar Kenntnis von Ihrer Identität erhalten.
           </p>
         </Section>
 
@@ -93,6 +96,9 @@ export default function LegalContent({ type }: LegalContentProps) {
             </ListItem>
             <ListItem>
               Gemäß Art. 17 DSGVO die Löschung Ihrer bei uns gespeicherten personenbezogenen Daten zu verlangen
+            </ListItem>
+            <ListItem>
+              Gemäß Art. 7 Abs. 3 DSGVO Ihre einmal erteilte Einwilligung jederzeit gegenüber uns zu widerrufen
             </ListItem>
           </ul>
         </Section>
