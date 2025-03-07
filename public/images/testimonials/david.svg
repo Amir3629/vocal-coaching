@@ -1,23 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg width="200" height="200" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#9A8252;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#9A825299;stop-opacity:0.6" />
+    <linearGradient id="graddavid" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#C8A97E;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#C8A97E;stop-opacity:0.05" />
     </linearGradient>
-    <filter id="shadow">
-      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-opacity="0.3"/>
-    </filter>
   </defs>
   
-  <circle cx="100" cy="100" r="98" fill="url(#grad)" stroke="#9A8252" stroke-width="2"/>
+  <!-- Background -->
+  <circle cx="100" cy="100" r="100" fill="url(#graddavid)"/>
   
-  <!-- Abstract face shape -->
-  <path d="M100 140c-22 0-40-25-40-55s18-55 40-55 40 25 40 55-18 55-40 55z" 
-        fill="#ffffff" fill-opacity="0.9" filter="url(#shadow)"/>
+  <!-- Face shape -->
+  <path d="M100 160c-22 0-40-25-40-45s18-45 40-45 40 25 40 45-18 45-40 45z" 
+        fill="#F3C6A5"/>
   
-  <!-- Decorative elements -->
-  <circle cx="85" cy="95" r="4" fill="#9A8252"/>
-  <circle cx="115" cy="95" r="4" fill="#9A8252"/>
-  <path d="M85 115q15 10 30 0" stroke="#9A8252" stroke-width="2" fill="none"/>
+  <!-- Hair (shorter) -->
+  
+    <path d="M60 115c0-30 18-45 40-45s40 15 40 45c0-25-18-45-40-45s-40 20-40 45z" 
+          fill="#3B3024"/>
+  
+  
+  <!-- Eyes -->
+  <circle cx="85" cy="100" r="3" fill="#2C1810"/>
+  <circle cx="115" cy="100" r="3" fill="#2C1810"/>
+  
+  <!-- Eyebrows -->
+  <path d="M80 95q10-5 15 0M110 95q10-5 15 0" stroke="#2C1810" stroke-width="1.5"/>
+  
+  <!-- Nose -->
+  <path d="M97 105q3 5 6 0" stroke="#2C1810" stroke-width="1"/>
+  
+  <!-- Mouth -->
+  <path d="M90 120q10 5 20 0" stroke="#2C1810" stroke-width="1.5" fill="none"/>
 </svg>

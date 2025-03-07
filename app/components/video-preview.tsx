@@ -126,7 +126,7 @@ export default function VideoPreview() {
   return (
     <div className="w-full max-w-4xl mx-auto">
       <motion.div 
-        className="relative rounded-xl overflow-hidden cursor-pointer bg-[#080505] group"
+        className="relative rounded-xl overflow-hidden cursor-pointer bg-[#040202] group"
         initial={{ scale: 0.7 }}
         animate={{ 
           scale: isExpanded ? 1 : 0.7
@@ -143,7 +143,7 @@ export default function VideoPreview() {
       >
         <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
           {hasError ? (
-            <div className="absolute inset-0 flex items-center justify-center bg-[#080505] text-gray-400">
+            <div className="absolute inset-0 flex items-center justify-center bg-[#040202] text-gray-400">
               <div className="text-center">
                 <p>Sorry, the video is currently unavailable.</p>
                 <p className="text-sm mt-2">Please try again later.</p>
@@ -152,7 +152,7 @@ export default function VideoPreview() {
           ) : (
             <div className="absolute inset-0">
               {isLoading && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#080505] z-10">
+                <div className="absolute inset-0 flex items-center justify-center bg-[#040202] z-10">
                   <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-[#C8A97E]"></div>
                 </div>
               )}
@@ -167,7 +167,7 @@ export default function VideoPreview() {
                   : "/videos/preview-poster.jpg"}
                 style={{
                   objectFit: 'contain',
-                  backgroundColor: '#080505'
+                  backgroundColor: '#040202'
                 }}
               />
 
