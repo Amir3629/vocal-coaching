@@ -356,6 +356,32 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                   placeholder="Ihre Nachricht an uns"
                                 />
                               </motion.div>
+
+                              <motion.div
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.5 }}
+                                className="mt-6"
+                              >
+                                <label className="flex items-start gap-3">
+                                  <input
+                                    type="checkbox"
+                                    required
+                                    className="mt-1 rounded border-[#C8A97E]/20 bg-white/5 text-[#C8A97E] focus:ring-[#C8A97E] focus:ring-offset-0"
+                                  />
+                                  <span className="text-sm text-gray-400">
+                                    Mit dem Absenden des Formulars stimme ich den{" "}
+                                    <Link href="/legal/datenschutz" className="text-[#C8A97E] hover:underline">
+                                      Datenschutzbestimmungen
+                                    </Link>{" "}
+                                    und{" "}
+                                    <Link href="/legal/agb" className="text-[#C8A97E] hover:underline">
+                                      AGB
+                                    </Link>{" "}
+                                    zu. Ich bin damit einverstanden, dass meine Daten zur Bearbeitung meiner Anfrage verwendet werden.
+                                  </span>
+                                </label>
+                              </motion.div>
                             </form>
                           </div>
                         )}
