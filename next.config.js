@@ -3,6 +3,7 @@ const nextConfig = {
   output: 'export',
   images: {
     unoptimized: true,
+    domains: ['github.com'],
     remotePatterns: [
       {
         protocol: 'https',
@@ -13,12 +14,6 @@ const nextConfig = {
   basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/vocal-coaching/' : '',
   trailingSlash: true,
-  distDir: 'out',
-  experimental: {
-    images: {
-      allowFutureImage: true,
-    },
-  },
 }
 
 module.exports = nextConfig
