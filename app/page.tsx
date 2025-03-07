@@ -159,23 +159,6 @@ export default function Home() {
             </Button>
           </motion.div>
         </motion.div>
-
-        <motion.div
-          className="absolute bottom-10 left-1/2 transform -translate-x-1/2 z-10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 2 }}
-        >
-          <Button 
-            variant="ghost" 
-            size="icon" 
-            className="rounded-full text-white hover:bg-[#C8A97E]/20"
-            onClick={() => scrollToSection("services")}
-          >
-            <ChevronDown className="h-8 w-8" />
-            <span className="sr-only">Scroll down</span>
-          </Button>
-        </motion.div>
       </section>
 
       {/* Music Preview Section */}
