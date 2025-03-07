@@ -8,7 +8,9 @@
     "start": "next start",
     "lint": "next lint",
     "check-images": "node scripts/check-images.js",
-    "deploy": "next build && type nul > out/.nojekyll && gh-pages -d out"
+    "verify-assets": "node scripts/verify-assets.js",
+    "predeploy": "npm run verify-assets && npm run build",
+    "deploy": "type nul > out/.nojekyll && xcopy /E /I /Y public\\* out\\ && gh-pages -d out"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

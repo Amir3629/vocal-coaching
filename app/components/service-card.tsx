@@ -22,26 +22,17 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
-  const [isTouching, setIsTouching] = useState(false)
-  const [imageLoaded, setImageLoaded] = useState(false)
+  const [hasInteracted, setHasInteracted] = useState(false)
 
   const handleTouchStart = () => {
-    setIsTouching(true)
+    setHasInteracted(true)
     setIsFlipped(true)
   }
 
   const handleTouchEnd = () => {
-    setIsTouching(false)
-    setIsFlipped(false)
-  }
-
-  const handleTouchCancel = () => {
-    setIsTouching(false)
-    setIsFlipped(false)
-  }
-
-  const handleImageLoad = () => {
-    setImageLoaded(true)
+    if (hasInteracted) {
+      setIsFlipped(false)
+    }
   }
 
   return (
@@ -50,12 +41,10 @@ export default function ServiceCard({ title, description, icon, price, features,
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
-      className="relative h-[450px] sm:h-[500px] perspective-1000"
-      onMouseEnter={() => !isTouching && setIsFlipped(true)}
-      onMouseLeave={() => !isTouching && setIsFlipped(false)}
+      className="relative h-[450px] sm:h-[500px] perspective-1000 cursor-pointer transition-transform duration-500"
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchCancel}
+      onTouchCancel={handleTouchEnd}
     >
       <div
         className={`relative w-full h-full transition-transform duration-300 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}
@@ -67,18 +56,17 @@ export default function ServiceCard({ title, description, icon, price, features,
           style={{ backfaceVisibility: "hidden" }}
         >
           <div className="absolute inset-0 w-full h-full">
-            <div className={`absolute inset-0 bg-black/60 transition-opacity duration-500 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`} />
+            <div className="absolute inset-0 bg-black/60" />
             <Image
               src={image}
               alt={title}
               fill
-              className={`object-cover object-center transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              className="object-cover rounded-xl"
               sizes="(max-width: 640px) 90vw, (max-width: 768px) 45vw, 30vw"
               priority={delay === 0}
               quality={85}
-              onLoad={handleImageLoad}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
+            <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60" />
           </div>
           <div className="relative p-4 sm:p-6 flex flex-col h-full">
             <div className="flex items-center gap-4 mb-4">

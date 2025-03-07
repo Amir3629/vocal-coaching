@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { ChevronLeft, ChevronRight } from "lucide-react"
+import { useState } from "react"
 
 const testimonials = [
   {
@@ -42,6 +44,8 @@ const testimonials = [
 ]
 
 export default function Testimonials() {
+  const [currentIndex, setCurrentIndex] = useState(0)
+
   return (
     <section className="py-20 bg-[#080505]">
       <div className="container mx-auto px-4">
@@ -58,33 +62,59 @@ export default function Testimonials() {
           <div className="w-20 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {testimonials.map((testimonial, index) => (
-            <motion.div
-              key={testimonial.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: index * 0.2 }}
-              className="bg-[#0A0A0A] rounded-xl p-6 border border-[#C8A97E]/20"
+        <div className="relative w-full max-w-4xl mx-auto px-4">
+          <div className="overflow-hidden">
+            <div 
+              className="flex transition-transform duration-500 ease-in-out"
+              style={{ transform: `translateX(-${currentIndex * 100}%)` }}
             >
-              <div className="flex items-center mb-6">
-                <div className="relative w-16 h-16 rounded-full overflow-hidden border-2 border-[#C8A97E]/20">
-                  <Image
-                    src={testimonial.image}
-                    alt={testimonial.name}
-                    fill
-                    className="object-cover"
-                  />
+              {testimonials.map((testimonial, index) => (
+                <div
+                  key={index}
+                  className="w-full flex-shrink-0 px-4 sm:px-6"
+                >
+                  <div className="bg-black/20 backdrop-blur-sm rounded-xl p-6 sm:p-8">
+                    <div className="flex flex-col gap-4">
+                      <div className="flex items-start gap-4">
+                        <div className="relative w-12 h-12 rounded-full overflow-hidden">
+                          <Image
+                            src={testimonial.image}
+                            alt={testimonial.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        <div>
+                          <h3 className="text-lg font-medium">{testimonial.name}</h3>
+                          <p className="text-sm text-gray-400">{testimonial.role}</p>
+                        </div>
+                      </div>
+                      <p className="text-base leading-relaxed">{testimonial.text}</p>
+                    </div>
+                  </div>
                 </div>
-                <div className="ml-4">
-                  <h3 className="text-white font-medium">{testimonial.name}</h3>
-                  <p className="text-[#C8A97E] text-sm">{testimonial.role}</p>
-                </div>
-              </div>
-              <p className="text-gray-400 italic">"{testimonial.text}"</p>
-            </motion.div>
-          ))}
+              ))}
+            </div>
+          </div>
+
+          <div className="flex justify-center gap-2 mt-6">
+            <button
+              onClick={() => setCurrentIndex(Math.max(0, currentIndex - 1))}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors disabled:opacity-50"
+              disabled={currentIndex === 0}
+              aria-label="Previous testimonial"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <button
+              onClick={() => setCurrentIndex(Math.min(testimonials.length - 1, currentIndex + 1))}
+              className="p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors disabled:opacity-50"
+              disabled={currentIndex === testimonials.length - 1}
+              aria-label="Next testimonial"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>
+          </div>
         </div>
       </div>
     </section>
