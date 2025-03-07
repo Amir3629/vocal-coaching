@@ -2,6 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer utilities {
+  .perspective-1000 {
+    perspective: 1000px;
+  }
+
+  .preserve-3d {
+    transform-style: preserve-3d;
+  }
+
+  .backface-hidden {
+    backface-visibility: hidden;
+  }
+
+  .rotate-y-180 {
+    transform: rotateY(180deg);
+  }
+}
+
 /* Custom checkbox styles */
 input[type="checkbox"] {
   @apply text-[#C8A97E] border-gray-600 focus:ring-[#C8A97E] focus:ring-offset-0 bg-white/10;
