@@ -45,7 +45,7 @@ export default function ServiceCard({ title, description, icon, price, features,
               src={image}
               alt={title}
               fill
-              className="object-cover object-center transition-all duration-700 scale-105 group-hover:scale-110"
+              className="object-cover object-center transition-all duration-700 scale-100 group-hover:scale-105"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
               priority
             />
@@ -68,7 +68,6 @@ export default function ServiceCard({ title, description, icon, price, features,
                 </li>
               ))}
             </ul>
-            <p className="text-sm text-[#C8A97E] mt-4">Hover für mehr Details</p>
           </div>
         </div>
 
@@ -81,7 +80,7 @@ export default function ServiceCard({ title, description, icon, price, features,
           }}
         >
           <h3 className="text-lg font-bold text-[#C8A97E] mb-3">{title}</h3>
-          <div className="space-y-4 flex-grow overflow-y-auto scrollbar-thin scrollbar-thumb-[#C8A97E]/20 scrollbar-track-transparent pr-2">
+          <div className="space-y-4 flex-grow">
             <div>
               <h4 className="text-[#C8A97E] font-medium mb-2 text-sm">Enthält:</h4>
               <ul className="space-y-1.5">
