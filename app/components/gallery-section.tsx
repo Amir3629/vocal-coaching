@@ -191,50 +191,74 @@ export default function GallerySection() {
             {selectedImage && (
               <div className="relative w-full h-full">
                 <div className="absolute top-4 right-4 z-10">
-                  <button
+                  <motion.button
                     onClick={() => setSelectedImage(null)}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors mobile-touch-target"
                   >
                     <X className="w-6 h-6" />
-                  </button>
-                </div>
-                
-                <div className="relative w-full h-full flex items-center justify-center">
-                  <Image
-                    src={selectedImage.src}
-                    alt={selectedImage.alt}
-                    fill
-                    className="object-contain"
-                    sizes="95vw"
-                    priority
-                  />
+                  </motion.button>
                 </div>
 
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
-                  <p className="text-white text-lg font-medium">{selectedImage.description}</p>
-                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-300">
-                    <p>{selectedImage.date}</p>
-                    <p>{selectedImage.location}</p>
-                  </div>
-                </div>
-
-                <div className="absolute inset-y-0 left-4 flex items-center">
-                  <button
+                <div className="absolute inset-y-0 left-4 flex items-center z-10">
+                  <motion.button
                     onClick={handlePrev}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors mobile-touch-target"
                   >
                     <ChevronLeft className="w-6 h-6" />
-                  </button>
+                  </motion.button>
                 </div>
 
-                <div className="absolute inset-y-0 right-4 flex items-center">
-                  <button
+                <div className="absolute inset-y-0 right-4 flex items-center z-10">
+                  <motion.button
                     onClick={handleNext}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                     className="p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors mobile-touch-target"
                   >
                     <ChevronRight className="w-6 h-6" />
-                  </button>
+                  </motion.button>
                 </div>
+
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={selectedImage.src}
+                    initial={{ opacity: 0, x: isTransitioning ? 100 : 0 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: isTransitioning ? -100 : 0 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 300,
+                      damping: 30,
+                      duration: 0.3
+                    }}
+                    className="w-full h-full flex items-center justify-center p-4"
+                  >
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={selectedImage.src}
+                        alt={selectedImage.alt}
+                        fill
+                        className="object-contain mobile-hardware-accelerate"
+                        quality={90}
+                        priority
+                      />
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20 }}
+                        transition={{ delay: 0.2 }}
+                        className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent"
+                      >
+                        <p className="text-white text-lg font-medium">{selectedImage.description}</p>
+                        <p className="text-gray-300 text-sm mt-1">{selectedImage.location} - {selectedImage.date}</p>
+                      </motion.div>
+                    </div>
+                  </motion.div>
+                </AnimatePresence>
               </div>
             )}
           </DialogContent>

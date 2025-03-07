@@ -48,6 +48,55 @@ input:focus, textarea:focus {
   @apply bg-[#C8A97E] text-black;
 }
 
+/* Modern Scrollbar Styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(200, 169, 126, 0.05);
+  border-radius: 4px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(200, 169, 126, 0.3);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 169, 126, 0.5);
+}
+
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200, 169, 126, 0.3) rgba(200, 169, 126, 0.05);
+}
+
+/* Global scrollbar styles */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgba(200, 169, 126, 0.05);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(200, 169, 126, 0.3);
+  border-radius: 4px;
+  transition: background 0.3s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 169, 126, 0.5);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(200, 169, 126, 0.3) rgba(200, 169, 126, 0.05);
+}
+
 /* Card flip animation */
 @media (hover: hover) {
   .preserve-3d {
