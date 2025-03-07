@@ -4,6 +4,7 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Clock } from "lucide-react"
 import SuccessMessage from "./success-message"
+import Link from "next/link"
 
 interface BookingModalProps {
   isOpen: boolean
@@ -302,6 +303,57 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                             className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all h-32 resize-none"
                           />
+                        </div>
+
+                        {/* Legal Acknowledgments */}
+                        <div className="space-y-4 mt-6 border-t border-[#C8A97E]/20 pt-6">
+                          <div className="flex items-start gap-3">
+                            <input
+                              type="checkbox"
+                              id="agb"
+                              required
+                              className="mt-1 h-4 w-4 rounded border-gray-300 text-[#C8A97E] focus:ring-[#C8A97E]"
+                            />
+                            <label htmlFor="agb" className="text-sm text-gray-300">
+                              Ich akzeptiere die{" "}
+                              <Link href="/legal/agb" className="text-[#C8A97E] hover:underline">
+                                Allgemeinen Geschäftsbedingungen
+                              </Link>
+                              {" "}des Anbieters.
+                            </label>
+                          </div>
+
+                          <div className="flex items-start gap-3">
+                            <input
+                              type="checkbox"
+                              id="withdrawal"
+                              required
+                              className="mt-1 h-4 w-4 rounded border-gray-300 text-[#C8A97E] focus:ring-[#C8A97E]"
+                            />
+                            <label htmlFor="withdrawal" className="text-sm text-gray-300">
+                              Ich bin über mein 14-tägiges Widerrufsrecht als Verbraucher informiert und akzeptiere die{" "}
+                              <Link href="/legal/meine-rechte" className="text-[#C8A97E] hover:underline">
+                                Widerrufsbelehrung
+                              </Link>
+                              .
+                            </label>
+                          </div>
+
+                          <div className="flex items-start gap-3">
+                            <input
+                              type="checkbox"
+                              id="privacy"
+                              required
+                              className="mt-1 h-4 w-4 rounded border-gray-300 text-[#C8A97E] focus:ring-[#C8A97E]"
+                            />
+                            <label htmlFor="privacy" className="text-sm text-gray-300">
+                              Ich stimme der{" "}
+                              <Link href="/legal/datenschutz" className="text-[#C8A97E] hover:underline">
+                                Datenschutzerklärung
+                              </Link>
+                              {" "}zu und akzeptiere die Verwendung von Cookies.
+                            </label>
+                          </div>
                         </div>
 
                         <div className="flex justify-between mt-6">

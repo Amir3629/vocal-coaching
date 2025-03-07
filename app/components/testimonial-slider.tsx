@@ -11,8 +11,8 @@ const testimonials = [
     role: "Jazz-Sängerin",
     content: "Melanies Unterricht hat meine Herangehensweise an den Jazzgesang komplett verändert. Ihre Techniken für Improvisation und Stimmkontrolle waren unglaublich wertvoll für meine Auftritte.",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/testimonials/sarah.svg"
-      : "/images/testimonials/sarah.svg"
+      ? "/vocal-coaching/images/testimonials/sarah.jpg"
+      : "/images/testimonials/sarah.jpg"
   },
   {
     id: 2,
@@ -20,8 +20,8 @@ const testimonials = [
     role: "Hobby-Sänger",
     content: "Der Unterricht bei Melanie hat mir nicht nur gesanglich, sondern auch musikalisch völlig neue Perspektiven eröffnet. Ihre Methodik ist präzise und gleichzeitig sehr inspirierend.",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/testimonials/thomas.svg"
-      : "/images/testimonials/thomas.svg"
+      ? "/vocal-coaching/images/testimonials/thomas.jpg"
+      : "/images/testimonials/thomas.jpg"
   },
   {
     id: 3,
@@ -29,8 +29,8 @@ const testimonials = [
     role: "Professionelle Sängerin",
     content: "Das Aufführungscoaching hat mir sehr geholfen, meine Bühnenangst zu überwinden. Melanie versteht es, individuell auf jeden Schüler einzugehen und die richtigen Techniken zu vermitteln.",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/testimonials/lisa.svg"
-      : "/images/testimonials/lisa.svg"
+      ? "/vocal-coaching/images/testimonials/lisa.jpg"
+      : "/images/testimonials/lisa.jpg"
   },
   {
     id: 4,
@@ -38,8 +38,8 @@ const testimonials = [
     role: "Band-Mitglied",
     content: "Die Kombination aus Piano und Gesang ist genau das, was ich gesucht habe. Melanie's ganzheitlicher Ansatz hat mir geholfen, beide Bereiche besser zu koordinieren.",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/testimonials/michael.svg"
-      : "/images/testimonials/michael.svg"
+      ? "/vocal-coaching/images/testimonials/michael.jpg"
+      : "/images/testimonials/michael.jpg"
   },
   {
     id: 5,
@@ -47,8 +47,8 @@ const testimonials = [
     role: "Anfängerin",
     content: "Als absolute Anfängerin war ich erst unsicher, aber Melanie hat es geschafft, meine Begeisterung für Jazz zu wecken. Ihre geduldige Art und ihr strukturierter Unterricht sind perfekt für Einsteiger.",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/testimonials/julia.svg"
-      : "/images/testimonials/julia.svg"
+      ? "/vocal-coaching/images/testimonials/julia.jpg"
+      : "/images/testimonials/julia.jpg"
   },
   {
     id: 6,
@@ -56,8 +56,8 @@ const testimonials = [
     role: "Musikstudent",
     content: "Als Musikstudent war ich auf der Suche nach einer Gesangslehrerin, die mich technisch und künstlerisch weiterbringt. Bei Melanie habe ich genau das gefunden.",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/testimonials/david.svg"
-      : "/images/testimonials/david.svg"
+      ? "/vocal-coaching/images/testimonials/david.jpg"
+      : "/images/testimonials/david.jpg"
   },
   {
     id: 7,
@@ -65,8 +65,8 @@ const testimonials = [
     role: "Jazz-Enthusiastin",
     content: "Die Atmosphäre in Melanies Unterricht ist einzigartig. Sie schafft es, eine perfekte Balance zwischen technischer Präzision und künstlerischer Freiheit zu finden.",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/testimonials/anna.svg"
-      : "/images/testimonials/anna.svg"
+      ? "/vocal-coaching/images/testimonials/anna.jpg"
+      : "/images/testimonials/anna.jpg"
   },
   {
     id: 8,
@@ -74,8 +74,8 @@ const testimonials = [
     role: "International Student",
     content: "Coming from London, I was thrilled to find such an exceptional vocal coach in Berlin. Melanie's approach to jazz vocals is both technical and intuitive.",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/testimonials/james.svg"
-      : "/images/testimonials/james.svg"
+      ? "/vocal-coaching/images/testimonials/james.jpg"
+      : "/images/testimonials/james.jpg"
   },
   {
     id: 9,
@@ -83,8 +83,8 @@ const testimonials = [
     role: "Semi-Professional",
     content: "Durch Melanies Coaching konnte ich meine Gesangstechnik deutlich verbessern. Ihre Expertise in der Jazz-Improvisation ist beeindruckend.",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/testimonials/elena.svg"
-      : "/images/testimonials/elena.svg"
+      ? "/vocal-coaching/images/testimonials/elena.jpg"
+      : "/images/testimonials/elena.jpg"
   }
 ];
 
