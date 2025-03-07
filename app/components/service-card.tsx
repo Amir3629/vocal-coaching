@@ -1,6 +1,6 @@
 "use client"
 
-import { type ReactNode } from "react"
+import { type ReactNode, useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
 
@@ -21,6 +21,8 @@ interface ServiceCardProps {
 }
 
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
+  const [isFlipped, setIsFlipped] = useState(false)
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -28,16 +30,19 @@ export default function ServiceCard({ title, description, icon, price, features,
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
       className="relative h-[450px] perspective-1000"
+      onMouseEnter={() => setIsFlipped(true)}
+      onMouseLeave={() => setIsFlipped(false)}
     >
       <div
-        className="relative w-full h-full transition-all duration-700 preserve-3d cursor-pointer hover:rotate-y-180 group"
+        className="relative w-full h-full transition-all duration-700 preserve-3d"
         style={{
           transformStyle: "preserve-3d",
+          transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)"
         }}
       >
         {/* Front of card */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-black/40 backdrop-blur-md border border-white/5 hover:border-[#C8A97E]/20 transition-all duration-500"
+          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-black/40 backdrop-blur-md border border-white/5 transition-all duration-500"
           style={{ backfaceVisibility: "hidden" }}
         >
           <div className="absolute inset-0 w-full h-full">
@@ -45,7 +50,7 @@ export default function ServiceCard({ title, description, icon, price, features,
               src={image}
               alt={title}
               fill
-              className="object-cover object-center transition-all duration-700 scale-100 group-hover:scale-105"
+              className="object-cover object-center transition-all duration-700"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
               priority
             />
