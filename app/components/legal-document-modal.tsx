@@ -1,5 +1,8 @@
+"use client"
+
 import { motion, AnimatePresence } from "framer-motion"
 import { X } from "lucide-react"
+import { useEffect } from "react"
 
 interface LegalDocumentModalProps {
   isOpen: boolean
@@ -9,6 +12,15 @@ interface LegalDocumentModalProps {
 }
 
 export default function LegalDocumentModal({ isOpen, onClose, title, children }: LegalDocumentModalProps) {
+  // Close on escape key
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', handleEscape)
+    return () => window.removeEventListener('keydown', handleEscape)
+  }, [onClose])
+
   return (
     <AnimatePresence>
       {isOpen && (

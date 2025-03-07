@@ -27,8 +27,8 @@ const testimonials = [
   {
     id: 3,
     name: "Lisa B.",
-    role: "Professionelle Sängerin",
-    content: "Das Aufführungscoaching hat mir sehr geholfen, meine Bühnenangst zu überwinden. Melanie versteht es, individuell auf jeden Schüler einzugehen und die richtigen Techniken zu vermitteln.",
+    role: "Professional Singer",
+    content: "The performance coaching helped me tremendously in overcoming my stage fright. Melanie knows how to work with each student individually and teach the right techniques. Her approach to stage presence and vocal technique is exceptional.",
     image: process.env.NODE_ENV === 'production'
       ? "/vocal-coaching/images/testimonials/lisa.jpg"
       : "/images/testimonials/lisa.jpg"
@@ -73,7 +73,7 @@ const testimonials = [
     id: 8,
     name: "James R.",
     role: "International Student",
-    content: "Coming from London, I was thrilled to find such an exceptional vocal coach in Berlin. Melanie's approach to jazz vocals is both technical and intuitive.",
+    content: "As an international student from London, I was thrilled to find such an exceptional vocal coach in Berlin. Melanie's approach to jazz vocals combines technical expertise with artistic freedom. Her methods have significantly improved my vocal range and improvisation skills.",
     image: process.env.NODE_ENV === 'production'
       ? "/vocal-coaching/images/testimonials/james.jpg"
       : "/images/testimonials/james.jpg"
