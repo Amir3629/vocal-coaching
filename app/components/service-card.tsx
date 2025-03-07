@@ -23,15 +23,26 @@ interface ServiceCardProps {
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
 
+  // Add touch event handlers for mobile
+  const handleTouchStart = () => {
+    setIsFlipped(true)
+  }
+
+  const handleTouchEnd = () => {
+    setIsFlipped(false)
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
-      className="relative h-[450px] perspective-1000"
+      className="relative h-[450px] sm:h-[500px] perspective-1000"
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
+      onTouchStart={handleTouchStart}
+      onTouchEnd={handleTouchEnd}
     >
       <div
         className="relative w-full h-full transition-all duration-700 preserve-3d"
@@ -51,21 +62,21 @@ export default function ServiceCard({ title, description, icon, price, features,
               alt={title}
               fill
               className="object-cover object-center transition-all duration-700"
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
               priority
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
           </div>
-          <div className="relative p-6 flex flex-col h-full">
+          <div className="relative p-4 sm:p-6 flex flex-col h-full">
             <div className="flex items-center gap-4 mb-4">
               <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
                 {icon}
               </div>
-              <span className="text-lg font-semibold text-[#C8A97E]">{price}</span>
+              <span className="text-base sm:text-lg font-semibold text-[#C8A97E]">{price}</span>
             </div>
-            <h3 className="text-xl font-bold mb-3 text-white">{title}</h3>
-            <p className="text-gray-300 mb-4 text-sm">{description}</p>
-            <ul className="space-y-2 flex-grow text-sm">
+            <h3 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-white">{title}</h3>
+            <p className="text-gray-300 mb-3 sm:mb-4 text-sm">{description}</p>
+            <ul className="space-y-1.5 sm:space-y-2 flex-grow text-sm">
               {features.map((feature, index) => (
                 <li key={index} className="flex items-center text-gray-300">
                   <span className="mr-2 text-[#C8A97E]">•</span>
@@ -78,14 +89,14 @@ export default function ServiceCard({ title, description, icon, price, features,
 
         {/* Back of card */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20 p-6 flex flex-col rotate-y-180"
+          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20 p-4 sm:p-6 flex flex-col rotate-y-180"
           style={{ 
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)"
           }}
         >
           <h3 className="text-lg font-bold text-[#C8A97E] mb-3">{title}</h3>
-          <div className="space-y-4 flex-grow">
+          <div className="space-y-4 flex-grow overflow-y-auto custom-scrollbar">
             <div>
               <h4 className="text-[#C8A97E] font-medium mb-2 text-sm">Enthält:</h4>
               <ul className="space-y-1.5">

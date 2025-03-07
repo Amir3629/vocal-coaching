@@ -122,9 +122,9 @@ export default function NavBar() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 z-40 bg-black/95 backdrop-blur-md md:hidden pt-20"
+            className="fixed inset-0 z-40 bg-black/95 backdrop-blur-md md:hidden"
           >
-            <div className="flex flex-col items-center space-y-8 p-8">
+            <div className="flex flex-col items-center justify-center min-h-screen gap-8 p-4">
               <button
                 onClick={() => scrollToSection("services")}
                 className="text-xl text-white hover:text-[#C8A97E] transition-colors"
@@ -151,14 +151,14 @@ export default function NavBar() {
               </button>
               <Button
                 onClick={() => scrollToSection("contact")}
-                className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8 py-2 w-full"
+                className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8 py-3 text-lg w-full max-w-[200px]"
               >
                 Contact
               </Button>
               <Button
                 onClick={() => window.open('https://chornextdoor.de', '_blank')}
                 variant="outline"
-                className="border-2 border-[#C8A97E] text-[#C8A97E] hover:bg-[#C8A97E] hover:text-black rounded-full px-8 py-2 w-full"
+                className="border-2 border-[#C8A97E] text-[#C8A97E] hover:bg-[#C8A97E] hover:text-black rounded-full px-8 py-3 text-lg w-full max-w-[200px]"
               >
                 Chor Next Door
               </Button>

@@ -65,12 +65,13 @@ export default function ContactForm() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-black/40 backdrop-blur-md rounded-2xl p-8 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)]"
+            className="bg-black/40 backdrop-blur-md rounded-2xl p-4 sm:p-8 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)]"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-              <div className="space-y-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Contact Info */}
+              <div className="space-y-6 sm:space-y-8">
                 <div className="flex items-start gap-4">
-                  <div className="p-2 bg-[#C8A97E]/10 rounded-lg">
+                  <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <MapPin className="w-5 h-5 text-[#C8A97E]" />
                   </div>
                   <div>
@@ -81,7 +82,7 @@ export default function ContactForm() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="p-2 bg-[#C8A97E]/10 rounded-lg">
+                  <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <Clock className="w-5 h-5 text-[#C8A97E]" />
                   </div>
                   <div>
@@ -92,7 +93,7 @@ export default function ContactForm() {
                 </div>
 
                 <div className="flex items-start gap-4">
-                  <div className="p-2 bg-[#C8A97E]/10 rounded-lg">
+                  <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <Mail className="w-5 h-5 text-[#C8A97E]" />
                   </div>
                   <div>
@@ -102,8 +103,9 @@ export default function ContactForm() {
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-6">
-                <div className="space-y-4">
+              {/* Contact Form */}
+              <div>
+                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                   <div>
                     <input
                       type="text"
@@ -111,10 +113,9 @@ export default function ContactForm() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="w-full bg-white/5 border-b border-[#C8A97E]/20 px-4 py-3 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E] transition-all duration-300"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
                     />
                   </div>
-                  
                   <div>
                     <input
                       type="email"
@@ -122,34 +123,30 @@ export default function ContactForm() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="w-full bg-white/5 border-b border-[#C8A97E]/20 px-4 py-3 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E] transition-all duration-300"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
                     />
                   </div>
-                  
                   <div>
                     <textarea
-                      placeholder="Nachricht"
+                      placeholder="Ihre Nachricht"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
-                      rows={4}
-                      className="w-full bg-white/5 border-b border-[#C8A97E]/20 px-4 py-3 rounded-t-lg text-white placeholder-white/40 focus:outline-none focus:border-[#C8A97E] transition-all duration-300 resize-none"
-                    ></textarea>
+                      rows={6}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
+                    />
                   </div>
-                </div>
-                
-                <div className="flex justify-end">
                   <motion.button
                     type="submit"
-                    className="inline-flex items-center px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black text-sm font-medium rounded-lg transition-all duration-300 transform hover:scale-[0.98] hover:shadow-lg gap-2"
+                    className="w-full bg-[#C8A97E] hover:bg-[#B89A6F] text-black font-medium rounded-lg px-6 py-3 flex items-center justify-center gap-2 transition-colors"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
-                    <span>Senden</span>
                     <Send className="w-4 h-4" />
+                    Nachricht senden
                   </motion.button>
-                </div>
-              </form>
+                </form>
+              </div>
             </div>
           </motion.div>
         </div>
