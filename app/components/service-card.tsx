@@ -23,6 +23,7 @@ interface ServiceCardProps {
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
   const [isTouching, setIsTouching] = useState(false)
+  const [imageLoaded, setImageLoaded] = useState(false)
 
   const handleTouchStart = () => {
     setIsTouching(true)
@@ -39,6 +40,10 @@ export default function ServiceCard({ title, description, icon, price, features,
     setIsFlipped(false)
   }
 
+  const handleImageLoad = () => {
+    setImageLoaded(true)
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -53,22 +58,25 @@ export default function ServiceCard({ title, description, icon, price, features,
       onTouchCancel={handleTouchCancel}
     >
       <div
-        className={`relative w-full h-full transition-all duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}
+        className={`relative w-full h-full transition-transform duration-300 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}
         style={{ transformStyle: "preserve-3d" }}
       >
         {/* Front of card */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-black/40 backdrop-blur-md border border-white/5 transition-all duration-500"
+          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-black/40 backdrop-blur-sm border border-white/5"
           style={{ backfaceVisibility: "hidden" }}
         >
           <div className="absolute inset-0 w-full h-full">
+            <div className={`absolute inset-0 bg-black/60 transition-opacity duration-500 ${imageLoaded ? 'opacity-0' : 'opacity-100'}`} />
             <Image
               src={image}
               alt={title}
               fill
-              className="object-cover object-center transition-all duration-700"
-              sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
-              priority
+              className={`object-cover object-center transition-opacity duration-500 ${imageLoaded ? 'opacity-100' : 'opacity-0'}`}
+              sizes="(max-width: 640px) 90vw, (max-width: 768px) 45vw, 30vw"
+              priority={delay === 0}
+              quality={85}
+              onLoad={handleImageLoad}
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
           </div>
