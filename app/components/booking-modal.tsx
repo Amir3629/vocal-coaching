@@ -118,17 +118,26 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   const handleServiceSelect = (serviceId: string) => {
     setSelectedService(serviceId)
-    setStep(2)
-  }
-
-  const handleNextStep = () => {
     const container = document.querySelector('.steps-container');
     if (container) {
       container.classList.add('slide-left');
       setTimeout(() => {
-        setStep(prev => prev + 1);
+        setStep(2);
         container.classList.remove('slide-left');
-      }, 300);
+      }, 500);
+    }
+  }
+
+  const handleNextStep = () => {
+    if ((step === 2 && selectedDays.length > 0 && selectedTime)) {
+      const container = document.querySelector('.steps-container');
+      if (container) {
+        container.classList.add('slide-left');
+        setTimeout(() => {
+          setStep(prev => prev + 1);
+          container.classList.remove('slide-left');
+        }, 500);
+      }
     }
   }
 
@@ -139,7 +148,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       setTimeout(() => {
         setStep(prev => prev - 1);
         container.classList.remove('slide-right');
-      }, 300);
+      }, 500);
     }
   }
 
@@ -178,12 +187,11 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   {/* Content */}
                   <div className="p-8">
                     <AnimatePresence mode="wait">
-                      {/* Steps Container */}
                       <motion.div 
                         className="steps-container"
                         initial={{ opacity: 0, x: 20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.6 }}
+                        transition={{ duration: 0.5 }}
                       >
                         {step === 1 && (
                           <div className="space-y-6">
@@ -216,46 +224,58 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                         {step === 2 && (
                           <div className="space-y-6">
-                            <h3 className="text-xl font-medium text-white mb-4">Bevorzugte Zeit</h3>
-                            <div className="space-y-2">
-                              {timeSlots.map((slot, index) => (
-                                <motion.button
-                                  initial={{ opacity: 0, y: 20 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: index * 0.1 }}
-                                  key={slot.id}
-                                  onClick={() => handleTimeSelect(slot.id)}
-                                  className={`
-                                    w-full flex items-center p-4 rounded-lg transition-all duration-300
-                                    ${selectedTime === slot.id
-                                      ? 'bg-[#C8A97E] text-black shadow-lg shadow-[#C8A97E]/20'
-                                      : 'bg-white/5 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-[#C8A97E]/10'
-                                    }
-                                  `}
-                                >
-                                  <slot.icon className={`w-5 h-5 ${selectedTime === slot.id ? 'text-black' : 'text-[#C8A97E]'}`} />
-                                  <div className="ml-4 text-left">
-                                    <p className="font-medium">{slot.label}</p>
-                                    <p className={`text-sm ${selectedTime === slot.id ? 'text-black/70' : 'text-gray-400'}`}>
-                                      {slot.time}
-                                    </p>
-                                  </div>
-                                </motion.button>
-                              ))}
+                            <div>
+                              <h3 className="text-xl font-medium text-white mb-4">Bevorzugte Tage</h3>
+                              <div className="grid grid-cols-5 gap-2 mb-6">
+                                {weekDays.map((day, index) => (
+                                  <motion.button
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: index * 0.1 }}
+                                    key={day.id}
+                                    onClick={() => handleDaySelect(day.id)}
+                                    className={`
+                                      py-3 rounded-lg text-sm font-medium transition-all duration-300
+                                      ${selectedDays.includes(day.id)
+                                        ? 'bg-[#C8A97E] text-black shadow-lg shadow-[#C8A97E]/20'
+                                        : 'bg-white/5 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-[#C8A97E]/10'
+                                      }
+                                    `}
+                                  >
+                                    {day.label}
+                                  </motion.button>
+                                ))}
+                              </div>
                             </div>
-                            <div className="flex justify-between mt-6">
-                              <button
-                                onClick={handlePrevStep}
-                                className="px-6 py-2 bg-white/5 hover:bg-white/10 text-white rounded-lg transition-colors"
-                              >
-                                Zurück
-                              </button>
-                              <button
-                                onClick={handleNextStep}
-                                className="px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
-                              >
-                                Weiter
-                              </button>
+
+                            <div>
+                              <h3 className="text-xl font-medium text-white mb-4">Bevorzugte Zeit</h3>
+                              <div className="space-y-2">
+                                {timeSlots.map((slot, index) => (
+                                  <motion.button
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: (index * 0.1) + 0.3 }}
+                                    key={slot.id}
+                                    onClick={() => handleTimeSelect(slot.id)}
+                                    className={`
+                                      w-full flex items-center p-4 rounded-lg transition-all duration-300
+                                      ${selectedTime === slot.id
+                                        ? 'bg-[#C8A97E] text-black shadow-lg shadow-[#C8A97E]/20'
+                                        : 'bg-white/5 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-[#C8A97E]/10'
+                                      }
+                                    `}
+                                  >
+                                    <slot.icon className={`w-5 h-5 ${selectedTime === slot.id ? 'text-black' : 'text-[#C8A97E]'}`} />
+                                    <div className="ml-4 text-left">
+                                      <p className="font-medium">{slot.label}</p>
+                                      <p className={`text-sm ${selectedTime === slot.id ? 'text-black/70' : 'text-gray-400'}`}>
+                                        {slot.time}
+                                      </p>
+                                    </div>
+                                  </motion.button>
+                                ))}
+                              </div>
                             </div>
                           </div>
                         )}
@@ -342,7 +362,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       </motion.div>
                     </AnimatePresence>
 
-                    {/* Navigation */}
+                    {/* Single Navigation Section */}
                     <motion.div
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
