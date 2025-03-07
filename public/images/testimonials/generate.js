@@ -6,47 +6,47 @@ const testimonials = [
   { 
     name: 'sarah',
     gender: 'female',
-    imageUrl: 'https://fakeface.rest/face/view/1?gender=female&minimum_age=25&maximum_age=35'
+    imageUrl: 'https://api.dicebear.com/7.x/personas/jpg?seed=sarah&backgroundColor=b6e3f4'
   },
   { 
     name: 'thomas',
     gender: 'male',
-    imageUrl: 'https://fakeface.rest/face/view/2?gender=male&minimum_age=30&maximum_age=40'
+    imageUrl: 'https://api.dicebear.com/7.x/personas/jpg?seed=thomas&backgroundColor=b6e3f4'
   },
   { 
     name: 'lisa',
     gender: 'female',
-    imageUrl: 'https://fakeface.rest/face/view/3?gender=female&minimum_age=25&maximum_age=35'
+    imageUrl: 'https://api.dicebear.com/7.x/personas/jpg?seed=lisa&backgroundColor=b6e3f4'
   },
   { 
     name: 'michael',
     gender: 'male',
-    imageUrl: 'https://fakeface.rest/face/view/4?gender=male&minimum_age=35&maximum_age=45'
+    imageUrl: 'https://api.dicebear.com/7.x/personas/jpg?seed=michael&backgroundColor=b6e3f4'
   },
   { 
     name: 'julia',
     gender: 'female',
-    imageUrl: 'https://fakeface.rest/face/view/5?gender=female&minimum_age=20&maximum_age=30'
+    imageUrl: 'https://api.dicebear.com/7.x/personas/jpg?seed=julia&backgroundColor=b6e3f4'
   },
   { 
     name: 'david',
     gender: 'male',
-    imageUrl: 'https://fakeface.rest/face/view/6?gender=male&minimum_age=25&maximum_age=35'
+    imageUrl: 'https://api.dicebear.com/7.x/personas/jpg?seed=david&backgroundColor=b6e3f4'
   },
   { 
     name: 'anna',
     gender: 'female',
-    imageUrl: 'https://fakeface.rest/face/view/7?gender=female&minimum_age=28&maximum_age=38'
+    imageUrl: 'https://api.dicebear.com/7.x/personas/jpg?seed=anna&backgroundColor=b6e3f4'
   },
   { 
     name: 'james',
     gender: 'male',
-    imageUrl: 'https://fakeface.rest/face/view/8?gender=male&minimum_age=30&maximum_age=40'
+    imageUrl: 'https://api.dicebear.com/7.x/personas/jpg?seed=james&backgroundColor=b6e3f4'
   },
   { 
     name: 'elena',
     gender: 'female',
-    imageUrl: 'https://fakeface.rest/face/view/9?gender=female&minimum_age=25&maximum_age=35'
+    imageUrl: 'https://api.dicebear.com/7.x/personas/jpg?seed=elena&backgroundColor=b6e3f4'
   }
 ];
 
