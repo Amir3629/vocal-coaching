@@ -1,14 +1,13 @@
 "use client"
 
-import { createElement, Suspense } from "react"
-import { Facebook, Instagram, Youtube, MapPin, Mail, Phone, Clock, ChevronRight } from "lucide-react"
-import Link from "next/link"
+import { createElement } from "react"
+import { Shield, FileText, Scale } from "lucide-react"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import LegalDocumentModal from "./legal-document-modal"
 import dynamic from "next/dynamic"
 
-// Dynamically import legal document contents with loading state and error handling
+// Dynamically import legal document contents
 const DatenschutzContent = dynamic(
   () => import("@/app/legal/datenschutz/page").catch(() => () => (
     <div className="text-red-500">Failed to load Datenschutz content</div>
@@ -40,93 +39,83 @@ const ImpressumContent = dynamic(
 )
 
 export default function Footer() {
-  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
   const [selectedDoc, setSelectedDoc] = useState<string | null>(null);
 
   const legalDocs = [
     {
       title: "Datenschutz",
-      description: "Informationen zum Datenschutz und zur Datenverarbeitung",
-      color: "from-blue-500/20 to-blue-600/20",
+      description: "Datenschutz & Privatsphäre",
+      icon: Shield,
+      color: "from-[#C8A97E]/20 to-[#B69A6E]/20",
       component: DatenschutzContent
     },
     {
       title: "AGB",
-      description: "Allgemeine Geschäftsbedingungen",
-      color: "from-amber-500/20 to-amber-600/20",
+      description: "Geschäftsbedingungen",
+      icon: FileText,
+      color: "from-[#C8A97E]/20 to-[#B69A6E]/20",
       component: AGBContent
     },
     {
       title: "Impressum",
-      description: "Rechtliche Informationen und Kontaktdaten",
-      color: "from-emerald-500/20 to-emerald-600/20",
+      description: "Rechtliche Informationen",
+      icon: Scale,
+      color: "from-[#C8A97E]/20 to-[#B69A6E]/20",
       component: ImpressumContent
     }
   ];
 
   return (
     <footer className="bg-black border-t border-white/10">
-      <div className="container mx-auto px-4 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 lg:gap-12">
-          {/* Left side - Original content */}
-          <div>
-            <h3 className="text-lg font-medium text-white mb-4">Melanie Wainwright</h3>
-            <p className="text-gray-400 mb-4">Jazz Vocal Coaching in Berlin</p>
-            <div className="space-y-2 text-gray-400">
-              <p>Berlin-Mitte, Deutschland</p>
-              <p>info@melaniewainwright.com</p>
-              <p>+49 123 456 7890</p>
-              <p>Mo-Fr: 10:00-20:00</p>
-            </div>
-          </div>
+      <div className="container mx-auto px-4 py-16">
+        {/* Legal Documents */}
+        <div className="max-w-4xl mx-auto">
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8 }}
+            className="text-center mb-12"
+          >
+            <h2 className="section-heading mb-4">Rechtliche Informationen</h2>
+            <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
+          </motion.div>
 
-          {/* Right side - Institutions & Legal */}
-          <div className="space-y-8">
-            {/* Institutions & Partners */}
-            <div>
-              <h3 className="text-lg font-medium text-white mb-4">Institutionen & Partner</h3>
-              <ul className="space-y-2 text-gray-400">
-                <li><a href="#" className="hover:text-[#C8A97E] transition-colors">Complete Vocal Institute</a></li>
-                <li><a href="#" className="hover:text-[#C8A97E] transition-colors">CVT Deutschland</a></li>
-                <li><a href="#" className="hover:text-[#C8A97E] transition-colors">B-Flat Jazz Club Berlin</a></li>
-                <li><a href="#" className="hover:text-[#C8A97E] transition-colors">Chor Next Door</a></li>
-              </ul>
-            </div>
-
-            {/* Legal Document Cards */}
-            <div>
-              <h3 className="text-lg font-medium text-white mb-4">Rechtliches</h3>
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                {legalDocs.map((doc) => (
-                  <button 
-                    key={doc.title}
-                    onClick={() => setSelectedDoc(doc.title)}
-                    onMouseEnter={() => setHoveredCard(doc.title)}
-                    onMouseLeave={() => setHoveredCard(null)}
-                    className="relative group w-full text-left"
-                  >
-                    <motion.div 
-                      className={`relative overflow-hidden rounded-xl p-4 border border-white/10 bg-gradient-to-br ${doc.color} backdrop-blur-sm
-                                transition-all duration-300 group-hover:border-[#C8A97E]/20`}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                    >
-                      <div className="absolute inset-0 bg-black/40 backdrop-blur-[2px]" />
-                      <div className="relative z-10">
-                        <h4 className="text-white font-medium mb-1">{doc.title}</h4>
-                        <p className="text-gray-400 text-sm">{doc.description}</p>
-                      </div>
-                    </motion.div>
-                  </button>
-                ))}
-              </div>
-            </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {legalDocs.map((doc, index) => (
+              <motion.button 
+                key={doc.title}
+                onClick={() => setSelectedDoc(doc.title)}
+                className="relative group w-full text-left"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: index * 0.1 }}
+              >
+                <div 
+                  className={`relative overflow-hidden rounded-xl p-6 border border-[#C8A97E]/10 bg-gradient-to-br ${doc.color}
+                            transition-all duration-300 group-hover:border-[#C8A97E]/30 h-full`}
+                >
+                  <div className="absolute inset-0 bg-black/60 backdrop-blur-[1px]" />
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#C8A97E]/5 via-transparent to-transparent opacity-60" />
+                  <div className="relative z-10">
+                    <div className="p-3 rounded-xl bg-[#C8A97E]/10 inline-block mb-4">
+                      <doc.icon className="w-6 h-6 text-[#C8A97E]" />
+                    </div>
+                    <h4 className="text-xl font-medium text-white mb-2">{doc.title}</h4>
+                    <p className="text-gray-400 text-sm">{doc.description}</p>
+                    <div className="mt-4 text-[#C8A97E] text-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                      Mehr erfahren →
+                    </div>
+                  </div>
+                </div>
+              </motion.button>
+            ))}
           </div>
         </div>
 
         {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-white/10">
+        <div className="mt-16 pt-8 border-t border-white/10">
           <div className="text-center text-gray-400 text-sm">
             © 2024 Melanie Wainwright. Alle Rechte vorbehalten.
           </div>
