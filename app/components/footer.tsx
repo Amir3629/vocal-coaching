@@ -1,6 +1,6 @@
 "use client"
 
-import { createElement } from "react"
+import { createElement, Suspense } from "react"
 import { Facebook, Instagram, Youtube, MapPin, Mail, Phone, Clock, ChevronRight } from "lucide-react"
 import Link from "next/link"
 import { useState } from "react"
@@ -8,21 +8,36 @@ import { motion } from "framer-motion"
 import LegalDocumentModal from "./legal-document-modal"
 import dynamic from "next/dynamic"
 
-// Dynamically import legal document contents with loading state
-const DatenschutzContent = dynamic(() => import("../legal/datenschutz/page"), {
-  loading: () => <p className="text-gray-400">Loading...</p>,
-  ssr: false
-})
+// Dynamically import legal document contents with loading state and error handling
+const DatenschutzContent = dynamic(
+  () => import("@/app/legal/datenschutz/page").catch(() => () => (
+    <div className="text-red-500">Failed to load Datenschutz content</div>
+  )),
+  {
+    loading: () => <p className="text-gray-400">Loading...</p>,
+    ssr: false
+  }
+)
 
-const AGBContent = dynamic(() => import("../legal/agb/page"), {
-  loading: () => <p className="text-gray-400">Loading...</p>,
-  ssr: false
-})
+const AGBContent = dynamic(
+  () => import("@/app/legal/agb/page").catch(() => () => (
+    <div className="text-red-500">Failed to load AGB content</div>
+  )),
+  {
+    loading: () => <p className="text-gray-400">Loading...</p>,
+    ssr: false
+  }
+)
 
-const ImpressumContent = dynamic(() => import("../legal/impressum/page"), {
-  loading: () => <p className="text-gray-400">Loading...</p>,
-  ssr: false
-})
+const ImpressumContent = dynamic(
+  () => import("@/app/legal/impressum/page").catch(() => () => (
+    <div className="text-red-500">Failed to load Impressum content</div>
+  )),
+  {
+    loading: () => <p className="text-gray-400">Loading...</p>,
+    ssr: false
+  }
+)
 
 export default function Footer() {
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
