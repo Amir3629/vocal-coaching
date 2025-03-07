@@ -19,6 +19,22 @@
   .rotate-y-180 {
     transform: rotateY(180deg);
   }
+
+  .optimize-gpu {
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    -o-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    -ms-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-perspective: 1000;
+    -moz-perspective: 1000;
+    -ms-perspective: 1000;
+    perspective: 1000;
+  }
 }
 
 /* Custom checkbox styles */
@@ -419,6 +435,64 @@ html {
     min-width: 40px !important;
     padding: 0.5rem 0.75rem !important;
     font-size: 0.9375rem !important;
+  }
+}
+
+/* Reduce motion when requested */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Mobile optimizations */
+@media (max-width: 767px) {
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .card, [class*="card"] {
+    transform: none !important;
+    transition: transform 0.2s ease-out !important;
+  }
+
+  .preserve-3d {
+    transition: transform 0.3s ease-out !important;
+  }
+
+  /* Improve touch response */
+  button, 
+  [role="button"],
+  a {
+    touch-action: manipulation;
+  }
+
+  /* Optimize animations */
+  .animate-in,
+  .animate-out,
+  [class*="motion-"] {
+    will-change: transform, opacity;
+  }
+
+  /* Prevent text scaling */
+  body {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  /* Smooth scrolling only on capable devices */
+  @supports (-webkit-overflow-scrolling: touch) {
+    body {
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  /* Optimize images */
+  img {
+    content-visibility: auto;
   }
 }
 

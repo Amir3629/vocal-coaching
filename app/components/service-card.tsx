@@ -22,13 +22,20 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
+  const [isTouching, setIsTouching] = useState(false)
 
-  // Add touch event handlers for mobile
   const handleTouchStart = () => {
+    setIsTouching(true)
     setIsFlipped(true)
   }
 
   const handleTouchEnd = () => {
+    setIsTouching(false)
+    setIsFlipped(false)
+  }
+
+  const handleTouchCancel = () => {
+    setIsTouching(false)
     setIsFlipped(false)
   }
 
@@ -39,17 +46,15 @@ export default function ServiceCard({ title, description, icon, price, features,
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
       className="relative h-[450px] sm:h-[500px] perspective-1000"
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
+      onMouseEnter={() => !isTouching && setIsFlipped(true)}
+      onMouseLeave={() => !isTouching && setIsFlipped(false)}
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
+      onTouchCancel={handleTouchCancel}
     >
       <div
-        className="relative w-full h-full transition-all duration-700 preserve-3d"
-        style={{
-          transformStyle: "preserve-3d",
-          transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)"
-        }}
+        className={`relative w-full h-full transition-all duration-500 preserve-3d ${isFlipped ? 'rotate-y-180' : ''}`}
+        style={{ transformStyle: "preserve-3d" }}
       >
         {/* Front of card */}
         <div 
