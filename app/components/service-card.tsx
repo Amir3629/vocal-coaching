@@ -3,6 +3,7 @@
 import { type ReactNode, useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
+import { ChevronRight, X } from "lucide-react"
 
 interface ServiceCardProps {
   title: string
@@ -23,18 +24,26 @@ interface ServiceCardProps {
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isFlipped, setIsFlipped] = useState(false)
 
+  // Handle touch events for mobile
+  const handleTouchStart = () => {
+    if (window.innerWidth < 768) {
+      setIsFlipped(!isFlipped)
+    }
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.5, delay }}
-      className="relative h-[450px] perspective-1000"
-      onMouseEnter={() => setIsFlipped(true)}
-      onMouseLeave={() => setIsFlipped(false)}
+      className="relative h-[450px] md:perspective-1000"
+      onMouseEnter={() => window.innerWidth >= 768 && setIsFlipped(true)}
+      onMouseLeave={() => window.innerWidth >= 768 && setIsFlipped(false)}
+      onTouchStart={handleTouchStart}
     >
       <div
-        className="relative w-full h-full transition-all duration-700 preserve-3d"
+        className="relative w-full h-full transition-all duration-500 md:preserve-3d mobile-hardware-accelerate"
         style={{
           transformStyle: "preserve-3d",
           transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)"
@@ -56,7 +65,7 @@ export default function ServiceCard({ title, description, icon, price, features,
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black via-black/80 to-black/60" />
           </div>
-          <div className="relative p-6 flex flex-col h-full">
+          <div className="relative p-4 md:p-6 flex flex-col h-full">
             <div className="flex items-center gap-4 mb-4">
               <div className="p-2 rounded-lg bg-[#C8A97E]/20 backdrop-blur-md">
                 {icon}
@@ -73,19 +82,43 @@ export default function ServiceCard({ title, description, icon, price, features,
                 </li>
               ))}
             </ul>
+            <div className="mt-4 md:hidden">
+              <button 
+                className="text-[#C8A97E] text-sm flex items-center gap-2 mobile-touch-target"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  setIsFlipped(true)
+                }}
+              >
+                Mehr Details
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
 
         {/* Back of card */}
         <div 
-          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20 p-6 flex flex-col rotate-y-180"
+          className="absolute inset-0 w-full h-full backface-hidden rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20 p-4 md:p-6 flex flex-col rotate-y-180"
           style={{ 
             backfaceVisibility: "hidden",
             transform: "rotateY(180deg)"
           }}
         >
-          <h3 className="text-lg font-bold text-[#C8A97E] mb-3">{title}</h3>
-          <div className="space-y-4 flex-grow">
+          <div className="flex justify-between items-start mb-4">
+            <h3 className="text-lg font-bold text-[#C8A97E]">{title}</h3>
+            <button 
+              className="md:hidden text-gray-400 p-2 mobile-touch-target"
+              onClick={(e) => {
+                e.stopPropagation()
+                setIsFlipped(false)
+              }}
+            >
+              <X className="w-4 h-4" />
+            </button>
+          </div>
+          
+          <div className="space-y-4 flex-grow overflow-y-auto">
             <div>
               <h4 className="text-[#C8A97E] font-medium mb-2 text-sm">Enthält:</h4>
               <ul className="space-y-1.5">

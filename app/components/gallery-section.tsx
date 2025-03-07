@@ -139,10 +139,10 @@ export default function GallerySection() {
   }, [selectedImage])
 
   return (
-    <section id="gallery" className="relative py-20 bg-[#000000]">
+    <section id="gallery" className="relative py-12 md:py-20 bg-[#000000]">
       <div className="container mx-auto px-4">
         <motion.div 
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -152,7 +152,7 @@ export default function GallerySection() {
           <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
           {images.map((image, index) => (
             <motion.div
               key={image.src}
@@ -168,84 +168,77 @@ export default function GallerySection() {
                   src={image.src}
                   alt={image.alt}
                   fill
-                  className="object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                  className="object-cover rounded-lg transition-transform duration-300 group-hover:scale-105 mobile-hardware-accelerate"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  loading={index < 6 ? "eager" : "lazy"}
+                  quality={75}
                 />
+                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300" />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="text-white text-center p-4">
+                    <p className="text-sm md:text-base font-medium">{image.description}</p>
+                    <p className="text-xs md:text-sm text-gray-300 mt-1">{image.location}</p>
+                  </div>
+                </div>
               </div>
             </motion.div>
           ))}
         </div>
 
         {/* Modal */}
-        <AnimatePresence>
-          {selectedImage && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={handleClose}
-              className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                className="relative max-w-7xl w-full mx-auto"
-                onClick={(e) => e.stopPropagation()}
-              >
-                <div className="relative aspect-[16/9] w-full">
+        <Dialog open={!!selectedImage} onOpenChange={() => setSelectedImage(null)}>
+          <DialogContent className="max-w-4xl w-[95vw] h-[90vh] p-0 bg-black/95">
+            {selectedImage && (
+              <div className="relative w-full h-full">
+                <div className="absolute top-4 right-4 z-10">
+                  <button
+                    onClick={() => setSelectedImage(null)}
+                    className="p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors mobile-touch-target"
+                  >
+                    <X className="w-6 h-6" />
+                  </button>
+                </div>
+                
+                <div className="relative w-full h-full flex items-center justify-center">
                   <Image
                     src={selectedImage.src}
                     alt={selectedImage.alt}
                     fill
                     className="object-contain"
-                    sizes="100vw"
+                    sizes="95vw"
                     priority
                   />
                 </div>
 
-                {/* Navigation Arrows */}
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePrev(e as React.MouseEvent);
-                  }}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 flex items-center justify-center text-white/90 hover:bg-black/70 transition-colors"
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
-
-                <button
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handleNext(e as React.MouseEvent);
-                  }}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-black/50 flex items-center justify-center text-white/90 hover:bg-black/70 transition-colors"
-                >
-                  <ChevronRight className="w-6 h-6" />
-                </button>
-
-                {/* Close Button */}
-                <button
-                  onClick={handleClose}
-                  className="absolute -top-12 right-0 text-white/90 hover:text-white"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-
-                {/* Image Info */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 via-black/60 to-transparent">
-                  <p className="text-white font-medium text-lg">{selectedImage.description}</p>
-                  <div className="flex items-center gap-4 text-sm text-white/70 mt-2">
-                    <span>{selectedImage.date}</span>
-                    <span>•</span>
-                    <span>{selectedImage.location}</span>
+                <div className="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/80 to-transparent">
+                  <p className="text-white text-lg font-medium">{selectedImage.description}</p>
+                  <div className="flex items-center gap-4 mt-2 text-sm text-gray-300">
+                    <p>{selectedImage.date}</p>
+                    <p>{selectedImage.location}</p>
                   </div>
                 </div>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+
+                <div className="absolute inset-y-0 left-4 flex items-center">
+                  <button
+                    onClick={handlePrev}
+                    className="p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors mobile-touch-target"
+                  >
+                    <ChevronLeft className="w-6 h-6" />
+                  </button>
+                </div>
+
+                <div className="absolute inset-y-0 right-4 flex items-center">
+                  <button
+                    onClick={handleNext}
+                    className="p-2 rounded-full bg-black/50 text-white hover:bg-black/70 transition-colors mobile-touch-target"
+                  >
+                    <ChevronRight className="w-6 h-6" />
+                  </button>
+                </div>
+              </div>
+            )}
+          </DialogContent>
+        </Dialog>
       </div>
     </section>
   )

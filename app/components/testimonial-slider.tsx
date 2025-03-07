@@ -115,14 +115,14 @@ export default function TestimonialSlider() {
   }
 
   return (
-    <section className="py-20 bg-[#040202]">
+    <section className="py-12 md:py-20 bg-[#040202]">
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
-          className="text-center mb-12"
+          className="text-center mb-8 md:mb-12"
         >
           <h2 className="section-heading mb-4">
             Was meine Schüler sagen
@@ -132,73 +132,73 @@ export default function TestimonialSlider() {
 
         <div 
           className="relative max-w-4xl mx-auto"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+          onTouchStart={handleMouseEnter}
+          onTouchEnd={handleMouseLeave}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={page}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.5 }}
-              className="bg-black/30 rounded-xl p-8 backdrop-blur-sm border border-[#C8A97E]/10"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -50 }}
+              transition={{ duration: 0.3 }}
+              className="bg-black/30 rounded-xl p-4 md:p-8 backdrop-blur-sm border border-[#C8A97E]/10 mobile-hardware-accelerate"
             >
-                <div className="flex flex-col items-center text-center">
-                <div className="w-20 h-20 rounded-full overflow-hidden mb-4 border-2 border-[#C8A97E]/20">
+              <div className="flex flex-col md:flex-row items-center gap-6 md:gap-8">
+                <div className="relative w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-2 border-[#C8A97E]/20 shrink-0">
                   <Image
                     src={testimonials[page].image}
                     alt={testimonials[page].name}
-                    width={80}
-                    height={80}
-                        className="w-full h-full object-cover"
-                    onError={() => setImageError(true)}
-                      />
-                    </div>
-                <blockquote className="max-w-2xl mx-auto mb-6">
-                  <p className="text-gray-300 text-lg italic">"{testimonials[page].content}"</p>
-                </blockquote>
-                <div className="flex flex-col items-center">
-                  <cite className="text-[#C8A97E] font-medium not-italic">
-                    {testimonials[page].name}
-                  </cite>
-                  <span className="text-gray-400 text-sm">
-                    {testimonials[page].role}
-                  </span>
+                    fill
+                    className="object-cover"
+                    sizes="(max-width: 768px) 96px, 128px"
+                    priority
+                  />
+                </div>
+                
+                <div className="flex-grow text-center md:text-left">
+                  <p className="text-base md:text-lg text-gray-300 italic mb-4">"{testimonials[page].content}"</p>
+                  <div>
+                    <p className="text-white font-medium">{testimonials[page].name}</p>
+                    <p className="text-[#C8A97E] text-sm">{testimonials[page].role}</p>
+                  </div>
                 </div>
               </div>
             </motion.div>
           </AnimatePresence>
 
-                <button
-            onClick={handlePrevious}
-            className="absolute left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all"
-                >
-            <ChevronLeft className="w-6 h-6" />
-                </button>
-
-                <button
-            onClick={handleNext}
-            className="absolute right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all"
-                >
-            <ChevronRight className="w-6 h-6" />
-                </button>
-
-          <div className="flex justify-center mt-6 gap-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
+          <div className="flex justify-center gap-2 mt-6">
+            {testimonials.map((_, index) => (
+              <button
+                key={index}
                 onClick={() => setPage(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                    index === page ? "bg-[#C8A97E]" : "bg-gray-600"
-                  }`}
-                >
-                  <span className="sr-only">Go to slide {index + 1}</span>
-                </button>
-              ))}
-            </div>
+                className={`w-2.5 h-2.5 rounded-full transition-colors mobile-touch-target ${
+                  index === page ? 'bg-[#C8A97E]' : 'bg-white/20'
+                }`}
+                style={{ padding: '12px' }}
+              />
+            ))}
           </div>
+
+          <button
+            onClick={handlePrevious}
+            className="absolute left-0 top-1/2 -translate-y-1/2 p-2 text-white/70 hover:text-white transition-colors mobile-touch-target"
+            style={{ transform: 'translate(-100%, -50%)' }}
+          >
+            <ChevronLeft className="w-6 h-6" />
+          </button>
+
+          <button
+            onClick={handleNext}
+            className="absolute right-0 top-1/2 -translate-y-1/2 p-2 text-white/70 hover:text-white transition-colors mobile-touch-target"
+            style={{ transform: 'translate(100%, -50%)' }}
+          >
+            <ChevronRight className="w-6 h-6" />
+          </button>
         </div>
+      </div>
     </section>
   )
 } 
