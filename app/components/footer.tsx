@@ -46,14 +46,39 @@ export default function Footer() {
 
   return (
     <footer className="bg-black border-t border-white/10">
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-12">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Brand & Social Column */}
-            <div className="text-center md:text-left">
-              <h3 className="text-xl text-white mb-4">Melanie Wainwright</h3>
-              <p className="text-gray-400 mb-6">Jazz Vocal Coaching in Berlin</p>
-              <div className="flex justify-center md:justify-start gap-6 mb-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+            {/* Left Column - Brand & Contact Info */}
+            <div>
+              <h3 className="text-xl text-white mb-2">Melanie Wainwright</h3>
+              <p className="text-gray-400 mb-4">Jazz Vocal Coaching in Berlin</p>
+              <div className="space-y-1 text-gray-400 text-sm">
+                <p>Torstraße 177</p>
+                <p>10115 Berlin</p>
+                <p>contact@melaniewainwright.de</p>
+              </div>
+            </div>
+
+            {/* Middle Column - Legal Links */}
+            <div className="flex flex-col items-center">
+              <h3 className="text-xl text-white mb-4">Rechtliches</h3>
+              <div className="flex flex-col items-center gap-2">
+                {legalDocs.map((doc) => (
+                  <button
+                    key={doc.title}
+                    onClick={() => setSelectedDoc(doc.title)}
+                    className="text-gray-400 hover:text-[#C8A97E] transition-colors text-sm"
+                  >
+                    {doc.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Right Column - Social Links & Copyright */}
+            <div className="flex flex-col items-end">
+              <div className="flex gap-6 mb-4">
                 {socialLinks.map((item) => (
                   <Link
                     key={item.name}
@@ -69,33 +94,10 @@ export default function Footer() {
                   </Link>
                 ))}
               </div>
-            </div>
-
-            {/* Legal Links Column */}
-            <div className="text-center md:text-left">
-              <h3 className="text-lg text-white mb-4">Rechtliches</h3>
-              <div className="flex flex-col gap-3">
-                {legalDocs.map((doc) => (
-                  <button
-                    key={doc.title}
-                    onClick={() => setSelectedDoc(doc.title)}
-                    className="text-gray-400 hover:text-[#C8A97E] transition-colors text-sm"
-                  >
-                    {doc.title}
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Contact & Copyright Column */}
-            <div className="text-center md:text-left">
-              <h3 className="text-lg text-white mb-4">Kontakt</h3>
-              <div className="space-y-2 mb-6">
-                <p className="text-gray-400 text-sm">Torstraße 177</p>
-                <p className="text-gray-400 text-sm">10115 Berlin</p>
-                <p className="text-gray-400 text-sm">contact@melaniewainwright.de</p>
-              </div>
-              <p className="text-sm text-gray-400">© 2025 Melanie Wainwright.<br />Alle Rechte vorbehalten.</p>
+              <p className="text-sm text-gray-400 text-right">
+                © 2025 Melanie Wainwright.<br />
+                Alle Rechte vorbehalten.
+              </p>
             </div>
           </div>
         </div>
