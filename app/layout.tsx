@@ -3,6 +3,7 @@ import "./globals.css"
 import type { Metadata } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import CookieConsent from "./components/cookie-consent"
+import Footer from "./components/footer"
 
 const inter = Inter({ subsets: ["latin"] })
 const playfair = Playfair_Display({ 
@@ -26,6 +27,7 @@ export default function RootLayout({
     <html lang="en" className={`dark ${playfair.variable}`}>
       <body className={inter.className}>
         {children}
+        <Footer />
         <CookieConsent />
       </body>
     </html>
