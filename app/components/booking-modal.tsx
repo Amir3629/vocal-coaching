@@ -213,14 +213,14 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           <label className="text-sm text-gray-400 mb-2 block">Zeiten (Mehrfachauswahl möglich)</label>
                           <div className="grid grid-cols-1 gap-4">
                             {Object.entries(timeSlots).map(([slot, { label, description }]) => (
-                              <button
+                            <button
                                 key={slot}
                                 onClick={() => handleTimeSlotSelect(slot)}
                                 className={`p-4 rounded-lg border text-left transition-all ${
                                   selectedTimeSlots.includes(slot)
-                                    ? "border-[#C8A97E] bg-[#C8A97E]/10"
-                                    : "border-white/10 hover:border-[#C8A97E]/50"
-                                }`}
+                                  ? "border-[#C8A97E] bg-[#C8A97E]/10"
+                                  : "border-white/10 hover:border-[#C8A97E]/50"
+                              }`}
                               >
                                 <div className="flex items-center justify-between">
                                   <div>
@@ -272,7 +272,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                               <p>Tage: {selectedDays.map(d => weekDays.find(day => day.id === d)?.label).join(", ")}</p>
                               <p>Zeiten: {selectedTimeSlots.map(s => timeSlots[s as keyof typeof timeSlots]?.label).join(", ")}</p>
                             </div>
-                          </div>
+                        </div>
 
                           <input
                             type="text"
@@ -303,6 +303,11 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                             className="w-full px-4 py-3 rounded-lg border border-white/10 bg-black/20 text-white placeholder-gray-400 focus:border-[#C8A97E]/50 focus:outline-none transition-all h-32 resize-none"
                           />
+                        </div>
+
+                        <div className="space-y-4 text-sm text-gray-400">
+                          <p>Es gelten die Allgemeinen Geschäftsbedingungen des Verkäufers.</p>
+                          <p>Ich bin mir meines 14-tägigen Widerrufsrechts als Verbraucher bewusst.</p>
                         </div>
 
                         <div className="mt-4">
