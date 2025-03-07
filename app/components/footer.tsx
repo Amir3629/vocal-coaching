@@ -68,7 +68,7 @@ export default function Footer() {
                 </Link>
               ))}
             </div>
-            <div className="flex justify-center gap-4 text-sm text-gray-400">
+            <div className="flex justify-center gap-4 text-sm text-gray-400 mb-6">
               {legalDocs.map((doc, index) => (
                 <button
                   key={doc.title}
@@ -79,6 +79,7 @@ export default function Footer() {
                 </button>
               ))}
             </div>
+            <p className="text-sm text-gray-400">© 2025 Melanie Wainwright. Alle Rechte vorbehalten.</p>
           </div>
         </div>
 
