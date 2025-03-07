@@ -52,7 +52,6 @@ export default function Footer() {
             {/* Left Column - Brand & Social Links */}
             <div>
               <h3 className="text-xl text-white mb-4">Melanie Wainwright</h3>
-              <p className="text-gray-400 mb-6">Jazz Vocal Coaching in Berlin</p>
               <div className="flex gap-6">
                 {socialLinks.map((item) => (
                   <Link
@@ -71,12 +70,14 @@ export default function Footer() {
               </div>
             </div>
 
-            {/* Middle Column - Empty */}
-            <div></div>
+            {/* Middle Column - Subtitle */}
+            <div className="flex flex-col items-center justify-start">
+              <p className="text-gray-400">Jazz Vocal Coaching in Berlin</p>
+            </div>
 
             {/* Right Column - Legal Links */}
-            <div className="flex flex-col items-end">
-              <div className="flex flex-col items-end gap-2">
+            <div className="flex justify-end">
+              <div className="flex items-center gap-6">
                 {legalDocs.map((doc) => (
                   <button
                     key={doc.title}
