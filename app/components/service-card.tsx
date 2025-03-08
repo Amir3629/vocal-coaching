@@ -1,54 +1,23 @@
 "use client"
 
-import { type ReactNode, useState } from "react"
-import Image from "next/image"
+import { useState } from "react"
 import { motion } from "framer-motion"
-import { Check } from "lucide-react"
+import { Card } from "@/components/ui/card"
+import Image from "next/image"
 
 interface ServiceCardProps {
   title: string
   description: string
-  icon: ReactNode
+  icon: React.ReactNode
   price: string
   features: string[]
-  details: {
-    includes: string[]
-    suitable: string[]
-    duration: string
-    location: string
-  }
+  details: string
   image: string
   delay?: number
 }
 
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
-  const [isFlipped, setIsFlipped] = useState(false)
-  const [isTouching, setIsTouching] = useState(false)
-
-  const handleTouchStart = () => {
-    setIsTouching(true)
-  }
-
-  const handleTouchEnd = () => {
-    setIsTouching(false)
-    setIsFlipped(!isFlipped)
-  }
-
-  const handleTouchCancel = () => {
-    setIsTouching(false)
-  }
-
-  const handleMouseEnter = () => {
-    if (!isTouching) {
-      setIsFlipped(true)
-    }
-  }
-
-  const handleMouseLeave = () => {
-    if (!isTouching) {
-      setIsFlipped(false)
-    }
-  }
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
     <motion.div
@@ -56,104 +25,61 @@ export default function ServiceCard({ title, description, icon, price, features,
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.8, delay }}
-      className="relative h-[500px] w-full perspective-1000"
-      onTouchStart={handleTouchStart}
-      onTouchEnd={handleTouchEnd}
-      onTouchCancel={handleTouchCancel}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
-      <motion.div
-        className={`relative w-full h-full preserve-3d transition-transform duration-500 ${
-          isFlipped ? "rotate-y-180" : ""
-        }`}
+      <Card
+        className={`group relative overflow-hidden bg-[#0A0A0A]/80 backdrop-blur-sm border-[#C8A97E]/20 hover:border-[#C8A97E]/50 transition-all duration-500 cursor-pointer min-h-[500px] flex flex-col ${isHovered ? 'scale-105' : 'scale-100'}`}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
-        {/* Front of card */}
-        <div className="absolute inset-0 backface-hidden">
-          <div className="relative h-full rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20">
-            {/* Background Image */}
-            <div className="absolute inset-0">
-              <Image
-                src={image}
-                alt={title}
-                fill
-                className="object-cover brightness-50 blur-[2px]"
-                sizes="(max-width: 640px) 90vw, (max-width: 768px) 45vw, 30vw"
-                quality={85}
-              />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90" />
+        <motion.div 
+          className="relative h-40 overflow-hidden"
+          animate={{ height: isHovered ? "10rem" : "10rem" }}
+          transition={{ duration: 0.3 }}
+        >
+          <Image
+            src={image || "/placeholder.svg"}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
+          <div className="absolute top-4 right-4 bg-[#C8A97E] text-black px-3 py-1 rounded-full text-sm font-medium">
+            {price}
+          </div>
+        </motion.div>
+
+        <div className="relative flex-grow p-6 flex flex-col justify-between">
+          <div>
+            <div className="flex items-start gap-4 mb-4">
+              <div className="text-[#C8A97E] text-2xl">{icon}</div>
+              <div>
+                <h3 className="text-xl font-light text-white mb-2">{title}</h3>
+                <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
+              </div>
             </div>
 
-            <div className="relative h-full p-6 flex flex-col justify-between">
-              <div className="space-y-6">
-                <div className="flex items-center gap-3">
-                  <div className="p-2 rounded-lg bg-[#C8A97E]/10 backdrop-blur-sm">
-                    {icon}
+            <motion.div
+              animate={{
+                height: isHovered ? "auto" : "auto",
+                opacity: 1,
+                marginTop: "1rem"
+              }}
+              transition={{ duration: 0.3 }}
+              className="space-y-4"
+            >
+              <div className="space-y-2">
+                {features.map((feature, index) => (
+                  <div key={index} className="flex items-center gap-2">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                    <p className="text-gray-300 text-sm">{feature}</p>
                   </div>
-                  <h3 className="text-xl font-medium text-white">{title}</h3>
-                </div>
-
-                <p className="text-gray-200 text-sm leading-relaxed">{description}</p>
-
-                <div className="space-y-3">
-                  <div className="text-[#C8A97E] font-medium">{price}</div>
-                  <ul className="space-y-2">
-                    {features.map((feature, index) => (
-                      <li key={index} className="text-gray-200 text-sm flex items-center gap-2">
-                        <Check className="w-4 h-4 text-[#C8A97E]" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                ))}
               </div>
-            </div>
+              <p className="text-gray-400 text-sm mt-4">{details}</p>
+            </motion.div>
           </div>
         </div>
-
-        {/* Back of card */}
-        <div className="absolute inset-0 backface-hidden rotate-y-180">
-          <div className="h-full rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20 p-6">
-            <h4 className="text-lg font-medium text-white mb-4">Details</h4>
-            
-            <div className="space-y-6">
-              <div>
-                <h5 className="text-[#C8A97E] text-sm font-medium mb-2">Enthält:</h5>
-                <ul className="space-y-1">
-                  {details.includes.map((item, index) => (
-                    <li key={index} className="text-gray-400 text-sm flex items-center gap-2">
-                      <Check className="w-4 h-4 text-[#C8A97E]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h5 className="text-[#C8A97E] text-sm font-medium mb-2">Geeignet für:</h5>
-                <ul className="space-y-1">
-                  {details.suitable.map((item, index) => (
-                    <li key={index} className="text-gray-400 text-sm flex items-center gap-2">
-                      <Check className="w-4 h-4 text-[#C8A97E]" />
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div>
-                <h5 className="text-[#C8A97E] text-sm font-medium mb-2">Dauer:</h5>
-                <p className="text-gray-400 text-sm">{details.duration}</p>
-              </div>
-
-              <div>
-                <h5 className="text-[#C8A97E] text-sm font-medium mb-2">Ort:</h5>
-                <p className="text-gray-400 text-sm">{details.location}</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </motion.div>
+      </Card>
     </motion.div>
   )
 } 

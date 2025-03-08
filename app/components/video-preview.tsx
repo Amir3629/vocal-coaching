@@ -70,54 +70,36 @@ export default function VideoPreview() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black">
-        {/* Dark overlay - only show when not playing */}
-        <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${isPlaying ? 'opacity-0' : 'opacity-100'} z-10 pointer-events-none`} />
-        
-        {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black">
-            <div className="w-12 h-12 border-4 border-[#C8A97E]/20 border-t-[#C8A97E] rounded-full animate-spin" />
-          </div>
-        )}
-
-        {hasError && (
-          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black">
-            <p className="text-[#C8A97E]/80">Video konnte nicht geladen werden</p>
-          </div>
-        )}
-
-        <div className="absolute inset-0 bg-black transition-opacity duration-300">
+    <div className="container mx-auto px-4">
+      <div className="max-w-3xl mx-auto">
+        <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black">
           <video
             ref={videoRef}
-            className={`w-full h-full object-cover transition-transform duration-500 ${isPlaying ? 'scale-100' : 'scale-[0.98]'}`}
+            className="absolute inset-0 w-full h-full object-contain"
             poster={posterImage}
-            playsInline
-            muted={isMuted}
-            onClick={handleVideoClick}
             onLoadStart={handleLoadStart}
             onLoadedData={handleLoadedData}
             onError={handleError}
+            muted={isMuted}
           >
-            <source
-              src={videoSrc}
-              type="video/mp4"
-            />
+            <source src={videoSrc} type="video/mp4" />
           </video>
-        </div>
+          
+          {/* Dark overlay */}
+          <div className={`absolute inset-0 bg-black transition-opacity duration-500 ${isPlaying ? 'opacity-0' : 'opacity-50'}`} />
 
-        {!isPlaying && !isLoading && !hasError && (
-          <motion.button
-            onClick={handleVideoClick}
-            className="absolute inset-0 flex items-center justify-center z-20 group"
-            whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.5, ease: "easeOut" }}
-          >
-            <div className="w-16 h-16 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center transition-all duration-500 group-hover:bg-[#C8A97E]/20">
-              <div className="w-0 h-0 border-y-8 border-y-transparent border-l-[16px] border-l-[#C8A97E] translate-x-0.5" />
-            </div>
-          </motion.button>
-        )}
+          {/* Play button */}
+          {!isPlaying && (
+            <button
+              onClick={handleVideoClick}
+              className="absolute inset-0 w-full h-full flex items-center justify-center"
+            >
+              <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center transition-transform hover:scale-110">
+                <div className="w-0 h-0 border-y-8 border-y-transparent border-l-12 border-l-white translate-x-0.5" />
+              </div>
+            </button>
+          )}
+        </div>
       </div>
     </div>
   )
