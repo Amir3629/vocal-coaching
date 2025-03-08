@@ -73,21 +73,23 @@ export default function VideoPreview() {
     <div className="container mx-auto px-4">
       <div className="max-w-4xl mx-auto">
         <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black shadow-2xl">
-          <video
-            ref={videoRef}
-            className="absolute inset-0 w-full h-full object-cover"
-            poster={posterImage}
-            onLoadStart={handleLoadStart}
-            onLoadedData={handleLoadedData}
-            onError={handleError}
-            muted={isMuted}
-          >
-            <source src={videoSrc} type="video/mp4" />
-          </video>
+          <div className="absolute inset-0 flex items-center justify-center">
+            <video
+              ref={videoRef}
+              className="w-full h-full object-cover"
+              poster={posterImage}
+              onLoadStart={handleLoadStart}
+              onLoadedData={handleLoadedData}
+              onError={handleError}
+              muted={isMuted}
+            >
+              <source src={videoSrc} type="video/mp4" />
+            </video>
+          </div>
           
           {/* Dark overlay with smoother transition */}
           <div 
-            className={`absolute inset-0 bg-black transition-all duration-1000 ease-in-out ${
+            className={`absolute inset-0 bg-black transition-opacity duration-1000 ease-in-out ${
               isPlaying ? 'opacity-0' : 'opacity-90'
             }`} 
           />

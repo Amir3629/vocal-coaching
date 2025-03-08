@@ -26,101 +26,98 @@ export default function ServiceCard({ title, description, icon, price, features,
 
   return (
     <motion.div
+      className="relative group bg-gradient-to-b from-[#0A0A0A]/90 to-[#0A0A0A]/70 backdrop-blur-sm border border-[#C8A97E]/20 hover:border-[#C8A97E]/50 rounded-2xl overflow-hidden transition-all duration-700 ease-out"
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.8, delay }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
     >
-      <Card
-        className={`group relative overflow-hidden bg-[#0A0A0A]/80 backdrop-blur-sm border-[#C8A97E]/20 hover:border-[#C8A97E]/50 transition-all duration-500 cursor-pointer min-h-[500px] flex flex-col ${isHovered ? 'scale-105' : 'scale-100'}`}
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <motion.div 
-          className="relative h-40 overflow-hidden"
-          animate={{ height: isHovered ? "10rem" : "10rem" }}
-          transition={{ duration: 0.3 }}
+      <div className="p-6">
+        <h3 className="text-xl font-medium text-white/90 group-hover:text-white mb-4 transition-colors duration-500">
+          {title}
+        </h3>
+        <p className="text-white/60 group-hover:text-white/80 mb-6 transition-colors duration-500">
+          {description}
+        </p>
+
+        <motion.div
+          className="overflow-hidden"
+          animate={{
+            height: isHovered ? "auto" : 0,
+            opacity: isHovered ? 1 : 0,
+            marginTop: isHovered ? "1.5rem" : 0
+          }}
+          transition={{
+            duration: 0.7,
+            ease: [0.4, 0, 0.2, 1]
+          }}
         >
-          <Image
-            src={image || "/placeholder.svg"}
-            alt={title}
-            fill
-            className="object-cover transition-transform duration-700 group-hover:scale-110"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] to-transparent" />
-          <div className="absolute top-4 right-4 bg-[#C8A97E] text-black px-3 py-1 rounded-full text-sm font-medium">
-            {price}
-          </div>
-        </motion.div>
-
-        <div className="relative flex-grow p-6 flex flex-col justify-between">
-          <div>
-            <div className="flex items-start gap-4 mb-4">
-              <div className="text-[#C8A97E] text-2xl">{icon}</div>
-              <div>
-                <h3 className="text-xl font-light text-white mb-2">{title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              {features.map((feature, index) => (
-                <div key={index} className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                  <p className="text-gray-300 text-sm">{feature}</p>
-                </div>
-              ))}
-            </div>
-
-            <motion.div
-              animate={{
-                height: isHovered ? "auto" : 0,
-                opacity: isHovered ? 1 : 0,
-                marginTop: isHovered ? "1rem" : 0
-              }}
-              transition={{ duration: 0.3 }}
-              className="overflow-hidden"
-            >
-              <div className="space-y-4">
+          {details && (
+            <div className="space-y-4">
+              {details.includes && (
                 <div>
-                  <h4 className="text-[#C8A97E] text-sm font-medium mb-2">Enthält</h4>
-                  <ul className="space-y-1">
+                  <h4 className="text-sm font-medium text-[#C8A97E] mb-2">Beinhaltet:</h4>
+                  <ul className="space-y-2">
                     {details.includes.map((item, index) => (
-                      <li key={index} className="text-gray-300 text-sm flex items-center gap-2">
-                        <div className="w-1 h-1 rounded-full bg-[#C8A97E]" />
-                        {item}
-                      </li>
+                      <motion.li
+                        key={index}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1, duration: 0.5 }}
+                        className="flex items-start gap-2"
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]/50 mt-1.5 flex-shrink-0" />
+                        <span className="text-sm text-white/60">{item}</span>
+                      </motion.li>
                     ))}
                   </ul>
                 </div>
-                
-                <div>
-                  <h4 className="text-[#C8A97E] text-sm font-medium mb-2">Geeignet für</h4>
-                  <ul className="space-y-1">
-                    {details.suitable.map((item, index) => (
-                      <li key={index} className="text-gray-300 text-sm flex items-center gap-2">
-                        <div className="w-1 h-1 rounded-full bg-[#C8A97E]" />
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+              )}
 
-                <div className="flex gap-4">
-                  <div>
-                    <h4 className="text-[#C8A97E] text-sm font-medium mb-1">Dauer</h4>
-                    <p className="text-gray-300 text-sm">{details.duration}</p>
-                  </div>
-                  <div>
-                    <h4 className="text-[#C8A97E] text-sm font-medium mb-1">Ort</h4>
-                    <p className="text-gray-300 text-sm">{details.location}</p>
-                  </div>
+              {details.suitable && (
+                <div>
+                  <h4 className="text-sm font-medium text-[#C8A97E] mb-2">Geeignet für:</h4>
+                  <ul className="space-y-2">
+                    {details.suitable.map((item, index) => (
+                      <motion.li
+                        key={index}
+                        initial={{ opacity: 0, x: -10 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        transition={{ delay: index * 0.1 + 0.2, duration: 0.5 }}
+                        className="flex items-start gap-2"
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]/50 mt-1.5 flex-shrink-0" />
+                        <span className="text-sm text-white/60">{item}</span>
+                      </motion.li>
+                    ))}
+                  </ul>
                 </div>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </Card>
+              )}
+
+              {details.duration && (
+                <div className="flex items-center gap-2 text-sm text-white/60">
+                  <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span>{details.duration}</span>
+                </div>
+              )}
+
+              {details.location && (
+                <div className="flex items-center gap-2 text-sm text-white/60">
+                  <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span>{details.location}</span>
+                </div>
+              )}
+            </div>
+          )}
+        </motion.div>
+      </div>
     </motion.div>
   )
 } 
