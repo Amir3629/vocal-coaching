@@ -3,11 +3,7 @@
 import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
-import { ChevronDown, ChevronUp } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Playfair_Display } from "next/font/google"
-
-const playfair = Playfair_Display({ subsets: ["latin"] })
+import { ChevronDown } from "lucide-react"
 
 export default function AboutSection() {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -46,23 +42,48 @@ export default function AboutSection() {
           </div>
 
           <div className="max-w-xl mx-auto lg:mx-0">
-            <h2 className={`${playfair.className} text-3xl md:text-4xl font-light text-white mb-4`}>
-              Über Mich
-            </h2>
-
-            <div className="space-y-4">
+            <h2 className="text-3xl md:text-4xl font-light text-white mb-6">Über Mich</h2>
+            
+            <div className="space-y-6">
               <p className="text-base sm:text-lg text-gray-300">
                 Halb Britin, halb Deutsche - und 100%ige Rheinländerin lebe ich freiwillig in Berlin. Meine musikalische Reise begann früh: vom Kinderchor über den Gospelchor "Crescendo" bis hin zu "Die Männer", einer der ersten Girl Bands in Deutschland. Die Entdeckung von Ella Fitzgerald's "Airmail Special" öffnete mir die Tür zur Welt des Jazz - eine Liebe auf den ersten Blick.
               </p>
-              <p className="text-base sm:text-lg text-gray-300">
-                Meine Ausbildung führte mich über die Hochschule für Musik und Tanz Köln bis hin zum renommierten Berklee College of Music in Boston. Dort studierte ich unter anderem bei Maggie Scott, der Mentorin von Diana Krall.
-              </p>
-            </div>
+              
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: "auto" }}
+                    exit={{ opacity: 0, height: 0 }}
+                    transition={{ duration: 0.5, ease: "easeInOut" }}
+                    className="space-y-6"
+                  >
+                    <p className="text-base sm:text-lg text-gray-300">
+                      Nach meinem Studium an der Hochschule für Musik und Tanz Köln vertiefte ich meine Kenntnisse in Jazz-Gesang und Improvisation. Die Zusammenarbeit mit renommierten Künstlern und Bands erweiterte meinen musikalischen Horizont und formte meinen einzigartigen Stil.
+                    </p>
+                    
+                    <div>
+                      <h3 className="text-xl font-semibold text-white mb-3">Aktuelle Projekte</h3>
+                      <p className="text-base sm:text-lg text-gray-300">
+                        Als stolzes Mitglied der internationalen Berliner Jazzszene bin ich nicht nur als Sängerin aktiv, sondern auch als Vocal Coach bei der Bandleiter Ausbildung in Wiesbaden tätig. Meine vierte CD ist fertig und wartet auf das Start Signal - mit schönen Standards in bunte Farben getaucht und Originals mit eigenen Texten.
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
 
-            <div className="mt-8">
-              <Button variant="outline" size="lg" className="text-[#C8A97E] border-[#C8A97E] hover:bg-[#C8A97E] hover:text-black">
-                Mehr erfahren
-              </Button>
+              <button
+                onClick={() => setIsExpanded(!isExpanded)}
+                className="text-[#C8A97E] hover:text-[#B69A6E] text-sm font-medium inline-flex items-center gap-1 transition-colors duration-300"
+              >
+                {isExpanded ? "Weniger anzeigen" : "Mehr erfahren"}
+                <motion.div
+                  animate={{ rotate: isExpanded ? 180 : 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <ChevronDown className="w-4 h-4" />
+                </motion.div>
+              </button>
             </div>
           </div>
         </div>

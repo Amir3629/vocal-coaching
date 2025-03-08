@@ -84,8 +84,8 @@ export default function ServiceCard({ title, description, icon, price, features,
               <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90" />
             </div>
 
-            <div className="relative h-full p-6 flex flex-col">
-              <div className="space-y-4">
+            <div className="relative h-full p-6 flex flex-col justify-between">
+              <div className="space-y-6">
                 <div className="flex items-center gap-3">
                   <div className="p-2 rounded-lg bg-[#C8A97E]/10 backdrop-blur-sm">
                     {icon}
@@ -93,11 +93,11 @@ export default function ServiceCard({ title, description, icon, price, features,
                   <h3 className="text-xl font-medium text-white">{title}</h3>
                 </div>
 
-                <p className="text-gray-200 text-sm line-clamp-3">{description}</p>
+                <p className="text-gray-200 text-sm leading-relaxed">{description}</p>
 
-                <div className="pt-4 mt-auto">
+                <div className="space-y-3">
                   <div className="text-[#C8A97E] font-medium">{price}</div>
-                  <ul className="mt-2 space-y-1">
+                  <ul className="space-y-2">
                     {features.map((feature, index) => (
                       <li key={index} className="text-gray-200 text-sm flex items-center gap-2">
                         <Check className="w-4 h-4 text-[#C8A97E]" />
