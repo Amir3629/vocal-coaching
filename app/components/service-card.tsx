@@ -11,7 +11,12 @@ interface ServiceCardProps {
   icon: React.ReactNode
   price: string
   features: string[]
-  details: string
+  details: {
+    includes: string[]
+    suitable: string[]
+    duration: string
+    location: string
+  }
   image: string
   delay?: number
 }
@@ -75,7 +80,43 @@ export default function ServiceCard({ title, description, icon, price, features,
                   </div>
                 ))}
               </div>
-              <p className="text-gray-400 text-sm mt-4">{details}</p>
+              
+              <div className="space-y-4 mt-4">
+                <div>
+                  <h4 className="text-[#C8A97E] text-sm font-medium mb-2">Enthält</h4>
+                  <ul className="space-y-1">
+                    {details.includes.map((item, index) => (
+                      <li key={index} className="text-gray-300 text-sm flex items-center gap-2">
+                        <div className="w-1 h-1 rounded-full bg-[#C8A97E]" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                
+                <div>
+                  <h4 className="text-[#C8A97E] text-sm font-medium mb-2">Geeignet für</h4>
+                  <ul className="space-y-1">
+                    {details.suitable.map((item, index) => (
+                      <li key={index} className="text-gray-300 text-sm flex items-center gap-2">
+                        <div className="w-1 h-1 rounded-full bg-[#C8A97E]" />
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="flex gap-4">
+                  <div>
+                    <h4 className="text-[#C8A97E] text-sm font-medium mb-1">Dauer</h4>
+                    <p className="text-gray-300 text-sm">{details.duration}</p>
+                  </div>
+                  <div>
+                    <h4 className="text-[#C8A97E] text-sm font-medium mb-1">Ort</h4>
+                    <p className="text-gray-300 text-sm">{details.location}</p>
+                  </div>
+                </div>
+              </div>
             </motion.div>
           </div>
         </div>

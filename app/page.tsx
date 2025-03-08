@@ -238,16 +238,15 @@ export default function Home() {
                   "Personalisierte Übungen",
                   "Aufnahmen der Stunden",
                   "Übe-Material",
-                  "Online Support"
+                  "Flexible Terminplanung"
                 ],
                 suitable: [
                   "Anfänger",
                   "Fortgeschrittene",
-                  "Profis",
-                  "Hobby-Sänger"
+                  "Profis"
                 ],
-                duration: "60 oder 90 Minuten",
-                location: "Studio Berlin-Mitte"
+                duration: "60-90 min",
+                location: "Studio Berlin"
               }}
               image="/vocal-coaching/images/services/studio.jpg"
               delay={0.1}
@@ -269,16 +268,15 @@ export default function Home() {
                   "Jazz-Theorie",
                   "Improvisationsübungen",
                   "Repertoire-Aufbau",
-                  "Band-Interaktion"
+                  "Stilkunde"
                 ],
                 suitable: [
-                  "Jazz-Enthusiasten",
-                  "Professionelle Sänger",
-                  "Band-Mitglieder",
-                  "Musikstudenten"
+                  "Mittelstufe",
+                  "Fortgeschrittene",
+                  "Jazz-Interessierte"
                 ],
-                duration: "60 oder 90 Minuten",
-                location: "Studio oder Online"
+                duration: "60-90 min",
+                location: "Studio Berlin"
               }}
               image="/vocal-coaching/images/services/jazz.jpg"
               delay={0.2}
@@ -299,17 +297,16 @@ export default function Home() {
                 includes: [
                   "Präsenz-Training",
                   "Bewegungscoaching",
-                  "Emotionale Interpretation",
-                  "Auftritts-Simulation"
+                  "Mikrofontechnik",
+                  "Bühnenperformance"
                 ],
                 suitable: [
-                  "Bühnenkünstler",
                   "Bands",
-                  "Singer-Songwriter",
+                  "Solo-Künstler",
                   "Performer"
                 ],
-                duration: "90 Minuten",
-                location: "Studio mit Bühne"
+                duration: "90-120 min",
+                location: "Studio/Bühne"
               }}
               image="/vocal-coaching/images/services/performance.jpg"
               delay={0.3}
@@ -321,26 +318,25 @@ export default function Home() {
               icon={<BookOpen className="w-6 h-6 text-[#C8A97E]" />}
               price="ab €65"
               features={[
-                "Grundlegende Klaviertechnik",
-                "Begleitpatterns",
-                "Rhythmische Koordination",
-                "Song-Arrangements"
+                "Klaviergrundlagen",
+                "Akkordprogressionen",
+                "Rhythmische Übungen",
+                "Begleitpatterns"
               ]}
               details={{
                 includes: [
                   "Klaviergrundlagen",
                   "Akkordprogressionen",
-                  "Timing-Übungen",
-                  "Song-Begleitung"
+                  "Rhythmische Übungen",
+                  "Begleitpatterns"
                 ],
                 suitable: [
                   "Sänger",
                   "Songwriter",
-                  "Pianisten",
-                  "Musiklehrer"
+                  "Begleiter"
                 ],
-                duration: "60 oder 90 Minuten",
-                location: "Studio mit Flügel"
+                duration: "60-90 min",
+                location: "Studio Berlin"
               }}
               image="/vocal-coaching/images/services/piano.jpg"
               delay={0.4}
