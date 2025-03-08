@@ -1,8 +1,15 @@
+"use client"
+
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 
-const LegalSection: React.FC = () => {
+interface LegalSectionProps {
+  title: string;
+  content: React.ReactNode;
+}
+
+export default function LegalSection({ title, content }: LegalSectionProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleOpen = () => {
@@ -15,7 +22,12 @@ const LegalSection: React.FC = () => {
 
   return (
     <div>
-      {/* Existing code */}
+      <button
+        onClick={handleOpen}
+        className="text-gray-400 hover:text-white transition-colors"
+      >
+        {title}
+      </button>
 
       <AnimatePresence>
         {isOpen && (
@@ -51,6 +63,4 @@ const LegalSection: React.FC = () => {
       </AnimatePresence>
     </div>
   );
-};
-
-export default LegalSection; 
+} 
