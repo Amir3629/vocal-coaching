@@ -108,6 +108,17 @@ const certifications = [
 
 export default function Certifications() {
   const [hoveredId, setHoveredId] = useState<number | null>(null)
+  const [touchedId, setTouchedId] = useState<number | null>(null)
+
+  const handleInteractionStart = (id: number) => {
+    setHoveredId(id)
+    setTouchedId(id)
+  }
+
+  const handleInteractionEnd = () => {
+    setHoveredId(null)
+    setTouchedId(null)
+  }
 
   return (
     <section id="certifications" className="relative w-full py-20 bg-black">
@@ -134,64 +145,68 @@ export default function Certifications() {
           {certifications.map((cert) => (
             <motion.div
               key={cert.id}
-              className="relative group"
+              className="relative group perspective-1000"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
+              onMouseEnter={() => handleInteractionStart(cert.id)}
+              onMouseLeave={handleInteractionEnd}
+              onTouchStart={() => handleInteractionStart(cert.id)}
+              onTouchEnd={handleInteractionEnd}
             >
               <motion.div
-                className={`relative bg-gradient-to-b from-[#0A0A0A]/90 to-[#0A0A0A]/70 backdrop-blur-sm border border-[#C8A97E]/20 group-hover:border-[#C8A97E]/50 rounded-2xl overflow-hidden transition-all duration-500`}
-                layout
-                onMouseEnter={() => setHoveredId(cert.id)}
-                onMouseLeave={() => setHoveredId(null)}
+                className="relative preserve-3d transition-all duration-700 ease-out"
+                animate={{
+                  rotateY: (hoveredId === cert.id || touchedId === cert.id) ? 180 : 0
+                }}
               >
-                <motion.div layout className="p-6 flex flex-col items-center">
-                  {/* Icon container */}
-                  <div className="relative mb-4 transform group-hover:scale-110 transition-all duration-500">
-                    <div className="absolute inset-[-50%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#C8A97E]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
-                    <div className="relative w-20 h-20 text-[#C8A97E] flex items-center justify-center">
-                      {cert.icon}
+                {/* Front of card */}
+                <div className="absolute inset-0 backface-hidden">
+                  <div className="h-full bg-gradient-to-b from-[#0A0A0A]/90 to-[#0A0A0A]/70 backdrop-blur-sm border border-[#C8A97E]/20 group-hover:border-[#C8A97E]/50 rounded-2xl overflow-hidden transition-all duration-500">
+                    <div className="p-6 flex flex-col items-center">
+                      {/* Icon container */}
+                      <div className="relative mb-4 transform transition-all duration-500">
+                        <div className="absolute inset-[-50%] bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-[#C8A97E]/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 blur-xl transition-opacity duration-500" />
+                        <div className="relative w-20 h-20 text-[#C8A97E] flex items-center justify-center">
+                          {cert.icon}
+                        </div>
+                      </div>
+
+                      <h3 className="text-base font-medium text-center mb-1 text-white/90 group-hover:text-white transition-colors duration-300">
+                        {cert.title}
+                      </h3>
+                      <p className="text-sm text-[#C8A97E]/70 group-hover:text-[#C8A97E] text-center transition-colors duration-300">
+                        {cert.year}
+                      </p>
                     </div>
                   </div>
+                </div>
 
-                  <h3 className="text-base font-medium text-center mb-1 text-white/90 group-hover:text-white transition-colors duration-300">
-                    {cert.title}
-                  </h3>
-                  <p className="text-sm text-[#C8A97E]/70 group-hover:text-[#C8A97E] text-center transition-colors duration-300">
-                    {cert.year}
-                  </p>
-
-                  <AnimatePresence>
-                    {hoveredId === cert.id && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0 }}
-                        animate={{ opacity: 1, height: "auto" }}
-                        exit={{ opacity: 0, height: 0 }}
-                        transition={{ duration: 0.3, ease: "easeInOut" }}
-                        className="mt-6 pt-6 border-t border-[#C8A97E]/20"
-                      >
-                        <p className="text-sm text-[#C8A97E] font-medium mb-2">{cert.organization}</p>
-                        <p className="text-xs text-white/70 mb-4">{cert.description}</p>
-                        
-                        <ul className="space-y-2">
-                          {cert.details.map((detail, index) => (
-                            <motion.li
-                              key={index}
-                              initial={{ opacity: 0, x: -10 }}
-                              animate={{ opacity: 1, x: 0 }}
-                              transition={{ delay: index * 0.1 }}
-                              className="flex items-start gap-2"
-                            >
-                              <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]/50 mt-1.5 flex-shrink-0" />
-                              <span className="text-xs text-white/60">{detail}</span>
-                            </motion.li>
-                          ))}
-                        </ul>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
-                </motion.div>
+                {/* Back of card */}
+                <div className="absolute inset-0 backface-hidden rotate-y-180">
+                  <div className="h-full bg-gradient-to-b from-[#0A0A0A]/90 to-[#0A0A0A]/70 backdrop-blur-sm border border-[#C8A97E]/20 group-hover:border-[#C8A97E]/50 rounded-2xl overflow-hidden transition-all duration-500">
+                    <div className="p-6">
+                      <p className="text-sm text-[#C8A97E] font-medium mb-2">{cert.organization}</p>
+                      <p className="text-xs text-white/70 mb-4">{cert.description}</p>
+                      
+                      <ul className="space-y-2">
+                        {cert.details.map((detail, index) => (
+                          <motion.li
+                            key={index}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.1 }}
+                            className="flex items-start gap-2"
+                          >
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]/50 mt-1.5 flex-shrink-0" />
+                            <span className="text-xs text-white/60">{detail}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             </motion.div>
           ))}

@@ -490,3 +490,34 @@ html {
   }
 }
 
+/* 3D Transform Classes */
+.perspective-1000 {
+  perspective: 1000px;
+  transform-style: preserve-3d;
+}
+
+.preserve-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.backface-hidden {
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+}
+
+.rotate-y-180 {
+  transform: rotateY(180deg);
+}
+
+/* Touch Device Support */
+@media (hover: none) {
+  .preserve-3d {
+    transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  .group:active .preserve-3d {
+    transform: rotateY(180deg);
+  }
+}
+
