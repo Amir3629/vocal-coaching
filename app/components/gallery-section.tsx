@@ -152,111 +152,91 @@ export default function GallerySection() {
           <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {images.map((image, index) => (
             <motion.div
               key={image.src}
-              className={`relative cursor-pointer group ${image.span}`}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              transition={{ duration: 0.8, delay: index * 0.2 }}
+              className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group"
               onClick={() => handleImageClick(image)}
             >
-              <div className="relative aspect-square">
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  className="object-cover rounded-lg transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                  loading="lazy"
-                />
-                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-lg" />
-                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <div className="text-center p-4">
-                    <h3 className="text-white text-lg font-medium mb-1">{image.description}</h3>
-                    <p className="text-gray-200 text-sm">{image.location}</p>
-                    <p className="text-[#C8A97E] text-sm">{image.date}</p>
-                  </div>
+              <Image
+                src={image.src}
+                alt={image.alt}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
+                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 45vw, 30vw"
+              />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/50 to-black/80 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-x-0 bottom-0 p-4 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                  <h3 className="text-white text-base font-medium mb-1 line-clamp-1">{image.alt}</h3>
+                  <p className="text-gray-300 text-sm line-clamp-2">{image.description}</p>
                 </div>
               </div>
             </motion.div>
           ))}
         </div>
 
-        {/* Modal */}
-        <AnimatePresence>
-          {selectedImage && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={handleClose}
-              className="fixed inset-0 bg-black/90 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-            >
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                exit={{ scale: 0.8, opacity: 0 }}
-                transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
-                className="relative w-full max-w-5xl mx-auto"
-                onClick={(e) => e.stopPropagation()}
+        {selectedImage !== null && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm"
+            onClick={handleClose}
+          >
+            <div className="absolute top-4 right-4 z-50 flex gap-2">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handlePrev(e as unknown as React.MouseEvent)
+                }}
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               >
-                <div className="relative aspect-[16/9] w-full">
-                  <AnimatePresence mode="wait">
-                    <motion.div
-                      key={selectedImage.src}
-                      initial={{ opacity: 0, x: isTransitioning ? 100 : -100 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: isTransitioning ? -100 : 100 }}
-                      transition={{ type: "spring", duration: 0.5, bounce: 0.2 }}
-                      className="absolute inset-0"
-                    >
-                      <Image
-                        src={selectedImage.src}
-                        alt={selectedImage.alt}
-                        fill
-                        className="object-contain"
-                        sizes="100vw"
-                        priority
-                      />
-                    </motion.div>
-                  </AnimatePresence>
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleNext(e as unknown as React.MouseEvent)
+                }}
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handleClose}
+                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="h-full flex items-center justify-center p-4">
+              <div className="relative w-full max-w-4xl mx-auto">
+                <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden">
+                  <Image
+                    src={selectedImage.src}
+                    alt={selectedImage.alt}
+                    fill
+                    className="object-contain"
+                    sizes="90vw"
+                    quality={90}
+                  />
                 </div>
-
-                {/* Image Info */}
-                <div className="absolute bottom-0 left-0 right-0 p-4 bg-black/60 backdrop-blur-sm">
-                  <h3 className="text-white text-lg font-medium mb-1">{selectedImage.description}</h3>
-                  <p className="text-gray-200 text-sm">{selectedImage.location}</p>
-                  <p className="text-[#C8A97E] text-sm">{selectedImage.date}</p>
+                <div className="absolute left-0 right-0 bottom-0 p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+                  <div className="max-w-[80%]">
+                    <h3 className="text-white text-base sm:text-lg font-medium mb-1">{selectedImage.alt}</h3>
+                    <p className="text-gray-300 text-sm">{selectedImage.description}</p>
+                  </div>
                 </div>
-
-                {/* Navigation Buttons */}
-                <button
-                  onClick={handlePrev}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors"
-                >
-                  <ChevronLeft className="w-6 h-6 text-white" />
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors"
-                >
-                  <ChevronRight className="w-6 h-6 text-white" />
-                </button>
-
-                {/* Close Button */}
-                <button
-                  onClick={handleClose}
-                  className="absolute top-4 right-4 p-2 bg-black/60 hover:bg-black/80 rounded-full transition-colors"
-                >
-                  <X className="w-6 h-6 text-white" />
-                </button>
-              </motion.div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+              </div>
+            </div>
+          </motion.div>
+        )}
       </div>
     </section>
   )

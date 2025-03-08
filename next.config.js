@@ -9,7 +9,11 @@ const nextConfig = {
   reactStrictMode: true,
   optimizeFonts: true,
   swcMinify: true,
-  unoptimized: true,
+  images: {
+    unoptimized: true,
+    loader: 'custom',
+    loaderFile: './image-loader.js',
+  },
   experimental: {
     optimizeCss: true,
     scrollRestoration: true
