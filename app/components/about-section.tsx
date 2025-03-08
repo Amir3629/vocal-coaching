@@ -20,7 +20,9 @@ export default function AboutSection() {
             className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none"
           >
             <Image
-              src="/images/about/melanie.jpg"
+              src={process.env.NODE_ENV === 'production' 
+                ? "/vocal-coaching/images/about/melanie.jpg"
+                : "/images/about/melanie.jpg"}
               alt="Melanie Wainwright"
               fill
               className="object-cover rounded-xl"

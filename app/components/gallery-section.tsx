@@ -185,14 +185,14 @@ export default function GallerySection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm"
             onClick={handleClose}
           >
             <div className="absolute top-4 right-4 z-50 flex gap-2">
               <button
                 onClick={(e) => {
                   e.stopPropagation()
-                  handlePrev(e as unknown as React.MouseEvent)
+                  handlePrev(e)
                 }}
                 className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               >
@@ -201,7 +201,7 @@ export default function GallerySection() {
               <button
                 onClick={(e) => {
                   e.stopPropagation()
-                  handleNext(e as unknown as React.MouseEvent)
+                  handleNext(e)
                 }}
                 className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
               >

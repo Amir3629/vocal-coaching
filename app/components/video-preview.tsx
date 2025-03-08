@@ -70,47 +70,49 @@ export default function VideoPreview() {
   }
 
   return (
-    <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black/20">
-      <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 z-10" />
-      
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center z-20">
-          <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
-              </div>
-      )}
+    <div className="max-w-4xl mx-auto">
+      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black/20">
+        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 z-10" />
+        
+        {isLoading && (
+          <div className="absolute inset-0 flex items-center justify-center z-20">
+            <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+          </div>
+        )}
 
-      {hasError && (
-        <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/80">
-          <p className="text-white/80">Video konnte nicht geladen werden</p>
-                </div>
-              )}
+        {hasError && (
+          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/80">
+            <p className="text-white/80">Video konnte nicht geladen werden</p>
+          </div>
+        )}
 
-              <video
-                ref={videoRef}
-        className="w-full h-full object-cover cursor-pointer"
-        poster={posterImage}
-                playsInline
-        onClick={handleVideoClick}
-        onLoadStart={handleLoadStart}
-        onLoadedData={handleLoadedData}
-        onError={handleError}
-      >
-        <source
-          src={videoSrc}
-          type="video/mp4"
-        />
-      </video>
-
-      {!isPlaying && !isLoading && !hasError && (
-        <button
+        <video
+          ref={videoRef}
+          className="w-full h-full object-cover cursor-pointer"
+          poster={posterImage}
+          playsInline
           onClick={handleVideoClick}
-          className="absolute inset-0 flex items-center justify-center z-20 group"
+          onLoadStart={handleLoadStart}
+          onLoadedData={handleLoadedData}
+          onError={handleError}
         >
-          <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center transition-transform group-hover:scale-110">
-            <div className="w-0 h-0 border-y-8 border-y-transparent border-l-[16px] border-l-white translate-x-0.5" />
+          <source
+            src={videoSrc}
+            type="video/mp4"
+          />
+        </video>
+
+        {!isPlaying && !isLoading && !hasError && (
+          <button
+            onClick={handleVideoClick}
+            className="absolute inset-0 flex items-center justify-center z-20 group"
+          >
+            <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center transition-transform group-hover:scale-110">
+              <div className="w-0 h-0 border-y-8 border-y-transparent border-l-[16px] border-l-white translate-x-0.5" />
             </div>
-        </button>
-      )}
+          </button>
+        )}
+      </div>
     </div>
   )
 }

@@ -27,17 +27,21 @@ export default function ServiceCard({ title, description, icon, price, features,
 
   const handleTouchStart = () => {
     setIsTouching(true)
-    setIsFlipped(true)
   }
 
   const handleTouchEnd = () => {
     setIsTouching(false)
-    setIsFlipped(false)
+    setIsFlipped(!isFlipped)
   }
 
   const handleTouchCancel = () => {
     setIsTouching(false)
-    setIsFlipped(false)
+  }
+
+  const handleClick = () => {
+    if (!isTouching) {
+      setIsFlipped(!isFlipped)
+    }
   }
 
   return (
@@ -50,6 +54,7 @@ export default function ServiceCard({ title, description, icon, price, features,
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}
+      onClick={handleClick}
     >
       <motion.div
         className={`relative w-full h-full preserve-3d transition-transform duration-500 ${
