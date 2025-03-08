@@ -10,7 +10,7 @@ const certifications = [
     title: "CVT Authorised Teacher",
     organization: "Complete Vocal Institute",
     year: "2020",
-    description: "Zertifizierte Gesangslehrerin nach der Complete Vocal Technique",
+    description: "Zertifizierte Gesangslehrerin nach der Complete Vocal Technique. Abschluss am Complete Vocal Institute in Kopenhagen.",
     logo: "/images/collaborations/cvt-teacher.svg",
     link: "https://completevocal.institute"
   },
@@ -19,7 +19,7 @@ const certifications = [
     title: "CVT Deutschland",
     organization: "Complete Vocal Institute Germany",
     year: "2021",
-    description: "Aktives Mitglied des deutschen CVT Netzwerks",
+    description: "Aktives Mitglied des deutschen CVT Netzwerks. Vocal Coach bei der Bandleiter Ausbildung in Wiesbaden.",
     logo: "/images/collaborations/cvt-deutschland.svg",
     link: "https://cvtdeutschland.de"
   },
@@ -28,7 +28,7 @@ const certifications = [
     title: "Jazz Institut Berlin",
     organization: "Universität der Künste Berlin",
     year: "2019",
-    description: "Dozentin für Jazz-Gesang",
+    description: "Dozentin für Jazz-Gesang. Teil der internationalen Berliner Jazzszene mit Fokus auf Interpretation & Improvisation.",
     logo: "/images/collaborations/jib.svg",
     link: "https://www.jazz-institut-berlin.de"
   },
@@ -37,7 +37,7 @@ const certifications = [
     title: "Berliner Philharmonie",
     organization: "Berliner Philharmoniker",
     year: null,
-    description: "Regelmäßige Auftritte und Kooperationen",
+    description: "Regelmäßige Auftritte und Kooperationen. Professionelle Erfahrung in klassischer und zeitgenössischer Musik.",
     logo: "/images/collaborations/philharmonie.svg",
     link: "https://www.berliner-philharmoniker.de"
   }
@@ -45,17 +45,6 @@ const certifications = [
 
 export default function Certifications() {
   const [hoveredId, setHoveredId] = useState<number | null>(null)
-  const [touchedId, setTouchedId] = useState<number | null>(null)
-
-  const handleInteractionStart = (id: number) => {
-    setHoveredId(id)
-    setTouchedId(id)
-  }
-
-  const handleInteractionEnd = () => {
-    setHoveredId(null)
-    setTouchedId(null)
-  }
 
   return (
     <section className="py-20 bg-black">
@@ -67,7 +56,7 @@ export default function Certifications() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="section-heading mb-4">Zertifikate & Mitgliedschaften</h2>
+          <h2 className="section-heading mb-4">Qualifikationen & Zertifikate</h2>
           <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
@@ -75,34 +64,32 @@ export default function Certifications() {
           {certifications.map((cert) => (
             <motion.div
               key={cert.id}
-              className="relative group perspective-1000"
+              className="relative h-[280px] perspective-1000"
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.5 }}
-              onMouseEnter={() => handleInteractionStart(cert.id)}
-              onMouseLeave={handleInteractionEnd}
-              onTouchStart={() => handleInteractionStart(cert.id)}
-              onTouchEnd={handleInteractionEnd}
+              onMouseEnter={() => setHoveredId(cert.id)}
+              onMouseLeave={() => setHoveredId(null)}
             >
               <motion.div
-                className="relative preserve-3d w-full h-full transition-all duration-700 ease-out"
+                className="absolute inset-0 w-full h-full preserve-3d transition-transform duration-500"
                 animate={{
-                  rotateY: (hoveredId === cert.id || touchedId === cert.id) ? 180 : 0
+                  rotateY: hoveredId === cert.id ? 180 : 0
                 }}
               >
                 {/* Front of card */}
                 <div className="absolute inset-0 backface-hidden">
-                  <div className="h-full bg-black/50 backdrop-blur-sm border border-[#C8A97E]/10 rounded-xl p-6 flex flex-col items-center justify-center">
-                    <div className="relative w-24 h-24 mb-4">
+                  <div className="h-full bg-black/50 backdrop-blur-sm border border-[#C8A97E]/10 hover:border-[#C8A97E]/30 rounded-xl p-6 flex flex-col items-center justify-center transition-all duration-300">
+                    <div className="relative w-20 h-20 mb-4">
                       <Image
                         src={process.env.NODE_ENV === 'production' ? `/vocal-coaching${cert.logo}` : cert.logo}
                         alt={cert.title}
                         fill
-                        className="object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-500"
+                        className="object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-300"
                       />
                     </div>
-                    <h3 className="text-white text-lg mb-2 text-center">{cert.title}</h3>
+                    <h3 className="text-white text-lg font-medium text-center mb-2">{cert.title}</h3>
                     {cert.year && (
                       <p className="text-[#C8A97E] text-sm">{cert.year}</p>
                     )}
@@ -111,12 +98,12 @@ export default function Certifications() {
 
                 {/* Back of card */}
                 <div className="absolute inset-0 backface-hidden rotate-y-180">
-                  <div className="h-full bg-black/50 backdrop-blur-sm border border-[#C8A97E]/10 rounded-xl p-6 flex flex-col">
-                    <h3 className="text-white text-lg mb-2">{cert.title}</h3>
+                  <div className="h-full bg-black/50 backdrop-blur-sm border border-[#C8A97E]/10 hover:border-[#C8A97E]/30 rounded-xl p-6 flex flex-col transition-all duration-300">
+                    <h3 className="text-white text-lg font-medium mb-2">{cert.title}</h3>
                     {cert.organization && (
-                      <p className="text-[#C8A97E] text-sm mb-4">{cert.organization}</p>
+                      <p className="text-[#C8A97E] text-sm mb-3">{cert.organization}</p>
                     )}
-                    <p className="text-gray-400 text-sm flex-grow">{cert.description}</p>
+                    <p className="text-gray-400 text-sm flex-grow leading-relaxed">{cert.description}</p>
                     <a
                       href={cert.link}
                       target="_blank"
