@@ -72,8 +72,8 @@ export default function VideoPreview() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black">
-        {/* Dark overlay */}
-        <div className="absolute inset-0 bg-black z-10 pointer-events-none" />
+        {/* Dark overlay - only show when not playing */}
+        <div className={`absolute inset-0 bg-black transition-opacity duration-300 ${isPlaying ? 'opacity-0' : 'opacity-100'} z-10 pointer-events-none`} />
         
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-20 bg-black">
@@ -90,9 +90,10 @@ export default function VideoPreview() {
         <div className="absolute inset-0 bg-black transition-opacity duration-300">
           <video
             ref={videoRef}
-            className={`w-full h-full object-contain transition-transform duration-500 ${isPlaying ? 'scale-100' : 'scale-[0.98]'}`}
+            className={`w-full h-full object-cover transition-transform duration-500 ${isPlaying ? 'scale-100' : 'scale-[0.98]'}`}
             poster={posterImage}
             playsInline
+            muted={isMuted}
             onClick={handleVideoClick}
             onLoadStart={handleLoadStart}
             onLoadedData={handleLoadedData}

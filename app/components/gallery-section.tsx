@@ -207,13 +207,13 @@ export default function GallerySection() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 1.05 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="relative aspect-[4/3] w-full rounded-lg overflow-hidden"
+                    className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden shadow-2xl"
                   >
                     <Image
                       src={selectedImage.src}
                       alt={selectedImage.alt}
                       fill
-                      className="object-contain"
+                      className="object-contain rounded-2xl"
                       sizes="90vw"
                       quality={90}
                       priority

@@ -38,7 +38,8 @@ export default function AboutSection() {
           </div>
 
           <div className="max-w-xl mx-auto lg:mx-0">
-            <h2 className="text-3xl md:text-4xl font-light text-white mb-6">Über Mich</h2>
+            <h2 className="section-heading mb-6">Über Mich</h2>
+            <div className="w-12 h-0.5 bg-[#C8A97E] mx-0 mb-6"></div>
             
             <div className="space-y-6">
               <p className="text-base sm:text-lg text-gray-300">
