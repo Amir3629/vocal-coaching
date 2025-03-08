@@ -1,9 +1,53 @@
 "use client"
 
+import { useState } from "react"
 import { Card } from "@/components/ui/card"
 import { SkipBack, Pause, Play, SkipForward } from "lucide-react"
 
+interface Track {
+  title: string
+  artist: string
+  duration: number
+}
+
+const tracks: Track[] = [
+  {
+    title: "Jazz Improvisation",
+    artist: "Melanie Wainwright",
+    duration: 180
+  },
+  {
+    title: "Vocal Techniques",
+    artist: "Melanie Wainwright",
+    duration: 240
+  }
+]
+
 export default function MusicPlayer() {
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(false)
+  const [currentTime, setCurrentTime] = useState(0)
+
+  const currentTrack = tracks[currentTrackIndex]
+
+  const handlePrevious = () => {
+    setCurrentTrackIndex(prev => (prev > 0 ? prev - 1 : tracks.length - 1))
+  }
+
+  const handleNext = () => {
+    setCurrentTrackIndex(prev => (prev < tracks.length - 1 ? prev + 1 : 0))
+  }
+
+  const togglePlayPause = () => {
+    setIsPlaying(!isPlaying)
+  }
+
+  const formatTime = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60)
+    const remainingSeconds = seconds % 60
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+  }
+
   return (
     <Card className="bg-[#0A0A0A] rounded-xl p-6 border border-[#C8A97E]/20">
       <div className="relative w-full max-w-md mx-auto bg-black/20 rounded-xl overflow-hidden">
@@ -46,10 +90,10 @@ export default function MusicPlayer() {
             <div className="flex-1 h-1 bg-white/20 rounded-full">
               <div 
                 className="h-full bg-white rounded-full"
-                style={{ width: `${(currentTime / duration) * 100}%` }}
+                style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
               />
             </div>
-            <span className="text-xs">{formatTime(duration)}</span>
+            <span className="text-xs">{formatTime(currentTrack.duration)}</span>
           </div>
         </div>
       </div>
