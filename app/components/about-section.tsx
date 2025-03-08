@@ -10,23 +10,19 @@ export default function AboutSection() {
   const [imageError, setImageError] = useState(false)
 
   const imagePath = process.env.NODE_ENV === 'production'
-    ? "/vocal-coaching/images/about/melanie.jpg"
-    : "/images/about/melanie.jpg"
-
-  const placeholderPath = process.env.NODE_ENV === 'production'
-    ? "/vocal-coaching/images/about/placeholder.svg"
-    : "/images/about/placeholder.svg"
+    ? "/vocal-coaching/images/about/profile.jpg"
+    : "/images/about/profile.jpg"
 
   return (
     <section className="py-20 bg-[#040202]">
       <div className="container px-4 mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <div className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none">
+          <div className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none bg-[#0A0A0A] rounded-xl overflow-hidden">
             <Image
-              src={imageError ? placeholderPath : imagePath}
+              src={imagePath}
               alt="Melanie Wainwright"
               fill
-              className="object-cover rounded-xl"
+              className="object-cover"
               sizes="(max-width: 768px) 90vw, 45vw"
               priority
               onError={() => {

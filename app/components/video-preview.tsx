@@ -71,22 +71,23 @@ export default function VideoPreview() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#040202]">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/20 to-[#040202]/60 z-10 pointer-events-none" />
+      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black">
+        {/* Dark overlay */}
+        <div className="absolute inset-0 bg-black z-10 pointer-events-none" />
         
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#040202]">
+          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black">
             <div className="w-12 h-12 border-4 border-[#C8A97E]/20 border-t-[#C8A97E] rounded-full animate-spin" />
           </div>
         )}
 
         {hasError && (
-          <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#040202]">
+          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black">
             <p className="text-[#C8A97E]/80">Video konnte nicht geladen werden</p>
           </div>
         )}
 
-        <div className="absolute inset-0 bg-[#040202] transition-opacity duration-300">
+        <div className="absolute inset-0 bg-black transition-opacity duration-300">
           <video
             ref={videoRef}
             className={`w-full h-full object-contain transition-transform duration-500 ${isPlaying ? 'scale-100' : 'scale-[0.98]'}`}
@@ -111,7 +112,7 @@ export default function VideoPreview() {
             whileHover={{ scale: 1.1 }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <div className="w-16 h-16 rounded-full bg-[#C8A97E]/10 backdrop-blur-sm flex items-center justify-center transition-all duration-500 group-hover:bg-[#C8A97E]/20">
+            <div className="w-16 h-16 rounded-full bg-black/50 backdrop-blur-sm flex items-center justify-center transition-all duration-500 group-hover:bg-[#C8A97E]/20">
               <div className="w-0 h-0 border-y-8 border-y-transparent border-l-[16px] border-l-[#C8A97E] translate-x-0.5" />
             </div>
           </motion.button>
