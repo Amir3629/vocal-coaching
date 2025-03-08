@@ -63,25 +63,25 @@ export default function ServiceCard({ title, description, icon, price, features,
               </div>
             </div>
 
+            <div className="space-y-2">
+              {features.map((feature, index) => (
+                <div key={index} className="flex items-center gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                  <p className="text-gray-300 text-sm">{feature}</p>
+                </div>
+              ))}
+            </div>
+
             <motion.div
               animate={{
-                height: isHovered ? "auto" : "auto",
-                opacity: 1,
-                marginTop: "1rem"
+                height: isHovered ? "auto" : 0,
+                opacity: isHovered ? 1 : 0,
+                marginTop: isHovered ? "1rem" : 0
               }}
               transition={{ duration: 0.3 }}
-              className="space-y-4"
+              className="overflow-hidden"
             >
-              <div className="space-y-2">
-                {features.map((feature, index) => (
-                  <div key={index} className="flex items-center gap-2">
-                    <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                    <p className="text-gray-300 text-sm">{feature}</p>
-                  </div>
-                ))}
-              </div>
-              
-              <div className="space-y-4 mt-4">
+              <div className="space-y-4">
                 <div>
                   <h4 className="text-[#C8A97E] text-sm font-medium mb-2">Enthält</h4>
                   <ul className="space-y-1">

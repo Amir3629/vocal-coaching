@@ -75,7 +75,7 @@ export default function VideoPreview() {
         <div className="relative aspect-video w-full rounded-2xl overflow-hidden bg-black">
           <video
             ref={videoRef}
-            className="absolute inset-0 w-full h-full object-contain"
+            className="absolute inset-0 w-full h-full object-cover"
             poster={posterImage}
             onLoadStart={handleLoadStart}
             onLoadedData={handleLoadedData}
@@ -85,19 +85,27 @@ export default function VideoPreview() {
             <source src={videoSrc} type="video/mp4" />
           </video>
           
-          {/* Dark overlay */}
-          <div className={`absolute inset-0 bg-black transition-opacity duration-500 ${isPlaying ? 'opacity-0' : 'opacity-50'}`} />
+          {/* Dark overlay - only visible when not playing */}
+          <div 
+            className={`absolute inset-0 bg-black transition-opacity duration-700 ${
+              isPlaying ? 'opacity-0' : 'opacity-100'
+            }`} 
+          />
 
-          {/* Play button */}
+          {/* Play button with smooth transition */}
           {!isPlaying && (
-            <button
+            <motion.button
               onClick={handleVideoClick}
               className="absolute inset-0 w-full h-full flex items-center justify-center"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.3 }}
             >
-              <div className="w-16 h-16 bg-black/50 rounded-full flex items-center justify-center transition-transform hover:scale-110">
-                <div className="w-0 h-0 border-y-8 border-y-transparent border-l-12 border-l-white translate-x-0.5" />
+              <div className="w-16 h-16 bg-black/50 backdrop-blur-sm rounded-full flex items-center justify-center transition-transform duration-300 hover:scale-110">
+                <div className="w-0 h-0 border-y-8 border-y-transparent border-l-12 border-l-[#C8A97E] translate-x-0.5" />
               </div>
-            </button>
+            </motion.button>
           )}
         </div>
       </div>
