@@ -185,39 +185,53 @@ export default function GallerySection() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-[#040202]/95 backdrop-blur-sm"
             onClick={handleClose}
           >
-            <div className="absolute top-4 right-4 z-50 flex gap-2">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handlePrev(e)
-                }}
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5" />
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation()
-                  handleNext(e)
-                }}
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-              >
-                <ChevronRight className="w-5 h-5" />
-              </button>
-              <button
-                onClick={handleClose}
-                className="p-2 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
+            {/* Navigation Arrows */}
+            <motion.button
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="fixed top-1/2 right-4 z-50 p-3 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 text-white transform -translate-y-1/2 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation()
+                handleNext(e)
+              }}
+            >
+              <ChevronRight className="w-6 h-6" />
+            </motion.button>
+
+            <motion.button
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="fixed top-1/2 left-4 z-50 p-3 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 text-white transform -translate-y-1/2 transition-colors"
+              onClick={(e) => {
+                e.stopPropagation()
+                handlePrev(e)
+              }}
+            >
+              <ChevronLeft className="w-6 h-6" />
+            </motion.button>
+
+            {/* Close Button */}
+            <motion.button
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="fixed top-4 right-4 z-50 p-3 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 text-white transition-colors"
+              onClick={handleClose}
+            >
+              <X className="w-6 h-6" />
+            </motion.button>
 
             <div className="h-full flex items-center justify-center p-4">
               <div className="relative w-full max-w-4xl mx-auto">
-                <div className="relative aspect-[4/3] w-full rounded-lg overflow-hidden">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.95 }}
+                  transition={{ duration: 0.3 }}
+                  className="relative aspect-[4/3] w-full rounded-lg overflow-hidden"
+                >
                   <Image
                     src={selectedImage.src}
                     alt={selectedImage.alt}
@@ -226,11 +240,11 @@ export default function GallerySection() {
                     sizes="90vw"
                     quality={90}
                   />
-                </div>
-                <div className="absolute left-0 right-0 bottom-0 p-4 bg-gradient-to-t from-black/90 via-black/60 to-transparent">
+                </motion.div>
+                <div className="absolute left-0 right-0 bottom-0 p-4 bg-gradient-to-t from-[#040202]/90 via-[#040202]/60 to-transparent">
                   <div className="max-w-[80%]">
                     <h3 className="text-white text-base sm:text-lg font-medium mb-1">{selectedImage.alt}</h3>
-                    <p className="text-gray-300 text-sm">{selectedImage.description}</p>
+                    <p className="text-[#C8A97E] text-sm">{selectedImage.description}</p>
                   </div>
                 </div>
               </div>

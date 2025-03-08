@@ -38,9 +38,15 @@ export default function ServiceCard({ title, description, icon, price, features,
     setIsTouching(false)
   }
 
-  const handleClick = () => {
+  const handleMouseEnter = () => {
     if (!isTouching) {
-      setIsFlipped(!isFlipped)
+      setIsFlipped(true)
+    }
+  }
+
+  const handleMouseLeave = () => {
+    if (!isTouching) {
+      setIsFlipped(false)
     }
   }
 
@@ -54,7 +60,8 @@ export default function ServiceCard({ title, description, icon, price, features,
       onTouchStart={handleTouchStart}
       onTouchEnd={handleTouchEnd}
       onTouchCancel={handleTouchCancel}
-      onClick={handleClick}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       <motion.div
         className={`relative w-full h-full preserve-3d transition-transform duration-500 ${

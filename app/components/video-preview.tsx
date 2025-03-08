@@ -71,18 +71,18 @@ export default function VideoPreview() {
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-black/20">
-        <div className="absolute inset-0 bg-gradient-to-b from-black/20 to-black/60 z-10" />
+      <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#040202]">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/20 to-[#040202]/60 z-10" />
         
         {isLoading && (
-          <div className="absolute inset-0 flex items-center justify-center z-20">
-            <div className="w-12 h-12 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+          <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#040202]">
+            <div className="w-12 h-12 border-4 border-[#C8A97E]/20 border-t-[#C8A97E] rounded-full animate-spin" />
           </div>
         )}
 
         {hasError && (
-          <div className="absolute inset-0 flex items-center justify-center z-20 bg-black/80">
-            <p className="text-white/80">Video konnte nicht geladen werden</p>
+          <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#040202]">
+            <p className="text-[#C8A97E]/80">Video konnte nicht geladen werden</p>
           </div>
         )}
 
@@ -103,14 +103,16 @@ export default function VideoPreview() {
         </video>
 
         {!isPlaying && !isLoading && !hasError && (
-          <button
+          <motion.button
             onClick={handleVideoClick}
             className="absolute inset-0 flex items-center justify-center z-20 group"
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
           >
-            <div className="w-16 h-16 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center transition-transform group-hover:scale-110">
-              <div className="w-0 h-0 border-y-8 border-y-transparent border-l-[16px] border-l-white translate-x-0.5" />
+            <div className="w-16 h-16 rounded-full bg-[#C8A97E]/10 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group-hover:bg-[#C8A97E]/20">
+              <div className="w-0 h-0 border-y-8 border-y-transparent border-l-[16px] border-l-[#C8A97E] translate-x-0.5" />
             </div>
-          </button>
+          </motion.button>
         )}
       </div>
     </div>

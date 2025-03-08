@@ -28,6 +28,12 @@ export default function AboutSection() {
               className="object-cover rounded-xl"
               sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 40vw"
               priority
+              onError={(e: any) => {
+                console.error('Error loading about image:', e);
+                e.target.src = process.env.NODE_ENV === 'production'
+                  ? "/vocal-coaching/images/about/placeholder.svg"
+                  : "/images/about/placeholder.svg";
+              }}
             />
           </motion.div>
 
