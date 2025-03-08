@@ -7,6 +7,15 @@ import { ChevronDown, ChevronUp } from "lucide-react"
 
 export default function AboutSection() {
   const [isExpanded, setIsExpanded] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
+  const imagePath = process.env.NODE_ENV === 'production'
+    ? "/vocal-coaching/images/about/melanie.jpg"
+    : "/images/about/melanie.jpg"
+
+  const placeholderPath = process.env.NODE_ENV === 'production'
+    ? "/vocal-coaching/images/about/placeholder.svg"
+    : "/images/about/placeholder.svg"
 
   return (
     <section className="py-20 bg-[#040202]">
@@ -17,24 +26,25 @@ export default function AboutSection() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
-            className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none"
+            className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none bg-[#040202] rounded-xl overflow-hidden"
           >
             <Image
-              src={process.env.NODE_ENV === 'production' 
-                ? "/vocal-coaching/images/about/melanie.jpg"
-                : "/images/about/melanie.jpg"}
+              src={imageError ? placeholderPath : imagePath}
               alt="Melanie Wainwright"
               fill
               className="object-cover rounded-xl"
               sizes="(max-width: 640px) 90vw, (max-width: 1024px) 50vw, 40vw"
               priority
-              onError={(e: any) => {
-                console.error('Error loading about image:', e);
-                e.target.src = process.env.NODE_ENV === 'production'
-                  ? "/vocal-coaching/images/about/placeholder.svg"
-                  : "/images/about/placeholder.svg";
+              onError={() => {
+                console.error('Error loading about image:', imagePath);
+                setImageError(true);
               }}
             />
+            {imageError && (
+              <div className="absolute inset-0 flex items-center justify-center bg-[#040202]/80 text-[#C8A97E]">
+                <p className="text-center px-4">Bild konnte nicht geladen werden</p>
+              </div>
+            )}
           </motion.div>
 
           <motion.div

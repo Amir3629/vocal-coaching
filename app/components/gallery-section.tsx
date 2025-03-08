@@ -93,6 +93,7 @@ const images: GalleryImage[] = [
 export default function GallerySection() {
   const [selectedImage, setSelectedImage] = useState<GalleryImage | null>(null)
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [nextImage, setNextImage] = useState<GalleryImage | null>(null)
 
   const handleImageClick = (image: GalleryImage) => {
     setSelectedImage(image)
@@ -100,28 +101,37 @@ export default function GallerySection() {
 
   const handleClose = () => {
     setSelectedImage(null)
+    setNextImage(null)
   }
 
   const handleNext = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!selectedImage) return
+    if (!selectedImage || isTransitioning) return
+    
     const currentIndex = images.findIndex(img => img.src === selectedImage.src)
     const nextIndex = (currentIndex + 1) % images.length
     setIsTransitioning(true)
+    setNextImage(images[nextIndex])
+    
     setTimeout(() => {
       setSelectedImage(images[nextIndex])
+      setNextImage(null)
       setIsTransitioning(false)
     }, 300)
   }
 
   const handlePrev = (e: React.MouseEvent) => {
     e.stopPropagation()
-    if (!selectedImage) return
+    if (!selectedImage || isTransitioning) return
+    
     const currentIndex = images.findIndex(img => img.src === selectedImage.src)
     const prevIndex = (currentIndex - 1 + images.length) % images.length
     setIsTransitioning(true)
+    setNextImage(images[prevIndex])
+    
     setTimeout(() => {
       setSelectedImage(images[prevIndex])
+      setNextImage(null)
       setIsTransitioning(false)
     }, 300)
   }
@@ -188,15 +198,64 @@ export default function GallerySection() {
             className="fixed inset-0 z-50 bg-[#040202]/95 backdrop-blur-sm"
             onClick={handleClose}
           >
-            {/* Navigation Arrows */}
+            <div className="h-full flex items-center justify-center p-4">
+              <div className="relative w-full max-w-4xl mx-auto">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={selectedImage.src}
+                    initial={{ opacity: 0, scale: 0.95 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 1.05 }}
+                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                    className="relative aspect-[4/3] w-full rounded-lg overflow-hidden"
+                  >
+                    <Image
+                      src={selectedImage.src}
+                      alt={selectedImage.alt}
+                      fill
+                      className="object-contain"
+                      sizes="90vw"
+                      quality={90}
+                      priority
+                    />
+                  </motion.div>
+                </AnimatePresence>
+
+                {nextImage && (
+                  <div className="absolute inset-0 pointer-events-none">
+                    <Image
+                      src={nextImage.src}
+                      alt={nextImage.alt}
+                      fill
+                      className="object-contain opacity-0"
+                      sizes="90vw"
+                      quality={90}
+                      priority
+                    />
+                  </div>
+                )}
+
+                <div className="absolute left-0 right-0 bottom-0 p-4 bg-gradient-to-t from-[#040202]/90 via-[#040202]/60 to-transparent">
+                  <motion.div
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="max-w-[80%]"
+                  >
+                    <h3 className="text-white text-base sm:text-lg font-medium mb-1">{selectedImage.alt}</h3>
+                    <p className="text-[#C8A97E] text-sm">{selectedImage.description}</p>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation Buttons */}
             <motion.button
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               className="fixed top-1/2 right-4 z-50 p-3 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 text-white transform -translate-y-1/2 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation()
-                handleNext(e)
-              }}
+              onClick={handleNext}
+              disabled={isTransitioning}
             >
               <ChevronRight className="w-6 h-6" />
             </motion.button>
@@ -205,15 +264,12 @@ export default function GallerySection() {
               initial={{ opacity: 0, x: -20 }}
               animate={{ opacity: 1, x: 0 }}
               className="fixed top-1/2 left-4 z-50 p-3 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 text-white transform -translate-y-1/2 transition-colors"
-              onClick={(e) => {
-                e.stopPropagation()
-                handlePrev(e)
-              }}
+              onClick={handlePrev}
+              disabled={isTransitioning}
             >
               <ChevronLeft className="w-6 h-6" />
             </motion.button>
 
-            {/* Close Button */}
             <motion.button
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -222,33 +278,6 @@ export default function GallerySection() {
             >
               <X className="w-6 h-6" />
             </motion.button>
-
-            <div className="h-full flex items-center justify-center p-4">
-              <div className="relative w-full max-w-4xl mx-auto">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
-                  className="relative aspect-[4/3] w-full rounded-lg overflow-hidden"
-                >
-                  <Image
-                    src={selectedImage.src}
-                    alt={selectedImage.alt}
-                    fill
-                    className="object-contain"
-                    sizes="90vw"
-                    quality={90}
-                  />
-                </motion.div>
-                <div className="absolute left-0 right-0 bottom-0 p-4 bg-gradient-to-t from-[#040202]/90 via-[#040202]/60 to-transparent">
-                  <div className="max-w-[80%]">
-                    <h3 className="text-white text-base sm:text-lg font-medium mb-1">{selectedImage.alt}</h3>
-                    <p className="text-[#C8A97E] text-sm">{selectedImage.description}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
           </motion.div>
         )}
       </div>

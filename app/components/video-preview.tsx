@@ -72,7 +72,7 @@ export default function VideoPreview() {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="relative w-full aspect-video rounded-xl overflow-hidden bg-[#040202]">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/20 to-[#040202]/60 z-10" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/20 to-[#040202]/60 z-10 pointer-events-none" />
         
         {isLoading && (
           <div className="absolute inset-0 flex items-center justify-center z-20 bg-[#040202]">
@@ -86,21 +86,23 @@ export default function VideoPreview() {
           </div>
         )}
 
-        <video
-          ref={videoRef}
-          className="w-full h-full object-cover cursor-pointer"
-          poster={posterImage}
-          playsInline
-          onClick={handleVideoClick}
-          onLoadStart={handleLoadStart}
-          onLoadedData={handleLoadedData}
-          onError={handleError}
-        >
-          <source
-            src={videoSrc}
-            type="video/mp4"
-          />
-        </video>
+        <div className="absolute inset-0 bg-[#040202] transition-opacity duration-300">
+          <video
+            ref={videoRef}
+            className={`w-full h-full object-contain transition-transform duration-300 ${isPlaying ? 'scale-100' : 'scale-[0.98]'}`}
+            poster={posterImage}
+            playsInline
+            onClick={handleVideoClick}
+            onLoadStart={handleLoadStart}
+            onLoadedData={handleLoadedData}
+            onError={handleError}
+          >
+            <source
+              src={videoSrc}
+              type="video/mp4"
+            />
+          </video>
+        </div>
 
         {!isPlaying && !isLoading && !hasError && (
           <motion.button
