@@ -70,39 +70,42 @@ export default function ServiceCard({ title, description, icon, price, features,
       >
         {/* Front of card */}
         <div className="absolute inset-0 backface-hidden">
-          <div className="h-full rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20 p-6">
-            <div className="relative h-48 -mx-6 -mt-6 mb-6 overflow-hidden">
+          <div className="relative h-full rounded-xl overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20">
+            {/* Background Image */}
+            <div className="absolute inset-0">
               <Image
                 src={image}
                 alt={title}
                 fill
-                className="object-cover"
+                className="object-cover brightness-50 blur-[2px]"
                 sizes="(max-width: 640px) 90vw, (max-width: 768px) 45vw, 30vw"
                 quality={85}
               />
-              <div className="absolute inset-0 bg-gradient-to-b from-black/30 to-black/60" />
+              <div className="absolute inset-0 bg-gradient-to-b from-black/70 to-black/90" />
             </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
-                <div className="p-2 rounded-lg bg-[#C8A97E]/10">
-                  {icon}
+            <div className="relative h-full p-6 flex flex-col">
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-[#C8A97E]/10 backdrop-blur-sm">
+                    {icon}
+                  </div>
+                  <h3 className="text-xl font-medium text-white">{title}</h3>
                 </div>
-                <h3 className="text-xl font-medium text-white">{title}</h3>
-              </div>
 
-              <p className="text-gray-400 text-sm line-clamp-3">{description}</p>
+                <p className="text-gray-200 text-sm line-clamp-3">{description}</p>
 
-              <div className="pt-4">
-                <div className="text-[#C8A97E] font-medium">{price}</div>
-                <ul className="mt-2 space-y-1">
-                  {features.map((feature, index) => (
-                    <li key={index} className="text-gray-400 text-sm flex items-center gap-2">
-                      <Check className="w-4 h-4 text-[#C8A97E]" />
-                      {feature}
-                    </li>
-                  ))}
-                </ul>
+                <div className="pt-4 mt-auto">
+                  <div className="text-[#C8A97E] font-medium">{price}</div>
+                  <ul className="mt-2 space-y-1">
+                    {features.map((feature, index) => (
+                      <li key={index} className="text-gray-200 text-sm flex items-center gap-2">
+                        <Check className="w-4 h-4 text-[#C8A97E]" />
+                        {feature}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

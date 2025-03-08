@@ -89,7 +89,7 @@ export default function VideoPreview() {
         <div className="absolute inset-0 bg-[#040202] transition-opacity duration-300">
           <video
             ref={videoRef}
-            className={`w-full h-full object-contain transition-transform duration-300 ${isPlaying ? 'scale-100' : 'scale-[0.98]'}`}
+            className={`w-full h-full object-contain transition-transform duration-500 ${isPlaying ? 'scale-100' : 'scale-[0.98]'}`}
             poster={posterImage}
             playsInline
             onClick={handleVideoClick}
@@ -109,9 +109,9 @@ export default function VideoPreview() {
             onClick={handleVideoClick}
             className="absolute inset-0 flex items-center justify-center z-20 group"
             whileHover={{ scale: 1.1 }}
-            transition={{ duration: 0.3, ease: "easeOut" }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
           >
-            <div className="w-16 h-16 rounded-full bg-[#C8A97E]/10 backdrop-blur-sm flex items-center justify-center transition-all duration-300 group-hover:bg-[#C8A97E]/20">
+            <div className="w-16 h-16 rounded-full bg-[#C8A97E]/10 backdrop-blur-sm flex items-center justify-center transition-all duration-500 group-hover:bg-[#C8A97E]/20">
               <div className="w-0 h-0 border-y-8 border-y-transparent border-l-[16px] border-l-[#C8A97E] translate-x-0.5" />
             </div>
           </motion.button>
