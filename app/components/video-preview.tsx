@@ -72,7 +72,7 @@ export default function VideoPreview() {
   return (
     <div className="container mx-auto px-4">
       <div className="max-w-4xl mx-auto">
-        <div className="relative aspect-video w-full rounded-[32px] overflow-hidden bg-[#0A0A0A] shadow-2xl border border-[#C8A97E]/10">
+        <div className="relative aspect-video w-full rounded-[32px] overflow-hidden bg-black shadow-2xl">
           <div className="absolute inset-0 flex items-center justify-center">
             <video
               ref={videoRef}
@@ -82,11 +82,7 @@ export default function VideoPreview() {
               onLoadedData={handleLoadedData}
               onError={handleError}
               muted={isMuted}
-              style={{
-                borderRadius: '32px',
-                WebkitBorderRadius: '32px',
-                MozBorderRadius: '32px'
-              }}
+              playsInline
             >
               <source src={videoSrc} type="video/mp4" />
             </video>
@@ -94,14 +90,14 @@ export default function VideoPreview() {
           
           {/* Loading state */}
           {isLoading && (
-            <div className="absolute inset-0 bg-[#0A0A0A]/80 backdrop-blur-sm flex items-center justify-center">
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center">
               <div className="w-16 h-16 border-4 border-[#C8A97E]/20 border-t-[#C8A97E] rounded-full animate-spin" />
             </div>
           )}
 
           {/* Error state */}
           {hasError && (
-            <div className="absolute inset-0 bg-[#0A0A0A]/90 backdrop-blur-sm flex items-center justify-center text-center p-4">
+            <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center text-center p-4">
               <div className="space-y-4">
                 <p className="text-[#C8A97E]">Video konnte nicht geladen werden</p>
                 <button
@@ -119,8 +115,8 @@ export default function VideoPreview() {
           
           {/* Dark overlay with smoother transition */}
           <div 
-            className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/30 transition-opacity duration-1000 ease-in-out ${
-              isPlaying ? 'opacity-0' : 'opacity-100'
+            className={`absolute inset-0 bg-black transition-opacity duration-700 ease-in-out ${
+              isPlaying ? 'opacity-0' : 'opacity-90'
             }`} 
           />
 
@@ -132,9 +128,9 @@ export default function VideoPreview() {
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.7, ease: "easeInOut" }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
             >
-              <div className="w-20 h-20 bg-[#C8A97E]/10 backdrop-blur-lg rounded-full flex items-center justify-center transition-all duration-700 hover:scale-110 hover:bg-[#C8A97E]/20 border border-[#C8A97E]/20">
+              <div className="w-20 h-20 bg-[#C8A97E]/10 backdrop-blur-lg rounded-full flex items-center justify-center transition-all duration-500 hover:scale-110 hover:bg-[#C8A97E]/20 border border-[#C8A97E]/20">
                 <div className="w-0 h-0 border-y-[15px] border-y-transparent border-l-[25px] border-l-[#C8A97E] translate-x-1" />
               </div>
             </motion.button>
@@ -144,7 +140,7 @@ export default function VideoPreview() {
           <motion.button
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="absolute bottom-4 right-4 p-3 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 text-white transition-colors backdrop-blur-sm"
+            className="absolute bottom-4 right-4 p-3 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors backdrop-blur-sm"
             onClick={handleMuteToggle}
           >
             {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}

@@ -217,30 +217,20 @@ export default function GallerySection() {
                       sizes="90vw"
                       quality={90}
                       priority
-                      style={{
-                        borderRadius: '32px',
-                        WebkitBorderRadius: '32px',
-                        MozBorderRadius: '32px'
-                      }}
                     />
                   </motion.div>
                 </AnimatePresence>
 
                 {nextImage && (
-                  <div className="absolute inset-0 pointer-events-none rounded-[32px] overflow-hidden">
+                  <div className="absolute inset-0 pointer-events-none">
                     <Image
                       src={nextImage.src}
                       alt={nextImage.alt}
                       fill
-                      className="object-contain"
+                      className="object-contain opacity-0"
                       sizes="90vw"
                       quality={90}
                       priority
-                      style={{
-                        borderRadius: '32px',
-                        WebkitBorderRadius: '32px',
-                        MozBorderRadius: '32px'
-                      }}
                     />
                   </div>
                 )}
