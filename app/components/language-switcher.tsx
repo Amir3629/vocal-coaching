@@ -26,7 +26,54 @@ const translations = {
       contactButton: "Kontakt",
       choirButton: "Chor Next Door"
     },
-    // Add more translations here
+    hero: {
+      title: "Professionelles Vocal Coaching in Berlin",
+      subtitle: "Jazz • Pop • Musical",
+      cta: "Jetzt buchen"
+    },
+    services: {
+      title: "Leistungen",
+      privateTitle: "Einzelunterricht",
+      privateDesc: "Individueller Gesangsunterricht für alle Level",
+      workshopTitle: "Workshops & Seminare",
+      workshopDesc: "Gruppenunterricht und spezielle Themen",
+      performanceTitle: "Performance Coaching",
+      performanceDesc: "Bühnenpräsenz und Auftrittsvorbereitung",
+      choirTitle: "Chor Next Door",
+      choirDesc: "Werde Teil unseres innovativen Chorprojekts"
+    },
+    about: {
+      title: "Über Mich",
+      intro: "Halb Britin, halb Deutsche - und 100%ige Rheinländerin lebe ich freiwillig in Berlin.",
+      experience: "Nach meinem Studium an der Hochschule für Musik und Tanz Köln vertiefte ich meine Kenntnisse in Jazz-Gesang und Improvisation.",
+      current: "Aktuelle Projekte",
+      currentText: "Als stolzes Mitglied der internationalen Berliner Jazzszene bin ich nicht nur als Sängerin aktiv, sondern auch als Vocal Coach bei der Bandleiter Ausbildung in Wiesbaden tätig."
+    },
+    testimonials: {
+      title: "Was meine Schüler sagen",
+      readMore: "Mehr erfahren",
+      showLess: "Weniger anzeigen"
+    },
+    contact: {
+      title: "Kontakt",
+      name: "Name",
+      email: "E-Mail",
+      message: "Nachricht",
+      send: "Senden",
+      success: "Nachricht gesendet!",
+      error: "Ein Fehler ist aufgetreten."
+    },
+    partners: {
+      title: "Partner & Kooperationen"
+    },
+    footer: {
+      rights: "Alle Rechte vorbehalten",
+      legal: {
+        imprint: "Impressum",
+        privacy: "Datenschutz",
+        terms: "AGB"
+      }
+    }
   },
   EN: {
     nav: {
@@ -39,7 +86,54 @@ const translations = {
       contactButton: "Contact",
       choirButton: "Choir Next Door"
     },
-    // Add more translations here
+    hero: {
+      title: "Professional Vocal Coaching in Berlin",
+      subtitle: "Jazz • Pop • Musical",
+      cta: "Book Now"
+    },
+    services: {
+      title: "Services",
+      privateTitle: "Private Lessons",
+      privateDesc: "Individual vocal training for all levels",
+      workshopTitle: "Workshops & Seminars",
+      workshopDesc: "Group lessons and special topics",
+      performanceTitle: "Performance Coaching",
+      performanceDesc: "Stage presence and performance preparation",
+      choirTitle: "Choir Next Door",
+      choirDesc: "Join our innovative choir project"
+    },
+    about: {
+      title: "About Me",
+      intro: "Half British, half German - and 100% Rhinelander living in Berlin by choice.",
+      experience: "After studying at the Cologne University of Music and Dance, I deepened my knowledge in jazz singing and improvisation.",
+      current: "Current Projects",
+      currentText: "As a proud member of Berlin's international jazz scene, I'm not only active as a singer but also as a vocal coach at the band leader training in Wiesbaden."
+    },
+    testimonials: {
+      title: "What My Students Say",
+      readMore: "Read More",
+      showLess: "Show Less"
+    },
+    contact: {
+      title: "Contact",
+      name: "Name",
+      email: "Email",
+      message: "Message",
+      send: "Send",
+      success: "Message sent!",
+      error: "An error occurred."
+    },
+    partners: {
+      title: "Partners & Collaborations"
+    },
+    footer: {
+      rights: "All rights reserved",
+      legal: {
+        imprint: "Imprint",
+        privacy: "Privacy Policy",
+        terms: "Terms & Conditions"
+      }
+    }
   }
 };
 

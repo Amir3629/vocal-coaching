@@ -120,7 +120,7 @@ export default function Footer() {
                     href={item.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors"
+                    className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors w-6 h-6 flex items-center justify-center"
                   >
                     <span className="sr-only">{item.name}</span>
                     {typeof item.icon === 'function' ? (
