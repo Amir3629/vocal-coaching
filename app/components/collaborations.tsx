@@ -2,7 +2,9 @@
 
 import { motion } from "framer-motion"
 import Image from "next/image"
-import { useState, useEffect } from "react"
+import { useState } from "react"
+import { useContext } from "react"
+import { LanguageContext } from "./language-switcher"
 
 const collaborations = [
   {
@@ -57,6 +59,7 @@ const collaborations = [
 
 export default function Collaborations() {
   const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
+  const { translations } = useContext(LanguageContext)
 
   return (
     <section className="py-20 bg-black">
@@ -68,46 +71,29 @@ export default function Collaborations() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="section-heading mb-4">Partner & Kooperationen</h2>
+          <h2 className="section-heading mb-4">{translations.partners.title}</h2>
           <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 items-center max-w-6xl mx-auto">
-          {collaborations.map((collab, index) => (
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-12">
+          {collaborations.map((collab) => (
             <motion.a
               key={collab.name}
               href={collab.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="relative flex items-center justify-center group"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.5, delay: index * 0.1 }}
+              className="group relative flex items-center justify-center"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
-              <div className="relative w-full aspect-[3/2] bg-transparent rounded-lg p-4">
-                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                  <div className="absolute inset-0 bg-[#C8A97E]/10 blur-2xl rounded-full transform-gpu scale-150" />
-                </div>
-                <div className="relative w-full h-full flex items-center justify-center">
-                  {imageErrors[collab.name] ? (
-                    <div className="w-full h-full flex items-center justify-center text-[#C8A97E] text-sm text-center p-2">
-                      {collab.name}
-                    </div>
-                  ) : (
-                    <Image
-                      src={process.env.NODE_ENV === 'production' 
-                        ? `/vocal-coaching${collab.logo}`
-                        : collab.logo}
-                      alt={collab.name}
-                      width={200}
-                      height={100}
-                      className="w-full h-full object-contain opacity-70 group-hover:opacity-100 transition-all duration-500"
-                      onError={() => setImageErrors(prev => ({ ...prev, [collab.name]: true }))}
-                    />
-                  )}
-                </div>
-              </div>
+              <Image
+                src={collab.logo}
+                alt={collab.name}
+                width={120}
+                height={40}
+                className="w-[120px] h-auto object-contain opacity-70 group-hover:opacity-100 transition-all duration-500"
+              />
             </motion.a>
           ))}
         </div>
