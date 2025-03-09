@@ -124,7 +124,7 @@ export default function Home() {
           transition={{ duration: 1, delay: 0.5 }}
         >
           <motion.h1 
-            className="text-5xl md:text-7xl font-bold mb-6 text-white drop-shadow-lg"
+            className="text-6xl md:text-8xl font-bold mb-6 text-white drop-shadow-lg"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
@@ -132,7 +132,7 @@ export default function Home() {
             Mel jazz
           </motion.h1>
           <motion.p 
-            className="text-xl md:text-3xl mb-8 text-white/90"
+            className="text-2xl md:text-4xl mb-8 text-white/90"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.1 }}

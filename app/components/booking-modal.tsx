@@ -76,6 +76,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showSuccess, setShowSuccess] = useState(false)
+  const [termsAccepted, setTermsAccepted] = useState(false)
 
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
@@ -133,6 +134,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    if (!termsAccepted) {
+      alert("Bitte akzeptieren Sie die AGB und Datenschutzerklärung")
+      return
+    }
     // Show success message
     setShowSuccess(true)
     // Close modal after delay
@@ -314,7 +319,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   )}
 
                   {currentStep === 4 && (
-                    <div className="space-y-4">
+                    <div className="space-y-6">
                       <h2 className="text-2xl font-semibold text-white mb-4">
                         Ihre Informationen
                       </h2>
@@ -403,42 +408,33 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         />
                       </div>
 
-                      <div className="flex items-start gap-3">
+                      <div className="flex items-start gap-2 mt-4">
                         <input
                           type="checkbox"
                           id="terms"
-                          checked={formData.acceptTerms}
-                          onChange={(e) =>
-                            setFormData({ ...formData, acceptTerms: e.target.checked })
-                          }
+                          checked={termsAccepted}
+                          onChange={(e) => setTermsAccepted(e.target.checked)}
                           className="mt-1"
                         />
                         <label htmlFor="terms" className="text-sm text-gray-300">
                           Ich akzeptiere die{" "}
                           <button
-                            onClick={(e) => {
-                              e.preventDefault()
-                              setShowAGBModal(true)
-                            }}
-                            className="text-[#C8A97E] hover:underline"
+                            type="button"
+                            onClick={() => setShowAGBModal(true)}
+                            className="text-[#C8A97E] hover:text-[#B69A6E]"
                           >
                             AGB
-                          </button>{" "}
-                          und{" "}
+                          </button>
+                          {" "}und{" "}
                           <button
-                            onClick={(e) => {
-                              e.preventDefault()
-                              setShowDatenschutzModal(true)
-                            }}
-                            className="text-[#C8A97E] hover:underline"
+                            type="button"
+                            onClick={() => setShowDatenschutzModal(true)}
+                            className="text-[#C8A97E] hover:text-[#B69A6E]"
                           >
                             Datenschutzerklärung
                           </button>
                         </label>
                       </div>
-                      {errors.terms && (
-                        <p className="text-red-500 text-sm">{errors.terms}</p>
-                      )}
                     </div>
                   )}
 
