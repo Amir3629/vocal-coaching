@@ -97,7 +97,7 @@ export default function ServiceCard({ title, description, icon, price, features,
                 <h3 className="text-xl font-medium text-white mb-2">
                   {title}
                 </h3>
-                <p className="text-white/70 whitespace-pre-line">
+                <p className="text-white/70 whitespace-pre">
                   {description}
                 </p>
               </div>
