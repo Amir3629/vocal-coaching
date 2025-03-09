@@ -20,9 +20,10 @@ interface ServiceCardProps {
   }
   image: string
   delay?: number
+  className?: string
 }
 
-export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
+export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0, className = "" }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [imageError, setImageError] = useState(false)
 
@@ -36,7 +37,7 @@ export default function ServiceCard({ title, description, icon, price, features,
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: "easeOut", delay }}
-      className={`relative transform-gpu ${isHovered ? 'z-10' : 'z-0'}`}
+      className={`group relative overflow-hidden rounded-xl bg-[#0A0A0A] border border-white/10 hover:border-[#C8A97E]/50 transition-colors ${className}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{ 

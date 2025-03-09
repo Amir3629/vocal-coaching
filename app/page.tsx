@@ -342,6 +342,7 @@ export default function Home() {
               }}
               image="/images/services/piano.jpg"
               delay={0.4}
+              className="h-full"
             />
           </div>
           
