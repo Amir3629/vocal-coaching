@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import { useLanguage } from "./language-switcher"
+import Link from "next/link"
+import Image from "next/image"
 
 export default function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -54,11 +56,16 @@ export default function NavBar() {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <img
-              src={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logo/ml-signature.svg" : "/images/logo/ml-signature.svg"}
-              alt="ML Signature"
-              className="w-full h-full object-contain"
-            />
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/images/logo/ml-signature.svg"
+                alt="ML Logo"
+                width={140}
+                height={70}
+                className="h-auto w-auto"
+                priority
+              />
+            </Link>
           </motion.button>
 
           {/* Mobile Menu Button */}
