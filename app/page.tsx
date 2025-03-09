@@ -101,7 +101,7 @@ export default function Home() {
       <NavBar />
 
       {/* Hero Section with Parallax Piano Background */}
-      <section ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
+      <section id="hero" ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <img
             src="/vocal-coaching/images/backgrounds/hero-bg.jpg"
@@ -364,24 +364,26 @@ export default function Home() {
       </section>
 
       {/* About Section */}
+      <section id="about">
         <AboutSection />
+      </section>
 
-      {/* Gallery Section */}
-      <GallerySection />
-
-      {/* Certifications Section */}
-      <Certifications />
+      {/* References Section */}
+      <section id="references" className="py-20 bg-[#040202]">
+        <GallerySection />
+        <Certifications />
+        <Collaborations />
+      </section>
 
       {/* Testimonials Section */}
       <section id="testimonials" className="relative w-full bg-[#040202] py-16">
         <div className="container mx-auto px-4">
           <TestimonialSlider />
-          <Collaborations />
         </div>
       </section>
 
-      {/* Contact Form Section */}
-      <section id="contact" className="relative w-full bg-black/95 py-20">
+      {/* Contact Section */}
+      <section id="contact" className="relative py-20 bg-[#040202]">
         <ContactForm />
       </section>
 
