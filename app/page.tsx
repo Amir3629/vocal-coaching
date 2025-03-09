@@ -248,7 +248,7 @@ export default function Home() {
                 duration: "60-90 min",
                 location: "Studio Berlin"
               }}
-              image="/vocal-coaching/images/services/studio.jpg"
+              image="/images/services/studio.jpg"
               delay={0.1}
             />
             
@@ -278,7 +278,7 @@ export default function Home() {
                 duration: "60-90 min",
                 location: "Studio Berlin"
               }}
-              image="/vocal-coaching/images/services/jazz.jpg"
+              image="/images/services/jazz.jpg"
               delay={0.2}
             />
             
@@ -308,7 +308,7 @@ export default function Home() {
                 duration: "90-120 min",
                 location: "Studio/Bühne"
               }}
-              image="/vocal-coaching/images/services/performance.jpg"
+              image="/images/services/performance.jpg"
               delay={0.3}
             />
             
@@ -338,7 +338,7 @@ export default function Home() {
                 duration: "60-90 min",
                 location: "Studio Berlin"
               }}
-              image="/vocal-coaching/images/services/piano.jpg"
+              image="/images/services/piano.jpg"
               delay={0.4}
             />
           </div>

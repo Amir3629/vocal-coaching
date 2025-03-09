@@ -22,6 +22,7 @@ interface ServiceCardProps {
 
 export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [imageError, setImageError] = useState(false)
 
   const imagePath = process.env.NODE_ENV === 'production'
     ? `/vocal-coaching${image}`
@@ -62,7 +63,13 @@ export default function ServiceCard({ title, description, icon, price, features,
             className="object-cover transform-gpu transition-transform duration-700 scale-110"
             sizes="(max-width: 768px) 100vw, 33vw"
             priority
+            onError={() => setImageError(true)}
           />
+          {imageError && (
+            <div className="absolute inset-0 bg-[#0A0A0A] flex items-center justify-center">
+              <p className="text-[#C8A97E]/50 text-sm">Image not found</p>
+            </div>
+          )}
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/90 to-black/95 backdrop-blur-[2px]" />
         </div>
 
