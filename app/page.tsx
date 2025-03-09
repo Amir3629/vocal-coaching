@@ -96,6 +96,19 @@ export default function Home() {
     console.log(formData)
   }
 
+  useEffect(() => {
+    // Verify that all sections are properly rendered
+    const sections = ['hero', 'services', 'about', 'testimonials', 'contact']
+    sections.forEach(id => {
+      const element = document.getElementById(id)
+      if (!element) {
+        console.error(`Section with id "${id}" not found`)
+      } else {
+        console.log(`Section with id "${id}" found`)
+      }
+    })
+  }, [isLoaded])
+
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#0A0A0A]">
       <NavBar />

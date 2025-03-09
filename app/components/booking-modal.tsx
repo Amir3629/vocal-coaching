@@ -6,9 +6,6 @@ import { format, addMonths, subMonths, isSameDay, isBefore, startOfToday, startO
 import { de } from "date-fns/locale"
 import { ChevronLeft, ChevronRight, X, Check } from "lucide-react"
 import { z } from "zod"
-import LegalDocumentModal from "./legal-document-modal"
-import LegalContent from "./legal-content"
-import CustomAlert from "./custom-alert"
 import { Dialog, DialogContent } from "./ui/dialog"
 import { Button } from "./ui/button"
 import { Label } from "./ui/label"
@@ -16,6 +13,9 @@ import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { cn } from "@/lib/utils"
 import SuccessMessage from "./success-message"
+import LegalDocumentModal from "./legal-document-modal"
+import LegalContent from "./legal-content"
+import CustomAlert from "./custom-alert"
 
 interface BookingModalProps {
   isOpen: boolean
@@ -115,10 +115,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     setCurrentStep("2"); // Automatically progress to next step
   };
 
-  const validateEmail = (email: string) => {
-    return z.string().email().safeParse(email).success
-  }
-
   const handleNext = () => {
     if (currentStep === "1" && !selectedService) {
       setErrors({ service: "Bitte wählen Sie einen Service aus" })
@@ -137,16 +133,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       return
     }
     if (currentStep === "4") {
-      const newErrors: Record<string, string> = {}
-      if (!formData.name) newErrors.name = "Name ist erforderlich"
-      if (!formData.email) newErrors.email = "Email ist erforderlich"
-      if (!validateEmail(formData.email)) newErrors.email = "Ungültige Email-Adresse"
-      if (!formData.termsAccepted) newErrors.terms = "Bitte akzeptieren Sie die Bedingungen"
-      
-      if (Object.keys(newErrors).length > 0) {
-        setErrors(newErrors)
-        return
-      }
+      handleSubmit(new Event('submit') as any)
+      return
     }
     setErrors({})
     const nextStep = (parseInt(currentStep) + 1).toString() as Step
@@ -159,16 +147,27 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+    
+    // Validate form
+    const newErrors: Record<string, string> = {}
+    if (!formData.name) newErrors.name = "Name ist erforderlich"
+    if (!formData.email) newErrors.email = "Email ist erforderlich"
+    if (!formData.email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) newErrors.email = "Ungültige Email-Adresse"
+    if (!formData.service) newErrors.service = "Bitte wählen Sie einen Service aus"
     if (!termsAccepted) {
-      alert("Bitte akzeptieren Sie die AGB und Datenschutzerklärung")
+      setShowTermsAlert(true)
       return
     }
-    
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors)
+      return
+    }
+
     try {
-      // ... existing submission code ...
-      
       // Show success message
       setShowSuccessMessage(true)
+      
       // Reset form
       setFormData({
         name: "",
@@ -178,8 +177,17 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         message: "",
         termsAccepted: false
       })
-      setCurrentStep("1")
-      onClose()
+      setSelectedService("")
+      setSelectedDate(null)
+      setSelectedTime("")
+      setTermsAccepted(false)
+      
+      // Close modal after a delay
+      setTimeout(() => {
+        setCurrentStep("1")
+        onClose()
+        setShowSuccessMessage(false)
+      }, 2000)
     } catch (error) {
       console.error("Error submitting form:", error)
     }
@@ -209,342 +217,338 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   return (
     <>
-      <Dialog open={isOpen} onOpenChange={onClose}>
-        <AnimatePresence>
-          {isOpen && (
-            <>
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+              onClick={onClose}
+            />
+            <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
               <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-                onClick={onClose}
-              />
-              <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  className="w-full max-w-lg bg-[#0A0A0A] rounded-xl shadow-xl overflow-hidden relative"
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="w-full max-w-lg bg-[#0A0A0A] rounded-xl shadow-xl overflow-hidden relative"
+              >
+                {/* Close Button */}
+                <button
+                  onClick={onClose}
+                  className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white transition-colors"
                 >
-                  {/* Close Button */}
-                  <button
-                    onClick={onClose}
-                    className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white transition-colors"
-                  >
-                    <X className="w-6 h-6" />
-                  </button>
+                  <X className="w-6 h-6" />
+                </button>
 
-                  {/* Progress Bar */}
-                  <div className="relative h-1.5 bg-[#1A1A1A]">
-                    <motion.div
-                      className="absolute left-0 top-0 h-full bg-[#C8A97E]"
-                      animate={{
-                        width: `${(parseInt(currentStep) / 4) * 100}%`
-                      }}
-                      transition={{ duration: 0.3 }}
-                    />
-                  </div>
+                {/* Progress Bar */}
+                <div className="relative h-1.5 bg-[#1A1A1A]">
+                  <motion.div
+                    className="absolute left-0 top-0 h-full bg-[#C8A97E]"
+                    animate={{
+                      width: `${(parseInt(currentStep) / 4) * 100}%`
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
 
-                  <div className="p-6">
-                    {currentStep === "1" && (
-                      <div className="space-y-4">
-                        <h2 className="text-2xl font-semibold text-white text-center mb-6">
-                          Wählen Sie Ihren Service
-                        </h2>
-                        <div className="grid gap-4">
-                          {services.map((service) => (
-                            <motion.button
-                              key={service.id}
-                              onClick={() => handleServiceSelect(service.id)}
-                              className={`w-full p-4 rounded-lg border transition-all ${
-                                selectedService === service.id
-                                  ? "border-[#C8A97E] bg-[#C8A97E]/10"
-                                  : "border-white/10 hover:border-[#C8A97E]/50"
-                              }`}
-                              whileHover={{ scale: 1.02 }}
-                              whileTap={{ scale: 0.98 }}
-                            >
-                              <div className="text-left">
-                                <h3 className="text-white font-medium">{service.title}</h3>
-                                <p className="text-sm text-gray-400">{service.duration} • {service.description}</p>
-                              </div>
-                            </motion.button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
+                <div className="p-6">
+                  <h2 className="font-playfair text-2xl font-bold text-[#C8A97E] mb-6">
+                    {currentStep === "1" && "Ihre Informationen"}
+                    {currentStep === "2" && "Wählen Sie einen Service"}
+                    {currentStep === "3" && "Wählen Sie einen Termin"}
+                    {currentStep === "4" && "Bestätigung"}
+                  </h2>
 
-                    {currentStep === "2" && (
-                      <div className="space-y-6">
-                        <h2 className="text-2xl font-semibold text-white text-center mb-6">
-                          Wählen Sie ein Datum
-                        </h2>
-                        <div className="bg-[#1A1A1A] rounded-lg p-4">
-                          <div className="flex items-center justify-between mb-4">
-                            <button
-                              onClick={prevMonth}
-                              className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                            >
-                              <ChevronLeft className="w-5 h-5 text-[#C8A97E]" />
-                            </button>
-                            <h3 className="text-white font-medium">
-                              {format(currentDate, "MMMM yyyy", { locale: de })}
-                            </h3>
-                            <button
-                              onClick={nextMonth}
-                              className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                            >
-                              <ChevronRight className="w-5 h-5 text-[#C8A97E]" />
-                            </button>
-                          </div>
-                          
-                          <div className="grid grid-cols-7 gap-1 mb-2">
-                            {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((day) => (
-                              <div key={day} className="text-center text-sm text-gray-400">
-                                {day}
-                              </div>
-                            ))}
-                          </div>
-
-                          <div className="grid grid-cols-7 gap-1">
-                            {calendarDays.map((day, idx) => {
-                              const isToday = isSameDay(day, new Date());
-                              const isSelected = selectedDate && isSameDay(day, selectedDate);
-                              const isPast = isBefore(day, startOfToday());
-
-                              return (
-                                <button
-                                  key={idx}
-                                  onClick={() => handleDateSelect(day)}
-                                  disabled={isPast}
-                                  className={`
-                                    aspect-square rounded-lg flex items-center justify-center text-sm
-                                    ${isSelected ? "bg-[#C8A97E] text-black" : ""}
-                                    ${isToday ? "border border-[#C8A97E]" : ""}
-                                    ${isPast ? "text-gray-600" : "text-white hover:bg-white/5"}
-                                  `}
-                                >
-                                  {format(day, "d")}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                    )}
-
-                    {currentStep === "3" && (
-                      <div className="space-y-6">
-                        <h2 className="text-2xl font-semibold text-white text-center mb-6">
-                          Wählen Sie eine Uhrzeit
-                        </h2>
-                        <div className="grid grid-cols-3 gap-3">
-                          {timeSlots.map((time) => (
-                            <button
-                              key={time}
-                              onClick={() => handleTimeSelect(time)}
-                              className={`p-3 rounded-lg border transition-all ${
-                                selectedTime === time
-                                  ? "border-[#C8A97E] bg-[#C8A97E]/10 text-white"
-                                  : "border-white/10 hover:border-[#C8A97E]/50 text-gray-400 hover:text-white"
-                              }`}
-                            >
-                              {time}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
-                    )}
-
-                    {currentStep === "4" && (
-                      <div className="space-y-6">
-                        <h2 className="text-2xl font-semibold text-white mb-4">
-                          Ihre Informationen
-                        </h2>
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-1">
-                            Name
-                          </label>
-                          <input
-                            type="text"
-                            value={formData.name}
-                            onChange={(e) =>
-                              setFormData({ ...formData, name: e.target.value })
-                            }
-                            className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
-                          />
-                          {errors.name && (
-                            <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-                          )}
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-1">
-                            Email
-                          </label>
-                          <input
-                            type="email"
-                            value={formData.email}
-                            onChange={(e) =>
-                              setFormData({ ...formData, email: e.target.value })
-                            }
-                            className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
-                          />
-                          {errors.email && (
-                            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                          )}
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-1">
-                            Telefon (optional)
-                          </label>
-                          <input
-                            type="tel"
-                            value={formData.phone}
-                            onChange={(e) =>
-                              setFormData({ ...formData, phone: e.target.value })
-                            }
-                            className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
-                          />
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-1">
-                            Level
-                          </label>
-                          <select
-                            value={formData.service}
-                            onChange={(e) =>
-                              setFormData({ ...formData, service: e.target.value })
-                            }
-                            className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
+                  {currentStep === "1" && (
+                    <div className="space-y-4">
+                      <h2 className="text-2xl font-semibold text-white text-center mb-6">
+                        Wählen Sie Ihren Service
+                      </h2>
+                      <div className="grid gap-4">
+                        {services.map((service) => (
+                          <motion.button
+                            key={service.id}
+                            onClick={() => handleServiceSelect(service.id)}
+                            className={`w-full p-4 rounded-lg border transition-all ${
+                              selectedService === service.id
+                                ? "border-[#C8A97E] bg-[#C8A97E]/10"
+                                : "border-white/10 hover:border-[#C8A97E]/50"
+                            }`}
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
                           >
-                            <option value="">Bitte wählen</option>
-                            {services.map((service) => (
-                              <option key={service.id} value={service.id}>
-                                {service.title}
-                              </option>
-                            ))}
-                          </select>
-                          {errors.service && (
-                            <p className="text-red-500 text-sm mt-1">{errors.service}</p>
-                          )}
-                        </div>
-
-                        <div>
-                          <label className="block text-sm font-medium text-gray-300 mb-1">
-                            Nachricht (optional)
-                          </label>
-                          <textarea
-                            value={formData.message}
-                            onChange={(e) =>
-                              setFormData({ ...formData, message: e.target.value })
-                            }
-                            rows={3}
-                            className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
-                          />
-                        </div>
-
-                        <div className="flex items-start gap-2 mt-4">
-                          <input
-                            type="checkbox"
-                            id="terms"
-                            checked={termsAccepted}
-                            onChange={(e) => setTermsAccepted(e.target.checked)}
-                            className="mt-1"
-                          />
-                          <label htmlFor="terms" className="text-sm text-gray-300">
-                            Ich akzeptiere die{" "}
-                            <button
-                              type="button"
-                              onClick={() => setShowAGBModal(true)}
-                              className="text-[#C8A97E] hover:text-[#B69A6E]"
-                            >
-                              AGB
-                            </button>
-                            {" "}und{" "}
-                            <button
-                              type="button"
-                              onClick={() => setShowDatenschutzModal(true)}
-                              className="text-[#C8A97E] hover:text-[#B69A6E]"
-                            >
-                              Datenschutzerklärung
-                            </button>
-                          </label>
-                        </div>
-                      </div>
-                    )}
-
-                    {currentStep === "5" && (
-                      <div className="text-center py-8">
-                        <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
-                          <Check className="w-8 h-8 text-[#C8A97E]" />
-                        </div>
-                        <h2 className="text-2xl font-semibold text-white mb-2">
-                          Buchung erfolgreich!
-                        </h2>
-                        <p className="text-gray-400">
-                          Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.
-                        </p>
-                      </div>
-                    )}
-
-                    {/* Success Message */}
-                    <AnimatePresence>
-                      {showSuccess && (
-                        <motion.div
-                          initial={{ opacity: 0, y: 20 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -20 }}
-                          className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-                        >
-                          <div className="bg-[#1A1A1A] rounded-lg p-6 text-center">
-                            <div className="w-12 h-12 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
-                              <Check className="w-6 h-6 text-[#C8A97E]" />
+                            <div className="text-left">
+                              <h3 className="text-white font-medium">{service.title}</h3>
+                              <p className="text-sm text-gray-400">{service.duration} • {service.description}</p>
                             </div>
-                            <h3 className="text-lg font-medium text-white mb-2">Buchung erfolgreich!</h3>
-                            <p className="text-gray-400">Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
-                          </div>
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-
-                    {/* Navigation Buttons */}
-                    <div className="flex justify-between mt-8">
-                      {currentStep !== "1" && (
-                        <button
-                          onClick={handleBack}
-                          className="px-4 py-2 text-sm text-white hover:text-[#C8A97E] transition-colors"
-                        >
-                          Zurück
-                        </button>
-                      )}
-                      <div className="flex-1" />
-                      {currentStep !== "5" ? (
-                        <button
-                          onClick={handleNext}
-                          className="px-4 py-2 text-sm bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
-                        >
-                          Weiter
-                        </button>
-                      ) : (
-                        <button
-                          onClick={handleSubmit}
-                          className="px-4 py-2 text-sm bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
-                        >
-                          Buchung abschließen
-                        </button>
-                      )}
+                          </motion.button>
+                        ))}
+                      </div>
                     </div>
+                  )}
+
+                  {currentStep === "2" && (
+                    <div className="space-y-6">
+                      <h2 className="text-2xl font-semibold text-white text-center mb-6">
+                        Wählen Sie ein Datum
+                      </h2>
+                      <div className="bg-[#1A1A1A] rounded-lg p-4">
+                        <div className="flex items-center justify-between mb-4">
+                          <button
+                            onClick={prevMonth}
+                            className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                          >
+                            <ChevronLeft className="w-5 h-5 text-[#C8A97E]" />
+                          </button>
+                          <h3 className="text-white font-medium">
+                            {format(currentDate, "MMMM yyyy", { locale: de })}
+                          </h3>
+                          <button
+                            onClick={nextMonth}
+                            className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                          >
+                            <ChevronRight className="w-5 h-5 text-[#C8A97E]" />
+                          </button>
+                        </div>
+                        
+                        <div className="grid grid-cols-7 gap-1 mb-2">
+                          {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((day) => (
+                            <div key={day} className="text-center text-sm text-gray-400">
+                              {day}
+                            </div>
+                          ))}
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1">
+                          {calendarDays.map((day, idx) => {
+                            const isToday = isSameDay(day, new Date());
+                            const isSelected = selectedDate && isSameDay(day, selectedDate);
+                            const isPast = isBefore(day, startOfToday());
+
+                            return (
+                              <button
+                                key={idx}
+                                onClick={() => handleDateSelect(day)}
+                                disabled={isPast}
+                                className={`
+                                  aspect-square rounded-lg flex items-center justify-center text-sm
+                                  ${isSelected ? "bg-[#C8A97E] text-black" : ""}
+                                  ${isToday ? "border border-[#C8A97E]" : ""}
+                                  ${isPast ? "text-gray-600" : "text-white hover:bg-white/5"}
+                                `}
+                              >
+                                {format(day, "d")}
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {currentStep === "3" && (
+                    <div className="space-y-6">
+                      <h2 className="text-2xl font-semibold text-white text-center mb-6">
+                        Wählen Sie eine Uhrzeit
+                      </h2>
+                      <div className="grid grid-cols-3 gap-3">
+                        {timeSlots.map((time) => (
+                          <button
+                            key={time}
+                            onClick={() => handleTimeSelect(time)}
+                            className={`p-3 rounded-lg border transition-all ${
+                              selectedTime === time
+                                ? "border-[#C8A97E] bg-[#C8A97E]/10 text-white"
+                                : "border-white/10 hover:border-[#C8A97E]/50 text-gray-400 hover:text-white"
+                            }`}
+                          >
+                            {time}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {currentStep === "4" && (
+                    <div className="space-y-6">
+                      <h2 className="text-2xl font-semibold text-white mb-4">
+                        Ihre Informationen
+                      </h2>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.name}
+                          onChange={(e) =>
+                            setFormData({ ...formData, name: e.target.value })
+                          }
+                          className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
+                        />
+                        {errors.name && (
+                          <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) =>
+                            setFormData({ ...formData, email: e.target.value })
+                          }
+                          className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
+                        />
+                        {errors.email && (
+                          <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Telefon (optional)
+                        </label>
+                        <input
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) =>
+                            setFormData({ ...formData, phone: e.target.value })
+                          }
+                          className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Level
+                        </label>
+                        <select
+                          value={formData.service}
+                          onChange={(e) =>
+                            setFormData({ ...formData, service: e.target.value })
+                          }
+                          className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
+                        >
+                          <option value="">Bitte wählen</option>
+                          {services.map((service) => (
+                            <option key={service.id} value={service.id}>
+                              {service.title}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.service && (
+                          <p className="text-red-500 text-sm mt-1">{errors.service}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Nachricht (optional)
+                        </label>
+                        <textarea
+                          value={formData.message}
+                          onChange={(e) =>
+                            setFormData({ ...formData, message: e.target.value })
+                          }
+                          rows={3}
+                          className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
+                        />
+                      </div>
+
+                      <div className="flex items-start gap-2 mt-4">
+                        <input
+                          type="checkbox"
+                          id="terms"
+                          checked={termsAccepted}
+                          onChange={(e) => setTermsAccepted(e.target.checked)}
+                          className="mt-1"
+                        />
+                        <label htmlFor="terms" className="text-sm text-gray-300">
+                          Ich akzeptiere die{" "}
+                          <button
+                            type="button"
+                            onClick={() => setShowAGBModal(true)}
+                            className="text-[#C8A97E] hover:text-[#B69A6E]"
+                          >
+                            AGB
+                          </button>
+                          {" "}und{" "}
+                          <button
+                            type="button"
+                            onClick={() => setShowDatenschutzModal(true)}
+                            className="text-[#C8A97E] hover:text-[#B69A6E]"
+                          >
+                            Datenschutzerklärung
+                          </button>
+                        </label>
+                      </div>
+                    </div>
+                  )}
+
+                  {currentStep === "5" && (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
+                        <Check className="w-8 h-8 text-[#C8A97E]" />
+                      </div>
+                      <h2 className="text-2xl font-semibold text-white mb-2">
+                        Buchung erfolgreich!
+                      </h2>
+                      <p className="text-gray-400">
+                        Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.
+                      </p>
+                    </div>
+                  )}
+
+                  {/* Success Message */}
+                  <AnimatePresence>
+                    {showSuccess && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                      >
+                        <div className="bg-[#1A1A1A] rounded-lg p-6 text-center">
+                          <div className="w-12 h-12 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
+                            <Check className="w-6 h-6 text-[#C8A97E]" />
+                          </div>
+                          <h3 className="text-lg font-medium text-white mb-2">Buchung erfolgreich!</h3>
+                          <p className="text-gray-400">Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+
+                  {/* Navigation Buttons */}
+                  <div className="flex justify-between mt-8">
+                    {currentStep !== "1" && (
+                      <button
+                        onClick={handleBack}
+                        className="px-4 py-2 text-sm text-white hover:text-[#C8A97E] transition-colors"
+                      >
+                        Zurück
+                      </button>
+                    )}
+                    <div className="flex-1" />
+                    <button
+                      onClick={currentStep === "4" ? handleSubmit : handleNext}
+                      className="px-4 py-2 text-sm bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
+                    >
+                      {currentStep === "4" ? "Absenden" : "Weiter"}
+                    </button>
                   </div>
-                </motion.div>
-              </div>
-            </>
-          )}
-        </AnimatePresence>
-      </Dialog>
+                </div>
+              </motion.div>
+            </div>
+          </>
+        )}
+      </AnimatePresence>
       <LegalDocumentModal
         isOpen={showAGBModal}
         onClose={() => setShowAGBModal(false)}

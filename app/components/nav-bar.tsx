@@ -23,12 +23,15 @@ export default function NavBar() {
 
   // Scroll to section with offset for fixed header
   const scrollToSection = (id: string) => {
+    console.log(`Attempting to scroll to section: ${id}`)
     const element = document.getElementById(id)
     if (element) {
-      const headerOffset = 100 // Height of fixed header
+      console.log(`Found element with id: ${id}`)
+      const offset = 80 // Account for fixed header
       const elementPosition = element.getBoundingClientRect().top
-      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
-
+      const offsetPosition = elementPosition + window.scrollY - offset
+      
+      console.log(`Scrolling to position: ${offsetPosition}`)
       window.scrollTo({
         top: offsetPosition,
         behavior: "smooth"
@@ -36,6 +39,23 @@ export default function NavBar() {
 
       // Close mobile menu after clicking
       setIsMobileMenuOpen(false)
+    } else {
+      console.error(`Element with id "${id}" not found`)
+      // If testimonials section is not found, try references as fallback
+      if (id === "testimonials") {
+        const referencesElement = document.getElementById("references")
+        if (referencesElement) {
+          const offset = 80
+          const elementPosition = referencesElement.getBoundingClientRect().top
+          const offsetPosition = elementPosition + window.scrollY - offset
+          
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: "smooth"
+          })
+          setIsMobileMenuOpen(false)
+        }
+      }
     }
   }
 
@@ -95,7 +115,7 @@ export default function NavBar() {
               {t?.nav?.about || "Über mich"}
             </motion.button>
             <motion.button
-              onClick={() => scrollToSection("references")}
+              onClick={() => scrollToSection("testimonials")}
               className="text-white hover:text-[#C8A97E] transition-colors duration-300 text-sm font-medium"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
@@ -146,7 +166,7 @@ export default function NavBar() {
                 {t?.nav?.about || "Über mich"}
               </motion.button>
               <motion.button
-                onClick={() => scrollToSection("references")}
+                onClick={() => scrollToSection("testimonials")}
                 className="block w-full text-left text-white hover:text-[#C8A97E] transition-colors duration-300 text-sm font-medium py-2"
                 whileHover={{ x: 10 }}
               >
