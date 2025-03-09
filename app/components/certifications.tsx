@@ -3,118 +3,133 @@
 import { useState } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
+import { Music, Heart, Star, Mic } from "lucide-react"
 
-const certifications = [
+const journeyCards = [
   {
     id: 1,
-    title: "CVT Authorised Teacher",
-    organization: "Complete Vocal Institute",
-    year: "2020",
-    description: "Zertifizierte Gesangslehrerin nach der Complete Vocal Technique. Abschluss am Complete Vocal Institute in Kopenhagen.",
-    logo: "/images/collaborations/cvt-teacher.svg",
-    link: "https://completevocal.institute"
+    title: "Jazz Journey",
+    subtitle: "Die Magie des Jazz",
+    icon: <Music className="w-6 h-6 text-[#C8A97E]" />,
+    description: "Von Ella Fitzgerald inspiriert bis zur modernen Jazz-Szene. Entdecken Sie die Faszination der Improvisation und des individuellen Ausdrucks.",
+    details: [
+      "Persönlicher Ausdruck",
+      "Kreative Freiheit",
+      "Rhythmische Präzision",
+      "Harmonisches Verständnis"
+    ],
+    year: "Lebenslange Reise"
   },
   {
     id: 2,
-    title: "CVT Deutschland",
-    organization: "Complete Vocal Institute Germany",
-    year: "2021",
-    description: "Aktives Mitglied des deutschen CVT Netzwerks. Vocal Coach bei der Bandleiter Ausbildung in Wiesbaden.",
-    logo: "/images/collaborations/cvt-deutschland.svg",
-    link: "https://cvtdeutschland.de"
+    title: "Meine Methodik",
+    subtitle: "Individueller Ansatz",
+    icon: <Heart className="w-6 h-6 text-[#C8A97E]" />,
+    description: "Jede Stimme ist einzigartig. Mein Unterricht passt sich Ihrem Stil und Ihren Zielen an, mit Fokus auf gesunde Stimmtechnik und authentischen Ausdruck.",
+    details: [
+      "Maßgeschneiderte Übungen",
+      "Gesunde Stimmtechnik",
+      "Emotionale Verbindung",
+      "Stilistische Vielfalt"
+    ],
+    year: "Ihre Entwicklung"
   },
   {
     id: 3,
-    title: "Jazz Institut Berlin",
-    organization: "Universität der Künste Berlin",
-    year: "2019",
-    description: "Dozentin für Jazz-Gesang. Teil der internationalen Berliner Jazzszene mit Fokus auf Interpretation & Improvisation.",
-    logo: "/images/collaborations/jib.svg",
-    link: "https://www.jazz-institut-berlin.de"
+    title: "Unser Weg",
+    subtitle: "Gemeinsames Wachstum",
+    icon: <Star className="w-6 h-6 text-[#C8A97E]" />,
+    description: "Von den Grundlagen bis zur Bühnenreife. Entwickeln Sie Ihre Stimme, Ihr Selbstvertrauen und Ihre künstlerische Identität in einem unterstützenden Umfeld.",
+    details: [
+      "Atmung & Stütze",
+      "Klangentfaltung",
+      "Bühnenpräsenz",
+      "Repertoire-Aufbau"
+    ],
+    year: "Ihr Tempo"
   },
   {
     id: 4,
-    title: "Berliner Philharmonie",
-    organization: "Berliner Philharmoniker",
-    year: null,
-    description: "Regelmäßige Auftritte und Kooperationen. Professionelle Erfahrung in klassischer und zeitgenössischer Musik.",
-    logo: "/images/collaborations/philharmonie.svg",
-    link: "https://www.berliner-philharmoniker.de"
+    title: "Warum Jazz?",
+    subtitle: "Die Freiheit der Musik",
+    icon: <Mic className="w-6 h-6 text-[#C8A97E]" />,
+    description: "Jazz ist mehr als Musik - es ist die Kunst der Kommunikation, der Spontaneität und des Ausdrucks. Entdecken Sie Ihre eigene Stimme in dieser reichhaltigen Tradition.",
+    details: [
+      "Musikalischer Dialog",
+      "Spontane Kreativität",
+      "Stilistische Breite",
+      "Künstlerische Freiheit"
+    ],
+    year: "Zeitlose Kunst"
   }
 ]
 
-export default function Certifications() {
+export default function JourneyShowcase() {
   const [hoveredId, setHoveredId] = useState<number | null>(null)
 
   return (
-    <section className="py-20 bg-black">
+    <section className="py-20 bg-[#040202]">
       <div className="container mx-auto px-4">
-        <motion.div 
-          className="text-center mb-16"
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
         >
-          <h2 className="section-heading mb-4">Qualifikationen & Zertifikate</h2>
-          <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto"></div>
+          <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+            Meine Vision & Methodik
+          </h2>
+          <div className="w-20 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 max-w-6xl mx-auto">
-          {certifications.map((cert) => (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          {journeyCards.map((card, index) => (
             <motion.div
-              key={cert.id}
-              className="relative h-[280px] perspective-1000"
+              key={card.id}
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.5 }}
-              onMouseEnter={() => setHoveredId(cert.id)}
+              transition={{ delay: index * 0.1 }}
+              className="relative h-[400px] perspective-1000"
+              onMouseEnter={() => setHoveredId(card.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
               <motion.div
-                className="absolute inset-0 w-full h-full preserve-3d transition-transform duration-500"
-                animate={{
-                  rotateY: hoveredId === cert.id ? 180 : 0
-                }}
+                className={`w-full h-full transition-all duration-500 preserve-3d cursor-pointer ${
+                  hoveredId === card.id ? "rotate-y-180" : ""
+                }`}
               >
                 {/* Front of card */}
                 <div className="absolute inset-0 backface-hidden">
-                  <div className="h-full bg-black/50 backdrop-blur-sm border border-[#C8A97E]/10 hover:border-[#C8A97E]/30 rounded-xl p-6 flex flex-col items-center justify-center transition-all duration-300">
-                    <div className="relative w-20 h-20 mb-4">
-                      <Image
-                        src={process.env.NODE_ENV === 'production' ? `/vocal-coaching${cert.logo}` : cert.logo}
-                        alt={cert.title}
-                        fill
-                        className="object-contain opacity-80 group-hover:opacity-100 transition-opacity duration-300"
-                      />
-                    </div>
-                    <h3 className="text-white text-lg font-medium text-center mb-2">{cert.title}</h3>
-                    {cert.year && (
-                      <p className="text-[#C8A97E] text-sm">{cert.year}</p>
-                    )}
+                  <div className="h-full bg-[#0A0A0A] rounded-xl p-6 flex flex-col items-center justify-center border border-[#C8A97E]/20">
+                    <div className="mb-6">{card.icon}</div>
+                    <h3 className="text-xl font-medium text-white mb-2">{card.title}</h3>
+                    <p className="text-[#C8A97E] text-sm mb-4">{card.subtitle}</p>
+                    <p className="text-gray-400 text-center">{card.description}</p>
                   </div>
                 </div>
 
                 {/* Back of card */}
                 <div className="absolute inset-0 backface-hidden rotate-y-180">
-                  <div className="h-full bg-black/50 backdrop-blur-sm border border-[#C8A97E]/10 hover:border-[#C8A97E]/30 rounded-xl p-6 flex flex-col transition-all duration-300">
-                    <h3 className="text-white text-lg font-medium mb-2">{cert.title}</h3>
-                    {cert.organization && (
-                      <p className="text-[#C8A97E] text-sm mb-3">{cert.organization}</p>
-                    )}
-                    <p className="text-gray-400 text-sm flex-grow leading-relaxed">{cert.description}</p>
-                    <a
-                      href={cert.link}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="mt-4 text-sm text-[#C8A97E] hover:text-[#B69A6E] transition-colors flex items-center gap-2"
-                    >
-                      Mehr erfahren
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                      </svg>
-                    </a>
+                  <div className="h-full bg-[#0A0A0A] rounded-xl p-6 flex flex-col items-center justify-center border border-[#C8A97E]/20">
+                    <h4 className="text-[#C8A97E] font-medium mb-4">Highlights</h4>
+                    <ul className="space-y-3">
+                      {card.details.map((detail, idx) => (
+                        <motion.li
+                          key={idx}
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: idx * 0.1 }}
+                          className="flex items-center gap-2"
+                        >
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                          <span className="text-gray-300 text-sm">{detail}</span>
+                        </motion.li>
+                      ))}
+                    </ul>
+                    <div className="mt-6">
+                      <span className="text-[#C8A97E]/60 text-sm">{card.year}</span>
+                    </div>
                   </div>
                 </div>
               </motion.div>
