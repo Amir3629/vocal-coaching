@@ -3,8 +3,7 @@
 import { motion } from "framer-motion"
 import Image from "next/image"
 import { useState } from "react"
-import { useContext } from "react"
-import { LanguageContext, translations } from "./language-switcher"
+import { useLanguage } from "./language-switcher"
 
 const collaborations = [
   {
@@ -59,10 +58,10 @@ const collaborations = [
 
 export default function Collaborations() {
   const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
-  const { translations: t } = useContext(LanguageContext)
+  const { translations: t } = useLanguage()
 
   // Fallback title if translations are not available during static build
-  const sectionTitle = t?.partners?.title || translations.DE.partners.title
+  const sectionTitle = t?.partners?.title || "Partner & Kollaborationen"
 
   return (
     <section className="py-20 bg-black">
