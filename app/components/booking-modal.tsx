@@ -5,15 +5,23 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X, Calendar, Clock, ChevronLeft, ChevronRight, Check } from "lucide-react"
 import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday } from "date-fns"
 import { de } from "date-fns/locale"
-
-interface BookingModalProps {
-  isOpen: boolean
-  onClose: () => void
-}
+import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
+import { createBooking } from '@/lib/google-calendar'
 
 interface TimeSlot {
   time: string
   available: boolean
+}
+
+interface PaymentStep {
+  isLoading: boolean
+  error: string | null
+  orderID: string | null
+}
+
+interface BookingModalProps {
+  isOpen: boolean
+  onClose: () => void
 }
 
 const timeSlots: TimeSlot[] = [
@@ -34,6 +42,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
+  const [availableSlots, setAvailableSlots] = useState<string[]>([])
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -41,6 +50,11 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     level: "",
     message: "",
     acceptTerms: false
+  })
+  const [payment, setPayment] = useState<PaymentStep>({
+    isLoading: false,
+    error: null,
+    orderID: null,
   })
 
   useEffect(() => {
@@ -105,6 +119,207 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     setStep(4)
   }
 
+  const handlePayment = async () => {
+    try {
+      setPayment({ ...payment, isLoading: true, error: null })
+      const response = await fetch('/api/payments/create-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          amount: 50, // Deposit amount in EUR
+          currency: 'EUR',
+          description: `Booking deposit for ${formData.name} on ${selectedDate?.toLocaleDateString()} at ${selectedTime}`,
+        }),
+      })
+
+      const data = await response.json()
+      if (data.id) {
+        setPayment({ ...payment, orderID: data.id, isLoading: false })
+      } else {
+        throw new Error('Failed to create PayPal order')
+      }
+    } catch (error) {
+      console.error('Payment error:', error)
+      setPayment({
+        ...payment,
+        isLoading: false,
+        error: 'Failed to process payment. Please try again.',
+      })
+    }
+  }
+
+  const handlePaymentSuccess = async (orderID: string) => {
+    try {
+      const response = await fetch('/api/payments/capture-order', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orderID }),
+      })
+
+      const data = await response.json()
+      if (data.status === 'COMPLETED') {
+        // Create the booking
+        await createBooking({
+          date: selectedDate!,
+          time: selectedTime!,
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+          paymentId: orderID,
+        })
+        setStep(4) // Move to confirmation step
+      }
+    } catch (error) {
+      console.error('Error capturing payment:', error)
+      setPayment({
+        ...payment,
+        error: 'Failed to complete payment. Please contact support.',
+      })
+    }
+  }
+
+  const renderStep = () => {
+    switch (step) {
+      case 1:
+        return (
+          <div className="space-y-6">
+            {/* Calendar Navigation */}
+            <div className="flex items-center justify-between mb-4">
+              <button
+                onClick={() => setCurrentDate(subMonths(currentDate, 1))}
+                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+              >
+                <ChevronLeft className="w-5 h-5 text-[#C8A97E]" />
+              </button>
+              <h3 className="text-lg font-medium text-white">
+                {format(currentDate, 'MMMM yyyy', { locale: de })}
+              </h3>
+              <button
+                onClick={() => setCurrentDate(addMonths(currentDate, 1))}
+                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+              >
+                <ChevronRight className="w-5 h-5 text-[#C8A97E]" />
+              </button>
+            </div>
+
+            {/* Calendar Grid */}
+            <div className="grid grid-cols-7 gap-2 text-center">
+              {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((day) => (
+                <div key={day} className="text-sm text-gray-400 py-2">
+                  {day}
+                </div>
+              ))}
+              {Array.from({ length: 31 }).map((_, index) => {
+                const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), index + 1)
+                const isSelected = selectedDate && date.getTime() === selectedDate.getTime()
+                const isToday = new Date().toDateString() === date.toDateString()
+                const isPast = date < new Date()
+
+                return (
+                  <button
+                    key={index}
+                    onClick={() => !isPast && handleDateSelect(date)}
+                    disabled={isPast}
+                    className={`
+                      p-2 rounded-lg text-sm font-medium transition-all
+                      ${isSelected
+                        ? 'bg-[#C8A97E] text-black'
+                        : isToday
+                          ? 'bg-white/10 text-white'
+                          : isPast
+                            ? 'bg-white/5 text-gray-500 cursor-not-allowed'
+                            : 'bg-white/5 text-white hover:bg-white/10 hover:scale-105'
+                      }
+                    `}
+                  >
+                    {index + 1}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )
+      case 2:
+        return (
+          <div className="space-y-4">
+            <h3 className="text-lg text-white mb-4">
+              Verfügbare Zeiten am {selectedDate && format(selectedDate, 'd. MMMM yyyy', { locale: de })}:
+            </h3>
+            <div className="grid grid-cols-2 gap-3">
+              {/* Time slots */}
+              {Array.from({ length: 8 }).map((_, index) => {
+                const time = `${9 + index * 1.5}:00 - ${10.5 + index * 1.5}:00`
+                return (
+                  <button
+                    key={time}
+                    onClick={() => handleTimeSelect(time)}
+                    className={`p-3 rounded-lg text-sm font-medium transition-all
+                      ${selectedTime === time
+                        ? 'bg-[#C8A97E] text-black'
+                        : 'bg-white/5 text-white hover:bg-white/10'
+                      } ${index % 2 === 0 ? 'transform hover:scale-105' : ''}`}
+                  >
+                    {time}
+                  </button>
+                )
+              })}
+            </div>
+          </div>
+        )
+      case 3:
+        return (
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold mb-4">Payment</h3>
+            <p className="text-gray-600 mb-4">
+              Please pay a deposit of €50 to secure your booking.
+            </p>
+            {payment.error && (
+              <div className="text-red-500 mb-4">{payment.error}</div>
+            )}
+            <PayPalScriptProvider
+              options={{
+                clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+                currency: 'EUR',
+              }}
+            >
+              <PayPalButtons
+                style={{ layout: 'vertical' }}
+                createOrder={async () => {
+                  await handlePayment()
+                  return payment.orderID!
+                }}
+                onApprove={async (data) => {
+                  await handlePaymentSuccess(data.orderID)
+                }}
+              />
+            </PayPalScriptProvider>
+          </div>
+        )
+      case 4:
+        return (
+          <div className="space-y-4">
+            <h3 className="text-xl font-semibold mb-4">Booking Confirmed!</h3>
+            <p className="text-gray-600">
+              Thank you for your booking. You will receive a confirmation email shortly.
+            </p>
+            <button
+              onClick={onClose}
+              className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-primary-dark transition-colors"
+            >
+              Close
+            </button>
+          </div>
+        )
+      default:
+        return null
+    }
+  }
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -137,186 +352,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
             {/* Content */}
             <div className="p-4">
-              {step === 1 && (
-                <div className="space-y-6">
-                  {/* Calendar Navigation */}
-                  <div className="flex items-center justify-between mb-4">
-                    <button
-                      onClick={() => setCurrentDate(subMonths(currentDate, 1))}
-                      className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                    >
-                      <ChevronLeft className="w-5 h-5 text-[#C8A97E]" />
-                    </button>
-                    <h3 className="text-lg font-medium text-white">
-                      {format(currentDate, 'MMMM yyyy', { locale: de })}
-                    </h3>
-                    <button
-                      onClick={() => setCurrentDate(addMonths(currentDate, 1))}
-                      className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                    >
-                      <ChevronRight className="w-5 h-5 text-[#C8A97E]" />
-                    </button>
-                  </div>
-
-                  {/* Calendar Grid */}
-                  <div className="grid grid-cols-7 gap-2 text-center">
-                    {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((day) => (
-                      <div key={day} className="text-sm text-gray-400 py-2">
-                        {day}
-                      </div>
-                    ))}
-                    {Array.from({ length: 31 }).map((_, index) => {
-                      const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), index + 1)
-                      const isSelected = selectedDate && date.getTime() === selectedDate.getTime()
-                      const isToday = new Date().toDateString() === date.toDateString()
-                      const isPast = date < new Date()
-
-                      return (
-                        <button
-                          key={index}
-                          onClick={() => !isPast && handleDateSelect(date)}
-                          disabled={isPast}
-                          className={`
-                            p-2 rounded-lg text-sm font-medium transition-all
-                            ${isSelected
-                              ? 'bg-[#C8A97E] text-black'
-                              : isToday
-                                ? 'bg-white/10 text-white'
-                                : isPast
-                                  ? 'bg-white/5 text-gray-500 cursor-not-allowed'
-                                  : 'bg-white/5 text-white hover:bg-white/10 hover:scale-105'
-                            }
-                          `}
-                        >
-                          {index + 1}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {step === 2 && (
-                <div className="space-y-4">
-                  <h3 className="text-lg text-white mb-4">
-                    Verfügbare Zeiten am {selectedDate && format(selectedDate, 'd. MMMM yyyy', { locale: de })}:
-                  </h3>
-                  <div className="grid grid-cols-2 gap-3">
-                    {/* Time slots */}
-                    {Array.from({ length: 8 }).map((_, index) => {
-                      const time = `${9 + index * 1.5}:00 - ${10.5 + index * 1.5}:00`
-                      return (
-                        <button
-                          key={time}
-                          onClick={() => handleTimeSelect(time)}
-                          className={`p-3 rounded-lg text-sm font-medium transition-all
-                            ${selectedTime === time
-                              ? 'bg-[#C8A97E] text-black'
-                              : 'bg-white/5 text-white hover:bg-white/10'
-                            } ${index % 2 === 0 ? 'transform hover:scale-105' : ''}`}
-                        >
-                          {time}
-                        </button>
-                      )
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {step === 3 && (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      value={formData.name}
-                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full bg-white/5 border border-[#C8A97E]/20 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] focus:ring-1 focus:ring-[#C8A97E] transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
-                      E-Mail
-                    </label>
-                    <input
-                      type="email"
-                      required
-                      value={formData.email}
-                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full bg-white/5 border border-[#C8A97E]/20 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] focus:ring-1 focus:ring-[#C8A97E] transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
-                      Telefon
-                    </label>
-                    <input
-                      type="tel"
-                      value={formData.phone}
-                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full bg-white/5 border border-[#C8A97E]/20 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] focus:ring-1 focus:ring-[#C8A97E] transition-colors"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
-                      Level
-                    </label>
-                    <select
-                      value={formData.level}
-                      onChange={(e) => setFormData({ ...formData, level: e.target.value })}
-                      className="w-full bg-white/5 border border-[#C8A97E]/20 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] focus:ring-1 focus:ring-[#C8A97E] transition-colors"
-                    >
-                      <option value="">Bitte wählen</option>
-                      <option value="beginner">Anfänger</option>
-                      <option value="intermediate">Fortgeschritten</option>
-                      <option value="advanced">Profi</option>
-                    </select>
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-300 mb-1">
-                      Nachricht
-                    </label>
-                    <textarea
-                      rows={4}
-                      value={formData.message}
-                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      className="w-full bg-white/5 border border-[#C8A97E]/20 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] focus:ring-1 focus:ring-[#C8A97E] transition-colors resize-none"
-                    />
-                  </div>
-
-                  <div className="flex items-center space-x-2">
-                    <input
-                      type="checkbox"
-                      id="terms"
-                      checked={formData.acceptTerms}
-                      onChange={(e) => setFormData({ ...formData, acceptTerms: e.target.checked })}
-                      className="w-4 h-4 rounded border-[#C8A97E]/20 bg-white/5 text-[#C8A97E] focus:ring-[#C8A97E] focus:ring-offset-0"
-                    />
-                    <label htmlFor="terms" className="text-sm text-gray-300">
-                      Ich akzeptiere die <a href="/agb" target="_blank" className="text-[#C8A97E] hover:underline">AGB</a> und die <a href="/datenschutz" target="_blank" className="text-[#C8A97E] hover:underline">Datenschutzerklärung</a>
-                    </label>
-                  </div>
-                </form>
-              )}
-
-              {step === 4 && (
-                <div className="text-center py-8">
-                  <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mx-auto mb-4">
-                    <Check className="w-8 h-8 text-[#C8A97E]" />
-                  </div>
-                  <h3 className="text-xl font-medium text-white mb-2">Buchung bestätigt!</h3>
-                  <p className="text-gray-400 mb-6">
-                    Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.
-                  </p>
-                </div>
-              )}
+              {renderStep()}
             </div>
 
             {/* Footer */}

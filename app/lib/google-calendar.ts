@@ -1,133 +1,108 @@
 import { google } from 'googleapis'
 import { format } from 'date-fns'
 
-// Initialize Google Calendar API
-const calendar = google.calendar('v3')
+const SCOPES = ['https://www.googleapis.com/auth/calendar']
+const CALENDAR_ID = process.env.CALENDAR_ID
 
-// Create OAuth2 client
-const oauth2Client = new google.auth.OAuth2(
+const auth = new google.auth.OAuth2(
   process.env.GOOGLE_CLIENT_ID,
   process.env.GOOGLE_CLIENT_SECRET,
   process.env.GOOGLE_REDIRECT_URI
 )
 
-// Set credentials
-oauth2Client.setCredentials({
-  refresh_token: process.env.GOOGLE_REFRESH_TOKEN
+auth.setCredentials({
+  refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
 })
 
-const CALENDAR_ID = process.env.CALENDAR_ID || '03f666a170f6a57c27dc6dc2593214eb912d75be29b4080777dccdb7e51cc3d0@group.calendar.google.com'
+const calendar = google.calendar({ version: 'v3', auth })
 
-export async function getAvailableSlots(date: Date) {
+interface BookingDetails {
+  date: Date
+  time: string
+  name: string
+  email: string
+  phone: string
+  message: string
+  paymentId: string
+}
+
+export async function getAvailableSlots(date: Date): Promise<string[]> {
   try {
-    // Get events for the specified date
+    const startTime = new Date(date)
+    startTime.setHours(0, 0, 0, 0)
+    const endTime = new Date(date)
+    endTime.setHours(23, 59, 59, 999)
+
     const response = await calendar.events.list({
-      auth: oauth2Client,
       calendarId: CALENDAR_ID,
-      timeMin: new Date(date.setHours(0, 0, 0, 0)).toISOString(),
-      timeMax: new Date(date.setHours(23, 59, 59, 999)).toISOString(),
+      timeMin: startTime.toISOString(),
+      timeMax: endTime.toISOString(),
       singleEvents: true,
       orderBy: 'startTime',
     })
 
     const events = response.data.items || []
-    const busySlots = events.map(event => ({
-      start: new Date(event.start?.dateTime || ''),
-      end: new Date(event.end?.dateTime || '')
-    }))
+    const bookedTimes = events.map(event => {
+      const start = new Date(event.start?.dateTime || '')
+      return format(start, 'HH:mm')
+    })
 
-    // Generate all possible time slots for the day
-    const allSlots = []
-    const startHour = 9 // 9 AM
-    const endHour = 20 // 8 PM
-    const slotDuration = 60 // 60 minutes
+    // Generate all possible time slots (e.g., every hour from 9 AM to 6 PM)
+    const allTimeSlots = Array.from({ length: 10 }, (_, i) => 
+      format(new Date().setHours(9 + i, 0, 0, 0), 'HH:mm')
+    )
 
-    for (let hour = startHour; hour < endHour; hour++) {
-      const slotStart = new Date(date)
-      slotStart.setHours(hour, 0, 0, 0)
-      
-      const slotEnd = new Date(slotStart)
-      slotEnd.setMinutes(slotStart.getMinutes() + slotDuration)
-
-      // Check if slot overlaps with any busy slots
-      const isAvailable = !busySlots.some(busy => 
-        (slotStart >= busy.start && slotStart < busy.end) ||
-        (slotEnd > busy.start && slotEnd <= busy.end) ||
-        (slotStart <= busy.start && slotEnd >= busy.end)
-      )
-
-      if (isAvailable) {
-        allSlots.push({
-          time: format(slotStart, 'HH:mm') + ' - ' + format(slotEnd, 'HH:mm'),
-          available: true
-        })
-      }
-    }
-
-    return allSlots
+    // Return available time slots (those not in bookedTimes)
+    return allTimeSlots.filter(time => !bookedTimes.includes(time))
   } catch (error) {
-    console.error('Error fetching calendar slots:', error)
-    return []
+    console.error('Error fetching available slots:', error)
+    throw error
   }
 }
 
-export async function createBooking(bookingData: {
-  date: Date
-  time: string
-  name: string
-  email: string
-  phone?: string
-  level?: string
-  message?: string
-}) {
+export async function createBooking(details: BookingDetails): Promise<void> {
   try {
-    const [startTime] = bookingData.time.split(' - ')
-    const [hours, minutes] = startTime.split(':')
+    const [hours, minutes] = details.time.split(':')
+    const startTime = new Date(details.date)
+    startTime.setHours(parseInt(hours), parseInt(minutes), 0, 0)
     
-    const startDateTime = new Date(bookingData.date)
-    startDateTime.setHours(parseInt(hours), parseInt(minutes), 0, 0)
-    
-    const endDateTime = new Date(startDateTime)
-    endDateTime.setHours(startDateTime.getHours() + 1)
+    const endTime = new Date(startTime)
+    endTime.setHours(startTime.getHours() + 1) // 1-hour sessions
 
     const event = {
-      summary: `Gesangsstunde - ${bookingData.name}`,
+      summary: `Vocal Coaching - ${details.name}`,
       description: `
-Level: ${bookingData.level || 'Nicht angegeben'}
-Email: ${bookingData.email}
-Telefon: ${bookingData.phone || 'Nicht angegeben'}
-Nachricht: ${bookingData.message || 'Keine Nachricht'}
-      `.trim(),
+        Name: ${details.name}
+        Email: ${details.email}
+        Phone: ${details.phone}
+        Message: ${details.message}
+        Payment ID: ${details.paymentId}
+      `,
       start: {
-        dateTime: startDateTime.toISOString(),
+        dateTime: startTime.toISOString(),
         timeZone: 'Europe/Berlin',
       },
       end: {
-        dateTime: endDateTime.toISOString(),
+        dateTime: endTime.toISOString(),
         timeZone: 'Europe/Berlin',
       },
-      attendees: [
-        { email: bookingData.email }
-      ],
+      attendees: [{ email: details.email }],
       reminders: {
         useDefault: false,
         overrides: [
-          { method: 'email', minutes: 24 * 60 }, // 24 hours
-          { method: 'popup', minutes: 30 }, // 30 minutes
+          { method: 'email', minutes: 24 * 60 }, // 24 hours before
+          { method: 'popup', minutes: 60 }, // 1 hour before
         ],
       },
     }
 
-    const response = await calendar.events.insert({
-      auth: oauth2Client,
+    await calendar.events.insert({
       calendarId: CALENDAR_ID,
       requestBody: event,
-      sendUpdates: 'all', // Send emails to attendees
+      sendUpdates: 'all', // Send email notifications to attendees
     })
-
-    return response.data
   } catch (error) {
-    console.error('Error creating calendar event:', error)
+    console.error('Error creating booking:', error)
     throw error
   }
-} 
+}
