@@ -15,6 +15,7 @@ import { Label } from "./ui/label"
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { cn } from "@/lib/utils"
+import SuccessMessage from "./success-message"
 
 interface BookingModalProps {
   isOpen: boolean
@@ -87,6 +88,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [showSuccess, setShowSuccess] = useState(false)
   const [termsAccepted, setTermsAccepted] = useState(false)
   const [showTermsAlert, setShowTermsAlert] = useState(false)
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false)
 
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
@@ -153,13 +155,26 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       alert("Bitte akzeptieren Sie die AGB und Datenschutzerklärung")
       return
     }
-    // Show success message
-    setShowSuccess(true)
-    // Close modal after delay
-    setTimeout(() => {
-      setShowSuccess(false)
+    
+    try {
+      // ... existing submission code ...
+      
+      // Show success message
+      setShowSuccessMessage(true)
+      // Reset form
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        service: "",
+        message: "",
+        termsAccepted: false
+      })
+      setCurrentStep("1")
       onClose()
-    }, 2000)
+    } catch (error) {
+      console.error("Error submitting form:", error)
+    }
   }
 
   const slideVariants = {
@@ -544,6 +559,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
           handleNext()
         }}
         message="Bitte akzeptieren Sie unsere AGB und Datenschutzerklärung, um fortzufahren."
+      />
+      <SuccessMessage
+        isOpen={showSuccessMessage}
+        onClose={() => setShowSuccessMessage(false)}
+        title="Vielen Dank für deine Anfrage!"
+        message="Wir werden uns so schnell wie möglich bei dir melden. Überprüfe bitte auch deinen Spam-Ordner."
       />
     </>
   )

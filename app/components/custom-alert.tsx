@@ -15,19 +15,19 @@ export default function CustomAlert({ isOpen, onClose, onAccept, message }: Cust
   return (
     <AnimatePresence>
       {isOpen && (
-        <>
+        <div className="fixed inset-0 z-[60] flex items-center justify-center">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[60]"
+            className="fixed inset-0 bg-black/70 backdrop-blur-sm"
             onClick={onClose}
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.95, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 20 }}
-            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-md bg-[#1A1A1A] rounded-lg shadow-xl p-6 z-[61]"
+            className="relative w-[90%] max-w-md bg-[#1A1A1A] rounded-lg shadow-xl p-6 z-[61]"
           >
             <div className="flex items-start gap-4">
               <div className="p-2 bg-yellow-500/10 rounded-lg">
@@ -57,7 +57,7 @@ export default function CustomAlert({ isOpen, onClose, onAccept, message }: Cust
               </div>
             </div>
           </motion.div>
-        </>
+        </div>
       )}
     </AnimatePresence>
   )
