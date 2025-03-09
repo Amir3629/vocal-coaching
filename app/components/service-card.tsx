@@ -8,13 +8,15 @@ interface ServiceCardProps {
   title: string
   description: string
   icon: React.ReactNode
-  price: string
+  price?: string
   features: string[]
   details: {
     includes: string[]
     suitable: string[]
     duration: string
     location: string
+    price?: string
+    link?: string
   }
   image: string
   delay?: number
@@ -50,8 +52,8 @@ export default function ServiceCard({ title, description, icon, price, features,
         }}
         transition={{ 
           type: "spring",
-          stiffness: 260,
-          damping: 20
+          stiffness: 200,
+          damping: 25
         }}
       >
         {/* Background Image Layer */}
@@ -60,7 +62,7 @@ export default function ServiceCard({ title, description, icon, price, features,
             src={imagePath}
             alt={title}
             fill
-            className="object-cover transform-gpu transition-transform duration-700 scale-110"
+            className="object-cover transform-gpu transition-transform duration-1000 scale-110"
             sizes="(max-width: 768px) 100vw, 33vw"
             priority
             onError={() => setImageError(true)}
@@ -76,16 +78,21 @@ export default function ServiceCard({ title, description, icon, price, features,
         {/* Content Layer */}
         <div className="relative border border-[#C8A97E]/20 hover:border-[#C8A97E]/50 rounded-2xl overflow-hidden">
           <div className="p-6">
-            {/* Price Tag */}
-            <div className="absolute top-4 right-4 bg-[#C8A97E] text-black px-4 py-1 rounded-full text-sm font-medium">
-              {price}
-            </div>
-
             {/* Title and Icon */}
             <div className="flex items-start gap-4 mb-6">
-              <div className="text-[#C8A97E] text-2xl">
+              <motion.div 
+                className="text-[#C8A97E] text-2xl"
+                animate={{ 
+                  rotate: isHovered ? [0, -10, 10, 0] : 0,
+                  scale: isHovered ? [1, 1.1, 1] : 1
+                }}
+                transition={{ 
+                  duration: 0.5,
+                  ease: "easeInOut"
+                }}
+              >
                 {icon}
-              </div>
+              </motion.div>
               <div>
                 <h3 className="text-xl font-medium text-white mb-2">
                   {title}
@@ -99,10 +106,22 @@ export default function ServiceCard({ title, description, icon, price, features,
             {/* Features */}
             <div className="space-y-2 mb-6">
               {features.map((feature, index) => (
-                <div key={index} className="flex items-center gap-2">
+                <motion.div 
+                  key={index} 
+                  className="flex items-center gap-2"
+                  initial={false}
+                  animate={isHovered ? {
+                    x: [0, 5, 0],
+                    transition: {
+                      duration: 0.5,
+                      delay: index * 0.1,
+                      ease: "easeInOut"
+                    }
+                  } : {}}
+                >
                   <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
                   <p className="text-white/80 text-sm">{feature}</p>
-                </div>
+                </motion.div>
               ))}
             </div>
 
@@ -115,7 +134,7 @@ export default function ServiceCard({ title, description, icon, price, features,
                 marginTop: isHovered ? "1.5rem" : 0
               }}
               transition={{
-                duration: 0.3,
+                duration: 0.5,
                 ease: [0.4, 0, 0.2, 1]
               }}
             >
@@ -195,6 +214,29 @@ export default function ServiceCard({ title, description, icon, price, features,
                       </div>
                     )}
                   </div>
+
+                  {(details.price || details.link) && (
+                    <div className="mt-4 pt-4 border-t border-[#C8A97E]/20">
+                      {details.price && (
+                        <div className="text-[#C8A97E] font-medium mb-2">
+                          {details.price}
+                        </div>
+                      )}
+                      {details.link && (
+                        <a
+                          href={details.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-[#C8A97E] hover:text-[#B69A6E] transition-colors"
+                        >
+                          Mehr erfahren
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>

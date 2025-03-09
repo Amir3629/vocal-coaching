@@ -223,10 +223,9 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
             <ServiceCard 
-              title="Private Gesangsstunden"
-              description="Individueller Unterricht für alle Levels"
+              title="Singen"
+              description="Professionelle Gesangsausbildung für Bands und Musiker"
               icon={<Mic className="w-6 h-6 text-[#C8A97E]" />}
-              price="ab €60"
               features={[
                 "Stimmtechnik & Atemübungen",
                 "Repertoire-Entwicklung",
@@ -235,14 +234,15 @@ export default function Home() {
               ]}
               details={{
                 includes: [
-                  "Personalisierte Übungen",
+                  "Personalisierte Stimmtechnik",
+                  "Repertoire-Entwicklung",
                   "Aufnahmen der Stunden",
-                  "Übe-Material",
-                  "Flexible Terminplanung"
+                  "Übe-Material & Feedback"
                 ],
                 suitable: [
-                  "Anfänger",
-                  "Fortgeschrittene",
+                  "Bands & Musiker",
+                  "Solo-Künstler",
+                  "Hobby-Sänger",
                   "Profis"
                 ],
                 duration: "60-90 min",
@@ -253,27 +253,27 @@ export default function Home() {
             />
             
             <ServiceCard
-              title="Jazz Improvisation"
-              description="Entdecke die Kunst des Jazz-Gesangs"
+              title="Vocal Coaching"
+              description="CVT-basiertes Stimmtraining für alle Genres"
               icon={<Music className="w-6 h-6 text-[#C8A97E]" />}
-              price="ab €65"
               features={[
-                "Scat-Gesang",
-                "Harmonielehre",
-                "Rhythmische Übungen",
-                "Jazz-Standards"
+                "Complete Vocal Technique",
+                "Stimmgesundheit",
+                "Genrespezifisches Training",
+                "Individuelle Betreuung"
               ]}
               details={{
                 includes: [
-                  "Jazz-Theorie",
-                  "Improvisationsübungen",
-                  "Repertoire-Aufbau",
-                  "Stilkunde"
+                  "CVT Stimmanalyse",
+                  "Personalisierter Trainingsplan",
+                  "Gesundheitsorientiertes Training",
+                  "Regelmäßiges Feedback"
                 ],
                 suitable: [
-                  "Mittelstufe",
-                  "Fortgeschrittene",
-                  "Jazz-Interessierte"
+                  "Alle Gesangslevel",
+                  "Verschiedene Genres",
+                  "Professionelle Sänger",
+                  "Gesangslehrer"
                 ],
                 duration: "60-90 min",
                 location: "Studio Berlin"
@@ -283,60 +283,62 @@ export default function Home() {
             />
             
             <ServiceCard
-              title="Aufführungs Coaching"
-              description="Perfektioniere deine Bühnenpräsenz"
+              title="Workshop"
+              description="Intensive Gesangsworkshops für Gruppen"
               icon={<Theater className="w-6 h-6 text-[#C8A97E]" />}
-              price="ab €70"
               features={[
-                "Bühnenperformance",
-                "Mikrofonarbeit",
-                "Gestik & Mimik",
-                "Auftrittsvorbereitung"
+                "Intensive Gruppenarbeit",
+                "Flexible Terminplanung",
+                "Maßgeschneiderte Inhalte",
+                "Ab 3 Stunden"
               ]}
               details={{
                 includes: [
-                  "Präsenz-Training",
-                  "Bewegungscoaching",
-                  "Mikrofontechnik",
-                  "Bühnenperformance"
+                  "Professionelles Training",
+                  "Praxisorientierte Übungen",
+                  "Gruppendynamik",
+                  "Auftrittsvorbereitung"
                 ],
                 suitable: [
+                  "Chöre",
                   "Bands",
-                  "Solo-Künstler",
-                  "Performer"
+                  "Ensembles",
+                  "Firmenevents"
                 ],
-                duration: "90-120 min",
-                location: "Studio/Bühne"
+                duration: "Min. 3 Stunden",
+                location: "Nach Vereinbarung",
+                price: "Ab 3000€"
               }}
               image="/images/services/performance.jpg"
               delay={0.3}
             />
             
             <ServiceCard
-              title="Piano/Vocal-Koordination"
-              description="Lerne dich selbst zu begleiten"
+              title="Chor Next Door"
+              description="Werde Teil unseres innovativen Chorprojekts"
               icon={<BookOpen className="w-6 h-6 text-[#C8A97E]" />}
-              price="ab €65"
               features={[
-                "Klaviergrundlagen",
-                "Akkordprogressionen",
-                "Rhythmische Übungen",
-                "Begleitpatterns"
+                "Moderne Arrangements",
+                "Gemeinschaftserlebnis",
+                "Regelmäßige Auftritte",
+                "Alle Level willkommen"
               ]}
               details={{
                 includes: [
-                  "Klaviergrundlagen",
-                  "Akkordprogressionen",
-                  "Rhythmische Übungen",
-                  "Begleitpatterns"
+                  "Professionelle Leitung",
+                  "Stimmbildung",
+                  "Auftrittsmöglichkeiten",
+                  "Soziales Netzwerk"
                 ],
                 suitable: [
-                  "Sänger",
-                  "Songwriter",
-                  "Begleiter"
+                  "Alle Altersgruppen",
+                  "Gesangsbegeisterte",
+                  "Anfänger",
+                  "Fortgeschrittene"
                 ],
-                duration: "60-90 min",
-                location: "Studio Berlin"
+                duration: "Wöchentliche Proben",
+                location: "Berlin",
+                link: "https://chornextdoor.de"
               }}
               image="/images/services/piano.jpg"
               delay={0.4}
