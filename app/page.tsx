@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
-import { ChevronDown, MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube } from "lucide-react"
+import { ChevronDown, MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube, Users } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import ServiceCard from "@/app/components/service-card"
 import TestimonialSlider from "@/app/components/testimonial-slider"
@@ -196,32 +196,19 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="relative w-full min-h-screen py-16">
-        {/* Background Image */}
-        <div className="absolute inset-0 w-full h-full">
-          <Image
-            src="/vocal-coaching/images/backgrounds/services-bg.jpg"
-            alt="Services Background"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/85 to-black/90 backdrop-blur-sm" />
-        </div>
-
-          <div className="container mx-auto px-4 relative z-10">
+      <section id="services" className="py-20 bg-black relative overflow-hidden">
+        <div className="container mx-auto px-4">
           <motion.div 
-            className="text-center mb-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
+            viewport={{ once: true }}
+            className="text-center mb-16"
           >
-              <h2 className="section-heading mb-4">Vocal Excellence</h2>
-              <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
+            <h2 className="text-4xl font-light text-white mb-4">Vocal Excellence</h2>
+            <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             <ServiceCard 
               title="Singen"
               description="Professionelle Gesangsausbildung für Bands und Musiker"
@@ -246,7 +233,7 @@ export default function Home() {
                   "Profis"
                 ],
                 duration: "60-90 min",
-                location: "Studio Berlin"
+                location: "Studio Berlin / Online"
               }}
               image="/images/services/studio.jpg"
               delay={0.1}
@@ -254,17 +241,17 @@ export default function Home() {
             
             <ServiceCard
               title="Vocal Coaching"
-              description="CVT-basiertes Stimmtraining für alle Genres"
+              description="Professionelles CVT-Stimmtraining von zertifizierter Trainerin"
               icon={<Music className="w-6 h-6 text-[#C8A97E]" />}
               features={[
-                "Complete Vocal Technique",
-                "Stimmgesundheit",
+                "Complete Vocal Technique (CVT)",
+                "Zertifizierte CVT-Methode",
                 "Genrespezifisches Training",
                 "Individuelle Betreuung"
               ]}
               details={{
                 includes: [
-                  "CVT Stimmanalyse",
+                  "Professionelle CVT-Stimmanalyse",
                   "Personalisierter Trainingsplan",
                   "Gesundheitsorientiertes Training",
                   "Regelmäßiges Feedback"
@@ -276,16 +263,16 @@ export default function Home() {
                   "Gesangslehrer"
                 ],
                 duration: "60-90 min",
-                location: "Studio Berlin"
+                location: "Studio Berlin / Online"
               }}
               image="/images/services/jazz.jpg"
               delay={0.2}
             />
-            
+
             <ServiceCard
               title="Workshop"
               description="Intensive Gesangsworkshops für Gruppen"
-              icon={<Theater className="w-6 h-6 text-[#C8A97E]" />}
+              icon={<Users className="w-6 h-6 text-[#C8A97E]" />}
               features={[
                 "Intensive Gruppenarbeit",
                 "Flexible Terminplanung",
@@ -293,26 +280,15 @@ export default function Home() {
                 "Ab 3 Stunden"
               ]}
               details={{
-                includes: [
-                  "Professionelles Training",
-                  "Praxisorientierte Übungen",
-                  "Gruppendynamik",
-                  "Auftrittsvorbereitung"
-                ],
-                suitable: [
-                  "Chöre",
-                  "Bands",
-                  "Ensembles",
-                  "Firmenevents"
-                ],
+                includes: ["Gruppenübungen", "Techniktraining", "Ensemble-Arbeit"],
+                suitable: ["Chöre", "Bands", "Ensembles"],
                 duration: "Min. 3 Stunden",
-                location: "Nach Vereinbarung",
-                price: "Ab 3000€"
+                price: "Ab 3000€",
+                location: "Nach Vereinbarung"
               }}
               image="/images/services/performance.jpg"
-              delay={0.3}
             />
-            
+
             <ServiceCard
               title="Chor Next Door"
               description="Werde Teil unseres innovativen Chorprojekts"
@@ -324,42 +300,15 @@ export default function Home() {
                 "Alle Level willkommen"
               ]}
               details={{
-                includes: [
-                  "Professionelle Leitung",
-                  "Stimmbildung",
-                  "Auftrittsmöglichkeiten",
-                  "Soziales Netzwerk"
-                ],
-                suitable: [
-                  "Alle Altersgruppen",
-                  "Gesangsbegeisterte",
-                  "Anfänger",
-                  "Fortgeschrittene"
-                ],
+                includes: ["Stimmbildung", "Choreografie", "Auftritte"],
+                suitable: ["Alle Interessierten"],
                 duration: "Wöchentliche Proben",
                 location: "Berlin",
                 link: "https://chornextdoor.de"
               }}
               image="/images/services/piano.jpg"
-              delay={0.4}
             />
           </div>
-          
-          <motion.div 
-            className="text-center mt-12"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 1 }}
-          >
-            <Button 
-              size="lg"
-              className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8 transform hover:scale-105 transition-all duration-300"
-                onClick={() => setIsBookingModalOpen(true)}
-            >
-              Jetzt Buchen
-            </Button>
-          </motion.div>
         </div>
       </section>
 
