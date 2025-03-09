@@ -52,7 +52,7 @@ export default function NavBar() {
           {/* Logo */}
           <motion.button
             onClick={() => scrollToSection("hero")}
-            className="relative w-48 h-24"
+            className="relative w-32 h-16"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -60,8 +60,8 @@ export default function NavBar() {
               <Image
                 src={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logo/ml-signature.svg" : "/images/logo/ml-signature.svg"}
                 alt="ML Logo"
-                width={200}
-                height={100}
+                width={160}
+                height={80}
                 className="h-auto w-auto"
                 priority
               />
