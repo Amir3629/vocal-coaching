@@ -72,7 +72,7 @@ export default function Collaborations() {
           <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 items-center max-w-6xl mx-auto">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 lg:gap-8 items-center max-w-6xl mx-auto">
           {collaborations.map((collab, index) => (
             <motion.a
               key={collab.name}
