@@ -315,7 +315,7 @@ export default function Home() {
             
             <ServiceCard
               title="Chor Next Door"
-              description={"Werde Teil unseres\ninnovativen Chorprojekts"}
+              description={"Werde Teil unseres\ninnovativen\nChorprojekts"}
               icon={<BookOpen className="w-6 h-6 text-[#C8A97E]" />}
               features={[
                 "Moderne Arrangements",
