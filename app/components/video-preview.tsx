@@ -66,7 +66,7 @@ export default function VideoPreview() {
   }
 
   return (
-    <div className="relative w-full max-w-[1200px] mx-auto aspect-[16/9] bg-black rounded-[32px] overflow-hidden">
+    <div className="relative w-full max-w-[1200px] mx-auto aspect-[3/4] bg-black rounded-[32px] overflow-hidden">
       <video
         ref={videoRef}
         className="w-full h-full object-cover"

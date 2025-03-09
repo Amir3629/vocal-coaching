@@ -307,7 +307,7 @@ export default function Home() {
                 ],
                 duration: "Min. 3 Stunden",
                 location: "Nach Vereinbarung",
-                price: "Ab 3000€"
+                price: "Ab 300€"
               }}
               image="/images/services/performance.jpg"
               delay={0.3}
