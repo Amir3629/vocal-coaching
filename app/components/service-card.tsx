@@ -33,9 +33,9 @@ export default function ServiceCard({ title, description, icon, price, features,
 
   const iconAnimationVariants = {
     pulse: {
-      scale: [1, 1.2, 1],
+      scale: [1, 1.15, 1],
       transition: {
-        duration: 2,
+        duration: 2.5,
         repeat: Infinity,
         ease: "easeInOut"
       }
@@ -43,24 +43,25 @@ export default function ServiceCard({ title, description, icon, price, features,
     rotate: {
       rotate: [0, 360],
       transition: {
-        duration: 3,
+        duration: 4,
         repeat: Infinity,
-        ease: "linear"
+        ease: [0.45, 0, 0.55, 1]
       }
     },
     bounce: {
-      y: [0, -10, 0],
+      y: [0, -12, 0],
       transition: {
-        duration: 1.5,
+        duration: 2,
         repeat: Infinity,
         ease: "easeInOut"
       }
     },
     float: {
-      y: [0, -5, 0],
-      x: [0, 5, 0],
+      y: [0, -6, 0],
+      x: [0, 6, 0],
+      rotate: [-5, 5, -5],
       transition: {
-        duration: 3,
+        duration: 4,
         repeat: Infinity,
         ease: "easeInOut"
       }
@@ -84,20 +85,24 @@ export default function ServiceCard({ title, description, icon, price, features,
             src={imagePath}
             alt={title}
             fill
-            className="object-cover scale-110 transition-transform duration-700"
+            className="object-cover scale-110 transition-transform duration-700 blur-[2px]"
             onError={() => setImageError(true)}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90 backdrop-blur-sm" />
         </div>
 
         {/* Content Layer */}
         <div className="relative p-6 flex flex-col h-full">
           {/* Icon */}
           <motion.div
-            className="w-12 h-12 rounded-full bg-black/30 backdrop-blur-sm flex items-center justify-center mb-4"
-            animate={isHovered && iconAnimation ? iconAnimationVariants[iconAnimation] : {}}
+            className="w-14 h-14 rounded-full bg-black/40 backdrop-blur-md flex items-center justify-center mb-4 border border-[#C8A97E]/20"
+            animate={isHovered ? iconAnimationVariants[iconAnimation || 'pulse'] : {}}
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
           >
-            {icon}
+            <div className="text-[#C8A97E]">
+              {icon}
+            </div>
           </motion.div>
 
           <h3 className="text-xl font-medium text-white mb-2">{title}</h3>
