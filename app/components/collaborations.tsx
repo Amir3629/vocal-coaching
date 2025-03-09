@@ -24,15 +24,33 @@ const collaborations = [
     isPlaceholder: false
   },
   {
-    name: "Jazz Institut Berlin",
-    logo: "/images/collaborations/jib.svg",
-    link: "https://www.jazz-institut-berlin.de",
+    name: "Berliner Silber",
+    logo: "/images/collaborations/berliner-silber.svg",
+    link: "http://www.berlinersilber.de",
     isPlaceholder: false
   },
   {
-    name: "Berliner Philharmonie",
-    logo: "/images/collaborations/philharmonie.svg",
-    link: "https://www.berliner-philharmoniker.de",
+    name: "Planet Jazz Club Düren",
+    logo: "/images/collaborations/planet-jazz.svg",
+    link: "https://www.planet-jazz-club-dueren.de",
+    isPlaceholder: false
+  },
+  {
+    name: "BDG Pädagogen",
+    logo: "/images/collaborations/bdg.svg",
+    link: "https://bdg-online.org",
+    isPlaceholder: false
+  },
+  {
+    name: "Berlin Music Scene",
+    logo: "/images/collaborations/berlin-music.svg",
+    link: "https://www.berlin.de/kultur-und-tickets/musik/",
+    isPlaceholder: false
+  },
+  {
+    name: "Blue Note Tokyo",
+    logo: "/images/collaborations/bluenote.svg",
+    link: "https://www.bluenote.co.jp/tokyo/",
     isPlaceholder: false
   }
 ]
