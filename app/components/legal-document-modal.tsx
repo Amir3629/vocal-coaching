@@ -34,7 +34,7 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
   }, [isOpen])
 
   return (
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isOpen && (
         <>
           {/* Backdrop */}
@@ -42,6 +42,7 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             onClick={onClose}
             className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
           />
@@ -53,34 +54,54 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
               <motion.div
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
+                exit={{ 
+                  opacity: 0, 
+                  scale: 0.95, 
+                  y: 20,
+                  transition: {
+                    duration: 0.2,
+                    ease: "easeInOut"
+                  }
+                }}
+                transition={{ 
+                  type: "spring",
+                  duration: 0.5,
+                  bounce: 0.2 
+                }}
                 className="relative w-full max-w-4xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl"
               >
                 {/* Header */}
-                <div className="sticky top-0 z-10 px-8 py-5 bg-[#0A0A0A]/95 border-b border-[#C8A97E]/10 flex items-center justify-between backdrop-blur-md backdrop-saturate-150">
+                <motion.div 
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                  className="sticky top-0 z-10 px-8 py-5 bg-[#0A0A0A]/95 border-b border-[#C8A97E]/10 flex items-center justify-between backdrop-blur-md backdrop-saturate-150"
+                >
                   <h2 className="text-2xl font-medium text-[#C8A97E]">{title}</h2>
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.1, rotate: 90 }}
+                    whileTap={{ scale: 0.9 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
                     onClick={onClose}
                     className="p-2 hover:bg-[#C8A97E]/10 rounded-lg transition-all duration-300"
                   >
                     <X className="w-5 h-5 text-[#C8A97E]" />
-                  </button>
-                </div>
+                  </motion.button>
+                </motion.div>
 
                 {/* Content */}
-                <div className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar">
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.3, delay: 0.1 }}
+                  className="p-8 max-h-[70vh] overflow-y-auto custom-scrollbar"
+                >
                   <div className="prose prose-invert prose-gold max-w-none">
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -20 }}
-                      transition={{ duration: 0.5 }}
-                    >
-                      {children}
-                    </motion.div>
+                    {children}
                   </div>
-                </div>
+                </motion.div>
               </motion.div>
             </div>
           </div>
