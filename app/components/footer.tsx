@@ -46,7 +46,7 @@ export default function Footer() {
         <motion.svg 
           whileHover={{ scale: 1.2, rotate: 5 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          className="w-6 h-6" 
+          className="w-5 h-5" 
           fill="currentColor" 
           viewBox="0 0 24 24" 
           aria-hidden="true"
@@ -62,7 +62,7 @@ export default function Footer() {
         <motion.svg 
           whileHover={{ scale: 1.2, rotate: -5 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          className="w-6 h-6" 
+          className="w-5 h-5" 
           fill="currentColor" 
           viewBox="0 0 24 24" 
           aria-hidden="true"
@@ -78,7 +78,7 @@ export default function Footer() {
         <motion.svg 
           whileHover={{ scale: 1.2, rotate: 5 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          className="w-6 h-6" 
+          className="w-5 h-5" 
           fill="currentColor" 
           viewBox="0 0 24 24" 
           aria-hidden="true"
@@ -94,7 +94,7 @@ export default function Footer() {
         <motion.svg
           whileHover={{ scale: 1.2, rotate: -5 }}
           transition={{ type: "spring", stiffness: 400, damping: 10 }}
-          className="w-6 h-6"
+          className="w-5 h-5"
           fill="currentColor"
           viewBox="0 0 24 24"
           aria-hidden="true"
