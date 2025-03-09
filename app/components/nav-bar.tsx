@@ -48,11 +48,11 @@ export default function NavBar() {
       }`}
     >
       <div className="container mx-auto px-4">
-        <nav className="flex items-center justify-between h-20">
+        <nav className="flex items-center justify-between h-24">
           {/* Logo */}
           <motion.button
             onClick={() => scrollToSection("hero")}
-            className="relative w-12 h-12"
+            className="relative w-48 h-24"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
@@ -60,8 +60,8 @@ export default function NavBar() {
               <Image
                 src={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logo/ml-signature.svg" : "/images/logo/ml-signature.svg"}
                 alt="ML Logo"
-                width={140}
-                height={70}
+                width={200}
+                height={100}
                 className="h-auto w-auto"
                 priority
               />

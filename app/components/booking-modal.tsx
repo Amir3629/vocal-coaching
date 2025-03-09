@@ -68,6 +68,15 @@ const timeSlots = [
 
 type Step = "1" | "2" | "3" | "4" | "5"
 
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  service: string;
+  message: string;
+  termsAccepted: boolean;
+}
+
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [currentStep, setCurrentStep] = useState<Step>("1")
   const [selectedService, setSelectedService] = useState<string>("")
@@ -76,13 +85,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
   const [showAGBModal, setShowAGBModal] = useState(false)
   const [showDatenschutzModal, setShowDatenschutzModal] = useState(false)
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
     phone: "",
-    level: "",
+    service: "",
     message: "",
-    acceptTerms: false
+    termsAccepted: false
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showSuccess, setShowSuccess] = useState(false)
@@ -132,8 +141,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       if (!formData.name) newErrors.name = "Name ist erforderlich"
       if (!formData.email) newErrors.email = "Email ist erforderlich"
       if (!validateEmail(formData.email)) newErrors.email = "Ungültige Email-Adresse"
-      if (!formData.level) newErrors.level = "Bitte wählen Sie Ihr Level aus"
-      if (!formData.acceptTerms) newErrors.terms = "Bitte akzeptieren Sie die Bedingungen"
+      if (!formData.termsAccepted) newErrors.terms = "Bitte akzeptieren Sie die Bedingungen"
       
       if (Object.keys(newErrors).length > 0) {
         setErrors(newErrors)
@@ -407,21 +415,21 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             Level
                           </label>
                           <select
-                            value={formData.level}
+                            value={formData.service}
                             onChange={(e) =>
-                              setFormData({ ...formData, level: e.target.value })
+                              setFormData({ ...formData, service: e.target.value })
                             }
                             className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
                           >
                             <option value="">Bitte wählen</option>
-                            {skillLevels.map((level) => (
-                              <option key={level.id} value={level.id}>
-                                {level.label}
+                            {services.map((service) => (
+                              <option key={service.id} value={service.id}>
+                                {service.title}
                               </option>
                             ))}
                           </select>
-                          {errors.level && (
-                            <p className="text-red-500 text-sm mt-1">{errors.level}</p>
+                          {errors.service && (
+                            <p className="text-red-500 text-sm mt-1">{errors.service}</p>
                           )}
                         </div>
 
