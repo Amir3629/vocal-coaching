@@ -1,452 +1,317 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Clock } from "lucide-react"
-import SuccessMessage from "./success-message"
-import Link from "next/link"
+import { X, Calendar, Clock, ChevronLeft, ChevronRight, Check } from "lucide-react"
+import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday } from "date-fns"
+import { de } from "date-fns/locale"
 
 interface BookingModalProps {
   isOpen: boolean
   onClose: () => void
 }
 
-const services = [
-  {
-    id: "private",
-    title: "Private Gesangsstunden",
-    description: "Individueller Unterricht für alle Levels"
-  },
-  {
-    id: "jazz",
-    title: "Jazz Improvisation",
-    description: "Spezialisierung auf Jazz-Gesang"
-  },
-  {
-    id: "performance",
-    title: "Aufführungs Coaching",
-    description: "Vorbereitung für Auftritte"
-  },
-  {
-    id: "piano",
-    title: "Piano/Vocal-Koordination",
-    description: "Begleitung am Klavier"
-  }
-]
+interface TimeSlot {
+  time: string
+  available: boolean
+}
 
-const timeSlots = [
-  {
-    id: "morning",
-    label: "Vormittag",
-    time: "09:00 - 12:00",
-    icon: Clock
-  },
-  {
-    id: "noon",
-    label: "Mittag",
-    time: "12:00 - 15:00",
-    icon: Clock
-  },
-  {
-    id: "afternoon",
-    label: "Nachmittag",
-    time: "15:00 - 18:00",
-    icon: Clock
-  },
-  {
-    id: "evening",
-    label: "Abend",
-    time: "18:00 - 21:00",
-    icon: Clock
-  }
-]
-
-const weekDays = [
-  { id: "monday", label: "Mo" },
-  { id: "tuesday", label: "Di" },
-  { id: "wednesday", label: "Mi" },
-  { id: "thursday", label: "Do" },
-  { id: "friday", label: "Fr" }
+const timeSlots: TimeSlot[] = [
+  { time: "09:00 - 10:00", available: true },
+  { time: "10:00 - 11:00", available: true },
+  { time: "11:00 - 12:00", available: false },
+  { time: "12:00 - 13:00", available: true },
+  { time: "14:00 - 15:00", available: true },
+  { time: "15:00 - 16:00", available: true },
+  { time: "16:00 - 17:00", available: false },
+  { time: "17:00 - 18:00", available: true },
+  { time: "18:00 - 19:00", available: true },
+  { time: "19:00 - 20:00", available: true }
 ]
 
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [step, setStep] = useState(1)
-  const [selectedService, setSelectedService] = useState("")
-  const [selectedDays, setSelectedDays] = useState<string[]>([])
+  const [currentDate, setCurrentDate] = useState(new Date())
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string | null>(null)
-  const [showSuccess, setShowSuccess] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
     phone: "",
-    message: ""
+    level: "",
+    message: "",
+    acceptTerms: false
   })
 
-  const handleDaySelect = (dayId: string) => {
-    setSelectedDays(prev => 
-      prev.includes(dayId) 
-        ? prev.filter(d => d !== dayId)
-        : [...prev, dayId]
-    )
+  useEffect(() => {
+    if (!isOpen) {
+      setTimeout(() => {
+        setStep(1)
+        setSelectedDate(null)
+        setSelectedTime(null)
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          level: "",
+          message: "",
+          acceptTerms: false
+        })
+      }, 300)
+    }
+  }, [isOpen])
+
+  const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
+  const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
+
+  const days = eachDayOfInterval({
+    start: startOfMonth(currentDate),
+    end: endOfMonth(currentDate)
+  })
+
+  const handleDateSelect = (date: Date) => {
+    setSelectedDate(date)
+    setStep(2)
   }
 
-  const handleTimeSelect = (timeId: string) => {
-    setSelectedTime(timeId === selectedTime ? null : timeId)
+  const handleTimeSelect = (time: string) => {
+    setSelectedTime(time)
+    setStep(3)
   }
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (formData.name && formData.email) {
-      setShowSuccess(true)
-    }
-  }
-
-  const resetAndClose = () => {
-    setStep(1)
-    setSelectedService("")
-    setSelectedDays([])
-    setSelectedTime(null)
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      message: ""
+    // Here we'll integrate with Google Calendar API
+    console.log("Booking submitted:", {
+      date: selectedDate,
+      time: selectedTime,
+      ...formData
     })
-    setShowSuccess(false)
-    onClose()
-  }
-
-  const handleServiceSelect = (serviceId: string) => {
-    setSelectedService(serviceId)
-    const container = document.querySelector('.steps-container');
-    if (container) {
-      container.classList.add('slide-left');
-      setTimeout(() => {
-        setStep(2);
-        container.classList.remove('slide-left');
-      }, 500);
-    }
-  }
-
-  const handleNextStep = () => {
-    if ((step === 2 && selectedDays.length > 0 && selectedTime)) {
-      const container = document.querySelector('.steps-container');
-      if (container) {
-        container.classList.add('slide-left');
-        setTimeout(() => {
-          setStep(prev => prev + 1);
-          container.classList.remove('slide-left');
-        }, 500);
-      }
-    }
-  }
-
-  const handlePrevStep = () => {
-    const container = document.querySelector('.steps-container');
-    if (container) {
-      container.classList.add('slide-right');
-      setTimeout(() => {
-        setStep(prev => prev - 1);
-        container.classList.remove('slide-right');
-      }, 500);
-    }
+    // Show success message and close
+    setStep(4)
   }
 
   return (
-    <>
-      <AnimatePresence>
-        {isOpen && (
-          <>
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={onClose}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-            />
-            <div className="fixed inset-0 z-50 overflow-y-auto">
-              <div className="min-h-full flex items-center justify-center p-4">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  transition={{ type: "spring", duration: 0.6, bounce: 0.2 }}
-                  className="relative w-full max-w-lg bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl"
-                >
-                  {/* Header */}
-                  <div className="px-8 py-5 border-b border-[#C8A97E]/10 flex items-center justify-between">
-                    <h2 className="text-2xl font-medium text-[#C8A97E]">Terminanfrage</h2>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            className="relative w-full max-w-xl bg-[#0A0A0A] rounded-xl shadow-xl border border-[#C8A97E]/20 overflow-hidden"
+          >
+            {/* Header */}
+            <div className="relative p-6 border-b border-[#C8A97E]/10">
+              <h2 className="text-xl font-medium text-white">
+                {step === 1 ? "Terminanfrage" :
+                 step === 2 ? "Uhrzeit wählen" :
+                 step === 3 ? "Persönliche Daten" :
+                 "Buchung bestätigt"}
+              </h2>
+              <button
+                onClick={onClose}
+                className="absolute top-6 right-6 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Content */}
+            <div className="p-6">
+              {step === 1 && (
+                <div className="space-y-6">
+                  {/* Calendar Header */}
+                  <div className="flex items-center justify-between mb-4">
                     <button
-                      onClick={onClose}
-                      className="p-2 hover:bg-[#C8A97E]/10 rounded-lg transition-all duration-300"
+                      onClick={prevMonth}
+                      className="p-2 hover:bg-white/5 rounded-lg transition-colors"
                     >
-                      <X className="w-5 h-5 text-[#C8A97E]" />
+                      <ChevronLeft className="w-5 h-5 text-[#C8A97E]" />
+                    </button>
+                    <h3 className="text-lg font-medium text-white">
+                      {format(currentDate, "MMMM yyyy", { locale: de })}
+                    </h3>
+                    <button
+                      onClick={nextMonth}
+                      className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                    >
+                      <ChevronRight className="w-5 h-5 text-[#C8A97E]" />
                     </button>
                   </div>
 
-                  {/* Content */}
-                  <div className="p-8">
-                    <AnimatePresence mode="wait">
-                      <motion.div 
-                        className="steps-container"
-                        initial={{ opacity: 0, x: 20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.5 }}
+                  {/* Calendar Grid */}
+                  <div className="grid grid-cols-7 gap-1">
+                    {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((day) => (
+                      <div key={day} className="text-center text-sm text-gray-400 py-2">
+                        {day}
+                      </div>
+                    ))}
+                    {days.map((day, index) => (
+                      <button
+                        key={day.toString()}
+                        onClick={() => handleDateSelect(day)}
+                        disabled={!isSameMonth(day, currentDate)}
+                        className={`
+                          aspect-square flex items-center justify-center rounded-lg text-sm
+                          ${!isSameMonth(day, currentDate) ? "text-gray-600" :
+                            isToday(day) ? "bg-[#C8A97E]/20 text-[#C8A97E]" :
+                            isSameDay(day, selectedDate || new Date()) ? "bg-[#C8A97E] text-black" :
+                            "text-white hover:bg-white/5"}
+                          transition-colors
+                        `}
                       >
-                        {step === 1 && (
-                          <div className="space-y-6">
-                            <h3 className="text-xl font-medium text-white mb-4">Wählen Sie einen Service</h3>
-                            <div className="grid grid-cols-1 gap-3">
-                              {services.map((service, index) => (
-                                <motion.button
-                                  initial={{ opacity: 0, y: 20 }}
-                                  animate={{ opacity: 1, y: 0 }}
-                                  transition={{ delay: index * 0.1 }}
-                                  key={service.id}
-                                  onClick={() => handleServiceSelect(service.id)}
-                                  className={`
-                                    w-full flex flex-col items-start p-4 rounded-lg transition-all duration-300
-                                    ${selectedService === service.id
-                                      ? 'bg-[#C8A97E] text-black shadow-lg shadow-[#C8A97E]/20'
-                                      : 'bg-white/5 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-[#C8A97E]/10'
-                                    }
-                                  `}
-                                >
-                                  <h4 className="font-medium mb-1">{service.title}</h4>
-                                  <p className={`text-sm ${selectedService === service.id ? 'text-black/70' : 'text-gray-400'}`}>
-                                    {service.description}
-                                  </p>
-                                </motion.button>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-
-                        {step === 2 && (
-                          <div className="space-y-6">
-                            <div>
-                              <h3 className="text-xl font-medium text-white mb-4">Bevorzugte Tage</h3>
-                              <div className="grid grid-cols-5 gap-2 mb-6">
-                                {weekDays.map((day, index) => (
-                                  <motion.button
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: index * 0.1 }}
-                                    key={day.id}
-                                    onClick={() => handleDaySelect(day.id)}
-                                    className={`
-                                      py-3 rounded-lg text-sm font-medium transition-all duration-300
-                                      ${selectedDays.includes(day.id)
-                                        ? 'bg-[#C8A97E] text-black shadow-lg shadow-[#C8A97E]/20'
-                                        : 'bg-white/5 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-[#C8A97E]/10'
-                                      }
-                                    `}
-                                  >
-                                    {day.label}
-                                  </motion.button>
-                                ))}
-                              </div>
-                            </div>
-
-                            <div>
-                              <h3 className="text-xl font-medium text-white mb-4">Bevorzugte Zeit</h3>
-                              <div className="space-y-2">
-                                {timeSlots.map((slot, index) => (
-                                  <motion.button
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: (index * 0.1) + 0.3 }}
-                                    key={slot.id}
-                                    onClick={() => handleTimeSelect(slot.id)}
-                                    className={`
-                                      w-full flex items-center p-4 rounded-lg transition-all duration-300
-                                      ${selectedTime === slot.id
-                                        ? 'bg-[#C8A97E] text-black shadow-lg shadow-[#C8A97E]/20'
-                                        : 'bg-white/5 text-white hover:bg-white/10 hover:shadow-lg hover:shadow-[#C8A97E]/10'
-                                      }
-                                    `}
-                                  >
-                                    <slot.icon className={`w-5 h-5 ${selectedTime === slot.id ? 'text-black' : 'text-[#C8A97E]'}`} />
-                                    <div className="ml-4 text-left">
-                                      <p className="font-medium">{slot.label}</p>
-                                      <p className={`text-sm ${selectedTime === slot.id ? 'text-black/70' : 'text-gray-400'}`}>
-                                        {slot.time}
-                                      </p>
-                                    </div>
-                                  </motion.button>
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                        )}
-
-                        {step === 3 && (
-                          <div className="space-y-6">
-                            <h3 className="text-xl font-medium text-white mb-4">Ihre Kontaktdaten</h3>
-                            <form onSubmit={handleSubmit} className="space-y-4">
-                              <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.1 }}
-                              >
-                                <label htmlFor="name" className="block text-sm font-medium text-gray-300 mb-2">
-                                  Name
-                                </label>
-                                <input
-                                  type="text"
-                                  id="name"
-                                  value={formData.name}
-                                  onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                                  className="w-full px-4 py-3 bg-white/5 border border-[#C8A97E]/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E]/40 transition-all duration-300"
-                                  placeholder="Ihr vollständiger Name"
-                                  required
-                                />
-                              </motion.div>
-
-                              <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.2 }}
-                              >
-                                <label htmlFor="email" className="block text-sm font-medium text-gray-300 mb-2">
-                                  Email
-                                </label>
-                                <input
-                                  type="email"
-                                  id="email"
-                                  value={formData.email}
-                                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                                  className="w-full px-4 py-3 bg-white/5 border border-[#C8A97E]/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E]/40 transition-all duration-300"
-                                  placeholder="Ihre Email-Adresse"
-                                  required
-                                />
-                              </motion.div>
-
-                              <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.3 }}
-                              >
-                                <label htmlFor="phone" className="block text-sm font-medium text-gray-300 mb-2">
-                                  Telefon (optional)
-                                </label>
-                                <input
-                                  type="tel"
-                                  id="phone"
-                                  value={formData.phone}
-                                  onChange={(e) => setFormData(prev => ({ ...prev, phone: e.target.value }))}
-                                  className="w-full px-4 py-3 bg-white/5 border border-[#C8A97E]/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E]/40 transition-all duration-300"
-                                  placeholder="Ihre Telefonnummer"
-                                />
-                              </motion.div>
-
-                              <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.4 }}
-                              >
-                                <label htmlFor="message" className="block text-sm font-medium text-gray-300 mb-2">
-                                  Nachricht (optional)
-                                </label>
-                                <textarea
-                                  id="message"
-                                  value={formData.message}
-                                  onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
-                                  className="w-full px-4 py-3 bg-white/5 border border-[#C8A97E]/20 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E]/40 transition-all duration-300 min-h-[100px] resize-none"
-                                  placeholder="Ihre Nachricht an uns"
-                                />
-                              </motion.div>
-
-                              <motion.div
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.5 }}
-                                className="mt-6"
-                              >
-                                <label className="flex items-start gap-3">
-                                  <input
-                                    type="checkbox"
-                                    required
-                                    className="mt-1 rounded border-[#C8A97E]/20 bg-white/5 text-[#C8A97E] focus:ring-[#C8A97E] focus:ring-offset-0"
-                                  />
-                                  <span className="text-sm text-gray-400">
-                                    Mit dem Absenden des Formulars stimme ich den{" "}
-                                    <Link href="/legal/datenschutz" className="text-[#C8A97E] hover:underline">
-                                      Datenschutzbestimmungen
-                                    </Link>{" "}
-                                    und{" "}
-                                    <Link href="/legal/agb" className="text-[#C8A97E] hover:underline">
-                                      AGB
-                                    </Link>{" "}
-                                    zu. Ich bin damit einverstanden, dass meine Daten zur Bearbeitung meiner Anfrage verwendet werden.
-                                  </span>
-                                </label>
-                              </motion.div>
-                            </form>
-                          </div>
-                        )}
-                      </motion.div>
-                    </AnimatePresence>
-
-                    {/* Single Navigation Section */}
-                    <motion.div
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: 0.5 }}
-                      className="mt-8 flex justify-between"
-                    >
-                      {step > 1 && (
-                        <button
-                          onClick={handlePrevStep}
-                          className="px-6 py-2.5 text-sm font-medium text-[#C8A97E] hover:bg-[#C8A97E]/10 rounded-lg transition-all duration-300"
-                        >
-                          Zurück
-                        </button>
-                      )}
-                      {step < 3 ? (
-                        <button
-                          onClick={handleNextStep}
-                          disabled={!selectedService || (step === 2 && (!selectedDays.length || !selectedTime))}
-                          className={`
-                            px-6 py-2.5 text-sm font-medium rounded-lg transition-all duration-300 ml-auto
-                            ${(!selectedService || (step === 2 && (!selectedDays.length || !selectedTime)))
-                              ? 'bg-white/5 text-gray-500 cursor-not-allowed'
-                              : 'bg-[#C8A97E] text-black hover:shadow-lg hover:shadow-[#C8A97E]/20'
-                            }
-                          `}
-                        >
-                          Weiter
-                        </button>
-                      ) : (
-                        <button
-                          onClick={handleSubmit}
-                          disabled={!formData.name || !formData.email}
-                          className={`
-                            px-6 py-2.5 text-sm font-medium rounded-lg transition-all duration-300 ml-auto
-                            ${(!formData.name || !formData.email)
-                              ? 'bg-white/5 text-gray-500 cursor-not-allowed'
-                              : 'bg-[#C8A97E] text-black hover:shadow-lg hover:shadow-[#C8A97E]/20'
-                            }
-                          `}
-                        >
-                          Absenden
-                        </button>
-                      )}
-                    </motion.div>
+                        {format(day, "d")}
+                      </button>
+                    ))}
                   </div>
-                </motion.div>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="space-y-4">
+                  <p className="text-gray-400 mb-4">
+                    Verfügbare Zeiten am {format(selectedDate!, "dd.MM.yyyy", { locale: de })}:
+                  </p>
+                  <div className="grid grid-cols-2 gap-3">
+                    {timeSlots.map((slot) => (
+                      <button
+                        key={slot.time}
+                        onClick={() => handleTimeSelect(slot.time)}
+                        disabled={!slot.available}
+                        className={`
+                          p-3 rounded-lg text-sm font-medium
+                          ${slot.available ? 
+                            slot.time === selectedTime ?
+                              "bg-[#C8A97E] text-black" :
+                              "bg-white/5 text-white hover:bg-white/10" :
+                            "bg-white/5 text-gray-500 cursor-not-allowed"}
+                          transition-colors
+                        `}
+                      >
+                        {slot.time}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {step === 3 && (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Name</label>
+                    <input
+                      type="text"
+                      required
+                      value={formData.name}
+                      onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">E-Mail</label>
+                    <input
+                      type="email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Telefon</label>
+                    <input
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] transition-colors"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Level</label>
+                    <select
+                      value={formData.level}
+                      onChange={(e) => setFormData({ ...formData, level: e.target.value })}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] transition-colors"
+                    >
+                      <option value="">Bitte wählen</option>
+                      <option value="beginner">Anfänger</option>
+                      <option value="intermediate">Fortgeschritten</option>
+                      <option value="advanced">Profi</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-400 mb-1">Nachricht</label>
+                    <textarea
+                      value={formData.message}
+                      onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                      rows={3}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2.5 text-white focus:border-[#C8A97E] transition-colors"
+                    />
+                  </div>
+                  <div className="flex items-start gap-3">
+                    <input
+                      type="checkbox"
+                      id="terms"
+                      required
+                      checked={formData.acceptTerms}
+                      onChange={(e) => setFormData({ ...formData, acceptTerms: e.target.checked })}
+                      className="mt-1"
+                    />
+                    <label htmlFor="terms" className="text-sm text-gray-400">
+                      Ich akzeptiere die <a href="/agb" className="text-[#C8A97E] hover:underline">AGB</a> und die <a href="/datenschutz" className="text-[#C8A97E] hover:underline">Datenschutzerklärung</a>
+                    </label>
+                  </div>
+                </form>
+              )}
+
+              {step === 4 && (
+                <div className="text-center py-8">
+                  <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mx-auto mb-4">
+                    <Check className="w-8 h-8 text-[#C8A97E]" />
+                  </div>
+                  <h3 className="text-xl font-medium text-white mb-2">Buchung bestätigt!</h3>
+                  <p className="text-gray-400 mb-6">
+                    Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Footer */}
+            <div className="p-6 border-t border-[#C8A97E]/10">
+              <div className="flex justify-between">
+                {step > 1 && step < 4 && (
+                  <button
+                    onClick={() => setStep(step - 1)}
+                    className="px-6 py-2 text-white hover:text-[#C8A97E] transition-colors text-sm font-medium"
+                  >
+                    Zurück
+                  </button>
+                )}
+                {step < 4 && (
+                  <button
+                    onClick={step === 3 ? handleSubmit : () => {}}
+                    disabled={step === 2 && !selectedTime}
+                    className={`px-6 py-2 rounded-lg text-sm font-medium
+                      ${step === 3 ?
+                        "bg-[#C8A97E] hover:bg-[#B89A6F] text-black" :
+                        "bg-white/5 text-white hover:bg-white/10"}
+                      transition-colors ml-auto`}
+                  >
+                    {step === 3 ? "Jetzt Buchen" : "Weiter"}
+                  </button>
+                )}
               </div>
             </div>
-          </>
-        )}
-      </AnimatePresence>
-
-      <SuccessMessage
-        isOpen={showSuccess}
-        onClose={resetAndClose}
-        title="Buchung erfolgreich!"
-        message={`Vielen Dank für Ihre Buchung, ${formData.name}! Wir werden uns in Kürze bei Ihnen melden.`}
-      />
-    </>
+          </motion.div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   )
 } 

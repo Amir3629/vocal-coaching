@@ -13,7 +13,6 @@ const nextConfig = {
     unoptimized: true
   },
   experimental: {
-    optimizeCss: true,
     scrollRestoration: true
   }
 }
