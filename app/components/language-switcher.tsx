@@ -12,39 +12,44 @@ export const translations = {
       contact: "Kontakt"
     },
     hero: {
-      title: "Entdecke deine Stimme",
-      subtitle: "Professionelles Vocal Coaching in Berlin",
-      cta: "Jetzt starten"
+      title: "Vocal Coaching in Berlin",
+      subtitle: "Entdecke deine Stimme",
+      cta: "Jetzt buchen"
     },
     about: {
       title: "Über Mich",
-      description: "Halb Britin, halb Deutsche - und 100%ige Rheinländerin lebe ich freiwillig in Berlin.",
+      description: "Halb Britin, halb Deutsche - und 100%ige Rheinländerin lebe ich freiwillig in Berlin. Meine musikalische Reise begann früh: vom Kinderchor über den Gospelchor \"Crescendo\" bis hin zu \"Die Männer\", einer der ersten Girl Bands in Deutschland.",
       readMore: "Mehr erfahren",
       readLess: "Weniger anzeigen",
       currentProjects: "Aktuelle Projekte",
-      projectsText: "Als stolzes Mitglied der internationalen Berliner Jazzszene"
-    },
-    partners: {
-      title: "Partner & Kollaborationen",
-      subtitle: "Gemeinsam Musik gestalten"
+      projectsText: "Als stolzes Mitglied der internationalen Berliner Jazzszene bin ich nicht nur als Sängerin aktiv, sondern auch als Vocal Coach bei der Bandleiter Ausbildung in Wiesbaden tätig."
     },
     services: {
       title: "Angebote",
-      subtitle: "Maßgeschneiderte Gesangsausbildung"
+      privateTitle: "Einzelunterricht",
+      privateDesc: "Individuelles Vocal Coaching",
+      workshopTitle: "Workshops",
+      workshopDesc: "Gruppenunterricht & Seminare",
+      performanceTitle: "Performance Coaching",
+      performanceDesc: "Bühnenauftritte & Präsenz",
+      choirTitle: "Chor Next Door",
+      choirDesc: "Innovatives Chorprojekt"
+    },
+    gallery: {
+      title: "Galerie",
+      viewMore: "Mehr anzeigen"
     },
     testimonials: {
-      title: "Was meine Schüler sagen",
-      subtitle: "Erfahrungsberichte"
+      title: "Was meine Schüler sagen"
     },
     contact: {
       title: "Kontakt",
-      subtitle: "Lass uns sprechen",
-      form: {
-        name: "Name",
-        email: "E-Mail",
-        message: "Nachricht",
-        submit: "Senden"
-      }
+      name: "Name",
+      email: "E-Mail",
+      message: "Nachricht",
+      send: "Senden",
+      success: "Nachricht gesendet!",
+      error: "Ein Fehler ist aufgetreten."
     },
     legal: {
       privacy: "Datenschutz",
@@ -63,47 +68,52 @@ export const translations = {
       contact: "Contact"
     },
     hero: {
-      title: "Discover Your Voice",
-      subtitle: "Professional Vocal Coaching in Berlin",
-      cta: "Get Started"
+      title: "Vocal Coaching in Berlin",
+      subtitle: "Discover your voice",
+      cta: "Book now"
     },
     about: {
       title: "About Me",
-      description: "Half British, half German - and 100% Rhinelander living voluntarily in Berlin.",
-      readMore: "Read More",
-      readLess: "Show Less",
+      description: "Half British, half German - and 100% Rhinelander living voluntarily in Berlin. My musical journey started early: from children's choir through gospel choir \"Crescendo\" to \"Die Männer\", one of the first girl bands in Germany.",
+      readMore: "Read more",
+      readLess: "Show less",
       currentProjects: "Current Projects",
-      projectsText: "As a proud member of Berlin's international jazz scene"
-    },
-    partners: {
-      title: "Partners & Collaborations",
-      subtitle: "Creating Music Together"
+      projectsText: "As a proud member of Berlin's international jazz scene, I'm not only active as a singer but also as a vocal coach at the bandleader training in Wiesbaden."
     },
     services: {
       title: "Services",
-      subtitle: "Tailored Vocal Training"
+      privateTitle: "Private Lessons",
+      privateDesc: "Individual Vocal Coaching",
+      workshopTitle: "Workshops",
+      workshopDesc: "Group Classes & Seminars",
+      performanceTitle: "Performance Coaching",
+      performanceDesc: "Stage Performance & Presence",
+      choirTitle: "Choir Next Door",
+      choirDesc: "Innovative Choir Project"
+    },
+    gallery: {
+      title: "Gallery",
+      viewMore: "View more"
     },
     testimonials: {
-      title: "What My Students Say",
-      subtitle: "Testimonials"
+      title: "What My Students Say"
     },
     contact: {
       title: "Contact",
-      subtitle: "Let's Talk",
-      form: {
-        name: "Name",
-        email: "Email",
-        message: "Message",
-        submit: "Send"
-      }
+      name: "Name",
+      email: "Email",
+      message: "Message",
+      send: "Send",
+      success: "Message sent!",
+      error: "An error occurred."
     },
     legal: {
-      privacy: "Privacy",
-      terms: "Terms",
+      privacy: "Privacy Policy",
+      terms: "Terms & Conditions",
       imprint: "Imprint"
     },
     footer: {
-      rights: "All Rights Reserved"
+      rights: "All rights reserved"
     }
   }
 }

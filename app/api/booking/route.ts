@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
 import { getAvailableSlots, createBooking } from '@/app/lib/google-calendar'
+import { sendBookingConfirmationEmail } from '@/app/lib/email-service'
+import { createPayPalOrder } from '@/app/lib/payment-service'
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url)
@@ -33,13 +35,31 @@ export async function POST(request: Request) {
     // Convert date string to Date object
     bookingData.date = new Date(bookingData.date)
 
-    const event = await createBooking(bookingData)
+    // Create PayPal order for deposit
+    const order = await createPayPalOrder()
 
-    return NextResponse.json({ success: true, event })
+    // Create temporary booking in Google Calendar
+    const calendarEvent = await createBooking(bookingData)
+
+    // Send confirmation email with payment link
+    await sendBookingConfirmationEmail(
+      bookingData.email,
+      bookingData.name,
+      new Date(bookingData.date),
+      bookingData.time,
+      `${process.env.NEXT_PUBLIC_APP_URL}/payment/${order.id}`
+    )
+
+    return NextResponse.json({
+      success: true,
+      message: 'Booking created successfully',
+      eventId: calendarEvent.id,
+      orderId: order.id,
+    })
   } catch (error) {
-    console.error('Error processing booking:', error)
+    console.error('Error creating booking:', error)
     return NextResponse.json(
-      { error: 'Failed to process booking' },
+      { error: 'Failed to create booking' },
       { status: 500 }
     )
   }

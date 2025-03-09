@@ -2,47 +2,54 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { X, Calendar, Clock, ChevronLeft, ChevronRight, Check } from "lucide-react"
-import { format, addMonths, subMonths, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isSameDay, isToday } from "date-fns"
+import { format, addMonths, subMonths, isSameDay, isBefore, startOfToday } from "date-fns"
 import { de } from "date-fns/locale"
-import { PayPalScriptProvider, PayPalButtons } from '@paypal/react-paypal-js'
-import { createBooking } from '@/lib/google-calendar'
-
-interface TimeSlot {
-  time: string
-  available: boolean
-}
-
-interface PaymentStep {
-  isLoading: boolean
-  error: string | null
-  orderID: string | null
-}
+import { ChevronLeft, ChevronRight, X, Check } from "lucide-react"
+import { z } from "zod"
 
 interface BookingModalProps {
   isOpen: boolean
   onClose: () => void
 }
 
-const timeSlots: TimeSlot[] = [
-  { time: "09:00 - 10:00", available: true },
-  { time: "10:00 - 11:00", available: true },
-  { time: "11:00 - 12:00", available: false },
-  { time: "12:00 - 13:00", available: true },
-  { time: "14:00 - 15:00", available: true },
-  { time: "15:00 - 16:00", available: true },
-  { time: "16:00 - 17:00", available: false },
-  { time: "17:00 - 18:00", available: true },
-  { time: "18:00 - 19:00", available: true },
-  { time: "19:00 - 20:00", available: true }
+interface TimeSlot {
+  time: string
+  available: boolean
+}
+
+const services = [
+  {
+    id: "private",
+    title: "Einzelunterricht",
+    duration: "60 min",
+    price: "80€"
+  },
+  {
+    id: "group",
+    title: "Gruppenunterricht",
+    duration: "90 min",
+    price: "40€ pro Person"
+  },
+  {
+    id: "workshop",
+    title: "Workshop",
+    duration: "3 Stunden",
+    price: "120€"
+  }
+]
+
+const skillLevels = [
+  { id: "beginner", label: "Anfänger" },
+  { id: "intermediate", label: "Fortgeschritten" },
+  { id: "advanced", label: "Profi" }
 ]
 
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
-  const [step, setStep] = useState(1)
+  const [currentStep, setCurrentStep] = useState(1)
+  const [selectedService, setSelectedService] = useState("")
   const [currentDate, setCurrentDate] = useState(new Date())
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
-  const [selectedTime, setSelectedTime] = useState<string | null>(null)
-  const [availableSlots, setAvailableSlots] = useState<string[]>([])
+  const [selectedTime, setSelectedTime] = useState("")
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -51,273 +58,77 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     message: "",
     acceptTerms: false
   })
-  const [payment, setPayment] = useState<PaymentStep>({
-    isLoading: false,
-    error: null,
-    orderID: null,
-  })
-
-  useEffect(() => {
-    if (!isOpen) {
-      setTimeout(() => {
-        setStep(1)
-        setSelectedDate(null)
-        setSelectedTime(null)
-        setFormData({
-          name: "",
-          email: "",
-          phone: "",
-          level: "",
-          message: "",
-          acceptTerms: false
-        })
-      }, 300)
-    }
-  }, [isOpen])
+  const [errors, setErrors] = useState<Record<string, string>>({})
 
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
 
-  const days = eachDayOfInterval({
-    start: startOfMonth(currentDate),
-    end: endOfMonth(currentDate)
-  })
-
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date)
-    setStep(2)
   }
 
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time)
-    setStep(3)
+  }
+
+  const validateEmail = (email: string) => {
+    return z.string().email().safeParse(email).success
   }
 
   const handleNext = () => {
-    if (step === 1 && selectedDate) {
-      setStep(2)
-    } else if (step === 2 && selectedTime) {
-      setStep(3)
+    if (currentStep === 1 && !selectedService) {
+      setErrors({ service: "Bitte wählen Sie einen Service aus" })
+      return
     }
+    if (currentStep === 2 && !selectedDate) {
+      setErrors({ date: "Bitte wählen Sie ein Datum aus" })
+      return
+    }
+    if (currentStep === 3 && !selectedTime) {
+      setErrors({ time: "Bitte wählen Sie eine Uhrzeit aus" })
+      return
+    }
+    if (currentStep === 4) {
+      const newErrors: Record<string, string> = {}
+      if (!formData.name) newErrors.name = "Name ist erforderlich"
+      if (!formData.email) newErrors.email = "Email ist erforderlich"
+      if (!validateEmail(formData.email)) newErrors.email = "Ungültige Email-Adresse"
+      if (!formData.level) newErrors.level = "Bitte wählen Sie Ihr Level aus"
+      if (!formData.acceptTerms) newErrors.terms = "Bitte akzeptieren Sie die Bedingungen"
+      
+      if (Object.keys(newErrors).length > 0) {
+        setErrors(newErrors)
+        return
+      }
+    }
+    setErrors({})
+    setCurrentStep((prev) => prev + 1)
   }
 
   const handleBack = () => {
-    if (step > 1) {
-      setStep(step - 1)
-    }
+    setCurrentStep((prev) => prev - 1)
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here we'll integrate with Google Calendar API
-    console.log("Booking submitted:", {
-      date: selectedDate,
-      time: selectedTime,
-      ...formData
+    // Submit logic here
+  }
+
+  const slideVariants = {
+    enter: (direction: number) => ({
+      x: direction > 0 ? 1000 : -1000,
+      opacity: 0
+    }),
+    center: {
+      zIndex: 1,
+      x: 0,
+      opacity: 1
+    },
+    exit: (direction: number) => ({
+      zIndex: 0,
+      x: direction < 0 ? 1000 : -1000,
+      opacity: 0
     })
-    // Show success message and close
-    setStep(4)
-  }
-
-  const handlePayment = async () => {
-    try {
-      setPayment({ ...payment, isLoading: true, error: null })
-      const response = await fetch('/api/payments/create-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          amount: 50, // Deposit amount in EUR
-          currency: 'EUR',
-          description: `Booking deposit for ${formData.name} on ${selectedDate?.toLocaleDateString()} at ${selectedTime}`,
-        }),
-      })
-
-      const data = await response.json()
-      if (data.id) {
-        setPayment({ ...payment, orderID: data.id, isLoading: false })
-      } else {
-        throw new Error('Failed to create PayPal order')
-      }
-    } catch (error) {
-      console.error('Payment error:', error)
-      setPayment({
-        ...payment,
-        isLoading: false,
-        error: 'Failed to process payment. Please try again.',
-      })
-    }
-  }
-
-  const handlePaymentSuccess = async (orderID: string) => {
-    try {
-      const response = await fetch('/api/payments/capture-order', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ orderID }),
-      })
-
-      const data = await response.json()
-      if (data.status === 'COMPLETED') {
-        // Create the booking
-        await createBooking({
-          date: selectedDate!,
-          time: selectedTime!,
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          message: formData.message,
-          paymentId: orderID,
-        })
-        setStep(4) // Move to confirmation step
-      }
-    } catch (error) {
-      console.error('Error capturing payment:', error)
-      setPayment({
-        ...payment,
-        error: 'Failed to complete payment. Please contact support.',
-      })
-    }
-  }
-
-  const renderStep = () => {
-    switch (step) {
-      case 1:
-        return (
-          <div className="space-y-6">
-            {/* Calendar Navigation */}
-            <div className="flex items-center justify-between mb-4">
-              <button
-                onClick={() => setCurrentDate(subMonths(currentDate, 1))}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-              >
-                <ChevronLeft className="w-5 h-5 text-[#C8A97E]" />
-              </button>
-              <h3 className="text-lg font-medium text-white">
-                {format(currentDate, 'MMMM yyyy', { locale: de })}
-              </h3>
-              <button
-                onClick={() => setCurrentDate(addMonths(currentDate, 1))}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-              >
-                <ChevronRight className="w-5 h-5 text-[#C8A97E]" />
-              </button>
-            </div>
-
-            {/* Calendar Grid */}
-            <div className="grid grid-cols-7 gap-2 text-center">
-              {['Mo', 'Di', 'Mi', 'Do', 'Fr', 'Sa', 'So'].map((day) => (
-                <div key={day} className="text-sm text-gray-400 py-2">
-                  {day}
-                </div>
-              ))}
-              {Array.from({ length: 31 }).map((_, index) => {
-                const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), index + 1)
-                const isSelected = selectedDate && date.getTime() === selectedDate.getTime()
-                const isToday = new Date().toDateString() === date.toDateString()
-                const isPast = date < new Date()
-
-                return (
-                  <button
-                    key={index}
-                    onClick={() => !isPast && handleDateSelect(date)}
-                    disabled={isPast}
-                    className={`
-                      p-2 rounded-lg text-sm font-medium transition-all
-                      ${isSelected
-                        ? 'bg-[#C8A97E] text-black'
-                        : isToday
-                          ? 'bg-white/10 text-white'
-                          : isPast
-                            ? 'bg-white/5 text-gray-500 cursor-not-allowed'
-                            : 'bg-white/5 text-white hover:bg-white/10 hover:scale-105'
-                      }
-                    `}
-                  >
-                    {index + 1}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )
-      case 2:
-        return (
-          <div className="space-y-4">
-            <h3 className="text-lg text-white mb-4">
-              Verfügbare Zeiten am {selectedDate && format(selectedDate, 'd. MMMM yyyy', { locale: de })}:
-            </h3>
-            <div className="grid grid-cols-2 gap-3">
-              {/* Time slots */}
-              {Array.from({ length: 8 }).map((_, index) => {
-                const time = `${9 + index * 1.5}:00 - ${10.5 + index * 1.5}:00`
-                return (
-                  <button
-                    key={time}
-                    onClick={() => handleTimeSelect(time)}
-                    className={`p-3 rounded-lg text-sm font-medium transition-all
-                      ${selectedTime === time
-                        ? 'bg-[#C8A97E] text-black'
-                        : 'bg-white/5 text-white hover:bg-white/10'
-                      } ${index % 2 === 0 ? 'transform hover:scale-105' : ''}`}
-                  >
-                    {time}
-                  </button>
-                )
-              })}
-            </div>
-          </div>
-        )
-      case 3:
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold mb-4">Payment</h3>
-            <p className="text-gray-600 mb-4">
-              Please pay a deposit of €50 to secure your booking.
-            </p>
-            {payment.error && (
-              <div className="text-red-500 mb-4">{payment.error}</div>
-            )}
-            <PayPalScriptProvider
-              options={{
-                clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
-                currency: 'EUR',
-              }}
-            >
-              <PayPalButtons
-                style={{ layout: 'vertical' }}
-                createOrder={async () => {
-                  await handlePayment()
-                  return payment.orderID!
-                }}
-                onApprove={async (data) => {
-                  await handlePaymentSuccess(data.orderID)
-                }}
-              />
-            </PayPalScriptProvider>
-          </div>
-        )
-      case 4:
-        return (
-          <div className="space-y-4">
-            <h3 className="text-xl font-semibold mb-4">Booking Confirmed!</h3>
-            <p className="text-gray-600">
-              Thank you for your booking. You will receive a confirmation email shortly.
-            </p>
-            <button
-              onClick={onClose}
-              className="w-full bg-primary text-white py-2 px-4 rounded hover:bg-primary-dark transition-colors"
-            >
-              Close
-            </button>
-          </div>
-        )
-      default:
-        return null
-    }
   }
 
   return (
@@ -333,65 +144,272 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             initial={{ scale: 0.95, opacity: 0 }}
             animate={{ scale: 1, opacity: 1 }}
             exit={{ scale: 0.95, opacity: 0 }}
-            className="relative w-full max-w-lg bg-[#0A0A0A] rounded-xl shadow-xl overflow-hidden"
+            className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl shadow-xl"
           >
-            {/* Header */}
-            <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
-              <h2 className="text-xl font-medium text-white">
-                {step === 1 ? "Terminanfrage" : 
-                 step === 2 ? "Uhrzeit wählen" : 
-                 "Persönliche Daten"}
-              </h2>
-              <button
-                onClick={onClose}
-                className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-              >
-                <X className="w-5 h-5 text-gray-400" />
-              </button>
-            </div>
+            <button
+              onClick={onClose}
+              className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white transition-colors"
+            >
+              <X className="w-6 h-6" />
+            </button>
 
-            {/* Content */}
-            <div className="p-4">
-              {renderStep()}
-            </div>
+            <div className="p-6">
+              <div className="mb-8">
+                <div className="w-full bg-gray-800 h-2 rounded-full">
+                  <motion.div
+                    className="h-full bg-[#C8A97E] rounded-full"
+                    animate={{ width: `${(currentStep / 5) * 100}%` }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
+              </div>
 
-            {/* Footer */}
-            <div className="flex items-center justify-between p-4 border-t border-[#C8A97E]/20">
-              {step > 1 ? (
-                <button
-                  onClick={handleBack}
-                  className="px-4 py-2 text-white hover:bg-white/5 rounded-lg transition-colors"
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentStep}
+                  variants={slideVariants}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={{ duration: 0.3 }}
                 >
-                  Zurück
-                </button>
-              ) : (
-                <div></div>
-              )}
-              {step < 3 ? (
-                <button
-                  onClick={handleNext}
-                  disabled={step === 1 ? !selectedDate : !selectedTime}
-                  className={`px-6 py-2 rounded-lg transition-colors ${
-                    (step === 1 ? !selectedDate : !selectedTime)
-                      ? "bg-[#C8A97E]/50 cursor-not-allowed"
-                      : "bg-[#C8A97E] hover:bg-[#B69A6E]"
-                  }`}
-                >
-                  Weiter
-                </button>
-              ) : (
-                <button
-                  onClick={handleSubmit}
-                  disabled={!formData.acceptTerms}
-                  className={`px-6 py-2 rounded-lg transition-colors ${
-                    !formData.acceptTerms
-                      ? "bg-[#C8A97E]/50 cursor-not-allowed"
-                      : "bg-[#C8A97E] hover:bg-[#B69A6E]"
-                  }`}
-                >
-                  Jetzt Buchen
-                </button>
-              )}
+                  {currentStep === 1 && (
+                    <div className="space-y-6">
+                      <h2 className="text-2xl font-semibold text-white mb-4">
+                        Wählen Sie Ihren Service
+                      </h2>
+                      <div className="grid gap-4">
+                        {services.map((service) => (
+                          <button
+                            key={service.id}
+                            onClick={() => setSelectedService(service.id)}
+                            className={`p-4 rounded-lg border transition-all ${
+                              selectedService === service.id
+                                ? "border-[#C8A97E] bg-[#C8A97E]/10"
+                                : "border-gray-700 hover:border-[#C8A97E]/50"
+                            }`}
+                          >
+                            <div className="flex justify-between items-center">
+                              <div>
+                                <h3 className="text-white font-medium">{service.title}</h3>
+                                <p className="text-gray-400 text-sm">
+                                  {service.duration} • {service.price}
+                                </p>
+                              </div>
+                              {selectedService === service.id && (
+                                <Check className="w-5 h-5 text-[#C8A97E]" />
+                              )}
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                      {errors.service && (
+                        <p className="text-red-500 text-sm">{errors.service}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {currentStep === 2 && (
+                    <div>
+                      <h2 className="text-2xl font-semibold text-white mb-4">
+                        Wählen Sie ein Datum
+                      </h2>
+                      {/* Calendar component */}
+                    </div>
+                  )}
+
+                  {currentStep === 3 && (
+                    <div>
+                      <h2 className="text-2xl font-semibold text-white mb-4">
+                        Wählen Sie eine Uhrzeit
+                      </h2>
+                      <div className="grid grid-cols-3 gap-3">
+                        {Array.from({ length: 8 }, (_, i) => {
+                          const hour = 10 + i
+                          return (
+                            <button
+                              key={hour}
+                              onClick={() => handleTimeSelect(`${hour}:00`)}
+                              className={`p-3 rounded-lg text-center transition-all ${
+                                selectedTime === `${hour}:00`
+                                  ? "bg-[#C8A97E] text-black"
+                                  : "bg-gray-800 hover:bg-gray-700 text-white"
+                              }`}
+                            >
+                              {`${hour}:00`}
+                            </button>
+                          )
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {currentStep === 4 && (
+                    <div className="space-y-4">
+                      <h2 className="text-2xl font-semibold text-white mb-4">
+                        Ihre Informationen
+                      </h2>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Name
+                        </label>
+                        <input
+                          type="text"
+                          value={formData.name}
+                          onChange={(e) =>
+                            setFormData({ ...formData, name: e.target.value })
+                          }
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        />
+                        {errors.name && (
+                          <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Email
+                        </label>
+                        <input
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) =>
+                            setFormData({ ...formData, email: e.target.value })
+                          }
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        />
+                        {errors.email && (
+                          <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Telefon (optional)
+                        </label>
+                        <input
+                          type="tel"
+                          value={formData.phone}
+                          onChange={(e) =>
+                            setFormData({ ...formData, phone: e.target.value })
+                          }
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Level
+                        </label>
+                        <select
+                          value={formData.level}
+                          onChange={(e) =>
+                            setFormData({ ...formData, level: e.target.value })
+                          }
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        >
+                          <option value="">Bitte wählen</option>
+                          {skillLevels.map((level) => (
+                            <option key={level.id} value={level.id}>
+                              {level.label}
+                            </option>
+                          ))}
+                        </select>
+                        {errors.level && (
+                          <p className="text-red-500 text-sm mt-1">{errors.level}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label className="block text-sm font-medium text-gray-300 mb-1">
+                          Nachricht (optional)
+                        </label>
+                        <textarea
+                          value={formData.message}
+                          onChange={(e) =>
+                            setFormData({ ...formData, message: e.target.value })
+                          }
+                          rows={3}
+                          className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        />
+                      </div>
+
+                      <div className="flex items-start gap-3">
+                        <input
+                          type="checkbox"
+                          id="terms"
+                          checked={formData.acceptTerms}
+                          onChange={(e) =>
+                            setFormData({ ...formData, acceptTerms: e.target.checked })
+                          }
+                          className="mt-1"
+                        />
+                        <label htmlFor="terms" className="text-sm text-gray-300">
+                          Ich akzeptiere die{" "}
+                          <a
+                            href="/legal/agb"
+                            target="_blank"
+                            className="text-[#C8A97E] hover:underline"
+                          >
+                            AGB
+                          </a>{" "}
+                          und{" "}
+                          <a
+                            href="/legal/datenschutz"
+                            target="_blank"
+                            className="text-[#C8A97E] hover:underline"
+                          >
+                            Datenschutzerklärung
+                          </a>
+                        </label>
+                      </div>
+                      {errors.terms && (
+                        <p className="text-red-500 text-sm">{errors.terms}</p>
+                      )}
+                    </div>
+                  )}
+
+                  {currentStep === 5 && (
+                    <div className="text-center py-8">
+                      <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
+                        <Check className="w-8 h-8 text-[#C8A97E]" />
+                      </div>
+                      <h2 className="text-2xl font-semibold text-white mb-2">
+                        Buchung erfolgreich!
+                      </h2>
+                      <p className="text-gray-400">
+                        Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.
+                      </p>
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
+
+              <div className="mt-8 flex justify-between">
+                {currentStep > 1 && currentStep < 5 && (
+                  <button
+                    onClick={handleBack}
+                    className="px-6 py-2 text-white hover:bg-white/5 rounded-lg transition-colors text-sm"
+                  >
+                    Zurück
+                  </button>
+                )}
+                {currentStep < 5 ? (
+                  <button
+                    onClick={handleNext}
+                    className="ml-auto px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors text-sm"
+                  >
+                    {currentStep === 4 ? "Jetzt buchen" : "Weiter"}
+                  </button>
+                ) : (
+                  <button
+                    onClick={onClose}
+                    className="ml-auto px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors text-sm"
+                  >
+                    Schließen
+                  </button>
+                )}
+              </div>
             </div>
           </motion.div>
         </motion.div>
