@@ -246,7 +246,7 @@ export default function Home() {
                   "Profis"
                 ],
                 duration: "60-90 min",
-                location: "Studio Berlin"
+                location: "Online & Studio Berlin"
               }}
               image="/images/services/studio.jpg"
               delay={0.1}
@@ -276,7 +276,7 @@ export default function Home() {
                   "Gesangslehrer"
                 ],
                 duration: "60-90 min",
-                location: "Studio Berlin"
+                location: "Online & Studio Berlin"
               }}
               image="/images/services/jazz.jpg"
               delay={0.2}
