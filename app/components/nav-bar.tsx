@@ -21,16 +21,20 @@ export default function NavBar() {
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
-      const offset = 80
-      const bodyRect = document.body.getBoundingClientRect().top
-      const elementRect = element.getBoundingClientRect().top
-      const elementPosition = elementRect - bodyRect
-      const offsetPosition = elementPosition - offset
+      // Calculate header height (80px) plus some padding
+      const headerOffset = 100
+      const elementPosition = element.getBoundingClientRect().top
+      const offsetPosition = elementPosition + window.pageYOffset - headerOffset
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: "smooth"
+        behavior: "smooth",
+        // Add easing function for smoother animation
       })
+
+      // Add focus for accessibility
+      element.setAttribute('tabindex', '-1')
+      element.focus({ preventScroll: true })
     }
   }
 
@@ -38,8 +42,8 @@ export default function NavBar() {
     <motion.header
       initial={{ y: -100 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-black/95 backdrop-blur-md" : "bg-transparent"
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+        isScrolled ? "bg-black/95 backdrop-blur-md shadow-lg" : "bg-transparent"
       }`}
     >
       <div className="container mx-auto px-4">
@@ -64,37 +68,45 @@ export default function NavBar() {
 
           {/* Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <button
+            <motion.button
               onClick={() => scrollToSection("angebote")}
-              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors"
+              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {t?.nav?.offers || "Angebote"}
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               onClick={() => scrollToSection("about")}
-              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors"
+              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {t?.nav?.about || "Über Mich"}
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               onClick={() => scrollToSection("references")}
-              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors"
+              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {t?.nav?.references || "Referenzen"}
-            </button>
-            <button
+            </motion.button>
+            <motion.button
               onClick={() => scrollToSection("contact")}
-              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors"
+              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
             >
               {t?.nav?.contact || "Kontakt"}
-            </button>
+            </motion.button>
             
             {/* Language Switcher */}
             <motion.button
               onClick={toggleLanguage}
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.95 }}
-              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors text-sm font-medium"
+              className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors duration-300 text-sm font-medium"
             >
               {currentLang === 'DE' ? 'EN' : 'DE'}
             </motion.button>
