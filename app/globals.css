@@ -167,22 +167,26 @@ html {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
-}
-
-.custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(200, 169, 126, 0.2);
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 4px;
   border-radius: 4px;
 }
 
-.custom-scrollbar::-webkit-scrollbar-thumb:hover {
   background: rgba(200, 169, 126, 0.3);
+  background: rgba(200, 169, 126, 0.3);
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+  transition: background-color 0.3s ease;
+}
+  background: rgba(200, 169, 126, 0.5);
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(200, 169, 126, 0.5);
 }
 
 /* For Firefox */
-.custom-scrollbar {
+  scrollbar-color: rgba(200, 169, 126, 0.3) rgba(255, 255, 255, 0.05);
   scrollbar-width: thin;
-  scrollbar-color: rgba(200, 169, 126, 0.2) transparent;
+  scrollbar-color: rgba(200, 169, 126, 0.3) rgba(255, 255, 255, 0.05);
 }
 
 /* Mobile optimizations */

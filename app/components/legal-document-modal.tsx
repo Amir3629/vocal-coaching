@@ -65,7 +65,7 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
                   <X className="w-6 h-6" />
                 </button>
               </div>
-              <div className="p-6 max-h-[80vh] overflow-y-auto">
+              <div className="p-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
                 {children}
               </div>
             </motion.div>
