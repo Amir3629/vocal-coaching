@@ -6,13 +6,18 @@ import { useRouter } from "next/navigation"
 import { capturePayPalOrder } from '@/app/lib/payment-service';
 import { sendPaymentConfirmationEmail } from '@/app/lib/email-service';
 
+// This generates the static paths at build time
+export function generateStaticParams() {
+  return [{ orderId: "DEMO" }]
+}
+
 export default function PaymentPage({ params }: { params: { orderId: string } }) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(true)
 
   const handlePaymentSuccess = async (data: any) => {
     try {
-      const response = await fetch("/api/capture-paypal-order", {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/capture-paypal-order`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -70,7 +75,7 @@ export default function PaymentPage({ params }: { params: { orderId: string } })
           />
         </PayPalScriptProvider>
 
-        <div className="mt-6 text-sm text-muted-foreground text-center">
+        <div className="mt-6 text-sm text-gray-400 text-center">
           <p>
             Nach erfolgreicher Zahlung erhalten Sie eine Bestätigungs-E-Mail mit
             allen Details zu Ihrem Termin.

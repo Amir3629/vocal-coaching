@@ -14,7 +14,8 @@ const nextConfig = {
     domains: ['images.unsplash.com']
   },
   experimental: {
-    scrollRestoration: true
+    scrollRestoration: true,
+    appDir: true
   }
 }
 
