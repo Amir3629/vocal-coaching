@@ -2,16 +2,46 @@
 
 import { useState, createContext, useContext, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
 
 // Create language context
 export const LanguageContext = createContext<{
   language: 'DE' | 'EN';
   setLanguage: (lang: 'DE' | 'EN') => void;
+  translations: Record<string, any>;
 }>({
   language: 'DE',
   setLanguage: () => {},
+  translations: {}
 });
+
+const translations = {
+  DE: {
+    nav: {
+      services: "Leistungen",
+      about: "Über Mich",
+      gallery: "Galerie",
+      testimonials: "Referenzen",
+      contact: "Kontakt",
+      choir: "Chor Next Door",
+      contactButton: "Kontakt",
+      choirButton: "Chor Next Door"
+    },
+    // Add more translations here
+  },
+  EN: {
+    nav: {
+      services: "Services",
+      about: "About",
+      gallery: "Gallery",
+      testimonials: "Testimonials",
+      contact: "Contact",
+      choir: "Choir Next Door",
+      contactButton: "Contact",
+      choirButton: "Choir Next Door"
+    },
+    // Add more translations here
+  }
+};
 
 // Create language provider component
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
@@ -32,7 +62,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   }, [language]);
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage }}>
+    <LanguageContext.Provider value={{ language, setLanguage, translations: translations[language] }}>
       {children}
     </LanguageContext.Provider>
   );
@@ -52,13 +82,15 @@ export default function LanguageSwitcher() {
       animate={{ opacity: 1 }}
       className="fixed top-6 right-6 z-50"
     >
-      <Button
-        variant="ghost"
+      <motion.button
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
         onClick={toggleLanguage}
-        className="text-[#C8A97E] hover:text-[#B69A6E] hover:bg-[#C8A97E]/10 rounded-full px-3 py-1 text-sm font-medium"
+        className="bg-[#0A0A0A]/80 backdrop-blur-sm text-[#C8A97E] hover:text-[#B69A6E] hover:bg-[#C8A97E]/10 rounded-full px-4 py-2 text-sm font-medium border border-[#C8A97E]/20"
       >
         {language === 'DE' ? 'EN' : 'DE'}
-      </Button>
+      </motion.button>
     </motion.div>
   )
 } 

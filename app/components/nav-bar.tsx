@@ -1,13 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { LanguageContext } from "./language-switcher"
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
+  const { translations } = useContext(LanguageContext)
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,15 +45,15 @@ export default function NavBar() {
   return (
     <>
       <motion.nav
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-          isScrolled ? "bg-black/80 backdrop-blur-lg" : "bg-transparent"
-        }`}
         initial={{ y: -100 }}
         animate={{ y: 0 }}
-        transition={{ duration: 0.3 }}
+        transition={{ duration: 0.5 }}
+        className={`fixed top-0 left-0 right-0 z-40 transition-all duration-300 ${
+          isScrolled ? "bg-[#0A0A0A]/80 backdrop-blur-sm shadow-lg" : ""
+        }`}
       >
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="flex items-center justify-between h-20">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex items-center justify-between h-16">
             {/* Logo */}
             <motion.button
               onClick={scrollToTop}
@@ -64,42 +66,36 @@ export default function NavBar() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-8">
-              <button
-                onClick={() => scrollToSection("services")}
-                className="text-white hover:text-[#C8A97E] transition-colors"
-              >
-                Services
-              </button>
-              <button
-                onClick={() => scrollToSection("about")}
-                className="text-white hover:text-[#C8A97E] transition-colors"
-              >
-                About
-              </button>
-              <button
-                onClick={() => scrollToSection("gallery")}
-                className="text-white hover:text-[#C8A97E] transition-colors"
-              >
-                Gallery
-              </button>
-              <button
-                onClick={() => scrollToSection("testimonials")}
-                className="text-white hover:text-[#C8A97E] transition-colors"
-              >
-                Testimonials
-              </button>
+              <a href="#services" className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors">
+                {translations.nav.services}
+              </a>
+              <a href="#about" className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors">
+                {translations.nav.about}
+              </a>
+              <a href="#gallery" className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors">
+                {translations.nav.gallery}
+              </a>
+              <a href="#testimonials" className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors">
+                {translations.nav.testimonials}
+              </a>
+              <a href="#contact" className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors">
+                {translations.nav.contact}
+              </a>
+              <a href="#choir" className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors">
+                {translations.nav.choir}
+              </a>
               <Button
                 onClick={() => scrollToSection("contact")}
                 className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-6"
               >
-                Contact
+                {translations.nav.contactButton}
               </Button>
               <Button
                 onClick={() => window.open('https://chornextdoor.de', '_blank')}
                 variant="outline"
                 className="border-2 border-[#C8A97E] text-[#C8A97E] hover:bg-[#C8A97E] hover:text-black rounded-full px-6"
               >
-                Chor Next Door
+                {translations.nav.choirButton}
               </Button>
             </div>
 
@@ -125,42 +121,30 @@ export default function NavBar() {
             className="fixed inset-0 z-40 bg-black/95 backdrop-blur-md md:hidden"
           >
             <div className="flex flex-col items-center justify-center min-h-screen gap-8 p-4">
-              <button
-                onClick={() => scrollToSection("services")}
-                className="text-xl text-white hover:text-[#C8A97E] transition-colors"
-              >
-                Services
-              </button>
-              <button
-                onClick={() => scrollToSection("about")}
-                className="text-xl text-white hover:text-[#C8A97E] transition-colors"
-              >
-                About
-              </button>
-              <button
-                onClick={() => scrollToSection("gallery")}
-                className="text-xl text-white hover:text-[#C8A97E] transition-colors"
-              >
-                Gallery
-              </button>
-              <button
-                onClick={() => scrollToSection("testimonials")}
-                className="text-xl text-white hover:text-[#C8A97E] transition-colors"
-              >
-                Testimonials
-              </button>
+              <a href="#services" className="text-xl text-white hover:text-[#C8A97E] transition-colors">
+                {translations.nav.services}
+              </a>
+              <a href="#about" className="text-xl text-white hover:text-[#C8A97E] transition-colors">
+                {translations.nav.about}
+              </a>
+              <a href="#gallery" className="text-xl text-white hover:text-[#C8A97E] transition-colors">
+                {translations.nav.gallery}
+              </a>
+              <a href="#testimonials" className="text-xl text-white hover:text-[#C8A97E] transition-colors">
+                {translations.nav.testimonials}
+              </a>
               <Button
                 onClick={() => scrollToSection("contact")}
                 className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8 py-3 text-lg w-full max-w-[200px]"
               >
-                Contact
+                {translations.nav.contactButton}
               </Button>
               <Button
                 onClick={() => window.open('https://chornextdoor.de', '_blank')}
                 variant="outline"
                 className="border-2 border-[#C8A97E] text-[#C8A97E] hover:bg-[#C8A97E] hover:text-black rounded-full px-8 py-3 text-lg w-full max-w-[200px]"
               >
-                Chor Next Door
+                {translations.nav.choirButton}
               </Button>
             </div>
           </motion.div>
