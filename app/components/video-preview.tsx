@@ -54,99 +54,77 @@ export default function VideoPreview() {
       }
       setIsPlaying(!isPlaying)
     } catch (error) {
-      console.error('Error playing video:', error)
-      setHasError(true)
+      console.error('Error playing/pausing video:', error)
     }
   }
 
   const handleMuteToggle = (e: React.MouseEvent) => {
     e.stopPropagation()
-    const video = videoRef.current
-    if (!video) return
-    
-    setHasInteracted(true)
+    if (!videoRef.current) return
+    videoRef.current.muted = !isMuted
     setIsMuted(!isMuted)
-    video.muted = !isMuted
   }
 
   return (
-    <div className="container mx-auto px-4">
-      <div className="max-w-4xl mx-auto">
-        <div className="relative aspect-video w-full rounded-[32px] overflow-hidden bg-black shadow-2xl">
-          <div className="absolute inset-0 flex items-center justify-center">
-            <video
-              ref={videoRef}
-              className="w-full h-full object-cover"
-              poster={posterImage}
-              onLoadStart={handleLoadStart}
-              onLoadedData={handleLoadedData}
-              onError={handleError}
-              muted={isMuted}
-              playsInline
-            >
-              <source src={videoSrc} type="video/mp4" />
-            </video>
-          </div>
-          
-          {/* Loading state */}
-          {isLoading && (
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center">
-              <div className="w-16 h-16 border-4 border-[#C8A97E]/20 border-t-[#C8A97E] rounded-full animate-spin" />
-            </div>
-          )}
+    <div className="relative w-full max-w-[1200px] mx-auto aspect-[16/9] bg-black rounded-[32px] overflow-hidden">
+      <video
+        ref={videoRef}
+        className="w-full h-full object-cover"
+        playsInline
+        loop
+        muted={isMuted}
+        onLoadStart={handleLoadStart}
+        onLoadedData={handleLoadedData}
+        onError={handleError}
+        poster={process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/preview-poster.webp' : '/images/preview-poster.webp'}
+        src={process.env.NODE_ENV === 'production' ? '/vocal-coaching/videos/preview.mp4' : '/videos/preview.mp4'}
+      />
 
-          {/* Error state */}
-          {hasError && (
-            <div className="absolute inset-0 bg-black/90 backdrop-blur-sm flex items-center justify-center text-center p-4">
-              <div className="space-y-4">
-                <p className="text-[#C8A97E]">Video konnte nicht geladen werden</p>
-                <button
-                  onClick={() => {
-                    setHasError(false);
-                    if (videoRef.current) videoRef.current.load();
-                  }}
-                  className="px-4 py-2 bg-[#C8A97E]/20 hover:bg-[#C8A97E]/30 rounded-lg text-[#C8A97E] text-sm transition-colors"
-                >
-                  Erneut versuchen
-                </button>
-              </div>
-            </div>
-          )}
-          
-          {/* Dark overlay with smoother transition */}
-          <div 
-            className={`absolute inset-0 bg-black transition-opacity duration-700 ease-in-out ${
-              isPlaying ? 'opacity-0' : 'opacity-90'
-            }`} 
-          />
-
-          {/* Play button with smoother transition */}
-          {!isPlaying && (
-            <motion.button
-              onClick={handleVideoClick}
-              className="absolute inset-0 w-full h-full flex items-center justify-center"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
-            >
-              <div className="w-20 h-20 bg-[#C8A97E]/10 backdrop-blur-lg rounded-full flex items-center justify-center transition-all duration-500 hover:scale-110 hover:bg-[#C8A97E]/20 border border-[#C8A97E]/20">
-                <div className="w-0 h-0 border-y-[15px] border-y-transparent border-l-[25px] border-l-[#C8A97E] translate-x-1" />
-              </div>
-            </motion.button>
-          )}
-
-          {/* Volume control */}
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="absolute bottom-4 right-4 p-3 rounded-full bg-black/50 hover:bg-black/70 text-white transition-colors backdrop-blur-sm"
-            onClick={handleMuteToggle}
-          >
-            {isMuted ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-          </motion.button>
-        </div>
+      {/* Dark overlay with play button */}
+      <div 
+        className={`absolute inset-0 flex items-center justify-center bg-black/60 transition-opacity duration-700 ${isPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
+        onClick={handleVideoClick}
+      >
+        <button 
+          className="w-12 h-12 flex items-center justify-center rounded-full bg-[#C8A97E] hover:bg-[#B69A6E] transition-colors"
+          aria-label="Play video"
+        >
+          <svg className="w-5 h-5 text-black" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M8 5v14l11-7z" />
+          </svg>
+        </button>
       </div>
+
+      {/* Loading state */}
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/80">
+          <div className="w-8 h-8 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
+
+      {/* Error state */}
+      {hasError && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/80">
+          <p className="text-[#C8A97E]">Video konnte nicht geladen werden</p>
+        </div>
+      )}
+
+      {/* Mute/Unmute button */}
+      <button
+        onClick={handleMuteToggle}
+        className="absolute bottom-4 right-4 p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors"
+      >
+        {isMuted ? (
+          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+          </svg>
+        ) : (
+          <svg className="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
+        )}
+      </button>
     </div>
   )
 }
