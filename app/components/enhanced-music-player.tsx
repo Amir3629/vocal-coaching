@@ -427,67 +427,117 @@ export default function EnhancedMusicPlayer() {
       </motion.div>
 
       {/* Floating Mini Player */}
-      <AnimatePresence>
+      <AnimatePresence mode="wait">
         {showMiniPlayer && (
           <motion.div
             ref={miniPlayerRef}
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-            transition={{ type: "spring", stiffness: 100, damping: 20 }}
-            className="fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md"
+            transition={{ 
+              type: "spring", 
+              stiffness: 50,  // Reduced from 100 for smoother motion
+              damping: 15,    // Reduced from 20 for more gentle movement
+              mass: 1.2       // Added mass for more fluid motion
+            }}
+            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md"
           >
-            <Card className="bg-[#1a1a1a]/95 backdrop-blur-md border-[#C8A97E]/20 p-3 shadow-xl">
-              <div className="flex items-center gap-3">
-                <motion.div 
-                  className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0" 
-                  whileHover={{ scale: 1.05 }}
+            <Card className="bg-[#1a1a1a]/90 backdrop-blur-lg border-[#C8A97E]/20 p-3 shadow-2xl">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={tracks[currentTrack].id}
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  className="flex items-center gap-3"
                 >
-                  <div className="absolute inset-0 bg-[#C8A97E]/10" />
-                  <img
-                    src={tracks[currentTrack].thumbnail}
-                    alt={tracks[currentTrack].title}
-                    className="w-full h-full object-cover"
-                  />
+                  <motion.div 
+                    className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0" 
+                    whileHover={{ scale: 1.05 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <div className="absolute inset-0 bg-[#C8A97E]/10" />
+                    <img
+                      src={tracks[currentTrack].thumbnail}
+                      alt={tracks[currentTrack].title}
+                      className="w-full h-full object-cover"
+                    />
+                  </motion.div>
+
+                  <div className="flex-1 min-w-0">
+                    <motion.h4 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.1 }}
+                      className="text-sm font-medium text-white truncate"
+                    >
+                      {tracks[currentTrack].title}
+                    </motion.h4>
+                    <motion.p 
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.4, delay: 0.2 }}
+                      className="text-xs text-[#C8A97E] truncate"
+                    >
+                      {tracks[currentTrack].artist}
+                    </motion.p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 text-[#C8A97E] hover:text-white hover:bg-[#C8A97E]/20 transition-all duration-300"
+                        onClick={handlePrevTrack}
+                      >
+                        <SkipBack className="h-4 w-4" />
+                      </Button>
+                    </motion.div>
+
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Button
+                        size="icon"
+                        className="h-8 w-8 bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full transition-all duration-300"
+                        onClick={handlePlay}
+                      >
+                        {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+                      </Button>
+                    </motion.div>
+
+                    <motion.div
+                      whileHover={{ scale: 1.1 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <Button
+                        size="icon"
+                        variant="ghost"
+                        className="h-8 w-8 text-[#C8A97E] hover:text-white hover:bg-[#C8A97E]/20 transition-all duration-300"
+                        onClick={handleNextTrack}
+                      >
+                        <SkipForward className="h-4 w-4" />
+                      </Button>
+                    </motion.div>
+                  </div>
                 </motion.div>
+              </AnimatePresence>
 
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-white truncate">{tracks[currentTrack].title}</h4>
-                  <p className="text-xs text-[#C8A97E] truncate">{tracks[currentTrack].artist}</p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-8 w-8 text-[#C8A97E] hover:text-white hover:bg-[#C8A97E]/20"
-                    onClick={handlePrevTrack}
-                  >
-                    <SkipBack className="h-4 w-4" />
-                  </Button>
-                  <Button
-                    size="icon"
-                    className="h-8 w-8 bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full"
-                    onClick={handlePlay}
-                  >
-                    {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                  </Button>
-                  <Button
-                    size="icon"
-                    variant="ghost"
-                    className="h-8 w-8 text-[#C8A97E] hover:text-white hover:bg-[#C8A97E]/20"
-                    onClick={handleNextTrack}
-                  >
-                    <SkipForward className="h-4 w-4" />
-                  </Button>
-                </div>
-              </div>
-
-              {/* Progress bar */}
+              {/* Progress bar with smoother animation */}
               <div className="mt-2 relative h-1 bg-gray-800 rounded-full overflow-hidden">
                 <motion.div
                   className="absolute h-full bg-[#C8A97E] rounded-full"
                   style={{ width: `${(currentTime / duration) * 100}%` }}
+                  transition={{ duration: 0.3, ease: "linear" }}
                 />
               </div>
             </Card>
