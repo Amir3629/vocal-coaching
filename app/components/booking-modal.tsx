@@ -494,7 +494,29 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             onClose={() => setShowAGB(false)}
             title="Allgemeine Geschäftsbedingungen"
           >
-            {/* AGB content */}
+            <div className="space-y-6">
+              <section>
+                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">1. Geltungsbereich</h3>
+                <p className="text-gray-300">
+                  Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge über Gesangsunterricht 
+                  und damit verbundene Leistungen zwischen der Gesangslehrerin und dem/der Schüler/in.
+                </p>
+              </section>
+              <section>
+                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">2. Unterrichtszeiten</h3>
+                <p className="text-gray-300">
+                  Die vereinbarten Unterrichtszeiten sind verbindlich. Bei Verhinderung ist eine Absage 
+                  mindestens 24 Stunden vor dem Termin erforderlich.
+                </p>
+              </section>
+              <section>
+                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">3. Zahlungsbedingungen</h3>
+                <p className="text-gray-300">
+                  Die Unterrichtsgebühren sind im Voraus zu entrichten. Die Anzahlung sichert die Buchung 
+                  und wird mit der ersten Unterrichtsstunde verrechnet.
+                </p>
+              </section>
+            </div>
           </LegalDocumentModal>
 
           <LegalDocumentModal
@@ -502,7 +524,29 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             onClose={() => setShowDatenschutz(false)}
             title="Datenschutzerklärung"
           >
-            {/* Datenschutz content */}
+            <div className="space-y-6">
+              <section>
+                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">1. Datenschutz auf einen Blick</h3>
+                <p className="text-gray-300">
+                  Ihre personenbezogenen Daten werden nur für die Durchführung des Unterrichts und die damit 
+                  verbundene Kommunikation verwendet.
+                </p>
+              </section>
+              <section>
+                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">2. Datenerfassung</h3>
+                <p className="text-gray-300">
+                  Wir erfassen nur die für den Unterricht notwendigen Daten wie Name, Kontaktinformationen 
+                  und relevante Informationen zu Ihrem musikalischen Hintergrund.
+                </p>
+              </section>
+              <section>
+                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">3. Ihre Rechte</h3>
+                <p className="text-gray-300">
+                  Sie haben das Recht auf Auskunft, Berichtigung oder Löschung Ihrer Daten. Kontaktieren 
+                  Sie uns bei Fragen zum Datenschutz.
+                </p>
+              </section>
+            </div>
           </LegalDocumentModal>
         </>
       )}
