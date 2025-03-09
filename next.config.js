@@ -9,7 +9,9 @@ const nextConfig = {
   reactStrictMode: true,
   optimizeFonts: true,
   swcMinify: true,
-  unoptimized: true,
+  images: {
+    unoptimized: true
+  },
   experimental: {
     scrollRestoration: true
   }
