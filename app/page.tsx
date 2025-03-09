@@ -246,11 +246,10 @@ export default function Home() {
                   "Profis"
                 ],
                 duration: "60-90 min",
-                location: "Studio Berlin / Online"
+                location: "Studio Berlin"
               }}
               image="/images/services/studio.jpg"
               delay={0.1}
-              iconAnimation="pulse"
             />
             
             <ServiceCard
@@ -277,11 +276,10 @@ export default function Home() {
                   "Gesangslehrer"
                 ],
                 duration: "60-90 min",
-                location: "Studio Berlin / Online"
+                location: "Studio Berlin"
               }}
               image="/images/services/jazz.jpg"
               delay={0.2}
-              iconAnimation="rotate"
             />
             
             <ServiceCard
@@ -313,7 +311,6 @@ export default function Home() {
               }}
               image="/images/services/performance.jpg"
               delay={0.3}
-              iconAnimation="bounce"
             />
             
             <ServiceCard
@@ -345,7 +342,6 @@ export default function Home() {
               }}
               image="/images/services/piano.jpg"
               delay={0.4}
-              iconAnimation="float"
             />
           </div>
           
