@@ -32,6 +32,11 @@ const ImpressumContent = dynamic(
 export default function Footer() {
   const [selectedDoc, setSelectedDoc] = useState<string | null>(null);
 
+  const handleCloseModal = () => {
+    setSelectedDoc(null);
+    document.body.style.overflow = 'unset';
+  };
+
   const legalDocs = [
     { title: "Datenschutz", component: DatenschutzContent },
     { title: "AGB", component: AGBContent },
@@ -166,16 +171,14 @@ export default function Footer() {
         </div>
 
         {/* Legal Document Modal */}
-        {selectedDoc && (
-          <LegalDocumentModal
-            isOpen={true}
-            onClose={() => setSelectedDoc(null)}
-            title={selectedDoc}
-          >
-            {legalDocs.find(doc => doc.title === selectedDoc)?.component && 
-              createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
-          </LegalDocumentModal>
-        )}
+        <LegalDocumentModal
+          isOpen={selectedDoc !== null}
+          onClose={handleCloseModal}
+          title={selectedDoc || ""}
+        >
+          {selectedDoc && legalDocs.find(doc => doc.title === selectedDoc)?.component && 
+            createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
+        </LegalDocumentModal>
       </div>
     </footer>
   )

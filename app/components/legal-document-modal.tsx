@@ -17,21 +17,17 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose()
     }
-    window.addEventListener('keydown', handleEscape)
-    return () => window.removeEventListener('keydown', handleEscape)
-  }, [onClose])
-
-  // Prevent body scroll when modal is open
-  useEffect(() => {
+    
     if (isOpen) {
+      window.addEventListener('keydown', handleEscape)
       document.body.style.overflow = 'hidden'
-    } else {
-      document.body.style.overflow = 'unset'
     }
+    
     return () => {
+      window.removeEventListener('keydown', handleEscape)
       document.body.style.overflow = 'unset'
     }
-  }, [isOpen])
+  }, [isOpen, onClose])
 
   return (
     <AnimatePresence mode="wait">
@@ -42,7 +38,7 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
             className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
             onClick={onClose}
           />
@@ -53,7 +49,7 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.6, ease: [0.32, 0.72, 0, 1] }}
+              transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
               className="w-full max-w-4xl bg-[#0A0A0A] rounded-xl shadow-xl overflow-hidden relative"
             >
               <div className="sticky top-0 bg-[#0A0A0A] z-10 px-6 py-4 border-b border-white/10 flex items-center justify-between">
