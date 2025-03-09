@@ -183,7 +183,7 @@ export default function LanguageSwitcher() {
   return (
     <motion.button
       onClick={toggleLanguage}
-      className="fixed top-4 right-4 z-50 px-4 py-2 bg-[#0A0A0A]/80 backdrop-blur-sm border border-[#C8A97E]/20 rounded-lg text-[#C8A97E] hover:bg-[#C8A97E]/10 transition-colors"
+      className="fixed top-6 right-6 z-30 px-4 py-1.5 bg-black/80 backdrop-blur-sm border border-[#C8A97E] rounded-full text-[#C8A97E] hover:bg-[#C8A97E] hover:text-black transition-all duration-300 text-sm font-light tracking-wider"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       transition={{ type: "spring", stiffness: 400, damping: 17 }}
