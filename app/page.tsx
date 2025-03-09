@@ -129,7 +129,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
-            Melanie Wainwright
+            Mel jazz
           </motion.h1>
           <motion.p 
             className="text-xl md:text-3xl mb-8 text-white/90"
@@ -137,7 +137,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.1 }}
           >
-            Jazz Vocal Coaching in Berlin
+            Vocal Coaching in Berlin
           </motion.p>
           <motion.div 
             className="flex flex-col sm:flex-row gap-4 justify-center"

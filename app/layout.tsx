@@ -20,7 +20,7 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Melanie Wainwright | Jazz Vocal Coaching in Berlin",
+  title: "Mel jazz | Vocal Coaching in Berlin",
   description:
     "Professional jazz vocal coaching services in Berlin. Private lessons, workshops, and performance coaching for all levels.",
   generator: 'v0.dev'

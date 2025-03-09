@@ -51,7 +51,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             {/* Left Column - Brand & Social Links */}
             <div>
-              <h3 className="text-xl text-white mb-4">Melanie Wainwright</h3>
+              <h3 className="text-xl text-white mb-4">Mel jazz</h3>
               <div className="flex gap-6">
                 {socialLinks.map((item) => (
                   <Link
@@ -72,7 +72,7 @@ export default function Footer() {
 
             {/* Middle Column - Subtitle */}
             <div className="flex flex-col items-center justify-start">
-              <p className="text-gray-400">Jazz Vocal Coaching in Berlin</p>
+              <p className="text-gray-400">Vocal Coaching in Berlin</p>
             </div>
 
             {/* Right Column - Legal Links */}
@@ -94,7 +94,7 @@ export default function Footer() {
           {/* Copyright Notice - Centered at Bottom */}
           <div className="text-center mt-12">
             <p className="text-sm text-gray-400">
-              © 2025 Melanie Wainwright.<br />
+              © 2025 Mel jazz.<br />
               Alle Rechte vorbehalten.
             </p>
           </div>
