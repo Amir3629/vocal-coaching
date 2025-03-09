@@ -51,6 +51,11 @@ const skillLevels = [
   { id: "advanced", label: "Profi" }
 ]
 
+const timeSlots = [
+  "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", 
+  "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"
+]
+
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [currentStep, setCurrentStep] = useState(1)
   const [selectedService, setSelectedService] = useState<string>("")
@@ -164,8 +169,16 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               initial={{ opacity: 0, scale: 0.95, y: 20 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              className="w-full max-w-lg bg-[#0A0A0A] rounded-xl shadow-xl overflow-hidden"
+              className="w-full max-w-lg bg-[#0A0A0A] rounded-xl shadow-xl overflow-hidden relative"
             >
+              {/* Close Button */}
+              <button
+                onClick={onClose}
+                className="absolute top-4 right-4 p-2 text-gray-400 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
+
               {/* Progress Bar */}
               <div className="relative h-1.5 bg-[#1A1A1A]">
                 <motion.div
@@ -266,27 +279,24 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 )}
 
                 {currentStep === 3 && (
-                  <div>
-                    <h2 className="text-2xl font-semibold text-white mb-4">
+                  <div className="space-y-6">
+                    <h2 className="text-2xl font-semibold text-white text-center mb-6">
                       Wählen Sie eine Uhrzeit
                     </h2>
                     <div className="grid grid-cols-3 gap-3">
-                      {Array.from({ length: 8 }, (_, i) => {
-                        const hour = 10 + i
-                        return (
-                          <button
-                            key={hour}
-                            onClick={() => handleTimeSelect(`${hour}:00`)}
-                            className={`p-3 rounded-lg text-center transition-all ${
-                              selectedTime === `${hour}:00`
-                                ? "bg-[#C8A97E] text-black"
-                                : "bg-gray-800 hover:bg-gray-700 text-white"
-                            }`}
-                          >
-                            {`${hour}:00`}
-                          </button>
-                        )
-                      })}
+                      {timeSlots.map((time) => (
+                        <button
+                          key={time}
+                          onClick={() => handleTimeSelect(time)}
+                          className={`p-3 rounded-lg border transition-all ${
+                            selectedTime === time
+                              ? "border-[#C8A97E] bg-[#C8A97E]/10 text-white"
+                              : "border-white/10 hover:border-[#C8A97E]/50 text-gray-400 hover:text-white"
+                          }`}
+                        >
+                          {time}
+                        </button>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -430,25 +440,30 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   </div>
                 )}
 
-                <div className="flex justify-between mt-6">
+                {/* Navigation Buttons */}
+                <div className="flex justify-between mt-8">
                   {currentStep > 1 && (
                     <button
-                      onClick={() => setCurrentStep(currentStep - 1)}
-                      className="px-4 py-2 text-sm text-white hover:text-[#C8A97E] transition-colors"
+                      onClick={handleBack}
+                      className="px-6 py-2 text-white hover:text-[#C8A97E] transition-colors"
                     >
                       Zurück
                     </button>
                   )}
-                  {currentStep < 4 && currentStep !== 1 && (
+                  <div className="flex-1" />
+                  {currentStep < 4 ? (
                     <button
-                      onClick={() => setCurrentStep(currentStep + 1)}
-                      disabled={
-                        (currentStep === 2 && !selectedDate) ||
-                        (currentStep === 3 && !selectedTime)
-                      }
-                      className="ml-auto px-4 py-2 text-sm bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      onClick={handleNext}
+                      className="px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
                     >
                       Weiter
+                    </button>
+                  ) : (
+                    <button
+                      onClick={handleSubmit}
+                      className="px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
+                    >
+                      Buchung abschließen
                     </button>
                   )}
                 </div>
