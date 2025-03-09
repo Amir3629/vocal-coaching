@@ -1,9 +1,10 @@
-  <div 
-    className="relative min-h-screen flex items-center justify-center py-20"
-    style={{
-      backgroundImage: `linear-gradient(to bottom, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url(${imagePath})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundAttachment: 'fixed'
-    }}
-  > 
+        <div 
+          className="absolute inset-0 z-0"
+          style={{
+            backgroundImage: `url(${process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/backgrounds/contact-bg.jpg' : '/images/backgrounds/contact-bg.jpg'})`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            backgroundBlendMode: 'overlay',
+          }}
+        /> 

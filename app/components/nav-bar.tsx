@@ -58,7 +58,7 @@ export default function NavBar() {
           >
             <Link href="/" className="flex items-center">
               <Image
-                src="/images/logo/ml-signature.svg"
+                src={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logo/ml-signature.svg" : "/images/logo/ml-signature.svg"}
                 alt="ML Logo"
                 width={140}
                 height={70}

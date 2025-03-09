@@ -6,7 +6,6 @@ import { format, addMonths, subMonths, isSameDay, isBefore, startOfToday, startO
 import { de } from "date-fns/locale"
 import { ChevronLeft, ChevronRight, X, Check } from "lucide-react"
 import { z } from "zod"
-import LegalDocumentModal from "./legal-document-modal"
 
 interface BookingModalProps {
   isOpen: boolean
@@ -63,9 +62,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string>("")
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
-  const [showAGB, setShowAGB] = useState(false)
-  const [showDatenschutz, setShowDatenschutz] = useState(false)
-  const [showSuccess, setShowSuccess] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -75,6 +71,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     acceptTerms: false
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [showSuccess, setShowSuccess] = useState(false)
 
   const nextMonth = () => setCurrentDate(addMonths(currentDate, 1))
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1))
@@ -132,12 +129,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Here you would typically send the data to your backend
+    // Show success message
     setShowSuccess(true)
+    // Close modal after delay
     setTimeout(() => {
       setShowSuccess(false)
       onClose()
-    }, 3000)
+    }, 2000)
   }
 
   const slideVariants = {
@@ -327,6 +325,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         }
                         className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
                       />
+                      {errors.name && (
+                        <p className="text-red-500 text-sm mt-1">{errors.name}</p>
+                      )}
                     </div>
 
                     <div>
@@ -341,6 +342,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         }
                         className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
                       />
+                      {errors.email && (
+                        <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                      )}
                     </div>
 
                     <div>
@@ -375,6 +379,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           </option>
                         ))}
                       </select>
+                      {errors.level && (
+                        <p className="text-red-500 text-sm mt-1">{errors.level}</p>
+                      )}
                     </div>
 
                     <div>
@@ -403,21 +410,26 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       />
                       <label htmlFor="terms" className="text-sm text-gray-300">
                         Ich akzeptiere die{" "}
-                        <button
-                          onClick={() => setShowAGB(true)}
+                        <a
+                          href="/legal/agb"
+                          target="_blank"
                           className="text-[#C8A97E] hover:underline"
                         >
                           AGB
-                        </button>{" "}
+                        </a>{" "}
                         und{" "}
-                        <button
-                          onClick={() => setShowDatenschutz(true)}
+                        <a
+                          href="/legal/datenschutz"
+                          target="_blank"
                           className="text-[#C8A97E] hover:underline"
                         >
                           Datenschutzerklärung
-                        </button>
+                        </a>
                       </label>
                     </div>
+                    {errors.terms && (
+                      <p className="text-red-500 text-sm">{errors.terms}</p>
+                    )}
                   </div>
                 )}
 
@@ -435,12 +447,32 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   </div>
                 )}
 
+                {/* Success Message */}
+                <AnimatePresence>
+                  {showSuccess && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -20 }}
+                      className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
+                    >
+                      <div className="bg-[#1A1A1A] rounded-lg p-6 text-center">
+                        <div className="w-12 h-12 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
+                          <Check className="w-6 h-6 text-[#C8A97E]" />
+                        </div>
+                        <h3 className="text-lg font-medium text-white mb-2">Buchung erfolgreich!</h3>
+                        <p className="text-gray-400">Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+
                 {/* Navigation Buttons */}
                 <div className="flex justify-between mt-8">
                   {currentStep > 1 && (
                     <button
                       onClick={handleBack}
-                      className="px-4 py-2 text-white hover:text-[#C8A97E] transition-colors text-sm"
+                      className="px-4 py-2 text-sm text-white hover:text-[#C8A97E] transition-colors"
                     >
                       Zurück
                     </button>
@@ -449,14 +481,14 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   {currentStep < 4 ? (
                     <button
                       onClick={handleNext}
-                      className="px-4 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors text-sm"
+                      className="px-4 py-2 text-sm bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
                     >
                       Weiter
                     </button>
                   ) : (
                     <button
                       onClick={handleSubmit}
-                      className="px-4 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors text-sm"
+                      className="px-4 py-2 text-sm bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
                     >
                       Buchung abschließen
                     </button>
@@ -465,89 +497,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               </div>
             </motion.div>
           </div>
-
-          {/* Success Message */}
-          <AnimatePresence>
-            {showSuccess && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                className="fixed inset-0 z-50 flex items-center justify-center p-4"
-              >
-                <div className="bg-[#0A0A0A] rounded-xl p-6 border border-[#C8A97E]/20 text-center">
-                  <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
-                    <Check className="w-8 h-8 text-[#C8A97E]" />
-                  </div>
-                  <h3 className="text-xl font-medium text-white mb-2">Buchung erfolgreich!</h3>
-                  <p className="text-gray-400">
-                    Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.
-                  </p>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Legal Document Modals */}
-          <LegalDocumentModal
-            isOpen={showAGB}
-            onClose={() => setShowAGB(false)}
-            title="Allgemeine Geschäftsbedingungen"
-          >
-            <div className="space-y-6">
-              <section>
-                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">1. Geltungsbereich</h3>
-                <p className="text-gray-300">
-                  Diese Allgemeinen Geschäftsbedingungen gelten für alle Verträge über Gesangsunterricht 
-                  und damit verbundene Leistungen zwischen der Gesangslehrerin und dem/der Schüler/in.
-                </p>
-              </section>
-              <section>
-                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">2. Unterrichtszeiten</h3>
-                <p className="text-gray-300">
-                  Die vereinbarten Unterrichtszeiten sind verbindlich. Bei Verhinderung ist eine Absage 
-                  mindestens 24 Stunden vor dem Termin erforderlich.
-                </p>
-              </section>
-              <section>
-                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">3. Zahlungsbedingungen</h3>
-                <p className="text-gray-300">
-                  Die Unterrichtsgebühren sind im Voraus zu entrichten. Die Anzahlung sichert die Buchung 
-                  und wird mit der ersten Unterrichtsstunde verrechnet.
-                </p>
-              </section>
-            </div>
-          </LegalDocumentModal>
-
-          <LegalDocumentModal
-            isOpen={showDatenschutz}
-            onClose={() => setShowDatenschutz(false)}
-            title="Datenschutzerklärung"
-          >
-            <div className="space-y-6">
-              <section>
-                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">1. Datenschutz auf einen Blick</h3>
-                <p className="text-gray-300">
-                  Ihre personenbezogenen Daten werden nur für die Durchführung des Unterrichts und die damit 
-                  verbundene Kommunikation verwendet.
-                </p>
-              </section>
-              <section>
-                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">2. Datenerfassung</h3>
-                <p className="text-gray-300">
-                  Wir erfassen nur die für den Unterricht notwendigen Daten wie Name, Kontaktinformationen 
-                  und relevante Informationen zu Ihrem musikalischen Hintergrund.
-                </p>
-              </section>
-              <section>
-                <h3 className="text-lg font-medium text-[#C8A97E] mb-3">3. Ihre Rechte</h3>
-                <p className="text-gray-300">
-                  Sie haben das Recht auf Auskunft, Berichtigung oder Löschung Ihrer Daten. Kontaktieren 
-                  Sie uns bei Fragen zum Datenschutz.
-                </p>
-              </section>
-            </div>
-          </LegalDocumentModal>
         </>
       )}
     </AnimatePresence>
