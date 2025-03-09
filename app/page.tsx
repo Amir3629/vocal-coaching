@@ -338,11 +338,12 @@ export default function Home() {
                 ],
                 duration: "Wöchentliche Proben",
                 location: "Berlin",
+                price: "Ab 25€/Monat",
                 link: "https://chornextdoor.de"
               }}
               image="/images/services/piano.jpg"
               delay={0.4}
-              className="h-full"
+              price="Ab 25€/Monat"
             />
           </div>
           
@@ -371,8 +372,8 @@ export default function Home() {
 
       {/* References Section */}
       <section id="references" className="py-20 bg-[#040202]">
-        <GallerySection />
-        <Certifications />
+      <GallerySection />
+      <Certifications />
         <Collaborations />
       </section>
 
