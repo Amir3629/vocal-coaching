@@ -4,7 +4,7 @@ import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import CookieConsent from "./components/cookie-consent"
 import Footer from "./components/footer"
-import LanguageSwitcher, { LanguageProvider } from "@/app/components/language-switcher"
+import { LanguageProvider } from "@/app/components/language-switcher"
 
 const inter = Inter({ subsets: ["latin"] })
 const playfair = Playfair_Display({ 
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
   title: "Mel jazz | Vocal Coaching in Berlin",
   description:
     "Professional jazz vocal coaching services in Berlin. Private lessons, workshops, and performance coaching for all levels.",
-  generator: 'v0.dev'
+  generator: 'v0dev'
 }
 
 export default function RootLayout({
@@ -36,7 +36,6 @@ export default function RootLayout({
     <html lang="en" className={`dark ${playfair.variable}`}>
       <body className={`${inter.className} antialiased`}>
         <LanguageProvider>
-          <LanguageSwitcher />
           {children}
           <Footer />
           <CookieConsent />
