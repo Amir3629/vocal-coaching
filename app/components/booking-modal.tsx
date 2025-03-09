@@ -6,6 +6,7 @@ import { format, addMonths, subMonths, isSameDay, isBefore, startOfToday, startO
 import { de } from "date-fns/locale"
 import { ChevronLeft, ChevronRight, X, Check } from "lucide-react"
 import { z } from "zod"
+import LegalDocumentModal from "./legal-document-modal"
 
 interface BookingModalProps {
   isOpen: boolean
@@ -62,6 +63,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(null)
   const [selectedTime, setSelectedTime] = useState<string>("")
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
+  const [showAGB, setShowAGB] = useState(false)
+  const [showDatenschutz, setShowDatenschutz] = useState(false)
+  const [showSuccess, setShowSuccess] = useState(false)
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -128,7 +132,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    // Submit logic here
+    // Here you would typically send the data to your backend
+    setShowSuccess(true)
+    setTimeout(() => {
+      setShowSuccess(false)
+      onClose()
+    }, 3000)
   }
 
   const slideVariants = {
@@ -316,11 +325,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         onChange={(e) =>
                           setFormData({ ...formData, name: e.target.value })
                         }
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
                       />
-                      {errors.name && (
-                        <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-                      )}
                     </div>
 
                     <div>
@@ -333,11 +339,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         onChange={(e) =>
                           setFormData({ ...formData, email: e.target.value })
                         }
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
                       />
-                      {errors.email && (
-                        <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-                      )}
                     </div>
 
                     <div>
@@ -350,7 +353,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         onChange={(e) =>
                           setFormData({ ...formData, phone: e.target.value })
                         }
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
                       />
                     </div>
 
@@ -363,7 +366,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         onChange={(e) =>
                           setFormData({ ...formData, level: e.target.value })
                         }
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
                       >
                         <option value="">Bitte wählen</option>
                         {skillLevels.map((level) => (
@@ -372,9 +375,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           </option>
                         ))}
                       </select>
-                      {errors.level && (
-                        <p className="text-red-500 text-sm mt-1">{errors.level}</p>
-                      )}
                     </div>
 
                     <div>
@@ -387,7 +387,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           setFormData({ ...formData, message: e.target.value })
                         }
                         rows={3}
-                        className="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-lg focus:outline-none focus:border-[#C8A97E]"
+                        className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
                       />
                     </div>
 
@@ -403,26 +403,21 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       />
                       <label htmlFor="terms" className="text-sm text-gray-300">
                         Ich akzeptiere die{" "}
-                        <a
-                          href="/legal/agb"
-                          target="_blank"
+                        <button
+                          onClick={() => setShowAGB(true)}
                           className="text-[#C8A97E] hover:underline"
                         >
                           AGB
-                        </a>{" "}
+                        </button>{" "}
                         und{" "}
-                        <a
-                          href="/legal/datenschutz"
-                          target="_blank"
+                        <button
+                          onClick={() => setShowDatenschutz(true)}
                           className="text-[#C8A97E] hover:underline"
                         >
                           Datenschutzerklärung
-                        </a>
+                        </button>
                       </label>
                     </div>
-                    {errors.terms && (
-                      <p className="text-red-500 text-sm">{errors.terms}</p>
-                    )}
                   </div>
                 )}
 
@@ -445,7 +440,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   {currentStep > 1 && (
                     <button
                       onClick={handleBack}
-                      className="px-6 py-2 text-white hover:text-[#C8A97E] transition-colors"
+                      className="px-4 py-2 text-white hover:text-[#C8A97E] transition-colors text-sm"
                     >
                       Zurück
                     </button>
@@ -454,14 +449,14 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   {currentStep < 4 ? (
                     <button
                       onClick={handleNext}
-                      className="px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
+                      className="px-4 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors text-sm"
                     >
                       Weiter
                     </button>
                   ) : (
                     <button
                       onClick={handleSubmit}
-                      className="px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
+                      className="px-4 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors text-sm"
                     >
                       Buchung abschließen
                     </button>
@@ -470,6 +465,45 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               </div>
             </motion.div>
           </div>
+
+          {/* Success Message */}
+          <AnimatePresence>
+            {showSuccess && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4"
+              >
+                <div className="bg-[#0A0A0A] rounded-xl p-6 border border-[#C8A97E]/20 text-center">
+                  <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
+                    <Check className="w-8 h-8 text-[#C8A97E]" />
+                  </div>
+                  <h3 className="text-xl font-medium text-white mb-2">Buchung erfolgreich!</h3>
+                  <p className="text-gray-400">
+                    Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+
+          {/* Legal Document Modals */}
+          <LegalDocumentModal
+            isOpen={showAGB}
+            onClose={() => setShowAGB(false)}
+            title="Allgemeine Geschäftsbedingungen"
+          >
+            {/* AGB content */}
+          </LegalDocumentModal>
+
+          <LegalDocumentModal
+            isOpen={showDatenschutz}
+            onClose={() => setShowDatenschutz(false)}
+            title="Datenschutzerklärung"
+          >
+            {/* Datenschutz content */}
+          </LegalDocumentModal>
         </>
       )}
     </AnimatePresence>
