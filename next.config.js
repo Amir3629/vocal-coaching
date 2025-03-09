@@ -10,7 +10,8 @@ const nextConfig = {
   optimizeFonts: true,
   swcMinify: true,
   images: {
-    unoptimized: true
+    unoptimized: true,
+    domains: ['images.unsplash.com']
   },
   experimental: {
     scrollRestoration: true

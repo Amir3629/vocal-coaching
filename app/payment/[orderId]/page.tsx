@@ -1,51 +1,71 @@
-import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+"use client"
+
+import { useEffect, useState } from "react"
+import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js"
+import { useRouter } from "next/navigation"
 import { capturePayPalOrder } from '@/app/lib/payment-service';
 import { sendPaymentConfirmationEmail } from '@/app/lib/email-service';
 
 export default function PaymentPage({ params }: { params: { orderId: string } }) {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
+
   const handlePaymentSuccess = async (data: any) => {
     try {
-      const payment = await capturePayPalOrder(data.orderID);
-      
-      if (payment.status === 'COMPLETED') {
-        // Send payment confirmation email
-        // Note: You'll need to store and retrieve booking details
-        // This is a simplified version
-        await sendPaymentConfirmationEmail(
-          payment.payerEmail,
-          'Customer', // You should store and retrieve the customer name
-          new Date(), // You should store and retrieve the booking date
-          '10:00 - 11:00' // You should store and retrieve the booking time
-        );
+      const response = await fetch("/api/capture-paypal-order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderId: data.orderID,
+        }),
+      })
+
+      if (!response.ok) {
+        throw new Error("Payment capture failed")
       }
+
+      router.push("/booking/success")
     } catch (error) {
-      console.error('Error processing payment:', error);
+      console.error("Payment error:", error)
+      router.push("/booking/error")
     }
-  };
+  }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
-      <div className="max-w-md w-full space-y-8 bg-card p-6 rounded-lg shadow-lg">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-foreground mb-2">
-            Zahlung bestätigen
-          </h1>
-          <p className="text-muted-foreground mb-6">
-            Bitte zahlen Sie die Anzahlung von 30€, um Ihre Buchung zu bestätigen
-          </p>
-        </div>
-
-        <PayPalScriptProvider
-          options={{
-            clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
-            currency: 'EUR',
-          }}
-        >
+    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4">
+      <div className="w-full max-w-md bg-[#1A1A1A] rounded-xl p-6 space-y-6">
+        <h1 className="text-2xl font-semibold text-white text-center">Zahlung bestätigen</h1>
+        <p className="text-gray-400 text-center">
+          Bitte bestätigen Sie die Zahlung von 30€ als Anzahlung für Ihre Buchung.
+        </p>
+        
+        <PayPalScriptProvider options={{
+          clientId: process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+          currency: "EUR"
+        }}>
           <PayPalButtons
-            style={{ layout: 'vertical' }}
-            createOrder={() => Promise.resolve(params.orderId)}
-            onApprove={async (data) => {
-              await handlePaymentSuccess(data);
+            style={{ layout: "vertical" }}
+            createOrder={(data, actions) => {
+              return actions.order.create({
+                intent: "CAPTURE",
+                purchase_units: [
+                  {
+                    amount: {
+                      value: "30.00",
+                      currency_code: "EUR"
+                    },
+                    description: "Anzahlung für Gesangsunterricht"
+                  }
+                ]
+              })
+            }}
+            onApprove={async (data, actions) => {
+              if (actions.order) {
+                const order = await actions.order.capture()
+                await handlePaymentSuccess(order)
+              }
             }}
           />
         </PayPalScriptProvider>
@@ -58,5 +78,5 @@ export default function PaymentPage({ params }: { params: { orderId: string } })
         </div>
       </div>
     </div>
-  );
+  )
 } 
