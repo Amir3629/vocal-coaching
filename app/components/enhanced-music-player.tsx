@@ -6,6 +6,7 @@ import Image from "next/image";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Slider } from "@/components/ui/slider";
 
 declare global {
   interface Window {
@@ -64,6 +65,9 @@ const defaultTracks: Track[] = [
     thumbnail: "https://img.youtube.com/vi/hFdMHvB6-Jk/maxresdefault.jpg"
   }
 ];
+
+// Add event system for media coordination
+const MEDIA_STOP_EVENT = 'stopAllMedia'
 
 export default function EnhancedMusicPlayer() {
   const [tracks, setTracks] = useState<Track[]>(defaultTracks);
@@ -228,12 +232,27 @@ export default function EnhancedMusicPlayer() {
     };
   }, [isPlaying, lastPlayTime]);
 
+  useEffect(() => {
+    // Listen for stop events from other media players
+    const handleMediaStop = () => {
+      if (isPlaying && playerRef.current) {
+        playerRef.current.pauseVideo();
+        setIsPlaying(false);
+      }
+    };
+
+    window.addEventListener(MEDIA_STOP_EVENT, handleMediaStop);
+    return () => window.removeEventListener(MEDIA_STOP_EVENT, handleMediaStop);
+  }, [isPlaying]);
+
   const handlePlay = () => {
     setIsPlaying(!isPlaying);
     if (playerRef.current) {
       if (isPlaying) {
         playerRef.current.pauseVideo();
       } else {
+        // Dispatch event to stop other media
+        window.dispatchEvent(new Event(MEDIA_STOP_EVENT));
         playerRef.current.playVideo();
       }
     }

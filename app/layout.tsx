@@ -4,6 +4,7 @@ import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import CookieConsent from "./components/cookie-consent"
 import Footer from "./components/footer"
+import LanguageSwitcher from "@/app/components/language-switcher"
 
 const inter = Inter({ subsets: ["latin"] })
 const playfair = Playfair_Display({ 
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark ${playfair.variable}`}>
       <body className={`${inter.className} antialiased`}>
+        <LanguageSwitcher />
         {children}
         <Footer />
         <CookieConsent />

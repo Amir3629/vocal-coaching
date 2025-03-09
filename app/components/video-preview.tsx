@@ -4,6 +4,9 @@ import { useRef, useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { VolumeX, Volume2, Play, Pause } from "lucide-react"
 
+// Add event system for media coordination
+const MEDIA_STOP_EVENT = 'stopAllMedia'
+
 export default function VideoPreview() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
@@ -28,6 +31,19 @@ export default function VideoPreview() {
     }
   }, [])
 
+  useEffect(() => {
+    // Listen for stop events from other media players
+    const handleMediaStop = () => {
+      if (isPlaying && videoRef.current) {
+        videoRef.current.pause();
+        setIsPlaying(false);
+      }
+    };
+
+    window.addEventListener(MEDIA_STOP_EVENT, handleMediaStop);
+    return () => window.removeEventListener(MEDIA_STOP_EVENT, handleMediaStop);
+  }, [isPlaying]);
+
   const handleLoadStart = () => {
     setIsLoading(true)
     setHasError(false)
@@ -50,6 +66,8 @@ export default function VideoPreview() {
       if (isPlaying) {
         await videoRef.current.pause()
       } else {
+        // Dispatch event to stop other media
+        window.dispatchEvent(new Event(MEDIA_STOP_EVENT));
         await videoRef.current.play()
       }
       setIsPlaying(!isPlaying)
