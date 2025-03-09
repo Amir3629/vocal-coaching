@@ -4,7 +4,7 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { useState } from "react"
 import { useContext } from "react"
-import { LanguageContext } from "./language-switcher"
+import { LanguageContext, translations } from "./language-switcher"
 
 const collaborations = [
   {
@@ -59,7 +59,10 @@ const collaborations = [
 
 export default function Collaborations() {
   const [imageErrors, setImageErrors] = useState<{[key: string]: boolean}>({})
-  const { translations } = useContext(LanguageContext)
+  const { translations: t } = useContext(LanguageContext)
+
+  // Fallback title if translations are not available during static build
+  const sectionTitle = t?.partners?.title || translations.DE.partners.title
 
   return (
     <section className="py-20 bg-black">
@@ -71,7 +74,7 @@ export default function Collaborations() {
           viewport={{ once: true }}
           transition={{ duration: 0.8 }}
         >
-          <h2 className="section-heading mb-4">{translations.partners.title}</h2>
+          <h2 className="section-heading mb-4">{sectionTitle}</h2>
           <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
@@ -88,7 +91,9 @@ export default function Collaborations() {
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <Image
-                src={collab.logo}
+                src={process.env.NODE_ENV === 'production' 
+                  ? `/vocal-coaching${collab.logo}`
+                  : collab.logo}
                 alt={collab.name}
                 width={120}
                 height={40}
