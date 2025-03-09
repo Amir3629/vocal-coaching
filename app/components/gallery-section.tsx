@@ -207,35 +207,40 @@ export default function GallerySection() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 1.05 }}
                     transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="relative aspect-[4/3] w-full overflow-hidden rounded-[24px]"
+                    className="relative aspect-[4/3] w-full overflow-hidden rounded-[32px]"
                   >
                     <Image
                       src={selectedImage.src}
                       alt={selectedImage.alt}
                       fill
-                      className="object-contain rounded-[24px]"
+                      className="object-contain"
                       sizes="90vw"
                       quality={90}
                       priority
                       style={{
-                        borderRadius: '24px',
-                        WebkitBorderRadius: '24px',
-                        MozBorderRadius: '24px'
+                        borderRadius: '32px',
+                        WebkitBorderRadius: '32px',
+                        MozBorderRadius: '32px'
                       }}
                     />
                   </motion.div>
                 </AnimatePresence>
 
                 {nextImage && (
-                  <div className="absolute inset-0 pointer-events-none">
+                  <div className="absolute inset-0 pointer-events-none rounded-[32px] overflow-hidden">
                     <Image
                       src={nextImage.src}
                       alt={nextImage.alt}
                       fill
-                      className="object-contain opacity-0"
+                      className="object-contain"
                       sizes="90vw"
                       quality={90}
                       priority
+                      style={{
+                        borderRadius: '32px',
+                        WebkitBorderRadius: '32px',
+                        MozBorderRadius: '32px'
+                      }}
                     />
                   </div>
                 )}
