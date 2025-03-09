@@ -221,7 +221,7 @@ export default function Home() {
               <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 max-w-7xl mx-auto">
             <ServiceCard 
               title="Singen"
               description="Professionelle Gesangsausbildung für Bands und Musiker"
