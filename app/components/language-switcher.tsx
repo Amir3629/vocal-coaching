@@ -1,40 +1,43 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
+import React, { createContext, useState, useContext } from "react"
+import { motion } from "framer-motion"
 
 export const translations = {
   DE: {
     nav: {
-      home: "Start",
+      offers: "Angebote",
       about: "Über Mich",
-      services: "Angebote",
-      testimonials: "Referenzen",
+      references: "Referenzen",
       contact: "Kontakt"
     },
     hero: {
-      title: "Professionelles Vocal Coaching",
-      subtitle: "Jazz • Pop • Musical",
+      title: "Vocal Coaching in Berlin",
+      subtitle: "Entdecke deine Stimme",
       cta: "Jetzt buchen"
     },
     about: {
       title: "Über Mich",
+      description: "Halb Britin, halb Deutsche - und 100%ige Rheinländerin lebe ich freiwillig in Berlin. Meine musikalische Reise begann früh: vom Kinderchor über den Gospelchor \"Crescendo\" bis hin zu \"Die Männer\", einer der ersten Girl Bands in Deutschland.",
       readMore: "Mehr erfahren",
-      readLess: "Weniger anzeigen"
+      readLess: "Weniger anzeigen",
+      currentProjects: "Aktuelle Projekte",
+      projectsText: "Als stolzes Mitglied der internationalen Berliner Jazzszene bin ich nicht nur als Sängerin aktiv, sondern auch als Vocal Coach bei der Bandleiter Ausbildung in Wiesbaden tätig."
     },
     services: {
-      title: "Meine Angebote",
+      title: "Angebote",
       privateTitle: "Einzelunterricht",
-      privateDesc: "Individuelles Coaching für deine Stimme",
-      groupTitle: "Gruppenunterricht",
-      groupDesc: "Gemeinsam Singen und Lernen",
+      privateDesc: "Individuelles Vocal Coaching",
       workshopTitle: "Workshops",
-      workshopDesc: "Intensive Trainingseinheiten",
-      includes: "Beinhaltet",
-      suitable: "Geeignet für",
-      duration: "Dauer",
-      location: "Ort",
-      price: "Preis"
+      workshopDesc: "Gruppenunterricht & Seminare",
+      performanceTitle: "Performance Coaching",
+      performanceDesc: "Bühnenauftritte & Präsenz",
+      choirTitle: "Chor Next Door",
+      choirDesc: "Innovatives Chorprojekt"
+    },
+    gallery: {
+      title: "Galerie",
+      viewMore: "Mehr anzeigen"
     },
     testimonials: {
       title: "Was meine Schüler sagen"
@@ -44,51 +47,53 @@ export const translations = {
       name: "Name",
       email: "E-Mail",
       message: "Nachricht",
-      send: "Senden"
+      send: "Senden",
+      success: "Nachricht gesendet!",
+      error: "Ein Fehler ist aufgetreten."
+    },
+    legal: {
+      privacy: "Datenschutz",
+      terms: "AGB",
+      imprint: "Impressum"
     },
     footer: {
-      rights: "Alle Rechte vorbehalten",
-      legal: {
-        privacy: "Datenschutz",
-        terms: "AGB",
-        imprint: "Impressum"
-      }
-    },
-    partners: {
-      title: "Partner & Kollaborationen"
+      rights: "Alle Rechte vorbehalten"
     }
   },
   EN: {
     nav: {
-      home: "Home",
+      offers: "Services",
       about: "About",
-      services: "Services",
-      testimonials: "Testimonials",
+      references: "References",
       contact: "Contact"
     },
     hero: {
-      title: "Professional Vocal Coaching",
-      subtitle: "Jazz • Pop • Musical",
-      cta: "Book Now"
+      title: "Vocal Coaching in Berlin",
+      subtitle: "Discover your voice",
+      cta: "Book now"
     },
     about: {
       title: "About Me",
-      readMore: "Read More",
-      readLess: "Show Less"
+      description: "Half British, half German - and 100% Rhinelander living voluntarily in Berlin. My musical journey started early: from children's choir through gospel choir \"Crescendo\" to \"Die Männer\", one of the first girl bands in Germany.",
+      readMore: "Read more",
+      readLess: "Show less",
+      currentProjects: "Current Projects",
+      projectsText: "As a proud member of Berlin's international jazz scene, I'm not only active as a singer but also as a vocal coach at the bandleader training in Wiesbaden."
     },
     services: {
-      title: "My Services",
+      title: "Services",
       privateTitle: "Private Lessons",
-      privateDesc: "Individual coaching for your voice",
-      groupTitle: "Group Classes",
-      groupDesc: "Learn and sing together",
+      privateDesc: "Individual Vocal Coaching",
       workshopTitle: "Workshops",
-      workshopDesc: "Intensive training sessions",
-      includes: "Includes",
-      suitable: "Suitable for",
-      duration: "Duration",
-      location: "Location",
-      price: "Price"
+      workshopDesc: "Group Classes & Seminars",
+      performanceTitle: "Performance Coaching",
+      performanceDesc: "Stage Performance & Presence",
+      choirTitle: "Choir Next Door",
+      choirDesc: "Innovative Choir Project"
+    },
+    gallery: {
+      title: "Gallery",
+      viewMore: "View more"
     },
     testimonials: {
       title: "What My Students Say"
@@ -98,105 +103,70 @@ export const translations = {
       name: "Name",
       email: "Email",
       message: "Message",
-      send: "Send"
+      send: "Send",
+      success: "Message sent!",
+      error: "An error occurred."
+    },
+    legal: {
+      privacy: "Privacy Policy",
+      terms: "Terms & Conditions",
+      imprint: "Imprint"
     },
     footer: {
-      rights: "All rights reserved",
-      legal: {
-        privacy: "Privacy Policy",
-        terms: "Terms",
-        imprint: "Imprint"
-      }
-    },
-    partners: {
-      title: "Partners & Collaborations"
+      rights: "All rights reserved"
     }
   }
 }
 
 type Language = "DE" | "EN"
-type TranslationType = typeof translations.DE
 
 interface LanguageContextType {
-  currentLanguage: Language
-  translations: TranslationType
-  setLanguage: (lang: Language) => void
+  currentLang: Language
+  toggleLanguage: () => void
+  translations: typeof translations.DE | typeof translations.EN
 }
 
-const LanguageContext = createContext<LanguageContextType | null>(null)
+export const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [currentLanguage, setCurrentLanguage] = useState<Language>("DE")
-  const [isInitialLoad, setIsInitialLoad] = useState(true)
+  const [currentLang, setCurrentLang] = useState<Language>("DE")
 
-  useEffect(() => {
-    const savedLang = localStorage.getItem("preferredLanguage") as Language
-    if (savedLang && (savedLang === "DE" || savedLang === "EN")) {
-      setCurrentLanguage(savedLang)
-    }
-    setIsInitialLoad(false)
-  }, [])
+  const toggleLanguage = () => {
+    setCurrentLang(prev => prev === "DE" ? "EN" : "DE")
+  }
 
-  const setLanguage = (lang: Language) => {
-    setCurrentLanguage(lang)
-    localStorage.setItem("preferredLanguage", lang)
+  const value = {
+    currentLang,
+    toggleLanguage,
+    translations: translations[currentLang]
   }
 
   return (
-    <LanguageContext.Provider value={{
-      currentLanguage,
-      translations: translations[currentLanguage],
-      setLanguage
-    }}>
-      <AnimatePresence mode="wait">
-        {!isInitialLoad && (
-          <motion.div
-            key={currentLanguage}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-          >
-            {children}
-          </motion.div>
-        )}
-      </AnimatePresence>
+    <LanguageContext.Provider value={value}>
+      {children}
     </LanguageContext.Provider>
   )
 }
 
 export function useLanguage() {
   const context = useContext(LanguageContext)
-  if (!context) {
+  if (context === undefined) {
     throw new Error("useLanguage must be used within a LanguageProvider")
   }
   return context
 }
 
 export default function LanguageSwitcher() {
-  const { currentLanguage, setLanguage } = useLanguage()
-
-  const toggleLanguage = () => {
-    setLanguage(currentLanguage === "DE" ? "EN" : "DE")
-  }
+  const { currentLang, toggleLanguage } = useLanguage()
 
   return (
     <motion.button
       onClick={toggleLanguage}
-      className="fixed top-6 right-6 z-30 px-4 py-1.5 bg-black/80 backdrop-blur-sm border border-[#C8A97E] rounded-full text-[#C8A97E] hover:bg-[#C8A97E] hover:text-black transition-all duration-300 text-sm font-light tracking-wider"
-      whileHover={{ scale: 1.05 }}
+      whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.95 }}
-      transition={{ type: "spring", stiffness: 400, damping: 17 }}
+      className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors text-sm font-medium"
     >
-      <motion.span
-        key={currentLanguage}
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -10, opacity: 0 }}
-        transition={{ duration: 0.2 }}
-      >
-        {currentLanguage === "DE" ? "EN" : "DE"}
-      </motion.span>
+      {currentLang === 'DE' ? 'EN' : 'DE'}
     </motion.button>
   )
-}
+} 
