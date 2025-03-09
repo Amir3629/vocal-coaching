@@ -20,74 +20,126 @@ interface ServiceCardProps {
   }
   image: string
   delay?: number
-  className?: string
 }
 
-export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0, className = "" }: ServiceCardProps) {
+export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
+  const imagePath = process.env.NODE_ENV === 'production'
+    ? `/vocal-coaching${image}`
+    : image
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
-      transition={{ duration: 0.5, delay }}
-      className={`relative h-full ${className}`}
+      transition={{ duration: 0.7, ease: "easeOut", delay }}
+      className={`relative transform-gpu ${isHovered ? 'z-10' : 'z-0'}`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={{ 
+        transformStyle: 'preserve-3d',
+        perspective: '1000px'
+      }}
     >
-      <div className="relative h-full overflow-hidden rounded-xl border border-white/10 bg-[#0A0A0A] p-6">
-        <div className="relative z-10 space-y-4">
-          {/* Icon and Title */}
-          <div className="flex items-center gap-3">
-            {icon}
-            <h3 className="text-xl font-medium text-white">{title}</h3>
-          </div>
+      <motion.div
+        className="relative w-full rounded-2xl overflow-hidden"
+        animate={{ 
+          scale: isHovered ? 1.05 : 1,
+          y: isHovered ? -10 : 0
+        }}
+        transition={{ 
+          type: "spring",
+          stiffness: 200,
+          damping: 25
+        }}
+      >
+        {/* Background Image Layer */}
+        <div className="absolute inset-0 w-full h-full">
+          <Image
+            src={imagePath}
+            alt={title}
+            fill
+            className="object-cover transform-gpu transition-transform duration-1000 scale-110"
+            sizes="(max-width: 768px) 100vw, 33vw"
+            priority
+            onError={() => setImageError(true)}
+          />
+          {imageError && (
+            <div className="absolute inset-0 bg-[#0A0A0A] flex items-center justify-center">
+              <p className="text-[#C8A97E]/50 text-sm">Image not found</p>
+            </div>
+          )}
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/90 to-black/95 backdrop-blur-[2px]" />
+        </div>
 
-          {/* Description */}
-          <p className="text-gray-400">{description}</p>
-
-          {/* Features List */}
-          <div className="space-y-2">
-            {features.map((feature, index) => (
-              <motion.div
-                key={index}
-                className="flex items-center gap-2"
-                initial={isHovered ? {
-                  opacity: 0,
-                  x: -10
-                } : {}}
-                animate={isHovered ? {
-                  opacity: 1,
-                  x: 0
-                } : {}}
-                transition={{
+        {/* Content Layer */}
+        <div className="relative border border-[#C8A97E]/20 hover:border-[#C8A97E]/50 rounded-2xl overflow-hidden">
+          <div className="p-6">
+            {/* Title and Icon */}
+            <div className="flex items-start gap-4 mb-6">
+              <motion.div 
+                className="text-[#C8A97E] text-2xl"
+                animate={{ 
+                  rotate: isHovered ? [0, -10, 10, 0] : 0,
+                  scale: isHovered ? [1, 1.1, 1] : 1
+                }}
+                transition={{ 
                   duration: 0.5,
-                  delay: index * 0.1,
                   ease: "easeInOut"
                 }}
               >
-                <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                <p className="text-white/80 text-sm">{feature}</p>
+                {icon}
               </motion.div>
-            ))}
-          </div>
+              <div>
+                <h3 className="text-xl font-medium text-white mb-2">
+                  {title}
+                </h3>
+                <p className="text-white/70">
+                  {description}
+                </p>
+              </div>
+            </div>
 
-          {/* Expandable Details */}
-          <div className="relative overflow-hidden" style={{ minHeight: isHovered ? '200px' : '0' }}>
+            {/* Features */}
+            <div className="space-y-2 mb-6">
+              {features.map((feature, index) => (
+                <motion.div 
+                  key={index} 
+                  className="flex items-center gap-2"
+                  initial={false}
+                  animate={isHovered ? {
+                    x: [0, 5, 0],
+                    transition: {
+                      duration: 0.5,
+                      delay: index * 0.1,
+                      ease: "easeInOut"
+                    }
+                  } : {}}
+                >
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                  <p className="text-white/80 text-sm">{feature}</p>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Expandable Details */}
             <motion.div
-              className="absolute w-full"
+              className="overflow-hidden"
               animate={{
+                height: isHovered ? "auto" : 0,
                 opacity: isHovered ? 1 : 0,
-                y: isHovered ? 0 : 20
+                marginTop: isHovered ? "1.5rem" : 0
               }}
               transition={{
-                duration: 0.3,
+                duration: 0.5,
                 ease: [0.4, 0, 0.2, 1]
               }}
             >
               {details && (
-                <div className="space-y-4 pt-4">
+                <div className="space-y-4">
                   {details.includes && (
                     <div>
                       <h4 className="text-sm font-medium text-[#C8A97E] mb-2 flex items-center gap-2">
@@ -100,18 +152,15 @@ export default function ServiceCard({ title, description, icon, price, features,
                         {details.includes.map((item, index) => (
                           <motion.li
                             key={index}
-                            className="flex items-center gap-2 text-sm text-gray-400"
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{
-                              duration: 0.3,
-                              delay: index * 0.1
-                            }}
+                            transition={{ delay: index * 0.1, duration: 0.3 }}
+                            className="flex items-start gap-2"
                           >
-                            <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <svg className="w-4 h-4 text-[#C8A97E] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                             </svg>
-                            {item}
+                            <span className="text-sm text-white/70">{item}</span>
                           </motion.li>
                         ))}
                       </ul>
@@ -130,55 +179,70 @@ export default function ServiceCard({ title, description, icon, price, features,
                         {details.suitable.map((item, index) => (
                           <motion.li
                             key={index}
-                            className="flex items-center gap-2 text-sm text-gray-400"
                             initial={{ opacity: 0, x: -10 }}
                             animate={{ opacity: 1, x: 0 }}
-                            transition={{
-                              duration: 0.3,
-                              delay: index * 0.1 + 0.2
-                            }}
+                            transition={{ delay: index * 0.1 + 0.2, duration: 0.3 }}
+                            className="flex items-start gap-2"
                           >
-                            <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            <svg className="w-4 h-4 text-[#C8A97E] mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                             </svg>
-                            {item}
+                            <span className="text-sm text-white/70">{item}</span>
                           </motion.li>
                         ))}
                       </ul>
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-sm text-gray-400 pt-2">
-                    <div className="flex items-center gap-1">
-                      <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                      </svg>
-                      {details.duration}
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                      </svg>
-                      {details.location}
-                    </div>
+                  <div className="flex items-center justify-between gap-4 pt-2">
+                    {details.duration && (
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span className="text-sm text-white/70">{details.duration}</span>
+                      </div>
+                    )}
+
+                    {details.location && (
+                      <div className="flex items-center gap-2">
+                        <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        <span className="text-sm text-white/70">{details.location}</span>
+                      </div>
+                    )}
                   </div>
+
+                  {(details.price || details.link) && (
+                    <div className="mt-4 pt-4 border-t border-[#C8A97E]/20">
+                      {details.price && (
+                        <div className="text-[#C8A97E] font-medium mb-2">
+                          {details.price}
+                        </div>
+                      )}
+                      {details.link && (
+                        <a
+                          href={details.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 text-[#C8A97E] hover:text-[#B69A6E] transition-colors"
+                        >
+                          Mehr erfahren
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                          </svg>
+                        </a>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </motion.div>
           </div>
         </div>
-
-        {/* Background Image */}
-        <div
-          className="absolute inset-0 z-0 opacity-10 transition-opacity duration-300"
-          style={{
-            backgroundImage: `url(${image})`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center'
-          }}
-        />
-      </div>
+      </motion.div>
     </motion.div>
   )
 } 
