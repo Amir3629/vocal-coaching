@@ -14,8 +14,8 @@ export default function Navigation() {
   const { t } = useLanguage()
 
   const logoPath = process.env.NODE_ENV === 'production'
-    ? "/vocal-coaching/vocal-coaching/images/logo/logo.svg"
-    : "/images/logo/logo.svg"
+    ? "/vocal-coaching/vocal-coaching/images/logo/ml-logo.PNG"
+    : "/vocal-coaching/images/logo/ml-logo.PNG"
 
   const links = [
     { href: "/", label: t.nav.home },
@@ -38,7 +38,7 @@ export default function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-sm border-b border-white/10">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="relative w-32 h-12">
+          <Link href="/" className="relative w-40 h-16">
             <div className="relative w-full h-full">
               <Image
                 src={logoPath}
