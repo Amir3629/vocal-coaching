@@ -65,39 +65,39 @@ export default function ContactForm() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-black/40 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)] max-w-5xl mx-auto"
+            className="bg-black/40 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)] max-w-5xl mx-auto"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Contact Info */}
-              <div className="space-y-3">
+              <div className="space-y-5">
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
+                  <div className="p-2.5 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <MapPin className="w-5 h-5 text-[#C8A97E]" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-white/80 mb-1">Standort</h3>
+                    <h3 className="text-sm font-medium text-white/80 mb-1.5">Standort</h3>
                     <p className="text-base text-gray-400">Studio Berlin-Mitte</p>
                     <p className="text-base text-gray-400">Torstraße 177, 10115 Berlin</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
+                  <div className="p-2.5 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <Clock className="w-5 h-5 text-[#C8A97E]" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-white/80 mb-1">Verfügbarkeit</h3>
+                    <h3 className="text-sm font-medium text-white/80 mb-1.5">Verfügbarkeit</h3>
                     <p className="text-base text-gray-400">Montag - Freitag</p>
                     <p className="text-base text-gray-400">09:00 - 21:00 Uhr</p>
                   </div>
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
+                  <div className="p-2.5 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <Mail className="w-5 h-5 text-[#C8A97E]" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-medium text-white/80 mb-1">Email</h3>
+                    <h3 className="text-sm font-medium text-white/80 mb-1.5">Email</h3>
                     <p className="text-base text-gray-400">info@melanie-wainwright.de</p>
                   </div>
                 </div>
@@ -105,7 +105,7 @@ export default function ContactForm() {
 
               {/* Contact Form */}
               <div>
-                <form onSubmit={handleSubmit} className="space-y-3">
+                <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
                     <input
                       type="text"
