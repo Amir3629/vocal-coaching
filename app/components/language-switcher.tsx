@@ -1,7 +1,8 @@
 "use client"
 
-import React, { createContext, useState, useContext } from "react"
-import { motion } from "framer-motion"
+import { createContext, useContext, useState, useEffect } from "react"
+import { motion, AnimatePresence } from "framer-motion"
+import { translations } from "@/app/translations"
 
 export const translations = {
   DE: {
@@ -126,23 +127,30 @@ interface LanguageContextType {
   translations: typeof translations.DE | typeof translations.EN
 }
 
-export const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [currentLang, setCurrentLang] = useState<Language>("DE")
 
-  const toggleLanguage = () => {
-    setCurrentLang(prev => prev === "DE" ? "EN" : "DE")
-  }
+  useEffect(() => {
+    const savedLang = localStorage.getItem("preferredLang") as Language
+    if (savedLang) {
+      setCurrentLang(savedLang)
+    }
+  }, [])
 
-  const value = {
-    currentLang,
-    toggleLanguage,
-    translations: translations[currentLang]
+  const toggleLanguage = () => {
+    const newLang = currentLang === "DE" ? "EN" : "DE"
+    setCurrentLang(newLang)
+    localStorage.setItem("preferredLang", newLang)
   }
 
   return (
-    <LanguageContext.Provider value={value}>
+    <LanguageContext.Provider value={{
+      currentLang,
+      toggleLanguage,
+      translations: translations[currentLang]
+    }}>
       {children}
     </LanguageContext.Provider>
   )
@@ -160,13 +168,29 @@ export default function LanguageSwitcher() {
   const { currentLang, toggleLanguage } = useLanguage()
 
   return (
-    <motion.button
-      onClick={toggleLanguage}
-      whileHover={{ scale: 1.1 }}
-      whileTap={{ scale: 0.95 }}
-      className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors text-sm font-medium"
+    <motion.div 
+      className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/10"
+      initial={{ opacity: 0, y: -20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
     >
-      {currentLang === 'DE' ? 'EN' : 'DE'}
-    </motion.button>
+      <button
+        onClick={toggleLanguage}
+        className="relative text-sm font-medium text-white hover:text-[#C8A97E] transition-colors"
+      >
+        <AnimatePresence mode="wait">
+          <motion.span
+            key={currentLang}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.2 }}
+            className="block"
+          >
+            {currentLang === "DE" ? "EN" : "DE"}
+          </motion.span>
+        </AnimatePresence>
+      </button>
+    </motion.div>
   )
 } 
