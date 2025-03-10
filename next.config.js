@@ -3,7 +3,8 @@ const nextConfig = {
   output: 'export',
   basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
   images: {
-    unoptimized: true
+    loader: 'custom',
+    loaderFile: './app/image-loader.js'
   }
 }
 
