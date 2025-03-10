@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import Link from "next/link"
+import Image from "next/image"
 import { usePathname } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { useLanguage } from "./language-switcher"
@@ -11,6 +12,10 @@ export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
   const { t } = useLanguage()
+
+  const logoPath = process.env.NODE_ENV === 'production'
+    ? "/vocal-coaching/images/logo/logo.svg"
+    : "/images/logo/logo.svg"
 
   const links = [
     { href: "/", label: t.nav.home },
@@ -33,8 +38,16 @@ export default function Navigation() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-sm border-b border-white/10">
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <Link href="/" className="text-white font-medium text-xl">
-            Mel jazz
+          <Link href="/" className="relative w-32 h-12">
+            <div className="relative w-full h-full">
+              <Image
+                src={logoPath}
+                alt="Mel jazz"
+                fill
+                className="object-contain"
+                priority
+              />
+            </div>
           </Link>
 
           {/* Desktop Navigation */}

@@ -8,52 +8,52 @@ import { useLanguage } from "./language-switcher"
 const collaborations = [
   {
     name: "B-Flat",
-    logo: "/images/collaborations/bflat.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/bflat.svg" : "/images/collaborations/bflat.svg",
     link: "https://b-flat-berlin.de"
   },
   {
     name: "Blue Note",
-    logo: "/images/collaborations/bluenote.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/bluenote.svg" : "/images/collaborations/bluenote.svg",
     link: "https://www.bluenote.net"
   },
   {
     name: "CVT Teacher",
-    logo: "/images/collaborations/cvt-teacher.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-teacher.svg" : "/images/collaborations/cvt-teacher.svg",
     link: "https://completevocalinstitute.com"
   },
   {
     name: "CVT Deutschland",
-    logo: "/images/collaborations/cvt-deutschland.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-deutschland.svg" : "/images/collaborations/cvt-deutschland.svg",
     link: "https://completevocaltechnique.de"
   },
   {
     name: "Jazz Institut Berlin",
-    logo: "/images/collaborations/jib.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/jib.svg" : "/images/collaborations/jib.svg",
     link: "https://www.jazz-institut-berlin.de"
   },
   {
     name: "Berliner Philharmonie",
-    logo: "/images/collaborations/philharmonie.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/philharmonie.svg" : "/images/collaborations/philharmonie.svg",
     link: "https://www.berliner-philharmoniker.de"
   },
   {
     name: "Berliner Silber",
-    logo: "/images/collaborations/berliner-silber.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/berliner-silber.svg" : "/images/collaborations/berliner-silber.svg",
     link: "https://www.berliner-silber.de"
   },
   {
     name: "Planet Jazz",
-    logo: "/images/collaborations/planet-jazz.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/planet-jazz.svg" : "/images/collaborations/planet-jazz.svg",
     link: "https://www.planet-jazz.de"
   },
   {
     name: "BDG",
-    logo: "/images/collaborations/bdg.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/bdg.svg" : "/images/collaborations/bdg.svg",
     link: "https://www.bdg-online.org"
   },
   {
     name: "Berlin Music Scene",
-    logo: "/images/collaborations/berlin-music.svg",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/berlin-music.svg" : "/images/collaborations/berlin-music.svg",
     link: "https://www.berlin-music-scene.de"
   }
 ]
