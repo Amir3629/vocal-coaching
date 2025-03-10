@@ -113,12 +113,12 @@ export default function Footer() {
 
   return (
     <footer className="bg-black border-t border-white/10">
-      <div className="container mx-auto px-4 py-12">
+      <div className="container mx-auto px-4 py-8">
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Left Column - Brand & Social Links */}
-            <div>
-              <h3 className="text-xl text-white mb-4">Mel jazz</h3>
+            <div className="flex flex-col space-y-4">
+              <h3 className="text-xl text-white">Mel jazz</h3>
               <div className="flex gap-6">
                 {socialLinks.map((item) => (
                   <Link
@@ -139,6 +139,10 @@ export default function Footer() {
                   </Link>
                 ))}
               </div>
+              <div className="text-sm text-gray-400">
+                © 2025 Mel jazz.<br />
+                Alle Rechte vorbehalten.
+              </div>
             </div>
 
             {/* Middle Column - Subtitle */}
@@ -146,7 +150,7 @@ export default function Footer() {
               <p className="text-gray-400">Vocal Coaching in Berlin</p>
             </div>
 
-            {/* Right Column - Legal Links */}
+            {/* Right Column - Legal Links & Image */}
             <div className="flex flex-col justify-start items-end w-full">
               <div className="flex items-center justify-end gap-6 mb-4 w-full">
                 {legalDocs.map((doc) => (
@@ -170,14 +174,6 @@ export default function Footer() {
                 />
               </div>
             </div>
-          </div>
-
-          {/* Copyright Notice - Centered at Bottom */}
-          <div className="text-center mt-12">
-            <p className="text-sm text-gray-400">
-              © 2025 Mel jazz.<br />
-              Alle Rechte vorbehalten.
-            </p>
           </div>
         </div>
 
