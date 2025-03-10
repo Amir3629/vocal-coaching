@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 import Link from "next/link"
 import LegalDocumentModal from "./legal-document-modal"
 import dynamic from "next/dynamic"
+import Image from "next/image"
 
 // Dynamically import legal document contents
 const DatenschutzContent = dynamic(
@@ -158,11 +159,13 @@ export default function Footer() {
                   </button>
                 ))}
               </div>
-              <img
-                src={process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/footer/footer.png' : '/images/footer/footer.png'}
-                alt="Footer decoration"
-                className="w-auto h-24 object-contain filter brightness-0 invert"
-              />
+              <div className="w-48 h-24 relative">
+                <img
+                  src="/images/footer/footer.png"
+                  alt="Footer decoration"
+                  className="w-full h-full object-contain filter brightness-0 invert"
+                />
+              </div>
             </div>
           </div>
 
