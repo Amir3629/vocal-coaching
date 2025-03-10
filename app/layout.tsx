@@ -1,5 +1,6 @@
 import type React from "react"
 import "./globals.css"
+import "./styles/responsive.css"
 import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import CookieConsent from "./components/cookie-consent"
@@ -17,7 +18,6 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  viewportFit: 'cover',
 }
 
 export const metadata: Metadata = {
@@ -44,7 +44,5 @@ export default function RootLayout({
     </html>
   )
 }
-
-
 
 import './globals.css'
