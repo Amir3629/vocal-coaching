@@ -69,7 +69,7 @@ export default function Collaborations() {
         </div>
 
         <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-3 gap-4 items-center justify-items-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-16 gap-x-8 items-center justify-items-center">
             {collaborations.map((collab, index) => (
               <motion.a
                 key={collab.name}
@@ -82,9 +82,9 @@ export default function Collaborations() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="relative aspect-[3/1] flex items-center justify-center p-2 bg-transparent transition-colors group w-full max-w-[200px]"
+                className="relative aspect-[3/1] flex items-center justify-center bg-transparent transition-colors group w-full max-w-[220px]"
               >
-                <div className="relative w-3/5 h-3/5">
+                <div className="relative w-[65%] h-[65%]">
                   <Image
                     src={collab.logo}
                     alt={collab.name}
