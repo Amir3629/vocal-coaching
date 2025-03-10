@@ -10,9 +10,10 @@ import LanguageSwitcher from "./language-switcher"
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
-  const { t } = useLanguage()
+  const { currentLang, toggleLanguage, t } = useLanguage()
 
   const logoPath = process.env.NODE_ENV === 'production'
     ? "/vocal-coaching/vocal-coaching/images/logo/ml-logo.PNG"
@@ -25,6 +26,15 @@ export default function Navigation() {
     { href: "/#testimonials", label: t.nav.testimonials },
     { href: "/#contact", label: t.nav.contact },
   ]
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
 
   useEffect(() => {
     if (isOpen) {
@@ -47,13 +57,15 @@ export default function Navigation() {
   }
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-sm border-b border-white/10">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
+    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      isScrolled ? "bg-black/95 backdrop-blur-md h-16 shadow-lg" : "bg-transparent h-20"
+    }`}>
+      <div className="container mx-auto px-4 h-full">
+        <div className="flex items-center justify-between h-full">
           <Link 
             href="/" 
             onClick={handleLogoClick}
-            className="relative w-32 h-12 -mt-1 ml-0"
+            className="relative w-28 h-10 transition-all duration-300"
           >
             <div className="relative w-full h-full">
               <Image
@@ -91,7 +103,12 @@ export default function Navigation() {
 
             {/* Language Switcher */}
             <div className="flex items-center pl-4 border-l border-white/10">
-              <LanguageSwitcher />
+              <button
+                onClick={toggleLanguage}
+                className="text-sm font-medium text-white/80 hover:text-white transition-colors px-2 py-1"
+              >
+                {currentLang === "de" ? "EN" : "DE"}
+              </button>
             </div>
           </div>
 
@@ -158,7 +175,12 @@ export default function Navigation() {
                 
                 {/* Mobile Language Switcher */}
                 <div className="pt-4 border-t border-white/10">
-                  <LanguageSwitcher />
+                  <button
+                    onClick={toggleLanguage}
+                    className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+                  >
+                    {currentLang === "de" ? "EN" : "DE"}
+                  </button>
                 </div>
               </div>
             </div>
