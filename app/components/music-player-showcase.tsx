@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import ModernVinylPlayer from "./player-styles/modern-vinyl";
-import NeonWavePlayer from "./player-styles/neon-wave";
-import MinimalDarkPlayer from "./player-styles/minimal-dark";
+import ModernVinylPlayer from "@/app/components/player-styles/modern-vinyl";
+import NeonWavePlayer from "@/app/components/player-styles/neon-wave";
+import MinimalDarkPlayer from "@/app/components/player-styles/minimal-dark";
 
 const defaultTracks = [
   {
