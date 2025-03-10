@@ -38,11 +38,11 @@ export default function ContactForm() {
                   : "/images/backgrounds/contact-bg.jpg"}
                 alt="Contact Background"
                 fill
-                className="object-cover mix-blend-overlay opacity-40"
+                className="object-cover mix-blend-overlay opacity-60"
                 priority
                 onError={() => setBgImageError(true)}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent" />
             </div>
           )}
         </div>

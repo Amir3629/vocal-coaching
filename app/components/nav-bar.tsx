@@ -78,12 +78,17 @@ export default function NavBar() {
           >
             <Link href="/" className="flex items-center">
               <Image
-                src={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logo/ml-logo.png" : "/images/logo/ml-logo.png"}
+                src={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logo/ml-logo.PNG" : "/images/logo/ml-logo.PNG"}
                 alt="ML Logo"
                 width={160}
                 height={80}
                 className="h-auto w-auto object-contain"
                 priority
+                onError={(e) => {
+                  console.error('Logo failed to load:', e);
+                  const target = e.target as HTMLImageElement;
+                  target.src = process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logo/ml-logo.PNG" : "/images/logo/ml-logo.PNG";
+                }}
               />
             </Link>
           </motion.button>
@@ -104,7 +109,7 @@ export default function NavBar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {t?.nav?.offers || "Angebote"}
+              {t?.nav?.offers || "Services"}
             </motion.button>
             <motion.button
               onClick={() => scrollToSection("about")}
@@ -156,7 +161,7 @@ export default function NavBar() {
                 className="block w-full text-left text-white hover:text-[#C8A97E] transition-colors duration-300 text-sm font-medium py-2"
                 whileHover={{ x: 10 }}
               >
-                {t?.nav?.offers || "Angebote"}
+                {t?.nav?.offers || "Services"}
               </motion.button>
               <motion.button
                 onClick={() => scrollToSection("about")}
