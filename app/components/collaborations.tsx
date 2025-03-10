@@ -63,7 +63,7 @@ export default function Collaborations() {
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   return (
-    <section id="references" className="py-20 bg-[#0A0A0A]">
+    <section id="references" className="py-20 bg-[#040202]">
       <div className="container mx-auto px-4">
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
@@ -88,7 +88,7 @@ export default function Collaborations() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
-              className="relative aspect-[3/1] flex items-center justify-center p-4 bg-transparent rounded-lg border border-white/5 hover:border-[#C8A97E]/20 transition-colors group"
+              className="relative aspect-[3/1] flex items-center justify-center p-4 bg-transparent transition-colors group"
             >
               <div className="relative w-4/5 h-4/5">
                 <Image
