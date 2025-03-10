@@ -1,4 +1,4 @@
-interface Translation {
+export interface Translation {
   nav: {
     home: string;
     services: string;
@@ -23,10 +23,10 @@ interface Translation {
     singing: {
       title: string;
       description: string;
-      features: string[];
+      features: readonly string[];
       details: {
-        includes: string[];
-        suitable: string[];
+        includes: readonly string[];
+        suitable: readonly string[];
         duration: string;
         location: string;
       };
@@ -34,10 +34,10 @@ interface Translation {
     coaching: {
       title: string;
       description: string;
-      features: string[];
+      features: readonly string[];
       details: {
-        includes: string[];
-        suitable: string[];
+        includes: readonly string[];
+        suitable: readonly string[];
         duration: string;
         location: string;
       };
@@ -45,10 +45,10 @@ interface Translation {
     workshop: {
       title: string;
       description: string;
-      features: string[];
+      features: readonly string[];
       details: {
-        includes: string[];
-        suitable: string[];
+        includes: readonly string[];
+        suitable: readonly string[];
         duration: string;
         location: string;
         price: string;
@@ -57,10 +57,10 @@ interface Translation {
     choir: {
       title: string;
       description: string;
-      features: string[];
+      features: readonly string[];
       details: {
-        includes: string[];
-        suitable: string[];
+        includes: readonly string[];
+        suitable: readonly string[];
         duration: string;
         location: string;
       };
@@ -129,245 +129,50 @@ interface Translation {
   };
 }
 
-interface Translations {
-  EN: Translation;
-  DE: Translation;
-}
-
-export const translations: Translations = {
-  EN: {
-    nav: {
-      home: "Home",
-      services: "Services",
-      about: "About",
-      references: "References",
-      testimonials: "Testimonials",
-      contact: "Contact"
-    },
-    hero: {
-      title: "Mel jazz",
-      subtitle: "Vocal Coaching in Berlin",
-      cta: "Book Now"
-    },
-    music: {
-      title: "My Music"
-    },
-    video: {
-      title: "Video Preview"
-    },
-    services: {
-      title: "Vocal Excellence",
-      singing: {
-        title: "Singing",
-        description: "Professional vocal training for bands and musicians",
-        features: [
-          "Voice technique & breathing exercises",
-          "Repertoire development",
-          "Individual goal setting",
-          "Flexible scheduling"
-        ],
-        details: {
-          includes: [
-            "Personalized voice technique",
-            "Repertoire development",
-            "Session recordings",
-            "Practice materials & feedback"
-          ],
-          suitable: [
-            "Bands & Musicians",
-            "Solo Artists",
-            "Hobby Singers",
-            "Professionals"
-          ],
-          duration: "60-90 min",
-          location: "Online & Studio Berlin"
-        }
-      },
-      coaching: {
-        title: "Vocal Coaching",
-        description: "CVT-based voice training for all genres",
-        features: [
-          "Complete Vocal Technique",
-          "Vocal health",
-          "Genre-specific training",
-          "Individual support"
-        ],
-        details: {
-          includes: [
-            "CVT voice analysis",
-            "Personalized training plan",
-            "Health-oriented training",
-            "Regular feedback"
-          ],
-          suitable: [
-            "All singing levels",
-            "Various genres",
-            "Professional singers",
-            "Voice teachers"
-          ],
-          duration: "60-90 min",
-          location: "Online & Studio Berlin"
-        }
-      },
-      workshop: {
-        title: "Workshop",
-        description: "Intensive vocal workshops for groups",
-        features: [
-          "Intensive group work",
-          "Flexible scheduling",
-          "Customized content",
-          "From 3 hours"
-        ],
-        details: {
-          includes: [
-            "Professional training",
-            "Practice-oriented exercises",
-            "Group dynamics",
-            "Performance preparation"
-          ],
-          suitable: [
-            "Choirs",
-            "Bands",
-            "Ensembles",
-            "Corporate events"
-          ],
-          duration: "Min. 3 hours",
-          location: "By arrangement",
-          price: "From €300"
-        }
-      },
-      choir: {
-        title: "Choir Next Door",
-        description: "Join our innovative choir project",
-        features: [
-          "Modern arrangements",
-          "Community experience",
-          "Regular performances",
-          "All levels welcome"
-        ],
-        details: {
-          includes: [
-            "Professional direction",
-            "Voice training",
-            "Performance opportunities",
-            "Social network"
-          ],
-          suitable: [
-            "All age groups",
-            "Singing enthusiasts",
-            "Beginners",
-            "Advanced"
-          ],
-          duration: "Weekly rehearsals",
-          location: "Berlin"
-        }
-      },
-      cta: "Book Now"
-    },
-    about: {
-      title: "About Me",
-      intro: "Half British, half German - and 100% Rhinelander living voluntarily in Berlin. My musical journey started early: from children's choir through the gospel choir 'Crescendo' to 'Die Männer', one of Germany's first girl bands. Discovering Ella Fitzgerald's 'Airmail Special' opened the door to the world of jazz - love at first sight.",
-      expanded: "After studying at the Cologne University of Music and Dance, I deepened my knowledge in jazz singing and improvisation. Collaborating with renowned artists and bands broadened my musical horizon and shaped my unique style.",
-      projects: {
-        title: "Current Projects",
-        description: "As a proud member of Berlin's international jazz scene, I'm not only active as a singer but also as a vocal coach at the bandleader training in Wiesbaden. My fourth CD is ready and waiting for the start signal - with beautiful standards dipped in colorful hues and originals with my own lyrics."
-      },
-      more: "Learn more",
-      less: "Show less"
-    },
-    references: {
-      title: "References"
-    },
-    testimonials: {
-      title: "What Others Say"
-    },
-    contact: {
-      title: "Contact",
-      form: {
-        name: "Name",
-        email: "Email",
-        message: "Message",
-        send: "Send Message"
-      }
-    },
-    footer: {
-      subtitle: "Vocal Coaching in Berlin",
-      legal: {
-        privacy: "Privacy Policy",
-        terms: "Terms",
-        imprint: "Imprint"
-      },
-      copyright: "© 2025 Mel jazz",
-      rights: "All rights reserved"
-    },
-    booking: {
-      title: "Book a Session",
-      steps: {
-        service: "Select Service",
-        date: "Select Date",
-        time: "Select Time",
-        contact: "Contact Details",
-        confirm: "Confirm Booking"
-      },
-      form: {
-        name: "Name",
-        email: "Email",
-        phone: "Phone",
-        message: "Message",
-        terms: "I accept the terms and conditions",
-        privacy: "I accept the privacy policy"
-      },
-      buttons: {
-        next: "Next",
-        back: "Back",
-        book: "Book Now",
-        close: "Close"
-      }
-    }
-  },
+export const translations = {
   DE: {
     nav: {
       home: "Start",
-      services: "Leistungen",
-      about: "Über Mich",
+      services: "Angebote",
+      about: "Über mich",
       references: "Referenzen",
       testimonials: "Erfahrungen",
       contact: "Kontakt"
     },
     hero: {
-      title: "Mel jazz",
-      subtitle: "Vocal Coaching in Berlin",
-      cta: "Jetzt Buchen"
+      title: "Entdecke deine Stimme",
+      subtitle: "Professionelles Vocal Coaching in Berlin",
+      cta: "Jetzt buchen"
     },
     music: {
       title: "Meine Musik"
     },
     video: {
-      title: "Video Vorschau"
+      title: "Einblicke"
     },
     services: {
-      title: "Vocal Excellence",
+      title: "Angebote",
       singing: {
-        title: "Singen",
-        description: "Professionelle Gesangsausbildung für Bands und Musiker",
+        title: "Gesangsunterricht",
+        description: "Individueller Unterricht für alle Level",
         features: [
-          "Stimmtechnik & Atemübungen",
-          "Repertoire-Entwicklung",
-          "Individuelle Zielsetzung",
-          "Flexible Terminplanung"
+          "Stimmbildung",
+          "Atemtechnik",
+          "Interpretation",
+          "Bühnenpräsenz"
         ],
         details: {
           includes: [
-            "Personalisierte Stimmtechnik",
-            "Repertoire-Entwicklung",
-            "Aufnahmen der Stunden",
-            "Übe-Material & Feedback"
+            "Stimmanalyse",
+            "Individueller Trainingsplan",
+            "Aufnahmen",
+            "Übe-Material"
           ],
           suitable: [
-            "Bands & Musiker",
-            "Solo-Künstler",
-            "Hobby-Sänger",
-            "Profis"
+            "Anfänger",
+            "Fortgeschrittene",
+            "Profis",
+            "Alle Genres"
           ],
           duration: "60-90 min",
           location: "Online & Studio Berlin"
@@ -400,67 +205,67 @@ export const translations: Translations = {
         }
       },
       workshop: {
-        title: "Workshop",
-        description: "Intensive Gesangsworkshops für Gruppen",
+        title: "Workshops",
+        description: "Gruppenunterricht & Workshops",
         features: [
-          "Intensive Gruppenarbeit",
-          "Flexible Terminplanung",
-          "Maßgeschneiderte Inhalte",
-          "Ab 3 Stunden"
+          "Stimmbildung in der Gruppe",
+          "Ensemble-Arbeit",
+          "Theorie & Praxis",
+          "Performance Training"
         ],
         details: {
           includes: [
-            "Professionelles Training",
-            "Praxisorientierte Übungen",
+            "Theoretische Grundlagen",
+            "Praktische Übungen",
             "Gruppendynamik",
-            "Auftrittsvorbereitung"
+            "Abschlussaufführung"
           ],
           suitable: [
             "Chöre",
             "Bands",
             "Ensembles",
-            "Firmenevents"
+            "Schulklassen"
           ],
-          duration: "Min. 3 Stunden",
+          duration: "2-4 Stunden",
           location: "Nach Vereinbarung",
-          price: "Ab 300€"
+          price: "Auf Anfrage"
         }
       },
       choir: {
-        title: "Chor Next Door",
-        description: "Werde Teil unseres innovativen Chorprojekts",
+        title: "Chor Coaching",
+        description: "Professionelle Chorleitung",
         features: [
-          "Moderne Arrangements",
-          "Gemeinschaftserlebnis",
-          "Regelmäßige Auftritte",
-          "Alle Level willkommen"
+          "Stimmbildung",
+          "Harmoniearbeit",
+          "Rhythmustraining",
+          "Ensemble-Klang"
         ],
         details: {
           includes: [
-            "Professionelle Leitung",
+            "Warm-up Routinen",
             "Stimmbildung",
-            "Auftrittsmöglichkeiten",
-            "Soziales Netzwerk"
+            "Repertoire-Arbeit",
+            "Auftrittsvorbereitung"
           ],
           suitable: [
-            "Alle Altersgruppen",
-            "Gesangsbegeisterte",
-            "Anfänger",
-            "Fortgeschrittene"
+            "Laienchöre",
+            "Professionelle Chöre",
+            "Vokalensembles",
+            "A-cappella Gruppen"
           ],
-          duration: "Wöchentliche Proben",
-          location: "Berlin"
+          duration: "90-120 min",
+          location: "Nach Vereinbarung"
         }
       },
-      cta: "Jetzt Buchen"
+      cta: "Jetzt anfragen"
     },
     about: {
-      title: "Über Mich",
-      intro: "Halb Britin, halb Deutsche - und 100%ige Rheinländerin lebe ich freiwillig in Berlin. Meine musikalische Reise begann früh: vom Kinderchor über den Gospelchor 'Crescendo' bis hin zu 'Die Männer', einer der ersten Girl Bands in Deutschland. Die Entdeckung von Ella Fitzgerald's 'Airmail Special' öffnete mir die Tür zur Welt des Jazz - eine Liebe auf den ersten Blick.",
-      expanded: "Nach meinem Studium an der Hochschule für Musik und Tanz Köln vertiefte ich meine Kenntnisse in Jazz-Gesang und Improvisation. Die Zusammenarbeit mit renommierten Künstlern und Bands erweiterte meinen musikalischen Horizont und formte meinen einzigartigen Stil.",
+      title: "Über mich",
+      intro: "Professionelle Sängerin & Vocal Coach",
+      expanded: "Mit jahrelanger Erfahrung im Gesangsunterricht...",
       projects: {
         title: "Aktuelle Projekte",
-        description: "Als stolzes Mitglied der internationalen Berliner Jazzszene bin ich nicht nur als Sängerin aktiv, sondern auch als Vocal Coach bei der Bandleiter Ausbildung in Wiesbaden tätig. Meine vierte CD ist fertig und wartet auf das Start Signal - mit schönen Standards in bunte Farben getaucht und Originals mit eigenen Texten."
+        description: "Entdecken Sie meine aktuellen musikalischen Projekte"
       },
       more: "Mehr erfahren",
       less: "Weniger anzeigen"
@@ -469,7 +274,7 @@ export const translations: Translations = {
       title: "Referenzen"
     },
     testimonials: {
-      title: "Das sagen Andere"
+      title: "Erfahrungen"
     },
     contact: {
       title: "Kontakt",
@@ -477,35 +282,35 @@ export const translations: Translations = {
         name: "Name",
         email: "E-Mail",
         message: "Nachricht",
-        send: "Nachricht senden"
+        send: "Senden"
       }
     },
     footer: {
-      subtitle: "Vocal Coaching in Berlin",
+      subtitle: "Vocal Coaching Berlin",
       legal: {
         privacy: "Datenschutz",
         terms: "AGB",
         imprint: "Impressum"
       },
-      copyright: "© 2025 Mel jazz",
+      copyright: "© 2024 Melanie Wainwright",
       rights: "Alle Rechte vorbehalten"
     },
     booking: {
-      title: "Termin buchen",
+      title: "Buchung",
       steps: {
-        service: "Service wählen",
+        service: "Angebot wählen",
         date: "Datum wählen",
-        time: "Uhrzeit wählen",
+        time: "Zeit wählen",
         contact: "Kontaktdaten",
-        confirm: "Buchung bestätigen"
+        confirm: "Bestätigung"
       },
       form: {
         name: "Name",
         email: "E-Mail",
         phone: "Telefon",
         message: "Nachricht",
-        terms: "Ich akzeptiere die AGB",
-        privacy: "Ich akzeptiere die Datenschutzerklärung"
+        terms: "AGB akzeptieren",
+        privacy: "Datenschutz akzeptieren"
       },
       buttons: {
         next: "Weiter",
@@ -514,5 +319,195 @@ export const translations: Translations = {
         close: "Schließen"
       }
     }
-  }
-} 
+  },
+  EN: {
+    nav: {
+      home: "Home",
+      services: "Services",
+      about: "About",
+      references: "References",
+      testimonials: "Testimonials",
+      contact: "Contact"
+    },
+    hero: {
+      title: "Discover Your Voice",
+      subtitle: "Professional Vocal Coaching in Berlin",
+      cta: "Book Now"
+    },
+    music: {
+      title: "My Music"
+    },
+    video: {
+      title: "Insights"
+    },
+    services: {
+      title: "Services",
+      singing: {
+        title: "Singing Lessons",
+        description: "Individual lessons for all levels",
+        features: [
+          "Voice Training",
+          "Breathing Technique",
+          "Interpretation",
+          "Stage Presence"
+        ],
+        details: {
+          includes: [
+            "Voice Analysis",
+            "Individual Training Plan",
+            "Recordings",
+            "Practice Material"
+          ],
+          suitable: [
+            "Beginners",
+            "Advanced",
+            "Professionals",
+            "All Genres"
+          ],
+          duration: "60-90 min",
+          location: "Online & Studio Berlin"
+        }
+      },
+      coaching: {
+        title: "Vocal Coaching",
+        description: "CVT-based voice training for all genres",
+        features: [
+          "Complete Vocal Technique",
+          "Voice Health",
+          "Genre-specific Training",
+          "Individual Support"
+        ],
+        details: {
+          includes: [
+            "CVT Voice Analysis",
+            "Personalized Training Plan",
+            "Health-oriented Training",
+            "Regular Feedback"
+          ],
+          suitable: [
+            "All Singing Levels",
+            "Various Genres",
+            "Professional Singers",
+            "Singing Teachers"
+          ],
+          duration: "60-90 min",
+          location: "Online & Studio Berlin"
+        }
+      },
+      workshop: {
+        title: "Workshops",
+        description: "Group lessons & workshops",
+        features: [
+          "Group Voice Training",
+          "Ensemble Work",
+          "Theory & Practice",
+          "Performance Training"
+        ],
+        details: {
+          includes: [
+            "Theoretical Foundations",
+            "Practical Exercises",
+            "Group Dynamics",
+            "Final Performance"
+          ],
+          suitable: [
+            "Choirs",
+            "Bands",
+            "Ensembles",
+            "School Classes"
+          ],
+          duration: "2-4 hours",
+          location: "By arrangement",
+          price: "On request"
+        }
+      },
+      choir: {
+        title: "Choir Coaching",
+        description: "Professional Choir Direction",
+        features: [
+          "Voice Training",
+          "Harmony Work",
+          "Rhythm Training",
+          "Ensemble Sound"
+        ],
+        details: {
+          includes: [
+            "Warm-up Routines",
+            "Voice Training",
+            "Repertoire Work",
+            "Performance Preparation"
+          ],
+          suitable: [
+            "Amateur Choirs",
+            "Professional Choirs",
+            "Vocal Ensembles",
+            "A Cappella Groups"
+          ],
+          duration: "90-120 min",
+          location: "By arrangement"
+        }
+      },
+      cta: "Inquire Now"
+    },
+    about: {
+      title: "About Me",
+      intro: "Professional Singer & Vocal Coach",
+      expanded: "With years of experience in vocal training...",
+      projects: {
+        title: "Current Projects",
+        description: "Discover my current musical projects"
+      },
+      more: "Learn More",
+      less: "Show Less"
+    },
+    references: {
+      title: "References"
+    },
+    testimonials: {
+      title: "Testimonials"
+    },
+    contact: {
+      title: "Contact",
+      form: {
+        name: "Name",
+        email: "Email",
+        message: "Message",
+        send: "Send"
+      }
+    },
+    footer: {
+      subtitle: "Vocal Coaching Berlin",
+      legal: {
+        privacy: "Privacy",
+        terms: "Terms",
+        imprint: "Imprint"
+      },
+      copyright: "© 2024 Melanie Wainwright",
+      rights: "All rights reserved"
+    },
+    booking: {
+      title: "Booking",
+      steps: {
+        service: "Choose Service",
+        date: "Choose Date",
+        time: "Choose Time",
+        contact: "Contact Details",
+        confirm: "Confirmation"
+      },
+      form: {
+        name: "Name",
+        email: "Email",
+        phone: "Phone",
+        message: "Message",
+        terms: "Accept Terms",
+        privacy: "Accept Privacy Policy"
+      },
+      buttons: {
+        next: "Next",
+        back: "Back",
+        book: "Book Now",
+        close: "Close"
+      }
+    }
+  } as const
+} as const; 

@@ -267,7 +267,7 @@ export default function Home() {
             
             <ServiceCard
               title="Vocal Coaching"
-              description="CVT-basiertes Stimmtraining für alle Genres"
+              description="CVT-basiertes\nStimmtraining für alle\nGenres"
               icon={<Music className="w-6 h-6 text-[#C8A97E]" />}
               features={[
                 "Complete Vocal Technique",

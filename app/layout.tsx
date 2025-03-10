@@ -21,10 +21,8 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Mel jazz | Vocal Coaching in Berlin",
-  description:
-    "Professional jazz vocal coaching services in Berlin. Private lessons, workshops, and performance coaching for all levels.",
-  generator: 'v0dev'
+  title: "Mel jazz - Vocal Coaching Berlin",
+  description: "Professional vocal coaching in Berlin. Discover your voice with experienced vocal coach Melanie Wainwright.",
 }
 
 export default function RootLayout({
@@ -33,7 +31,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`dark ${playfair.variable}`}>
+    <html lang="de" className={`dark ${playfair.variable}`}>
       <body className={`${inter.className} antialiased`}>
         <LanguageProvider>
           {children}
