@@ -165,7 +165,7 @@ export default function Footer() {
                   alt="Footer decoration"
                   width={192}
                   height={96}
-                  className="object-contain filter brightness-0 invert"
+                  className="object-contain filter brightness-0 invert transform -translate-x-4 translate-y-2"
                   priority
                 />
               </div>
