@@ -82,7 +82,7 @@ export default function NavBar() {
                 alt="ML Logo"
                 width={160}
                 height={80}
-                className="h-auto w-auto object-contain"
+                className="h-auto w-auto object-contain filter brightness-100 contrast-100"
                 priority
                 onError={(e) => {
                   console.error('Logo failed to load:', e);
