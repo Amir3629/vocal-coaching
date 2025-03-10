@@ -13,7 +13,7 @@ interface LanguageContextType {
   t: TranslationType
 }
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
+export const LanguageContext = createContext<LanguageContextType | null>(null)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [currentLang, setCurrentLang] = useState<Language>("DE")
@@ -31,12 +31,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("preferredLang", newLang)
   }
 
+  const value = {
+    currentLang,
+    toggleLanguage,
+    t: translations[currentLang]
+  }
+
   return (
-    <LanguageContext.Provider value={{
-      currentLang,
-      toggleLanguage,
-      t: translations[currentLang]
-    }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   )
@@ -44,7 +46,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
 export function useLanguage() {
   const context = useContext(LanguageContext)
-  if (context === undefined) {
+  if (!context) {
     throw new Error("useLanguage must be used within a LanguageProvider")
   }
   return context

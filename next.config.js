@@ -10,7 +10,13 @@ const nextConfig = {
   optimizeFonts: true,
   swcMinify: true,
   images: {
-    unoptimized: true
+    unoptimized: true,
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**',
+      },
+    ],
   },
   typescript: {
     ignoreBuildErrors: false
