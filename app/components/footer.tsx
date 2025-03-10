@@ -147,8 +147,8 @@ export default function Footer() {
             </div>
 
             {/* Right Column - Legal Links */}
-            <div className="flex flex-col justify-start items-end">
-              <div className="flex items-center gap-6 mb-4">
+            <div className="flex flex-col justify-start items-end w-full">
+              <div className="flex items-center justify-end gap-6 mb-4 w-full">
                 {legalDocs.map((doc) => (
                   <button
                     key={doc.title}
@@ -159,7 +159,7 @@ export default function Footer() {
                   </button>
                 ))}
               </div>
-              <div className="w-48 h-24 relative">
+              <div className="w-48 h-24 relative flex justify-end">
                 <img
                   src="/images/footer/footer.png"
                   alt="Footer decoration"
