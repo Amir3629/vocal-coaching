@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion"
 import { Check } from "lucide-react"
+import { useEffect } from "react"
 
 interface SuccessMessageProps {
   isOpen: boolean
@@ -11,6 +12,15 @@ interface SuccessMessageProps {
 }
 
 export default function SuccessMessage({ isOpen, onClose, title, message }: SuccessMessageProps) {
+  useEffect(() => {
+    if (isOpen) {
+      const timer = setTimeout(() => {
+        onClose()
+      }, 3000)
+      return () => clearTimeout(timer)
+    }
+  }, [isOpen, onClose])
+
   return (
     <AnimatePresence>
       {isOpen && (
@@ -20,7 +30,6 @@ export default function SuccessMessage({ isOpen, onClose, title, message }: Succ
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/80 backdrop-blur-sm"
-            onClick={onClose}
           />
           <motion.div
             initial={{ opacity: 0, scale: 0.9, y: 20 }}
@@ -34,13 +43,7 @@ export default function SuccessMessage({ isOpen, onClose, title, message }: Succ
                   <Check className="w-8 h-8 text-[#C8A97E]" />
                 </div>
                 <h3 className="text-xl font-medium text-white mb-2">{title}</h3>
-                <p className="text-gray-400 mb-6">{message}</p>
-                <button
-                  onClick={onClose}
-                  className="px-6 py-2 bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-lg transition-colors"
-                >
-                  Schließen
-                </button>
+                <p className="text-gray-400">{message}</p>
               </div>
             </div>
           </motion.div>

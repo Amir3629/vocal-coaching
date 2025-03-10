@@ -23,7 +23,7 @@ export default function ContactForm() {
 
   return (
     <>
-      <section id="contact" className="relative min-h-screen py-20">
+      <section id="contact" className="relative min-h-screen py-12">
         {/* Background */}
         <div className="absolute inset-0 z-0">
           <div className="absolute inset-0 bg-gradient-to-br from-black via-gray-900 to-black">
@@ -65,11 +65,11 @@ export default function ContactForm() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-black/40 backdrop-blur-md rounded-2xl p-4 sm:p-8 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)]"
+            className="bg-black/40 backdrop-blur-md rounded-2xl p-3 sm:p-6 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)]"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {/* Contact Info */}
-              <div className="space-y-6 sm:space-y-8">
+              <div className="space-y-4 sm:space-y-6">
                 <div className="flex items-start gap-4">
                   <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <MapPin className="w-5 h-5 text-[#C8A97E]" />
@@ -132,7 +132,7 @@ export default function ContactForm() {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
-                      rows={6}
+                      rows={4}
                       className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
                     />
                   </div>
