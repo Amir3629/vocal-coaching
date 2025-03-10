@@ -76,10 +76,10 @@ export default function JourneyShowcase() {
           viewport={{ once: true }}
           className="text-center mb-12"
         >
-          <h2 className="text-3xl md:text-4xl font-light text-white mb-4">
+          <h2 className="section-heading mb-6">
             Meine Vision & Methodik
           </h2>
-          <div className="w-20 h-0.5 bg-[#C8A97E] mx-auto"></div>
+          <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto mb-6"></div>
         </motion.div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
