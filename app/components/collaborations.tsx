@@ -88,9 +88,9 @@ export default function Collaborations() {
               transition={{ duration: 0.6, delay: index * 0.1 }}
               onMouseEnter={() => setHoveredIndex(index)}
               onMouseLeave={() => setHoveredIndex(null)}
-              className="relative aspect-[3/1] flex items-center justify-center p-4 bg-[#1A1A1A] rounded-lg border border-white/5 hover:border-[#C8A97E]/20 transition-colors group"
+              className="relative aspect-[3/1] flex items-center justify-center p-4 bg-transparent rounded-lg border border-white/5 hover:border-[#C8A97E]/20 transition-colors group"
             >
-              <div className="relative w-full h-full">
+              <div className="relative w-4/5 h-4/5">
                 <Image
                   src={collab.logo}
                   alt={collab.name}

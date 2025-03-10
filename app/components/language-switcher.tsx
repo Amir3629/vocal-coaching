@@ -141,7 +141,7 @@ const translations = {
       less: "Show Less"
     },
     references: {
-      title: "References"
+      title: "Partners & Collaborations"
     },
     testimonials: {
       title: "Testimonials"
