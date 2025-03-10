@@ -4,7 +4,7 @@ import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
 import { ChevronDown, MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/app/components/ui/button"
 import ServiceCard from "@/app/components/service-card"
 import TestimonialSlider from "@/app/components/testimonial-slider"
 import Navigation from "@/app/components/navigation"
@@ -367,8 +367,8 @@ export default function Home() {
           >
             <Button 
               size="lg"
-              className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8 transform hover:scale-105 transition-all duration-300"
-                onClick={() => setIsBookingModalOpen(true)}
+              className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black"
+              onClick={() => setIsBookingModalOpen(true)}
             >
               Jetzt Buchen
             </Button>
