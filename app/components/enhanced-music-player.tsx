@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
+import { Button } from "@/app/components/ui/button";
+import { Card } from "@/app/components/ui/card";
+import { Slider } from "@/app/components/ui/slider";
 
 declare global {
   interface Window {
@@ -290,174 +290,187 @@ export default function EnhancedMusicPlayer() {
             </div>
           </Card>
         ) : (
-          <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-4 sm:p-6">
-        <div id="youtube-player" className="hidden"></div>
-        
-            <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-                  key={tracks[currentTrack].id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-                  className="relative w-full sm:w-24 h-24 rounded-lg overflow-hidden"
-            >
-              <Image
-                    src={tracks[currentTrack].thumbnail}
-                    alt={tracks[currentTrack].title}
-                fill
-                className="object-cover"
-              />
-            </motion.div>
-          </AnimatePresence>
+          <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-8 sm:p-10">
+            <div id="youtube-player" className="hidden"></div>
+            
+            <div className="flex flex-col items-center">
+              {/* Gramophone Design */}
+              <div className="relative w-full max-w-md mx-auto mb-8">
+                <motion.div 
+                  className="relative"
+                  animate={{ rotate: isPlaying ? 360 : 0 }}
+                  transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+                >
+                  {/* Vinyl Record */}
+                  <motion.div 
+                    className="w-64 h-64 rounded-full bg-gradient-to-br from-gray-900 to-black border-4 border-[#C8A97E]/20 relative mx-auto"
+                    animate={{ 
+                      rotate: isPlaying ? 360 : 0,
+                      scale: isPlaying ? 1 : 0.98
+                    }}
+                    transition={{ 
+                      rotate: { duration: 3, repeat: Infinity, ease: "linear" },
+                      scale: { duration: 0.5 }
+                    }}
+                  >
+                    {/* Record grooves */}
+                    <div className="absolute inset-4 rounded-full border border-[#C8A97E]/10" />
+                    <div className="absolute inset-8 rounded-full border border-[#C8A97E]/10" />
+                    <div className="absolute inset-12 rounded-full border border-[#C8A97E]/10" />
+                    <div className="absolute inset-16 rounded-full border border-[#C8A97E]/10" />
+                    
+                    {/* Center label */}
+                    <motion.div 
+                      className="absolute inset-20 rounded-full bg-[#C8A97E]/10 flex items-center justify-center overflow-hidden"
+                      animate={{ rotate: isPlaying ? -360 : 0 }}
+                      transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
+                    >
+                      <Image
+                        src={tracks[currentTrack].thumbnail}
+                        alt={tracks[currentTrack].title}
+                        fill
+                        className="object-cover opacity-80"
+                      />
+                    </motion.div>
+                  </motion.div>
 
-          <AnimatePresence mode="wait">
-            <motion.div
+                  {/* Tonearm */}
+                  <motion.div 
+                    className="absolute top-1/2 right-0 origin-right"
+                    initial={{ rotate: -30 }}
+                    animate={{ rotate: isPlaying ? 0 : -30 }}
+                    transition={{ duration: 1, ease: "easeInOut" }}
+                  >
+                    <div className="w-32 h-2 bg-gradient-to-r from-[#C8A97E] to-[#B89A6F] rounded-full transform -translate-x-1/2" />
+                    <div className="absolute top-0 right-0 w-4 h-4 rounded-full bg-[#C8A97E]" />
+                  </motion.div>
+                </motion.div>
+
+                {/* Controls */}
+                <div className="flex items-center justify-center gap-6 mt-8">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handlePrevTrack}
+                    className="w-12 h-12 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+                  >
+                    <SkipBack className="w-6 h-6" />
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handlePlay}
+                    className="w-16 h-16 rounded-full bg-[#C8A97E] flex items-center justify-center text-black transition-colors relative overflow-hidden group"
+                  >
+                    <motion.div
+                      className="absolute inset-0 bg-black/20 transform origin-left"
+                      initial={{ scaleX: 0 }}
+                      animate={{ scaleX: currentTime / duration }}
+                      transition={{ duration: 0.1 }}
+                    />
+                    {isPlaying ? (
+                      <Pause className="w-8 h-8 relative z-10" />
+                    ) : (
+                      <Play className="w-8 h-8 relative z-10 ml-1" />
+                    )}
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleNextTrack}
+                    className="w-12 h-12 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+                  >
+                    <SkipForward className="w-6 h-6" />
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={toggleMute}
+                    className="w-12 h-12 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+                  >
+                    {isMuted ? (
+                      <VolumeX className="w-6 h-6" />
+                    ) : (
+                      <Volume2 className="w-6 h-6" />
+                    )}
+                  </motion.button>
+                </div>
+              </div>
+
+              {/* Track Info */}
+              <AnimatePresence mode="wait">
+                <motion.div
                   key={tracks[currentTrack].id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="flex-1"
-            >
-                  <h3 className="text-xl sm:text-2xl font-light text-white mb-2">{tracks[currentTrack].title}</h3>
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="text-center mb-8"
+                >
+                  <h3 className="text-2xl font-light text-white mb-2">{tracks[currentTrack].title}</h3>
                   <p className="text-[#C8A97E] text-sm mb-1">{tracks[currentTrack].artist}</p>
                   <p className="text-gray-400 text-sm">{tracks[currentTrack].description}</p>
-            </motion.div>
-          </AnimatePresence>
-            </div>
-
-            <div className="flex items-center justify-center gap-4 mb-6">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handlePrevTrack}
-              className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-            >
-              <SkipBack className="w-5 h-5" />
-            </motion.button>
-
-            <div className="relative">
-                <svg className="w-14 sm:w-16 h-14 sm:h-16" viewBox="0 0 48 48">
-                <circle
-                  cx="24"
-                  cy="24"
-                  r="23"
-                  className="fill-[#C8A97E]/10"
-                />
-                <motion.circle
-                  cx="24"
-                  cy="24"
-                  r="23"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  fill="none"
-                  className="text-[#C8A97E]"
-                  strokeDasharray="144.51326206513048"
-                    strokeDashoffset={144.51326206513048 * (1 - currentTime / duration * 100 / 100)}
-                  transform="rotate(-90 24 24)"
-                />
-                <motion.circle
-                  cx="24"
-                  cy="24"
-                  r="21"
-                  className="fill-[#C8A97E] cursor-pointer"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handlePlay}
-                />
-              </svg>
-              <motion.div
-                className="absolute inset-0 flex items-center justify-center text-black"
-                onClick={handlePlay}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                {isPlaying ? (
-                    <Pause className="w-5 sm:w-6 h-5 sm:h-6" />
-                ) : (
-                    <Play className="w-5 sm:w-6 h-5 sm:h-6 ml-1" />
-                )}
-              </motion.div>
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleNextTrack}
-              className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-            >
-              <SkipForward className="w-5 h-5" />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={toggleMute}
-              className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-            >
-              {isMuted ? (
-                <VolumeX className="w-5 h-5" />
-              ) : (
-                <Volume2 className="w-5 h-5" />
-              )}
-            </motion.button>
-        </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {tracks.map((track) => (
-            <motion.div
-              key={track.id}
-                  className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 aspect-video ${
-                    track.id === tracks[currentTrack].id 
-                  ? "ring-2 ring-[#C8A97E] scale-[1.02]" 
-                  : "hover:ring-2 hover:ring-[#C8A97E]/50"
-              }`}
-              onClick={() => {
-                    setCurrentTrack(tracks.indexOf(track));
-                    if (!isPlaying) setIsPlaying(true);
-              }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-                  <div className="relative w-full h-full">
-                <Image
-                  src={track.thumbnail}
-                  alt={track.title}
-                  fill
-                  className="object-cover"
-                />
-                <div className={`absolute inset-0 transition-opacity duration-300 ${
-                      track.id === tracks[currentTrack].id && isPlaying
-                    ? "bg-black/40"
-                    : "bg-black/20"
-                }`} />
-                    <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
-                      <p className="text-white text-xs sm:text-sm font-medium mb-0.5 sm:mb-1 line-clamp-1">{track.title}</p>
-                      <p className="text-[#C8A97E] text-xs line-clamp-1">{track.description}</p>
-                    </div>
-                  </div>
                 </motion.div>
-              ))}
-                </div>
+              </AnimatePresence>
+
+              {/* Track Selection */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+                {tracks.map((track) => (
+                  <motion.div
+                    key={track.id}
+                    className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 aspect-video ${
+                      track.id === tracks[currentTrack].id 
+                      ? "ring-2 ring-[#C8A97E] scale-[1.02]" 
+                      : "hover:ring-2 hover:ring-[#C8A97E]/50"
+                    }`}
+                    onClick={() => {
+                      setCurrentTrack(tracks.indexOf(track));
+                      if (!isPlaying) setIsPlaying(true);
+                    }}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <div className="relative w-full h-full">
+                      <Image
+                        src={track.thumbnail}
+                        alt={track.title}
+                        fill
+                        className="object-cover"
+                      />
+                      <div className={`absolute inset-0 transition-opacity duration-300 ${
+                        track.id === tracks[currentTrack].id && isPlaying
+                        ? "bg-black/40"
+                        : "bg-black/20"
+                      }`} />
+                      <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
+                        <p className="text-white text-xs sm:text-sm font-medium mb-0.5 sm:mb-1 line-clamp-1">{track.title}</p>
+                        <p className="text-[#C8A97E] text-xs line-clamp-1">{track.description}</p>
+                      </div>
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </Card>
         )}
       </motion.div>
-                
-      {/* Floating Mini Player */}
+
+      {/* Mini Player with smoother animations */}
       <AnimatePresence mode="wait">
         {showMiniPlayer && (
-                    <motion.div
+          <motion.div
             ref={miniPlayerRef}
             initial={{ opacity: 0, y: 100 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 100 }}
-                      transition={{
-              type: "spring", 
-              stiffness: 50,  // Reduced from 100 for smoother motion
-              damping: 15,    // Reduced from 20 for more gentle movement
-              mass: 1.2       // Added mass for more fluid motion
+            transition={{
+              type: "spring",
+              stiffness: 40,
+              damping: 20,
+              mass: 1.5
             }}
             className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md"
           >
@@ -468,19 +481,19 @@ export default function EnhancedMusicPlayer() {
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -50 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
+                  transition={{ duration: 0.6, ease: "easeInOut" }}
                   className="flex items-center gap-3"
                 >
                   <motion.div 
-                    className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0" 
-                    whileHover={{ scale: 1.05 }}
-                    transition={{ duration: 0.3 }}
+                    className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0" 
+                    animate={{ rotate: isPlaying ? 360 : 0 }}
+                    transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
                   >
-                    <div className="absolute inset-0 bg-[#C8A97E]/10" />
-                    <img
+                    <Image
                       src={tracks[currentTrack].thumbnail}
                       alt={tracks[currentTrack].title}
-                      className="w-full h-full object-cover"
+                      fill
+                      className="object-cover"
                     />
                   </motion.div>
 
@@ -504,49 +517,14 @@ export default function EnhancedMusicPlayer() {
                   </div>
 
                   <div className="flex items-center gap-2">
-                    <motion.div
+                    <motion.button
                       whileHover={{ scale: 1.1 }}
                       whileTap={{ scale: 0.95 }}
-                      transition={{ duration: 0.3 }}
+                      onClick={handlePlay}
+                      className="w-10 h-10 rounded-full bg-[#C8A97E] flex items-center justify-center text-black"
                     >
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-8 w-8 text-[#C8A97E] hover:text-white hover:bg-[#C8A97E]/20 transition-all duration-300"
-                        onClick={handlePrevTrack}
-                      >
-                        <SkipBack className="h-4 w-4" />
-                      </Button>
-                    </motion.div>
-
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <Button
-                        size="icon"
-                        className="h-8 w-8 bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full transition-all duration-300"
-                        onClick={handlePlay}
-                      >
-                        {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                      </Button>
-                    </motion.div>
-
-                    <motion.div
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.95 }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <Button
-                        size="icon"
-                        variant="ghost"
-                        className="h-8 w-8 text-[#C8A97E] hover:text-white hover:bg-[#C8A97E]/20 transition-all duration-300"
-                        onClick={handleNextTrack}
-                      >
-                        <SkipForward className="h-4 w-4" />
-                      </Button>
-                    </motion.div>
+                      {isPlaying ? <Pause className="w-5 h-5" /> : <Play className="w-5 h-5 ml-0.5" />}
+                    </motion.button>
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -560,7 +538,7 @@ export default function EnhancedMusicPlayer() {
                 />
               </div>
             </Card>
-            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </>
