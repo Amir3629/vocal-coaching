@@ -6,6 +6,7 @@ import { motion } from "framer-motion"
 const translations = {
   de: {
     nav: {
+      home: "Start",
       services: "Angebote",
       about: "Über mich",
       references: "Referenzen",
@@ -81,6 +82,7 @@ const translations = {
   },
   en: {
     nav: {
+      home: "Home",
       services: "Services",
       about: "About",
       references: "References",
