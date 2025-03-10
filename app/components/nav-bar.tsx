@@ -72,17 +72,17 @@ export default function NavBar() {
           {/* Logo */}
           <motion.button
             onClick={() => scrollToSection("hero")}
-            className="relative w-20 h-16"
+            className="relative w-20 flex items-center justify-center"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
           >
-            <Link href="/" className="flex items-center">
+            <Link href="/" className="flex items-center justify-center">
               <Image
                 src={process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/logo/ml-logo.PNG' : '/images/logo/ml-logo.PNG'}
                 alt="ML Logo"
                 width={40}
                 height={40}
-                className="h-auto w-auto object-contain filter brightness-0 invert"
+                className="h-auto w-auto object-contain filter brightness-0 invert transform -translate-y-2"
                 onError={(e) => {
                   console.error('Error loading logo:', e);
                   const img = e.target as HTMLImageElement;
