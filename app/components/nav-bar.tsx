@@ -80,8 +80,8 @@ export default function NavBar() {
               <Image
                 src={process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/logo/ml-logo.PNG' : '/images/logo/ml-logo.PNG'}
                 alt="ML Logo"
-                width={75}
-                height={75}
+                width={50}
+                height={50}
                 className="h-auto w-auto object-contain filter brightness-0 invert"
                 onError={(e) => {
                   console.error('Error loading logo:', e);
