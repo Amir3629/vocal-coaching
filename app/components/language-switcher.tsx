@@ -12,6 +12,9 @@ const translations = {
       testimonials: "Erfahrungen",
       contact: "Kontakt",
     },
+    references: {
+      title: "Referenzen"
+    },
     // ... other translations
   },
   en: {
@@ -21,6 +24,9 @@ const translations = {
       references: "References",
       testimonials: "Testimonials",
       contact: "Contact",
+    },
+    references: {
+      title: "References"
     },
     // ... other translations
   },
