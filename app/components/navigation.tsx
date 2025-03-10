@@ -14,7 +14,7 @@ export default function Navigation() {
   const { t } = useLanguage()
 
   const logoPath = process.env.NODE_ENV === 'production'
-    ? "/vocal-coaching/images/logo/logo.svg"
+    ? "/vocal-coaching/vocal-coaching/images/logo/logo.svg"
     : "/images/logo/logo.svg"
 
   const links = [
