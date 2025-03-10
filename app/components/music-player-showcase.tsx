@@ -2,15 +2,15 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import dynamic from "next/dynamic";
 
-const ModernVinylPlayer = dynamic(() => import("../components/player-styles/modern-vinyl"), {
+const ModernVinylPlayer = dynamic(() => import("./player-styles/modern-vinyl"), {
   ssr: false
 });
 
-const NeonWavePlayer = dynamic(() => import("../components/player-styles/neon-wave"), {
+const NeonWavePlayer = dynamic(() => import("./player-styles/neon-wave"), {
   ssr: false
 });
 
-const MinimalDarkPlayer = dynamic(() => import("../components/player-styles/minimal-dark"), {
+const MinimalDarkPlayer = dynamic(() => import("./player-styles/minimal-dark"), {
   ssr: false
 });
 

@@ -2,10 +2,7 @@
 const nextConfig = {
   output: 'export',
   basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
-  transpilePackages: ['lucide-react'],
-  images: {
-    unoptimized: true
-  }
+  transpilePackages: ['lucide-react']
 }
 
 module.exports = nextConfig
