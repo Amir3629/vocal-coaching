@@ -28,36 +28,65 @@ interface Track {
   artist: string;
   description: string;
   youtubeId: string;
+  coverImage: string;
 }
 
 const defaultTracks: Track[] = [
   {
     id: 1,
-    title: "Jazz Performance",
+    title: "Vocal Workshop",
     artist: "Melanie Wainwright",
-    description: "Live at B-Flat Jazz Club Berlin",
-    youtubeId: "K6x0zEA06uk"
+    description: "Complete Vocal Technique Demonstration",
+    youtubeId: "AWsarzdZ1u8",
+    coverImage: "/images/covers/vocal-workshop.jpg"
   },
   {
     id: 2,
-    title: "Vocal Workshop",
+    title: "Jazz Standards",
     artist: "Melanie Wainwright",
-    description: "Complete Vocal Tech Demo",
-    youtubeId: "AWsarzdZ1u8"
+    description: "Live Performance Collection",
+    youtubeId: "GidIMbCmtyk",
+    coverImage: "/images/covers/jazz-standards.jpg"
   },
   {
     id: 3,
-    title: "Jazz Standards",
+    title: "Special Performance",
     artist: "Melanie Wainwright",
-    description: "Live Performance Highlights",
-    youtubeId: "GidIMbCmtyk"
+    description: "Live Jazz Session",
+    youtubeId: "QgZKO_f5FlM",
+    coverImage: "/images/covers/special-performance.jpg"
   },
   {
     id: 4,
     title: "Vocal Jazz",
     artist: "Melanie Wainwright",
     description: "Studio Session",
-    youtubeId: "hFdMHvB6-Jk"
+    youtubeId: "hFdMHvB6-Jk",
+    coverImage: "/images/covers/vocal-jazz.jpg"
+  },
+  {
+    id: 5,
+    title: "Jazz Ensemble",
+    artist: "Melanie Wainwright",
+    description: "Live Performance",
+    youtubeId: "ZvWZr6TNh9Y",
+    coverImage: "/images/covers/jazz-ensemble.jpg"
+  },
+  {
+    id: 6,
+    title: "Jazz Collection",
+    artist: "Melanie Wainwright",
+    description: "Selected Performances",
+    youtubeId: "r58-5DBfMpY",
+    coverImage: "/images/covers/jazz-collection.jpg"
+  },
+  {
+    id: 7,
+    title: "Jazz Highlights",
+    artist: "Melanie Wainwright",
+    description: "Best Moments",
+    youtubeId: "0zARqh3xwnw",
+    coverImage: "/images/covers/jazz-highlights.jpg"
   }
 ];
 
@@ -291,144 +320,166 @@ export default function EnhancedMusicPlayer() {
         <div id="youtube-player" className="hidden"></div>
 
         <motion.div 
-          initial={{ opacity: 0, y: 20 }} 
-          animate={{ opacity: 1, y: 0 }} 
-          className="w-full max-w-2xl mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          className="w-full max-w-6xl mx-auto"
         >
-          <Card className="bg-black/40 backdrop-blur-md border-[#C8A97E]/20 p-6 sm:p-8">
-            <div className="flex flex-col items-center">
-              {/* Current Track Info */}
-              <AnimatePresence mode="wait">
+          <div className="relative h-[700px] perspective-1000">
+            {/* Gramophone Base */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[400px] h-[200px]">
+              <div className="relative w-full h-full">
+                <div className="absolute bottom-0 w-full h-[120px] bg-gradient-to-t from-[#C8A97E] to-[#8B7355] rounded-t-[100px] shadow-xl">
+                  <div className="absolute top-4 left-1/2 -translate-x-1/2 w-[80%] h-[8px] bg-[#040202]/20 rounded-full" />
+                </div>
+                {/* Gramophone Horn */}
                 <motion.div
-                  key={tracks[currentTrack].id}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3 }}
-                  className="text-center mb-8"
+                  className="absolute -right-20 top-10 w-[300px] h-[150px] origin-left"
+                  initial={{ rotateZ: -20 }}
+                  animate={{ rotateZ: isPlaying ? -15 : -20 }}
+                  transition={{ type: "spring", stiffness: 100 }}
                 >
-                  <h3 className="text-2xl font-light text-white mb-2">{tracks[currentTrack].title}</h3>
-                  <p className="text-[#C8A97E] text-sm mb-1">{tracks[currentTrack].artist}</p>
-                  <p className="text-gray-400 text-sm">{tracks[currentTrack].description}</p>
+                  <div className="relative w-full h-full">
+                    <div className="absolute inset-0 bg-gradient-to-r from-[#C8A97E] to-[#8B7355] skew-y-[10deg] rounded-r-full shadow-2xl transform-gpu" />
+                    <div className="absolute inset-[2px] bg-gradient-to-r from-[#C8A97E]/20 to-[#8B7355]/20 skew-y-[10deg] rounded-r-full" />
+                  </div>
                 </motion.div>
-              </AnimatePresence>
-
-              {/* Circular Progress */}
-              <div className="relative mb-8">
-                <svg className="w-48 h-48" viewBox="0 0 48 48">
-                  <circle
-                    cx="24"
-                    cy="24"
-                    r="23"
-                    className="fill-[#C8A97E]/5"
-                  />
-                  <motion.circle
-                    cx="24"
-                    cy="24"
-                    r="23"
-                    stroke="currentColor"
-                    strokeWidth="1"
-                    fill="none"
-                    className="text-[#C8A97E]/20"
-                    strokeDasharray="144.51326206513048"
-                    strokeDashoffset={144.51326206513048 * (1 - currentTime / duration * 100 / 100)}
-                    transform="rotate(-90 24 24)"
-                  />
-                  <motion.circle
-                    cx="24"
-                    cy="24"
-                    r="18"
-                    className="fill-[#C8A97E]/10 cursor-pointer"
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handlePlay}
-                  />
-                </svg>
-                <motion.div
-                  className="absolute inset-0 flex items-center justify-center text-[#C8A97E]"
-                  onClick={handlePlay}
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                >
-                  {isPlaying ? (
-                    <Pause className="w-12 h-12" />
-                  ) : (
-                    <Play className="w-12 h-12 ml-2" />
-                  )}
-                </motion.div>
-              </div>
-
-              {/* Controls */}
-              <div className="flex items-center justify-center gap-6 mb-8">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handlePrevTrack}
-                  className="w-12 h-12 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-                >
-                  <SkipBack className="w-6 h-6" />
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={toggleMute}
-                  className="w-12 h-12 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-                >
-                  {isMuted ? (
-                    <VolumeX className="w-6 h-6" />
-                  ) : (
-                    <Volume2 className="w-6 h-6" />
-                  )}
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleNextTrack}
-                  className="w-12 h-12 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-                >
-                  <SkipForward className="w-6 h-6" />
-                </motion.button>
-              </div>
-
-              {/* Track List */}
-              <div className="w-full space-y-2">
-                {tracks.map((track, index) => (
-                  <motion.button
-                    key={track.id}
-                    onClick={() => {
-                      setCurrentTrack(index);
-                      if (!isPlaying) setIsPlaying(true);
-                    }}
-                    className={`w-full p-3 rounded-lg text-left transition-all ${
-                      index === currentTrack 
-                        ? "bg-[#C8A97E]/20 text-white" 
-                        : "bg-black/20 text-gray-400 hover:bg-[#C8A97E]/10 hover:text-white"
-                    }`}
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                        index === currentTrack ? "bg-[#C8A97E]/20" : "bg-black/40"
-                      }`}>
-                        {index === currentTrack && isPlaying ? (
-                          <Pause className="w-4 h-4" />
-                        ) : (
-                          <Play className="w-4 h-4 ml-0.5" />
-                        )}
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium">{track.title}</p>
-                        <p className="text-xs text-[#C8A97E]">{track.description}</p>
-                      </div>
-                    </div>
-                  </motion.button>
-                ))}
               </div>
             </div>
-          </Card>
+
+            {/* Vinyl Record Collection */}
+            <div className="absolute inset-0 flex items-center justify-center -mt-20">
+              <div className="relative w-full h-full">
+                <AnimatePresence mode="wait">
+                  {tracks.map((track, index) => {
+                    const isActive = index === currentTrack;
+                    const offset = index - currentTrack;
+                    const zIndex = tracks.length - Math.abs(offset);
+                    
+                    return (
+                      <motion.div
+                        key={track.id}
+                        className="absolute top-1/2 left-1/2 w-[300px] h-[300px]"
+                        initial={false}
+                        animate={{
+                          x: `${offset * 60}%`,
+                          y: "-50%",
+                          rotateY: offset * -25,
+                          rotateZ: isActive && isPlaying ? 360 : 0,
+                          scale: isActive ? 1 : 0.8,
+                          opacity: Math.abs(offset) > 2 ? 0 : 1,
+                          zIndex
+                        }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 300,
+                          damping: 30,
+                          rotateZ: {
+                            duration: 2,
+                            repeat: Infinity,
+                            ease: "linear",
+                            repeatType: "loop"
+                          }
+                        }}
+                        onClick={() => {
+                          if (!isActive) {
+                            setCurrentTrack(index);
+                            if (!isPlaying) setIsPlaying(true);
+                          }
+                        }}
+                        style={{
+                          cursor: isActive ? "default" : "pointer",
+                          transformStyle: "preserve-3d"
+                        }}
+                      >
+                        {/* Vinyl Record */}
+                        <div className={`relative w-full h-full rounded-full overflow-hidden transform-gpu ${
+                          isActive ? "ring-4 ring-[#C8A97E]" : ""
+                        }`}>
+                          {/* Record Surface */}
+                          <div className="absolute inset-0 bg-[#1a1a1a]">
+                            {/* Vinyl Grooves */}
+                            <div className="absolute inset-[10%] rounded-full border-[1px] border-[#C8A97E]/10" style={{
+                              background: "repeating-radial-gradient(circle at center, transparent 0, transparent 2px, rgba(200,169,126,0.1) 3px, transparent 4px)"
+                            }} />
+                            {/* Center Label */}
+                            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[30%] h-[30%] rounded-full bg-gradient-to-br from-[#C8A97E] to-[#8B7355]">
+                              <div className="absolute inset-[15%] rounded-full bg-[#1a1a1a]" />
+                            </div>
+                          </div>
+
+                          {/* Track Info Overlay */}
+                          <div className={`absolute inset-0 flex flex-col items-center justify-center text-center p-4 transition-opacity duration-300 ${
+                            isActive ? "opacity-100" : "opacity-0"
+                          }`}>
+                            <h3 className="text-lg font-medium text-white mb-1">{track.title}</h3>
+                            <p className="text-sm text-[#C8A97E]">{track.description}</p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Controls */}
+            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center justify-center gap-8">
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePrevTrack}
+                className="w-14 h-14 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+              >
+                <SkipBack className="w-8 h-8" />
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handlePlay}
+                className="w-20 h-20 rounded-full bg-[#C8A97E] hover:bg-[#B69A6E] flex items-center justify-center text-black transition-colors"
+              >
+                {isPlaying ? (
+                  <Pause className="w-10 h-10" />
+                ) : (
+                  <Play className="w-10 h-10 ml-1" />
+                )}
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleNextTrack}
+                className="w-14 h-14 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+              >
+                <SkipForward className="w-8 h-8" />
+              </motion.button>
+
+              <motion.button
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={toggleMute}
+                className="w-14 h-14 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+              >
+                {isMuted ? (
+                  <VolumeX className="w-8 h-8" />
+                ) : (
+                  <Volume2 className="w-8 h-8" />
+                )}
+              </motion.button>
+            </div>
+
+            {/* Progress Bar */}
+            <div className="absolute bottom-40 left-1/2 -translate-x-1/2 w-full max-w-md">
+              <div className="relative h-1 bg-[#C8A97E]/10 rounded-full overflow-hidden">
+                <motion.div
+                  className="absolute h-full bg-[#C8A97E] rounded-full"
+                  style={{ width: `${(currentTime / duration) * 100}%` }}
+                  transition={{ duration: 0.1 }}
+                />
+              </div>
+            </div>
+          </div>
         </motion.div>
       </div>
     </section>
