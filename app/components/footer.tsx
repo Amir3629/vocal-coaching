@@ -139,15 +139,15 @@ export default function Footer() {
                   </Link>
                 ))}
               </div>
-              <div className="text-sm text-gray-400">
+            </div>
+
+            {/* Middle Column - Subtitle and Copyright */}
+            <div className="flex flex-col items-center justify-start space-y-4">
+              <p className="text-gray-400">Vocal Coaching in Berlin</p>
+              <div className="text-sm text-gray-400 text-center">
                 © 2025 Mel jazz.<br />
                 Alle Rechte vorbehalten.
               </div>
-            </div>
-
-            {/* Middle Column - Subtitle */}
-            <div className="flex flex-col items-center justify-start">
-              <p className="text-gray-400">Vocal Coaching in Berlin</p>
             </div>
 
             {/* Right Column - Legal Links & Image */}
