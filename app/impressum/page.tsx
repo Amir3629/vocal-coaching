@@ -1,11 +1,11 @@
 "use client"
 
-import NavBar from "@/components/nav-bar"
+import Navigation from "@/app/components/navigation"
 
 export default function ImpressumPage() {
   return (
     <div className="min-h-screen bg-[#0A0A0A]">
-      <NavBar />
+      <Navigation />
       
       <main className="pt-32 pb-20 px-4">
         <div className="max-w-4xl mx-auto">

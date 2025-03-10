@@ -7,7 +7,7 @@ import { ChevronDown, MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube }
 import { Button } from "@/components/ui/button"
 import ServiceCard from "@/app/components/service-card"
 import TestimonialSlider from "@/app/components/testimonial-slider"
-import NavBar from "@/app/components/nav-bar"
+import Navigation from "@/app/components/navigation"
 import EnhancedMusicPlayer from "@/app/components/enhanced-music-player"
 import VideoPreview from "@/app/components/video-preview"
 import { Music, Mic, Theater, BookOpen } from "lucide-react"
@@ -111,7 +111,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#0A0A0A]">
-      <NavBar />
+      <Navigation />
 
       {/* Hero Section with Parallax Piano Background */}
       <section id="hero" ref={heroRef} className="relative h-screen flex items-center justify-center overflow-hidden">
