@@ -160,10 +160,13 @@ export default function Footer() {
                 ))}
               </div>
               <div className="w-48 h-24 relative flex justify-end">
-                <img
-                  src="/images/footer/footer.png"
+                <Image
+                  src={process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/footer/footer.png' : '/images/footer/footer.png'}
                   alt="Footer decoration"
-                  className="w-full h-full object-contain filter brightness-0 invert"
+                  width={192}
+                  height={96}
+                  className="object-contain filter brightness-0 invert"
+                  priority
                 />
               </div>
             </div>
