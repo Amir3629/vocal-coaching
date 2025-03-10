@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import Link from "next/link"
 import Image from "next/image"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { useLanguage } from "./language-switcher"
 import LanguageSwitcher from "./language-switcher"
@@ -11,6 +11,7 @@ import LanguageSwitcher from "./language-switcher"
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const pathname = usePathname()
+  const router = useRouter()
   const { t } = useLanguage()
 
   const logoPath = process.env.NODE_ENV === 'production'
@@ -18,7 +19,6 @@ export default function Navigation() {
     : "/vocal-coaching/images/logo/ml-logo.PNG"
 
   const links = [
-    { href: "/", label: t.nav.home },
     { href: "/#services", label: t.nav.services },
     { href: "/#about", label: t.nav.about },
     { href: "/#references", label: t.nav.references },
@@ -34,17 +34,33 @@ export default function Navigation() {
     }
   }, [isOpen])
 
+  const handleLogoClick = (e: React.MouseEvent) => {
+    e.preventDefault()
+    if (pathname !== '/') {
+      router.push('/')
+    } else {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      })
+    }
+  }
+
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black/50 backdrop-blur-sm border-b border-white/10">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex items-center justify-between">
-          <Link href="/" className="relative w-40 h-16">
+      <div className="container mx-auto px-4">
+        <div className="flex items-center justify-between h-20">
+          <Link 
+            href="/" 
+            onClick={handleLogoClick}
+            className="relative w-32 h-12 -mt-1 ml-0"
+          >
             <div className="relative w-full h-full">
               <Image
                 src={logoPath}
                 alt="Mel jazz"
                 fill
-                className="object-contain"
+                className="object-contain brightness-0 invert hover:opacity-80 transition-opacity"
                 priority
               />
             </div>
@@ -56,6 +72,13 @@ export default function Navigation() {
               <Link
                 key={link.href}
                 href={link.href}
+                onClick={(e) => {
+                  e.preventDefault()
+                  const element = document.querySelector(link.href.split('#')[1] ? `#${link.href.split('#')[1]}` : 'body')
+                  if (element) {
+                    element.scrollIntoView({ behavior: 'smooth' })
+                  }
+                }}
                 className={`text-sm font-medium transition-colors ${
                   pathname === link.href
                     ? "text-[#C8A97E]"
@@ -65,6 +88,11 @@ export default function Navigation() {
                 {link.label}
               </Link>
             ))}
+
+            {/* Language Switcher */}
+            <div className="flex items-center pl-4 border-l border-white/10">
+              <LanguageSwitcher />
+            </div>
           </div>
 
           {/* Mobile Navigation Button */}
@@ -110,7 +138,14 @@ export default function Navigation() {
                   <Link
                     key={link.href}
                     href={link.href}
-                    onClick={() => setIsOpen(false)}
+                    onClick={(e) => {
+                      e.preventDefault()
+                      setIsOpen(false)
+                      const element = document.querySelector(link.href.split('#')[1] ? `#${link.href.split('#')[1]}` : 'body')
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' })
+                      }
+                    }}
                     className={`text-sm font-medium transition-colors ${
                       pathname === link.href
                         ? "text-[#C8A97E]"
@@ -120,13 +155,16 @@ export default function Navigation() {
                     {link.label}
                   </Link>
                 ))}
+                
+                {/* Mobile Language Switcher */}
+                <div className="pt-4 border-t border-white/10">
+                  <LanguageSwitcher />
+                </div>
               </div>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-
-      <LanguageSwitcher />
     </nav>
   )
 } 

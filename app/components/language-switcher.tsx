@@ -1,85 +1,84 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect } from "react"
-import { motion, AnimatePresence } from "framer-motion"
-import { translations } from "@/app/translations"
+import { createContext, useContext, useState } from "react"
+import { motion } from "framer-motion"
 
-type Language = keyof typeof translations
-type TranslationType = typeof translations[Language]
-
-interface LanguageContextType {
-  currentLang: Language
-  toggleLanguage: () => void
-  t: TranslationType
+const translations = {
+  de: {
+    nav: {
+      services: "Angebote",
+      about: "Über mich",
+      references: "Referenzen",
+      testimonials: "Erfahrungen",
+      contact: "Kontakt",
+    },
+    // ... other translations
+  },
+  en: {
+    nav: {
+      services: "Services",
+      about: "About",
+      references: "References",
+      testimonials: "Testimonials",
+      contact: "Contact",
+    },
+    // ... other translations
+  },
 }
 
-export const LanguageContext = createContext<LanguageContextType | null>(null)
+const LanguageContext = createContext<{
+  currentLang: string
+  toggleLanguage: () => void
+  t: typeof translations.de | typeof translations.en
+}>({
+  currentLang: "de",
+  toggleLanguage: () => {},
+  t: translations.de,
+})
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [currentLang, setCurrentLang] = useState<Language>("DE")
-
-  useEffect(() => {
-    const savedLang = localStorage.getItem("preferredLang") as Language
-    if (savedLang && (savedLang === "DE" || savedLang === "EN")) {
-      setCurrentLang(savedLang)
-    }
-  }, [])
+  const [currentLang, setCurrentLang] = useState("de")
 
   const toggleLanguage = () => {
-    const newLang = currentLang === "DE" ? "EN" : "DE"
-    setCurrentLang(newLang)
-    localStorage.setItem("preferredLang", newLang)
-  }
-
-  const value = {
-    currentLang,
-    toggleLanguage,
-    t: translations[currentLang]
+    setCurrentLang((prev) => (prev === "de" ? "en" : "de"))
   }
 
   return (
-    <LanguageContext.Provider value={value}>
+    <LanguageContext.Provider
+      value={{
+        currentLang,
+        toggleLanguage,
+        t: translations[currentLang as keyof typeof translations],
+      }}
+    >
       {children}
     </LanguageContext.Provider>
   )
 }
 
 export function useLanguage() {
-  const context = useContext(LanguageContext)
-  if (!context) {
-    throw new Error("useLanguage must be used within a LanguageProvider")
-  }
-  return context
+  return useContext(LanguageContext)
 }
 
 export default function LanguageSwitcher() {
   const { currentLang, toggleLanguage } = useLanguage()
 
   return (
-    <motion.div 
-      className="fixed top-4 right-4 z-50 flex items-center gap-2 bg-black/50 backdrop-blur-sm rounded-full px-3 py-1.5 border border-white/10 hover:bg-black/60 transition-colors"
-      initial={{ opacity: 0, y: -20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3 }}
+    <motion.button
+      onClick={toggleLanguage}
+      className="relative px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
+      whileHover={{ scale: 1.05 }}
+      whileTap={{ scale: 0.95 }}
     >
-      <button
-        onClick={toggleLanguage}
-        className="relative text-sm font-medium text-white hover:text-[#C8A97E] transition-colors"
-        aria-label={`Switch to ${currentLang === "DE" ? "English" : "German"}`}
-      >
-        <AnimatePresence mode="wait">
-          <motion.span
-            key={currentLang}
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -10 }}
-            transition={{ duration: 0.2 }}
-            className="block"
-          >
-            {currentLang === "DE" ? "EN" : "DE"}
-          </motion.span>
-        </AnimatePresence>
-      </button>
-    </motion.div>
+      <div className="flex items-center space-x-2">
+        <span className={`text-sm font-medium ${currentLang === "de" ? "text-[#C8A97E]" : "text-white/60"}`}>
+          DE
+        </span>
+        <span className="text-white/30">|</span>
+        <span className={`text-sm font-medium ${currentLang === "en" ? "text-[#C8A97E]" : "text-white/60"}`}>
+          EN
+        </span>
+      </div>
+    </motion.button>
   )
 } 
