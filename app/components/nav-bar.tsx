@@ -78,16 +78,15 @@ export default function NavBar() {
           >
             <Link href="/" className="flex items-center">
               <Image
-                src={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logo/ml-logo.PNG" : "/images/logo/ml-logo.PNG"}
+                src={process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/logo/ml-logo.PNG' : '/images/logo/ml-logo.PNG'}
                 alt="ML Logo"
-                width={160}
-                height={80}
-                className="h-auto w-auto object-contain filter brightness-100 contrast-100"
-                priority
+                width={75}
+                height={75}
+                className="h-auto w-auto object-contain filter brightness-0 invert"
                 onError={(e) => {
-                  console.error('Logo failed to load:', e);
-                  const target = e.target as HTMLImageElement;
-                  target.src = process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logo/ml-logo.PNG" : "/images/logo/ml-logo.PNG";
+                  console.error('Error loading logo:', e);
+                  const img = e.target as HTMLImageElement;
+                  img.src = process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/logo/ml-logo.PNG' : '/images/logo/ml-logo.PNG';
                 }}
               />
             </Link>
