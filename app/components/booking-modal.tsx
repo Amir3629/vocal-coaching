@@ -107,7 +107,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   }
 
   const handleTimeSelect = (time: string) => {
-    setSelectedTime(time)
+    setSelectedTime(time);
+    setCurrentStep("4"); // Automatically progress to contact form after time selection
   }
 
   const handleServiceSelect = (serviceId: string) => {
@@ -249,297 +250,310 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
           />
         </div>
 
+        {/* Title */}
         <div className="mb-6">
-          <h2 className="text-2xl font-playfair text-[#C8A97E]">
-            {getStepTitle(currentStep)}
-          </h2>
+          <h2 className="text-2xl font-light text-[#C8A97E]">{getStepTitle(currentStep)}</h2>
+          {selectedService && (
+            <motion.p
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="text-sm text-gray-400 mt-1"
+            >
+              {getStepDescription(selectedService)}
+            </motion.p>
+          )}
         </div>
 
-        {currentStep === "1" && (
-          <div className="space-y-4">
-            {services.map((service) => (
-              <motion.div
-                key={service.id}
-                className={`p-4 rounded-lg border cursor-pointer transition-all ${
-                  selectedService === service.id
-                    ? "border-[#C8A97E] bg-[#C8A97E]/10"
-                    : "border-[#C8A97E]/20 hover:border-[#C8A97E]/40"
-                }`}
-                onClick={() => handleServiceSelect(service.id)}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <h3 className="text-lg font-medium text-white">{service.title}</h3>
-                <p className="text-sm text-gray-400 mt-1">{service.description}</p>
-                <p className="text-sm text-[#C8A97E] mt-2">{service.duration}</p>
-              </motion.div>
-            ))}
-            {errors.service && (
-              <motion.p
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="text-sm text-[#C8A97E] bg-[#C8A97E]/10 p-2 rounded"
-              >
-                {errors.service}
-              </motion.p>
-            )}
-          </div>
-        )}
-
-        {currentStep === "2" && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-white text-center mb-6">
-              Wählen Sie ein Datum
-            </h2>
-            <div className="bg-[#1A1A1A] rounded-lg p-4">
-              <div className="flex items-center justify-between mb-4">
-                <button
-                  onClick={prevMonth}
-                  className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                >
-                  <ChevronLeft className="w-5 h-5 text-[#C8A97E]" />
-                </button>
-                <h3 className="text-white font-medium">
-                  {format(currentDate, "MMMM yyyy", { locale: de })}
-                </h3>
-                <button
-                  onClick={nextMonth}
-                  className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                >
-                  <ChevronRight className="w-5 h-5 text-[#C8A97E]" />
-                </button>
-              </div>
-              
-              <div className="grid grid-cols-7 gap-1 mb-2">
-                {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((day) => (
-                  <div key={day} className="text-center text-sm text-gray-400">
-                    {day}
-                  </div>
-                ))}
-              </div>
-
-              <div className="grid grid-cols-7 gap-1">
-                {calendarDays.map((day, idx) => {
-                  const isToday = isSameDay(day, new Date());
-                  const isSelected = selectedDate && isSameDay(day, selectedDate);
-                  const isPast = isBefore(day, startOfToday());
-
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => handleDateSelect(day)}
-                      disabled={isPast}
-                      className={`
-                        aspect-square rounded-lg flex items-center justify-center text-sm
-                        ${isSelected ? "bg-[#C8A97E] text-black" : ""}
-                        ${isToday ? "border border-[#C8A97E]" : ""}
-                        ${isPast ? "text-gray-600" : "text-white hover:bg-white/5"}
-                      `}
-                    >
-                      {format(day, "d")}
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {currentStep === "3" && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-white text-center mb-6">
-              Wählen Sie eine Uhrzeit
-            </h2>
-            <div className="grid grid-cols-3 gap-3">
-              {timeSlots.map((time) => (
-                <button
-                  key={time}
-                  onClick={() => handleTimeSelect(time)}
-                  className={`p-3 rounded-lg border transition-all ${
-                    selectedTime === time
-                      ? "border-[#C8A97E] bg-[#C8A97E]/10 text-white"
-                      : "border-white/10 hover:border-[#C8A97E]/50 text-gray-400 hover:text-white"
-                  }`}
-                >
-                  {time}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {currentStep === "4" && (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-semibold text-white mb-4">
-              Ihre Informationen
-            </h2>
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Name
-              </label>
-              <input
-                type="text"
-                value={formData.name}
-                onChange={(e) =>
-                  setFormData({ ...formData, name: e.target.value })
-                }
-                className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
-              />
-              {errors.name && (
-                <p className="text-red-500 text-sm mt-1">{errors.name}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Email
-              </label>
-              <input
-                type="email"
-                value={formData.email}
-                onChange={(e) =>
-                  setFormData({ ...formData, email: e.target.value })
-                }
-                className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
-              />
-              {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Telefon (optional)
-              </label>
-              <input
-                type="tel"
-                value={formData.phone}
-                onChange={(e) =>
-                  setFormData({ ...formData, phone: e.target.value })
-                }
-                className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Level
-              </label>
-              <select
-                value={formData.service}
-                onChange={(e) =>
-                  setFormData({ ...formData, service: e.target.value })
-                }
-                className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
-              >
-                <option value="">Bitte wählen</option>
+        {/* Content */}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentStep}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -20 }}
+            transition={{ duration: 0.3 }}
+            className="space-y-6"
+          >
+            {/* Step 1: Service Selection */}
+            {currentStep === "1" && (
+              <div className="grid gap-4">
                 {services.map((service) => (
-                  <option key={service.id} value={service.id}>
-                    {service.title}
-                  </option>
+                  <motion.button
+                    key={service.id}
+                    onClick={() => handleServiceSelect(service.id)}
+                    className={cn(
+                      "p-4 rounded-lg border text-left transition-all",
+                      "hover:border-[#C8A97E] hover:bg-[#C8A97E]/5",
+                      selectedService === service.id
+                        ? "border-[#C8A97E] bg-[#C8A97E]/5"
+                        : "border-white/10 bg-black/20"
+                    )}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    <h3 className="font-medium text-white">{service.title}</h3>
+                    <p className="text-sm text-gray-400 mt-1">{service.duration}</p>
+                    <p className="text-sm text-gray-400">{service.description}</p>
+                  </motion.button>
                 ))}
-              </select>
-              {errors.service && (
-                <p className="text-red-500 text-sm mt-1">{errors.service}</p>
-              )}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-300 mb-1">
-                Nachricht (optional)
-              </label>
-              <textarea
-                value={formData.message}
-                onChange={(e) =>
-                  setFormData({ ...formData, message: e.target.value })
-                }
-                rows={3}
-                className="w-full px-4 py-2 bg-[#1A1A1A] border border-white/10 rounded-lg focus:outline-none focus:border-[#C8A97E] text-white"
-              />
-            </div>
-
-            <div className="flex items-start gap-2 mt-4">
-              <input
-                type="checkbox"
-                id="terms"
-                checked={termsAccepted}
-                onChange={(e) => setTermsAccepted(e.target.checked)}
-                className="mt-1"
-              />
-              <label htmlFor="terms" className="text-sm text-gray-300">
-                Ich akzeptiere die{" "}
-                <button
-                  type="button"
-                  onClick={() => setShowAGBModal(true)}
-                  className="text-[#C8A97E] hover:text-[#B69A6E]"
-                >
-                  AGB
-                </button>
-                {" "}und{" "}
-                <button
-                  type="button"
-                  onClick={() => setShowDatenschutzModal(true)}
-                  className="text-[#C8A97E] hover:text-[#B69A6E]"
-                >
-                  Datenschutzerklärung
-                </button>
-              </label>
-            </div>
-          </div>
-        )}
-
-        {currentStep === "5" && (
-          <div className="text-center py-8">
-            <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
-              <Check className="w-8 h-8 text-[#C8A97E]" />
-            </div>
-            <h2 className="text-2xl font-semibold text-white mb-2">
-              Buchung erfolgreich!
-            </h2>
-            <p className="text-gray-400">
-              Sie erhalten in Kürze eine Bestätigungs-E-Mail mit allen Details.
-            </p>
-          </div>
-        )}
-
-        {/* Success Message */}
-        <AnimatePresence>
-          {showSuccess && (
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="fixed inset-0 z-50 flex items-center justify-center bg-black/50"
-            >
-              <div className="bg-[#1A1A1A] rounded-lg p-6 text-center">
-                <div className="w-12 h-12 rounded-full bg-[#C8A97E]/20 mx-auto flex items-center justify-center mb-4">
-                  <Check className="w-6 h-6 text-[#C8A97E]" />
-                </div>
-                <h3 className="text-lg font-medium text-white mb-2">Buchung erfolgreich!</h3>
-                <p className="text-gray-400">Sie erhalten in Kürze eine Bestätigungs-E-Mail.</p>
               </div>
-            </motion.div>
-          )}
+            )}
+
+            {/* Step 2: Date Selection */}
+            {currentStep === "2" && (
+              <div className="space-y-4">
+                <div className="flex items-center justify-between mb-4">
+                  <button
+                    onClick={prevMonth}
+                    className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                  >
+                    <ChevronLeft className="w-5 h-5" />
+                  </button>
+                  <h3 className="text-lg font-medium">
+                    {format(currentDate, "MMMM yyyy", { locale: de })}
+                  </h3>
+                  <button
+                    onClick={nextMonth}
+                    className="p-2 hover:bg-white/5 rounded-lg transition-colors"
+                  >
+                    <ChevronRight className="w-5 h-5" />
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-7 gap-2 text-center text-sm">
+                  {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((day) => (
+                    <div key={day} className="text-gray-400 py-2">
+                      {day}
+                    </div>
+                  ))}
+                  {calendarDays.map((day, i) => {
+                    const isSelected = selectedDate && isSameDay(day, selectedDate);
+                    const isDisabled = isBefore(day, startOfToday());
+                    return (
+                      <motion.button
+                        key={day.toString()}
+                        onClick={() => !isDisabled && handleDateSelect(day)}
+                        className={cn(
+                          "p-2 rounded-lg transition-colors",
+                          isSelected && "bg-[#C8A97E] text-black",
+                          !isSelected && !isDisabled && "hover:bg-[#C8A97E]/10",
+                          isDisabled && "opacity-25 cursor-not-allowed"
+                        )}
+                        whileHover={!isDisabled ? { scale: 1.1 } : {}}
+                        whileTap={!isDisabled ? { scale: 0.95 } : {}}
+                      >
+                        {format(day, "d")}
+                      </motion.button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* Step 3: Time Selection */}
+            {currentStep === "3" && (
+              <div className="grid grid-cols-3 gap-3">
+                {timeSlots.map((time) => (
+                  <motion.button
+                    key={time}
+                    onClick={() => handleTimeSelect(time)}
+                    className={cn(
+                      "p-3 rounded-lg border text-center transition-all",
+                      "hover:border-[#C8A97E] hover:bg-[#C8A97E]/5",
+                      selectedTime === time
+                        ? "border-[#C8A97E] bg-[#C8A97E]/5"
+                        : "border-white/10 bg-black/20"
+                    )}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                  >
+                    {time}
+                  </motion.button>
+                ))}
+              </div>
+            )}
+
+            {/* Step 4: Contact Form */}
+            {currentStep === "4" && (
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div>
+                  <Label htmlFor="name">Name</Label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={formData.name}
+                    onChange={(e) =>
+                      setFormData({ ...formData, name: e.target.value })
+                    }
+                    className={cn(
+                      "mt-1 w-full p-2 rounded-lg bg-black/20 border border-white/10",
+                      "focus:outline-none focus:border-[#C8A97E]",
+                      errors.name && "border-red-500"
+                    )}
+                  />
+                  {errors.name && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm mt-1"
+                    >
+                      {errors.name}
+                    </motion.p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="email">Email</Label>
+                  <input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) =>
+                      setFormData({ ...formData, email: e.target.value })
+                    }
+                    className={cn(
+                      "mt-1 w-full p-2 rounded-lg bg-black/20 border border-white/10",
+                      "focus:outline-none focus:border-[#C8A97E]",
+                      errors.email && "border-red-500"
+                    )}
+                  />
+                  {errors.email && (
+                    <motion.p
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="text-red-500 text-sm mt-1"
+                    >
+                      {errors.email}
+                    </motion.p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="phone">Telefon (optional)</Label>
+                  <input
+                    id="phone"
+                    type="tel"
+                    value={formData.phone}
+                    onChange={(e) =>
+                      setFormData({ ...formData, phone: e.target.value })
+                    }
+                    className="mt-1 w-full p-2 rounded-lg bg-black/20 border border-white/10 focus:outline-none focus:border-[#C8A97E]"
+                  />
+                </div>
+
+                <div>
+                  <Label htmlFor="level">Level</Label>
+                  <Select
+                    value={formData.service}
+                    onValueChange={(value) =>
+                      setFormData({ ...formData, service: value })
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Bitte wählen" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {services.map((service) => (
+                        <SelectItem key={service.id} value={service.id}>
+                          {service.title}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="message">Nachricht (optional)</Label>
+                  <textarea
+                    id="message"
+                    value={formData.message}
+                    onChange={(e) =>
+                      setFormData({ ...formData, message: e.target.value })
+                    }
+                    className="mt-1 w-full p-2 rounded-lg bg-black/20 border border-white/10 focus:outline-none focus:border-[#C8A97E] min-h-[100px]"
+                  />
+                </div>
+
+                <div className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
+                    id="terms"
+                    checked={termsAccepted}
+                    onChange={(e) => setTermsAccepted(e.target.checked)}
+                    className="mt-1"
+                  />
+                  <label htmlFor="terms" className="text-sm text-gray-400">
+                    Ich akzeptiere die{" "}
+                    <button
+                      type="button"
+                      onClick={() => setShowAGBModal(true)}
+                      className="text-[#C8A97E] hover:underline"
+                    >
+                      AGB
+                    </button>{" "}
+                    und{" "}
+                    <button
+                      type="button"
+                      onClick={() => setShowDatenschutzModal(true)}
+                      className="text-[#C8A97E] hover:underline"
+                    >
+                      Datenschutzerklärung
+                    </button>
+                  </label>
+                </div>
+              </form>
+            )}
+          </motion.div>
         </AnimatePresence>
 
         {/* Navigation Buttons */}
         <div className="flex justify-between mt-6">
           {currentStep !== "1" && (
-            <button
-              onClick={handleBack}
-              className="px-4 py-2 text-[#C8A97E] hover:text-[#B69A6E] transition-colors"
-            >
+            <Button variant="outline" onClick={handleBack}>
               Zurück
-            </button>
+            </Button>
           )}
-          <button
-            onClick={currentStep === "4" ? handleSubmit : handleNext}
-            className="ml-auto px-6 py-2 bg-[#C8A97E] hover:bg-[#B69A6E] text-black rounded-lg transition-colors"
-          >
-            {currentStep === "4" ? "Absenden" : "Weiter"}
-          </button>
+          {currentStep !== "4" ? (
+            <Button
+              onClick={handleNext}
+              className="ml-auto"
+              disabled={
+                (currentStep === "1" && !selectedService) ||
+                (currentStep === "2" && !selectedDate) ||
+                (currentStep === "3" && !selectedTime)
+              }
+            >
+              Weiter
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSubmit}
+              className="ml-auto"
+              disabled={!termsAccepted || !formData.name || !formData.email}
+            >
+              Absenden
+            </Button>
+          )}
         </div>
       </DialogContent>
+
+      {/* Success Message */}
+      <SuccessMessage
+        isOpen={showSuccessMessage}
+        onClose={() => setShowSuccessMessage(false)}
+        title="Buchung erfolgreich!"
+        message="Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigungs-E-Mail."
+      />
+
+      {/* Terms Alert */}
+      <CustomAlert
+        isOpen={showTermsAlert}
+        onClose={() => setShowTermsAlert(false)}
+        onAccept={() => setTermsAccepted(true)}
+        message="Bitte akzeptieren Sie die AGB und Datenschutzerklärung, um fortzufahren."
+      />
+
+      {/* Legal Document Modals */}
       <LegalDocumentModal
         isOpen={showAGBModal}
         onClose={() => setShowAGBModal(false)}
@@ -547,6 +561,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       >
         <LegalContent type="agb" />
       </LegalDocumentModal>
+
       <LegalDocumentModal
         isOpen={showDatenschutzModal}
         onClose={() => setShowDatenschutzModal(false)}
@@ -554,21 +569,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       >
         <LegalContent type="datenschutz" />
       </LegalDocumentModal>
-      <CustomAlert
-        isOpen={showTermsAlert}
-        onClose={() => setShowTermsAlert(false)}
-        onAccept={() => {
-          setTermsAccepted(true)
-          handleNext()
-        }}
-        message="Bitte akzeptieren Sie unsere AGB und Datenschutzerklärung, um fortzufahren."
-      />
-      <SuccessMessage
-        isOpen={showSuccessMessage}
-        onClose={() => setShowSuccessMessage(false)}
-        title="Vielen Dank für deine Anfrage!"
-        message="Wir werden uns so schnell wie möglich bei dir melden. Überprüfe bitte auch deinen Spam-Ordner."
-      />
     </Dialog>
   )
 } 
