@@ -146,8 +146,8 @@ export default function Footer() {
             </div>
 
             {/* Right Column - Legal Links */}
-            <div className="flex justify-end">
-              <div className="flex items-center gap-6">
+            <div className="flex flex-col justify-start items-end">
+              <div className="flex items-center gap-6 mb-4">
                 {legalDocs.map((doc) => (
                   <button
                     key={doc.title}
@@ -158,6 +158,11 @@ export default function Footer() {
                   </button>
                 ))}
               </div>
+              <img
+                src={process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/footer/footer.png' : '/images/footer/footer.png'}
+                alt="Footer decoration"
+                className="w-auto h-24 object-contain filter brightness-0 invert"
+              />
             </div>
           </div>
 
