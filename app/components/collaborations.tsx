@@ -32,11 +32,6 @@ const collaborations = [
     link: "https://www.jazz-institut-berlin.de"
   },
   {
-    name: "Berliner Philharmonie",
-    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/philharmonie.svg" : "/images/collaborations/philharmonie.svg",
-    link: "https://www.berliner-philharmoniker.de"
-  },
-  {
     name: "Berliner Silber",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/berliner-silber.svg" : "/images/collaborations/berliner-silber.svg",
     link: "https://www.berliner-silber.de"
@@ -50,11 +45,6 @@ const collaborations = [
     name: "BDG",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/bdg.svg" : "/images/collaborations/bdg.svg",
     link: "https://www.bdg-online.org"
-  },
-  {
-    name: "Berlin Music Scene",
-    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/berlin-music.svg" : "/images/collaborations/berlin-music.svg",
-    link: "https://www.berlin-music-scene.de"
   }
 ]
 
@@ -65,43 +55,48 @@ export default function Collaborations() {
   return (
     <section id="references" className="py-20 bg-[#040202]">
       <div className="container mx-auto px-4">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-3xl md:text-4xl font-bold text-center mb-12 text-white"
-        >
-          {t.references.title}
-        </motion.h2>
+        <div className="text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="section-heading mb-4"
+          >
+            {t.references.title}
+          </motion.h2>
+          <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
+        </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-          {collaborations.map((collab, index) => (
-            <motion.a
-              key={collab.name}
-              href={collab.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: index * 0.1 }}
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(null)}
-              className="relative aspect-[3/1] flex items-center justify-center p-4 bg-transparent transition-colors group"
-            >
-              <div className="relative w-4/5 h-4/5">
-                <Image
-                  src={collab.logo}
-                  alt={collab.name}
-                  fill
-                  className={`object-contain transition-all duration-300 ${
-                    hoveredIndex === index ? "filter brightness-125" : ""
-                  }`}
-                />
-              </div>
-            </motion.a>
-          ))}
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-16 items-center justify-items-center">
+            {collaborations.map((collab, index) => (
+              <motion.a
+                key={collab.name}
+                href={collab.link}
+                target="_blank"
+                rel="noopener noreferrer"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: index * 0.1 }}
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(null)}
+                className="relative aspect-[3/1] flex items-center justify-center p-4 bg-transparent transition-colors group w-full"
+              >
+                <div className="relative w-3/5 h-3/5">
+                  <Image
+                    src={collab.logo}
+                    alt={collab.name}
+                    fill
+                    className={`object-contain transition-all duration-500 ${
+                      hoveredIndex === index ? "filter-none" : "filter grayscale brightness-200"
+                    }`}
+                  />
+                </div>
+              </motion.a>
+            ))}
+          </div>
         </div>
       </div>
     </section>
