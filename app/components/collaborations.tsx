@@ -19,12 +19,12 @@ const collaborations = [
   {
     name: "CVT Teacher",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-teacher.svg" : "/images/collaborations/cvt-teacher.svg",
-    link: "https://completevocalinstitute.com"
+    link: "https://cvtdeutschland.de/de"
   },
   {
     name: "CVT Deutschland",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-deutschland.svg" : "/images/collaborations/cvt-deutschland.svg",
-    link: "https://completevocaltechnique.de"
+    link: "https://cvtdeutschland.de/de"
   },
   {
     name: "Jazz Institut Berlin",
@@ -34,12 +34,12 @@ const collaborations = [
   {
     name: "Berliner Silber",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/berliner-silber.svg" : "/images/collaborations/berliner-silber.svg",
-    link: "https://www.berliner-silber.de"
+    link: "http://www.berlinersilber.de"
   },
   {
     name: "Planet Jazz",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/planet-jazz.svg" : "/images/collaborations/planet-jazz.svg",
-    link: "https://www.planet-jazz.de"
+    link: "https://www.planet-jazz-club-dueren.de"
   },
   {
     name: "BDG",
@@ -69,7 +69,7 @@ export default function Collaborations() {
         </div>
 
         <div className="max-w-5xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-16 items-center justify-items-center">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12 items-center justify-items-center">
             {collaborations.map((collab, index) => (
               <motion.a
                 key={collab.name}
@@ -82,9 +82,9 @@ export default function Collaborations() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="relative aspect-[3/1] flex items-center justify-center p-4 bg-transparent transition-colors group w-full"
+                className="relative aspect-[3/1] flex items-center justify-center p-2 bg-transparent transition-colors group w-full"
               >
-                <div className="relative w-3/5 h-3/5">
+                <div className="relative w-4/5 h-4/5">
                   <Image
                     src={collab.logo}
                     alt={collab.name}
