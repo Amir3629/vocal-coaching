@@ -48,9 +48,9 @@ export default function ContactForm() {
         </div>
 
         {/* Content */}
-        <div className="container mx-auto px-4 relative z-10">
+        <div className="container mx-auto px-4 relative z-10 pt-20">
           <motion.div 
-            className="text-center mb-16"
+            className="text-center mb-8"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -65,12 +65,12 @@ export default function ContactForm() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-black/40 backdrop-blur-md rounded-2xl p-3 sm:p-6 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)]"
+            className="bg-black/40 backdrop-blur-md rounded-2xl p-3 sm:p-4 border border-white/10 shadow-[0_8px_32px_rgba(200,169,126,0.15)] max-w-5xl mx-auto"
           >
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
               {/* Contact Info */}
-              <div className="space-y-4 sm:space-y-6">
-                <div className="flex items-start gap-4">
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
                   <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <MapPin className="w-5 h-5 text-[#C8A97E]" />
                   </div>
@@ -81,7 +81,7 @@ export default function ContactForm() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3">
                   <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <Clock className="w-5 h-5 text-[#C8A97E]" />
                   </div>
@@ -92,7 +92,7 @@ export default function ContactForm() {
                   </div>
                 </div>
 
-                <div className="flex items-start gap-4">
+                <div className="flex items-start gap-3">
                   <div className="p-2 bg-[#C8A97E]/10 rounded-lg shrink-0">
                     <Mail className="w-5 h-5 text-[#C8A97E]" />
                   </div>
@@ -105,7 +105,7 @@ export default function ContactForm() {
 
               {/* Contact Form */}
               <div>
-                <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
+                <form onSubmit={handleSubmit} className="space-y-3">
                   <div>
                     <input
                       type="text"
@@ -113,7 +113,7 @@ export default function ContactForm() {
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
                     />
                   </div>
                   <div>
@@ -123,7 +123,7 @@ export default function ContactForm() {
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
                     />
                   </div>
                   <div>
@@ -132,8 +132,8 @@ export default function ContactForm() {
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
-                      rows={4}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
+                      rows={3}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
                     />
                   </div>
                   <motion.button
