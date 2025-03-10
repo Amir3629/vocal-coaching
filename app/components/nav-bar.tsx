@@ -10,7 +10,7 @@ import Image from "next/image"
 export default function NavBar() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const { currentLang, toggleLanguage, translations: t } = useLanguage()
+  const { currentLang, toggleLanguage, t } = useLanguage()
 
   // Handle scroll
   useEffect(() => {
@@ -108,7 +108,7 @@ export default function NavBar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {t?.nav?.offers || "Services"}
+              {t.nav.services}
             </motion.button>
             <motion.button
               onClick={() => scrollToSection("about")}
@@ -116,7 +116,7 @@ export default function NavBar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {t?.nav?.about || "Über mich"}
+              {t.nav.about}
             </motion.button>
             <motion.button
               onClick={() => scrollToSection("testimonials")}
@@ -124,7 +124,7 @@ export default function NavBar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {t?.nav?.references || "Referenzen"}
+              {t.nav.references}
             </motion.button>
             <motion.button
               onClick={() => scrollToSection("contact")}
@@ -132,7 +132,7 @@ export default function NavBar() {
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
             >
-              {t?.nav?.contact || "Kontakt"}
+              {t.nav.contact}
             </motion.button>
             
             {/* Language Switcher */}
@@ -160,28 +160,28 @@ export default function NavBar() {
                 className="block w-full text-left text-white hover:text-[#C8A97E] transition-colors duration-300 text-sm font-medium py-2"
                 whileHover={{ x: 10 }}
               >
-                {t?.nav?.offers || "Services"}
+                {t.nav.services}
               </motion.button>
               <motion.button
                 onClick={() => scrollToSection("about")}
                 className="block w-full text-left text-white hover:text-[#C8A97E] transition-colors duration-300 text-sm font-medium py-2"
                 whileHover={{ x: 10 }}
               >
-                {t?.nav?.about || "Über mich"}
+                {t.nav.about}
               </motion.button>
               <motion.button
                 onClick={() => scrollToSection("testimonials")}
                 className="block w-full text-left text-white hover:text-[#C8A97E] transition-colors duration-300 text-sm font-medium py-2"
                 whileHover={{ x: 10 }}
               >
-                {t?.nav?.references || "Referenzen"}
+                {t.nav.references}
               </motion.button>
               <motion.button
                 onClick={() => scrollToSection("contact")}
                 className="block w-full text-left text-white hover:text-[#C8A97E] transition-colors duration-300 text-sm font-medium py-2"
                 whileHover={{ x: 10 }}
               >
-                {t?.nav?.contact || "Kontakt"}
+                {t.nav.contact}
               </motion.button>
               
               {/* Mobile Language Switcher */}

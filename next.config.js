@@ -9,14 +9,16 @@ const nextConfig = {
   reactStrictMode: true,
   optimizeFonts: true,
   swcMinify: true,
-  images: {
-    unoptimized: true,
-    remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
+  experimental: {
+    images: {
+      unoptimized: true,
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: '**',
+        },
+      ],
+    }
   },
   typescript: {
     ignoreBuildErrors: false
