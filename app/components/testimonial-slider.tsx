@@ -142,7 +142,7 @@ export default function TestimonialSlider() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="bg-black/30 rounded-xl p-8 backdrop-blur-sm border border-[#C8A97E]/10"
+              className="bg-black/30 rounded-xl p-8 backdrop-blur-sm"
             >
                 <div className="flex flex-col items-center text-center">
                 <div className="w-20 h-20 rounded-full overflow-hidden mb-4 border-2 border-[#C8A97E]/20">
@@ -184,13 +184,13 @@ export default function TestimonialSlider() {
             <ChevronRight className="w-6 h-6" />
                 </button>
 
-          <div className="flex justify-center mt-6 gap-2">
+          <div className="flex justify-center mt-8 gap-3 md:gap-2">
               {testimonials.map((_, index) => (
                 <button
                   key={index}
-                onClick={() => setPage(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                    index === page ? "bg-[#C8A97E]" : "bg-gray-600"
+                  onClick={() => setPage(index)}
+                  className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all ${
+                    index === page ? "bg-[#C8A97E]" : "bg-gray-600 hover:bg-gray-500"
                   }`}
                 >
                   <span className="sr-only">Go to slide {index + 1}</span>
