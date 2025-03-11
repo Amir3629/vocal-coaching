@@ -43,7 +43,7 @@ export default function AboutSection() {
             
             <div className="space-y-6">
               <p className="text-base sm:text-lg text-gray-300">
-                Halb Britin, halb Deutsche, mit einem rheinischen Herzschlag und Berliner Freiheitsdrang: Ich bin ein Kind zweier Welten, das seine Heimat im Jazz gefunden hat. Aufgewachsen zwischen Kirchenchören und dem Gospelkollektiv Crescendo, stürzte ich mich mit 15 als Frontfrau der Girl-Band "Die Männer" in die Punkrock-Szene. Dann traf mich Ella Fitzgeralds "Airmail Special" wie ein Blitz - Jazz wurde meine Sprache, meine Rebellion, meine Wahrheit.
+                Halb Britin, halb Deutsche, mit rheinischer Lebensfreude und Berliner Weltgewandtheit: Ich verkörpere eine einzigartige Synthese aus Tradition und Avantgarde. Meine musikalische Reise begann in sakralen Kirchenchören und dem gefeierten Gospelensemble Crescendo, bevor ich mit 15 als Frontfrau der Pionier-Girl-Band Die Männer die Rockbühne eroberte – stets mit perfekt gesetztem Cat-Eye und der Überzeugung: „Stil ist Haltung."
               </p>
               
               <AnimatePresence>
@@ -56,13 +56,13 @@ export default function AboutSection() {
                     className="space-y-6"
                   >
                     <p className="text-base sm:text-lg text-gray-300">
-                      Studiert habe ich an der Hochschule für Musik und Tanz Köln und am Complete Vocal Institute in Kopenhagen – Jazzgesang, Improvisation, und die Kunst, Bier und Austern als Inspirationsquellen zu zelebrieren. Heute bin ich nicht nur auf Bühnen zu Hause (von Tokio bis Brüssel, von Dachterrassen bis Zirkuszelten), sondern auch als Dozentin für Bandleader in Wiesbaden.
+                      Mein Weg führte mich an die Hochschule für Musik und Tanz Köln und das Complete Vocal Institute in Kopenhagen – Stationen, an denen ich nicht nur Jazzgesang, sondern die Philosophie des perfekten Moments studierte. Heute stehe ich auf internationalen Festivalbühnen (von Tokios Blue Note bis zum Montreux Jazz Festival), gebe Masterclasses für angehende Bandleader in Wiesbaden und leite einen Chor, der Präzision mit Seele vereint.
                     </p>
                     
                     <div>
-                      <h3 className="text-xl font-semibold text-white mb-3">Aktuelle Projekte</h3>
+                      <h3 className="text-xl font-semibold text-white mb-3">Diskografie & Aktuelle Projekte</h3>
                       <p className="text-base sm:text-lg text-gray-300">
-                        Drei Alben habe ich veröffentlicht – Jazz, Groove, und einen Ausflug ins Chanson-Fach mit "Berliner Silber 9½ Lieder". Das vierte Album wartet hinter den Kulissen: ein Mix aus zeitlosen Standards in neuen Farben und persönlichen Eigenkompositionen. Als Teil der pulsierenden Berliner Jazzszene leite ich nebenbei einen Chor, denn Harmonie braucht auch außerhalb der Musik Raum. Mein Credo bleibt: "Jazz ist kein Genre. Es ist eine Haltung. Hör hin, riskier was, und vergiss nie den Groove."
+                        Drei Alben, drei Kapitel einer künstlerischen Evolution: Von jazzigen Grooves bis zum Chanson-Projekt Berliner Silber 9½ Lieder – eine Hommage an Berlins glamouröse Nachtseite, produziert mit der Sorgfalt eines Couturiers. Das vierte Album? Ein opulentes Werk, das Standards in Samt und Seide hüllt und Eigenkompositionen präsentiert, die zwischen Sylvia Plath und Billie Holiday tanzen. Ob im intimsten Jazzkeller oder im Festsaal historischer Konzerthäuser – ich betrete jede Bühne mit dem Respekt, den die Musik verdient: „Jazz ist die höchste Form musikalischer Diplomatie – sie verhandelt zwischen Chaos und Perfektion."
                       </p>
                     </div>
                   </motion.div>
