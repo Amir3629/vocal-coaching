@@ -56,27 +56,52 @@ export default function EnhancedMusicPlayer() {
   const [progress, setProgress] = useState(0);
   const [apiReady, setApiReady] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [debug, setDebug] = useState<string[]>([]);
   const playerRef = useRef<any>(null);
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
 
-  useEffect(() => {
-    // Define the callback in the window object
-    (window as any).onYouTubeIframeAPIReady = () => {
-      setApiReady(true);
-      initializePlayer();
-    };
+  const addDebug = (message: string) => {
+    setDebug(prev => [...prev, message]);
+    console.log(message);
+  };
 
-    // Load the YouTube IFrame API
-    const tag = document.createElement('script');
-    tag.src = 'https://www.youtube.com/iframe_api';
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+  useEffect(() => {
+    addDebug("Component mounted");
+    
+    if (typeof window !== 'undefined') {
+      // Check if YT is already available
+      if ((window as any).YT) {
+        addDebug("YT already available");
+        setApiReady(true);
+        initializePlayer();
+      } else {
+        addDebug("Loading YT API");
+        // Create YouTube script tag
+        const tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        tag.async = true;
+        tag.onload = () => {
+          addDebug("YT script loaded");
+        };
+        
+        // Add the YouTube API callback
+        (window as any).onYouTubeIframeAPIReady = () => {
+          addDebug("YT API Ready callback fired");
+          setApiReady(true);
+          initializePlayer();
+        };
+
+        // Insert the script tag
+        const firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+      }
+    }
 
     return () => {
+      addDebug("Component cleanup");
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
-      // Cleanup
       if (playerRef.current) {
         playerRef.current.destroy();
       }
@@ -85,30 +110,45 @@ export default function EnhancedMusicPlayer() {
 
   const initializePlayer = () => {
     try {
+      addDebug("Initializing player");
       if (!(window as any).YT || !(window as any).YT.Player) {
-        setError("YouTube API not loaded yet");
+        const error = "YouTube API not loaded yet";
+        addDebug(error);
+        setError(error);
         return;
       }
 
-      playerRef.current = new (window as any).YT.Player("youtube-player", {
-        height: "0",
-        width: "0",
+      if (!document.getElementById('youtube-player')) {
+        const error = "Player element not found";
+        addDebug(error);
+        setError(error);
+        return;
+      }
+
+      playerRef.current = new (window as any).YT.Player('youtube-player', {
+        height: '360',
+        width: '640',
         videoId: tracks[currentTrack].youtubeId,
         playerVars: {
           autoplay: 0,
           controls: 0,
           disablekb: 1,
           fs: 0,
-          rel: 0
+          rel: 0,
+          origin: window.location.origin
         },
         events: {
-          onReady: () => {
+          onReady: (event: any) => {
+            addDebug("Player ready");
             setError(null);
           },
-          onError: () => {
-            setError("Error loading video");
+          onError: (event: any) => {
+            const error = `Player error: ${event.data}`;
+            addDebug(error);
+            setError(error);
           },
           onStateChange: (event: any) => {
+            addDebug(`Player state changed: ${event.data}`);
             if (event.data === (window as any).YT.PlayerState.PLAYING) {
               setIsPlaying(true);
               startProgressTracking();
@@ -122,7 +162,9 @@ export default function EnhancedMusicPlayer() {
         }
       });
     } catch (err) {
-      setError("Failed to initialize player");
+      const error = `Failed to initialize player: ${err}`;
+      addDebug(error);
+      setError(error);
       console.error("Player initialization error:", err);
     }
   };
@@ -184,11 +226,19 @@ export default function EnhancedMusicPlayer() {
           <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto mt-4"></div>
         </motion.h2>
 
-        <div id="youtube-player" style={{ display: 'none' }}></div>
+        <div id="youtube-player"></div>
 
         {error && (
           <div className="text-red-500 text-center mb-4">
             {error}
+          </div>
+        )}
+
+        {debug.length > 0 && (
+          <div className="text-xs text-gray-500 mb-4 max-h-32 overflow-y-auto">
+            {debug.map((msg, i) => (
+              <div key={i}>{msg}</div>
+            ))}
           </div>
         )}
 
