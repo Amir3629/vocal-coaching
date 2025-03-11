@@ -50,12 +50,13 @@ export default function ServiceCard({ title, description, icon, price, features,
           boxShadow: isHovered ? "0 20px 25px -5px rgba(0, 0, 0, 0.1)" : "none"
         }}
         transition={{ duration: 0.3 }}
+        style={{ isolation: 'isolate' }}
       >
         <Image
           src={imagePath}
           alt={title}
           fill
-          className={`object-cover transition-transform duration-300 service-card-content ${
+          className={`object-cover transition-transform duration-300 ${
             isHovered ? 'scale-110' : 'scale-100'
           }`}
           sizes="(max-width: 768px) 100vw, 33vw"

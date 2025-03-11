@@ -419,11 +419,13 @@ select {
 
 /* Service Card Hover Fix */
 .service-card-container {
-  pointer-events: none;
+  position: relative;
+  z-index: 1;
 }
 
 .service-card {
-  pointer-events: auto;
+  position: relative;
+  z-index: 1;
   isolation: isolate;
 }
 
