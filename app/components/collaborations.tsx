@@ -76,7 +76,7 @@ export default function Collaborations() {
         <div className="max-w-5xl mx-auto">
           <div className="flex flex-col space-y-16">
             {/* First Row */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-center items-center gap-8">
               {firstRow.map((collab, index) => (
                 <motion.a
                   key={collab.name}
@@ -89,7 +89,7 @@ export default function Collaborations() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className="flex items-center justify-center w-1/4 px-4"
+                  className="flex items-center justify-center w-[17.5%]"
                 >
                   <div className="relative w-full aspect-[3/1]">
                     <Image
@@ -106,7 +106,7 @@ export default function Collaborations() {
             </div>
 
             {/* Second Row */}
-            <div className="flex justify-between items-center">
+            <div className="flex justify-center items-center gap-8">
               {secondRow.map((collab, index) => (
                 <motion.a
                   key={collab.name}
@@ -119,7 +119,7 @@ export default function Collaborations() {
                   transition={{ duration: 0.6, delay: (index + 4) * 0.1 }}
                   onMouseEnter={() => setHoveredIndex(index + 4)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className="flex items-center justify-center w-1/4 px-4"
+                  className="flex items-center justify-center w-[17.5%]"
                 >
                   <div className="relative w-full aspect-[3/1]">
                     <Image
