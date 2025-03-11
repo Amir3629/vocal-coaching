@@ -88,125 +88,67 @@ export default function JourneyShowcase() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {journeyCards.map((card, index) => (
-            <motion.div
+            <div
               key={card.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              className="relative h-[320px] rounded-xl overflow-hidden cursor-pointer"
+              className="group relative w-full h-[320px] rounded-xl overflow-hidden transition-all duration-300 hover:h-[420px]"
               onMouseEnter={() => setHoveredId(card.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
-              <motion.div
-                className="absolute inset-0 w-full h-full"
-                animate={{
-                  height: hoveredId === card.id ? "420px" : "320px",
-                  scale: hoveredId === card.id ? 1.05 : 1
-                }}
-                transition={{
-                  duration: 0.3,
-                  ease: "easeOut"
-                }}
-                style={{
-                  transformOrigin: "center top"
-                }}
-              >
-                {/* Background Image Container */}
-                <div className="absolute inset-0">
-                  <Image
-                    src={card.bgImage}
-                    alt={card.title}
-                    fill
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                    className={`object-cover transition-all duration-500 ${
-                      hoveredId === card.id ? "scale-110 blur-0" : "scale-100 blur-[8px]"
-                    }`}
-                    priority
-                  />
-                  {/* Dark Overlay */}
-                  <motion.div 
-                    className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/90"
-                    animate={{
-                      opacity: hoveredId === card.id ? 0.5 : 0.9
-                    }}
-                    transition={{ duration: 0.3 }}
-                  />
+              {/* Background Image */}
+              <div className="absolute inset-0 w-full h-full">
+                <Image
+                  src={card.bgImage}
+                  alt={card.title}
+                  fill
+                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                  className="object-cover transition-all duration-500 group-hover:scale-110 group-hover:blur-none blur-[8px]"
+                  priority
+                />
+                {/* Dark Overlay */}
+                <div 
+                  className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/90 transition-opacity duration-300 group-hover:opacity-50 opacity-90"
+                />
+              </div>
+
+              {/* Content */}
+              <div className="relative h-full p-6 flex flex-col">
+                {/* Icon */}
+                <div className="absolute top-4 left-4 transition-transform duration-300 group-hover:scale-110 group-hover:translate-y-1">
+                  {card.icon}
                 </div>
 
-                {/* Content */}
-                <div className="relative h-full p-6 flex flex-col">
-                  {/* Icon */}
-                  <motion.div
-                    className="absolute top-4 left-4"
-                    animate={{
-                      scale: hoveredId === card.id ? 1.2 : 1,
-                      y: hoveredId === card.id ? 4 : 0
-                    }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    {card.icon}
-                  </motion.div>
-
-                  {/* Text Content */}
-                  <div className="mt-auto">
-                    <motion.h3 
-                      className="text-2xl font-medium text-white mb-2"
-                      animate={{
-                        scale: hoveredId === card.id ? 1.1 : 1,
-                        y: hoveredId === card.id ? -4 : 0
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {card.title}
-                    </motion.h3>
-                    <motion.p 
-                      className="text-[#C8A97E] text-base mb-3"
-                      animate={{
-                        y: hoveredId === card.id ? -2 : 0
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      {card.subtitle}
-                    </motion.p>
-                    
-                    {/* Description */}
-                    <motion.div
-                      className="overflow-hidden"
-                      initial={false}
-                      animate={{
-                        height: hoveredId === card.id ? "auto" : 0,
-                        opacity: hoveredId === card.id ? 1 : 0
-                      }}
-                      transition={{ duration: 0.3 }}
-                    >
-                      <p className="text-gray-200 text-sm mb-4">
-                        {card.description}
-                      </p>
-                      <ul className="space-y-2">
-                        {card.details.map((detail, idx) => (
-                          <motion.li
-                            key={idx}
-                            initial={{ opacity: 0, x: -20 }}
-                            animate={{ 
-                              opacity: hoveredId === card.id ? 1 : 0,
-                              x: hoveredId === card.id ? 0 : -20
-                            }}
-                            transition={{ 
-                              duration: 0.3,
-                              delay: idx * 0.1
-                            }}
-                            className="flex items-center gap-2"
-                          >
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                            <span className="text-gray-200 text-sm">{detail}</span>
-                          </motion.li>
-                        ))}
-                      </ul>
-                    </motion.div>
+                {/* Text Content */}
+                <div className="mt-auto">
+                  <h3 className="text-2xl font-medium text-white mb-2 transform transition-all duration-300 group-hover:scale-110 group-hover:-translate-y-1">
+                    {card.title}
+                  </h3>
+                  <p className="text-[#C8A97E] text-base mb-3 transition-transform duration-300 group-hover:-translate-y-1">
+                    {card.subtitle}
+                  </p>
+                  
+                  {/* Description */}
+                  <div className="overflow-hidden transition-all duration-300 h-0 opacity-0 group-hover:h-auto group-hover:opacity-100">
+                    <p className="text-gray-200 text-sm mb-4">
+                      {card.description}
+                    </p>
+                    <ul className="space-y-2">
+                      {card.details.map((detail, idx) => (
+                        <li
+                          key={idx}
+                          className="flex items-center gap-2 transform translate-x-[-20px] opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100"
+                          style={{
+                            transitionDelay: `${idx * 100}ms`
+                          }}
+                        >
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                          <span className="text-gray-200 text-sm">{detail}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           ))}
         </div>
 
