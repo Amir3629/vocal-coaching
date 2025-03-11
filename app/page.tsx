@@ -227,36 +227,7 @@ export default function Home() {
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            <ServiceCard
-              title="Vocal Coaching"
-              description="Professionelles Stimmtraining"
-              icon={<Mic className="w-6 h-6" />}
-              features={[
-                "Stimmtechnik",
-                "Gesangsübungen",
-                "Repertoire-Entwicklung",
-                "Performance Training"
-              ]}
-              details={{
-                includes: [
-                  "Individuelle Analyse",
-                  "Maßgeschneidertes Training",
-                  "Aufnahmen & Feedback",
-                  "Professionelle Betreuung"
-                ],
-                suitable: [
-                  "Profis",
-                  "Semi-Profis",
-                  "Ambitionierte Sänger",
-                  "Alle Genres"
-                ],
-                duration: "60-90 min",
-                location: "Studio Berlin"
-              }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/vocal-coaching.jpg" : "/images/cards/vocal-coaching.jpg"}
-            />
-
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
             <ServiceCard
               title="Singen"
               description="Gesangsunterricht für alle"
@@ -283,7 +254,36 @@ export default function Home() {
                 duration: "45-60 min",
                 location: "Online & Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/singing.jpg" : "/images/cards/singing.jpg"}
+              image="/images/cards/singing.jpg"
+            />
+
+            <ServiceCard
+              title="Vocal Coaching"
+              description="Professionelles Stimmtraining"
+              icon={<Mic className="w-6 h-6" />}
+              features={[
+                "Stimmtechnik",
+                "Gesangsübungen",
+                "Repertoire-Entwicklung",
+                "Performance Training"
+              ]}
+              details={{
+                includes: [
+                  "Individuelle Analyse",
+                  "Maßgeschneidertes Training",
+                  "Aufnahmen & Feedback",
+                  "Professionelle Betreuung"
+                ],
+                suitable: [
+                  "Profis",
+                  "Semi-Profis",
+                  "Ambitionierte Sänger",
+                  "Alle Genres"
+                ],
+                duration: "60-90 min",
+                location: "Studio Berlin"
+              }}
+              image="/images/cards/vocal-coaching.jpg"
             />
 
             <ServiceCard
@@ -312,7 +312,7 @@ export default function Home() {
                 duration: "3-6 Stunden",
                 location: "Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/workshop.jpg" : "/images/cards/workshop.jpg"}
+              image="/images/cards/workshop.jpg"
             />
 
             <ServiceCard
@@ -341,7 +341,7 @@ export default function Home() {
                 duration: "90-120 min",
                 location: "Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/choir.jpg" : "/images/cards/choir.jpg"}
+              image="/images/cards/choir.jpg"
             />
           </div>
 
