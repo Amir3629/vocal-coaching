@@ -43,7 +43,7 @@ export default function AboutSection() {
             
             <div className="space-y-6">
               <p className="text-base sm:text-lg text-gray-300">
-                Halb Britin, halb Deutsche - und 100%ige Rheinländerin lebe ich freiwillig in Berlin. Meine musikalische Reise begann früh: vom Kinderchor über den Gospelchor "Crescendo" bis hin zu "Die Männer", einer der ersten Girl Bands in Deutschland. Die Entdeckung von Ella Fitzgerald's "Airmail Special" öffnete mir die Tür zur Welt des Jazz - eine Liebe auf den ersten Blick.
+                Halb Britin, halb Deutsche, mit einem rheinischen Herzschlag und Berliner Freiheitsdrang: Ich bin ein Kind zweier Welten, das seine Heimat im Jazz gefunden hat. Aufgewachsen zwischen Kirchenchören und dem Gospelkollektiv Crescendo, stürzte ich mich mit 15 als Frontfrau der Girl-Band "Die Männer" in die Punkrock-Szene. Dann traf mich Ella Fitzgeralds "Airmail Special" wie ein Blitz - Jazz wurde meine Sprache, meine Rebellion, meine Wahrheit.
               </p>
               
               <AnimatePresence>
@@ -56,13 +56,13 @@ export default function AboutSection() {
                     className="space-y-6"
                   >
                     <p className="text-base sm:text-lg text-gray-300">
-                      Nach meinem Studium an der Hochschule für Musik und Tanz Köln vertiefte ich meine Kenntnisse in Jazz-Gesang und Improvisation. Die Zusammenarbeit mit renommierten Künstlern und Bands erweiterte meinen musikalischen Horizont und formte meinen einzigartigen Stil.
+                      Studiert habe ich an der Hochschule für Musik und Tanz Köln und am Complete Vocal Institute in Kopenhagen – Jazzgesang, Improvisation, und die Kunst, Bier und Austern als Inspirationsquellen zu zelebrieren. Heute bin ich nicht nur auf Bühnen zu Hause (von Tokio bis Brüssel, von Dachterrassen bis Zirkuszelten), sondern auch als Dozentin für Bandleader in Wiesbaden.
                     </p>
                     
                     <div>
                       <h3 className="text-xl font-semibold text-white mb-3">Aktuelle Projekte</h3>
                       <p className="text-base sm:text-lg text-gray-300">
-                        Als stolzes Mitglied der internationalen Berliner Jazzszene bin ich nicht nur als Sängerin aktiv, sondern auch als Vocal Coach bei der Bandleiter Ausbildung in Wiesbaden tätig. Meine vierte CD ist fertig und wartet auf das Start Signal - mit schönen Standards in bunte Farben getaucht und Originals mit eigenen Texten.
+                        Drei Alben habe ich veröffentlicht – Jazz, Groove, und einen Ausflug ins Chanson-Fach mit "Berliner Silber 9½ Lieder". Das vierte Album wartet hinter den Kulissen: ein Mix aus zeitlosen Standards in neuen Farben und persönlichen Eigenkompositionen. Als Teil der pulsierenden Berliner Jazzszene leite ich nebenbei einen Chor, denn Harmonie braucht auch außerhalb der Musik Raum. Mein Credo bleibt: "Jazz ist kein Genre. Es ist eine Haltung. Hör hin, riskier was, und vergiss nie den Groove."
                       </p>
                     </div>
                   </motion.div>
