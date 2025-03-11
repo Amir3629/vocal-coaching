@@ -21,11 +21,10 @@
     gap: 1rem;
   }
 
-  .booking-modal {
-    width: 100%;
-    max-width: 95%;
-    margin: 1rem auto;
-    max-height: 90vh;
+  .booking-modal,
+  .legal-document-modal {
+    width: 95% !important;
+    max-height: 85vh !important;
   }
 
   .calendar-container {
@@ -35,18 +34,6 @@
     width: 100%;
     padding: 0;
     margin: 0 auto;
-  }
-
-  .legal-document-modal {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 90%;
-    max-width: 500px;
-    max-height: 85vh;
-    margin: 0;
-    z-index: 100;
   }
 
   .success-message {
@@ -96,6 +83,11 @@
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem;
   }
+
+  .booking-modal,
+  .legal-document-modal {
+    max-width: 600px !important;
+  }
 }
 
 /* Desktop Styles (1024px and up) */
@@ -112,7 +104,7 @@
   .booking-modal,
   .legal-document-modal,
   .success-message {
-    max-width: 600px;
+    max-width: 700px !important;
     margin: 2rem auto;
   }
 

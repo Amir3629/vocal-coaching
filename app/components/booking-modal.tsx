@@ -559,13 +559,33 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         )}
 
         {showLegalModal === "datenschutz" && (
-          <LegalDocumentModal
-            isOpen={true}
-            onClose={() => setShowLegalModal(null)}
-            title="Datenschutzerklärung"
-          >
-            <LegalContent type="datenschutz" />
-          </LegalDocumentModal>
+          <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+                >
+                  <div className="p-6">
+                    <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Datenschutzerklärung</h2>
+                    <div className="prose prose-invert max-w-none">
+                      <LegalContent type="datenschutz" />
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowLegalModal(null)}
+                    className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </motion.div>
+              </div>
+            </div>
+          </div>
         )}
       </AnimatePresence>
     </Dialog>
