@@ -1,22 +1,16 @@
-import { useState } from "react"
-import { motion } from "framer-motion"
 import Image from "next/image"
 import { Music } from "lucide-react"
 
 export default function TestCard() {
-  const [isHovered, setIsHovered] = useState(false)
-
   return (
     <div className="min-h-screen bg-black p-20">
       <div className="max-w-sm mx-auto">
-        <motion.div
-          className="relative w-full rounded-xl overflow-hidden"
-          style={{
-            height: isHovered ? 420 : 320,
-            transition: "height 0.3s ease-out"
-          }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
+        <div 
+          className="
+            relative w-full rounded-xl overflow-hidden
+            h-[320px] hover:h-[420px]
+            transition-all duration-300 ease-out
+          "
         >
           {/* Background Image */}
           <div className="absolute inset-0">
@@ -24,97 +18,86 @@ export default function TestCard() {
               src={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/singing.jpg" : "/images/cards/singing.jpg"}
               alt="Test Card"
               fill
-              className={`
+              className="
                 object-cover 
+                scale-100 blur-[8px]
+                hover:scale-110 hover:blur-none
                 transition-all duration-500
-                ${isHovered ? "scale-110 filter-none" : "scale-100 blur-md"}
-              `}
+              "
             />
             
             {/* Overlay */}
             <div 
-              className={`
+              className="
                 absolute inset-0 
                 bg-gradient-to-b from-black/90 via-black/70 to-black/90
+                opacity-90 hover:opacity-50
                 transition-opacity duration-300
-                ${isHovered ? "opacity-50" : "opacity-90"}
-              `}
+              "
             />
           </div>
 
           {/* Content */}
           <div className="relative h-full p-6 flex flex-col">
             {/* Icon */}
-            <motion.div
-              animate={{
-                scale: isHovered ? 1.2 : 1,
-                y: isHovered ? 4 : 0
-              }}
-              transition={{ duration: 0.3 }}
-              className="absolute top-4 left-4"
-            >
+            <div className="
+              absolute top-4 left-4
+              transform hover:scale-110 hover:translate-y-1
+              transition-transform duration-300
+            ">
               <Music className="w-8 h-8 text-white" />
-            </motion.div>
+            </div>
 
             {/* Text Content */}
             <div className="mt-auto">
-              <motion.h3
-                animate={{
-                  scale: isHovered ? 1.1 : 1,
-                  y: isHovered ? -4 : 0
-                }}
-                transition={{ duration: 0.3 }}
-                className="text-2xl font-medium text-white mb-2"
-              >
+              <h3 className="
+                text-2xl font-medium text-white mb-2
+                transform hover:scale-110 hover:-translate-y-1
+                transition-transform duration-300
+              ">
                 Test Card
-              </motion.h3>
+              </h3>
               
-              <motion.p
-                animate={{
-                  y: isHovered ? -2 : 0
-                }}
-                transition={{ duration: 0.3 }}
-                className="text-[#C8A97E] text-base mb-3"
-              >
+              <p className="
+                text-[#C8A97E] text-base mb-3
+                transform hover:-translate-y-1
+                transition-transform duration-300
+              ">
                 Hover Test
-              </motion.p>
+              </p>
 
               {/* Expandable Content */}
-              <motion.div
-                animate={{
-                  height: isHovered ? "auto" : 0,
-                  opacity: isHovered ? 1 : 0
-                }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden"
-              >
+              <div className="
+                overflow-hidden
+                opacity-0 hover:opacity-100
+                translate-y-4 hover:translate-y-0
+                transition-all duration-300
+              ">
                 <p className="text-gray-200 text-sm mb-4">
                   This is a test card to verify hover animations are working correctly.
                 </p>
                 <ul className="space-y-2">
                   {["Test 1", "Test 2", "Test 3"].map((item, idx) => (
-                    <motion.li
+                    <li
                       key={idx}
-                      initial={{ opacity: 0, x: -20 }}
-                      animate={{
-                        opacity: isHovered ? 1 : 0,
-                        x: isHovered ? 0 : -20
-                      }}
-                      transition={{
-                        duration: 0.3,
-                        delay: idx * 0.1
-                      }}
-                      className="flex items-center gap-2"
+                      className="
+                        flex items-center gap-2
+                        opacity-0 hover:opacity-100
+                        -translate-x-4 hover:translate-x-0
+                        transition-all duration-300
+                        hover:delay-[var(--delay)]
+                      "
+                      style={{ '--delay': `${idx * 100}ms` } as any}
                     >
                       <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
                       <span className="text-gray-200 text-sm">{item}</span>
-                    </motion.li>
+                    </li>
                   ))}
                 </ul>
-              </motion.div>
+              </div>
             </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </div>
   )
