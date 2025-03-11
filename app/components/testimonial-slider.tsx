@@ -183,20 +183,6 @@ export default function TestimonialSlider() {
                 >
             <ChevronRight className="w-6 h-6" />
                 </button>
-
-          <div className="flex justify-center mt-8 gap-3 md:gap-2">
-              {testimonials.map((_, index) => (
-                <button
-                  key={index}
-                  onClick={() => setPage(index)}
-                  className={`w-1.5 h-1.5 md:w-2 md:h-2 rounded-full transition-all ${
-                    index === page ? "bg-[#C8A97E]" : "bg-gray-600 hover:bg-gray-500"
-                  }`}
-                >
-                  <span className="sr-only">Go to slide {index + 1}</span>
-                </button>
-              ))}
-            </div>
           </div>
         </div>
     </section>
