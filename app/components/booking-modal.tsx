@@ -232,15 +232,15 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             />
           </div>
 
-          <div className="p-8">
+          <div className="p-6">
             {/* Step Title */}
             <motion.div
               key={`title-${currentStep}`}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-8"
+              className="mb-6"
             >
-              <h2 className="text-2xl font-medium text-[#C8A97E]">
+              <h2 className="text-xl font-medium text-[#C8A97E]">
                 {currentStep === "1" && "Service auswählen"}
                 {currentStep === "2" && "Art des Unterrichts"}
                 {currentStep === "3" && "Datum auswählen"}
@@ -256,7 +256,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="min-h-[400px] max-h-[60vh] overflow-y-auto custom-scrollbar pr-4"
+                className="min-h-[350px] max-h-[calc(100vh-280px)] overflow-y-auto custom-scrollbar pr-2"
               >
                 {/* Step 1: Service Selection */}
                 {currentStep === "1" && (
@@ -310,7 +310,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 {/* Step 3: Date Selection */}
                 {currentStep === "3" && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between mb-4">
                       <motion.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
@@ -319,7 +319,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       >
                         <ChevronLeft className="w-4 h-4" />
                       </motion.button>
-                      <h3 className="text-base font-medium">
+                      <h3 className="text-lg font-medium">
                         {format(currentDate, "MMMM yyyy", { locale: de })}
                       </h3>
                       <motion.button
@@ -332,12 +332,19 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       </motion.button>
                     </div>
 
-                    <div className="grid grid-cols-7 gap-1 text-center">
+                    <div className="grid grid-cols-7 gap-2">
                       {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((day) => (
-                        <div key={day} className="text-xs text-gray-400 py-1">
+                        <div key={day} className="text-sm text-gray-400 text-center font-medium">
                           {day}
                         </div>
                       ))}
+                    </div>
+
+                    <div className="grid grid-cols-7 gap-2">
+                      {Array.from({ length: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay() - 1 }).map((_, i) => (
+                        <div key={`empty-${i}`} className="aspect-square" />
+                      ))}
+                      
                       {eachDayOfInterval({
                         start: startOfMonth(currentDate),
                         end: endOfMonth(currentDate)
@@ -349,13 +356,14 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             key={day.toString()}
                             onClick={() => !isDisabled && handleDateSelect(day)}
                             className={cn(
-                              "p-2 rounded-md text-center text-sm transition-all",
-                              isSelected && "bg-[#C8A97E] text-black",
-                              !isSelected && !isDisabled && "hover:bg-[#C8A97E]/10",
-                              isDisabled && "opacity-25 cursor-not-allowed"
+                              "aspect-square flex items-center justify-center rounded-lg text-center transition-all",
+                              isSelected && "bg-[#C8A97E] text-black font-medium",
+                              !isSelected && !isDisabled && "hover:bg-[#C8A97E]/10 hover:border-[#C8A97E]",
+                              !isSelected && !isDisabled && "border border-white/10",
+                              isDisabled && "opacity-25 cursor-not-allowed border border-white/5"
                             )}
-                            whileHover={!isDisabled ? { scale: 1.1 } : {}}
-                            whileTap={!isDisabled ? { scale: 0.9 } : {}}
+                            whileHover={!isDisabled ? { scale: 1.05 } : {}}
+                            whileTap={!isDisabled ? { scale: 0.95 } : {}}
                             disabled={isDisabled}
                           >
                             {format(day, "d")}
@@ -368,13 +376,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                 {/* Step 4: Time Selection */}
                 {currentStep === "4" && (
-                  <div className="grid grid-cols-2 gap-3">
+                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
                     {timeSlots.map((time) => (
                       <motion.button
                         key={time}
                         onClick={() => handleTimeSelect(time)}
                         className={cn(
-                          "p-4 rounded-lg border text-center transition-all relative overflow-hidden",
+                          "p-3 rounded-lg border text-center transition-all relative overflow-hidden",
                           "hover:border-[#C8A97E] hover:bg-[#C8A97E]/10",
                           selectedTime === time
                             ? "border-[#C8A97E] bg-[#C8A97E]/10"
@@ -384,7 +392,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         whileTap={{ scale: 0.98 }}
                       >
                         <div className="relative z-10">
-                          <span className="text-lg font-medium text-white">{time}</span>
+                          <span className="text-base font-medium text-white">{time}</span>
                         </div>
                         {selectedTime === time && (
                           <motion.div
@@ -392,9 +400,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             animate={{ scale: 1 }}
                             className="absolute top-1 right-1"
                           >
-                            <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                            </svg>
+                            <Check className="w-3 h-3 text-[#C8A97E]" />
                           </motion.div>
                         )}
                       </motion.button>
@@ -487,6 +493,44 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         />
                       </div>
 
+                      <div className="mt-6">
+                        <div className="flex items-start space-x-2">
+                          <div className="flex items-center h-5">
+                            <input
+                              type="checkbox"
+                              id="terms"
+                              name="termsAccepted"
+                              checked={formData.termsAccepted}
+                              onChange={handleInputChange}
+                              className="w-4 h-4 rounded border-white/20 bg-black/40 text-[#C8A97E] focus:ring-[#C8A97E]/50"
+                            />
+                          </div>
+                          <div className="text-sm">
+                            <label htmlFor="terms" className="text-white/80">
+                              Ich akzeptiere die{" "}
+                              <button
+                                type="button"
+                                onClick={() => setShowLegalModal("agb")}
+                                className="text-[#C8A97E] hover:text-[#B89A6F] underline"
+                              >
+                                AGB
+                              </button>{" "}
+                              und{" "}
+                              <button
+                                type="button"
+                                onClick={() => setShowLegalModal("datenschutz")}
+                                className="text-[#C8A97E] hover:text-[#B89A6F] underline"
+                              >
+                                Datenschutzerklärung
+                              </button>
+                            </label>
+                            {errors.terms && (
+                              <p className="mt-1 text-sm text-red-500">{errors.terms}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
                       <div>
                         <label htmlFor="message" className="block text-sm font-medium text-white/80 mb-2">
                           Nachricht <span className="text-white/40">(optional)</span>
@@ -506,38 +550,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           placeholder="Ihre Nachricht an uns..."
                         />
                       </div>
-
-                      <div className="flex items-start gap-3 pt-2">
-                        <input
-                          type="checkbox"
-                          id="terms"
-                          name="termsAccepted"
-                          checked={formData.termsAccepted}
-                          onChange={handleInputChange}
-                          className="mt-1"
-                        />
-                        <label htmlFor="terms" className="text-sm text-white/60">
-                          Ich akzeptiere die{" "}
-                          <button
-                            type="button"
-                            onClick={() => setShowLegalModal("agb")}
-                            className="text-[#C8A97E] hover:text-[#B89A6F] underline"
-                          >
-                            AGB
-                          </button>{" "}
-                          und die{" "}
-                          <button
-                            type="button"
-                            onClick={() => setShowLegalModal("datenschutz")}
-                            className="text-[#C8A97E] hover:text-[#B89A6F] underline"
-                          >
-                            Datenschutzerklärung
-                          </button>
-                        </label>
-                      </div>
-                      {errors.termsAccepted && (
-                        <p className="text-sm text-red-500 mt-1">{errors.termsAccepted}</p>
-                      )}
                     </div>
 
                     <motion.button
