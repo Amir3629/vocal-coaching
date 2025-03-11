@@ -1,30 +1,37 @@
 "use client"
 
 import * as React from "react"
-import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { cn } from "@/lib/utils"
 
-const Dialog = DialogPrimitive.Root
+interface DialogProps {
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
+  children: React.ReactNode
+  className?: string
+}
 
-const DialogContent = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <DialogPrimitive.Portal>
-    <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm" />
-    <DialogPrimitive.Content
-      ref={ref}
-      className={cn(
-        "fixed left-[50%] top-[50%] z-50 w-full max-w-lg translate-x-[-50%] translate-y-[-50%] rounded-lg bg-[#1A1A1A] p-6 shadow-lg",
-        className
-      )}
-      {...props}
-    >
+export function Dialog({
+  open,
+  onOpenChange,
+  children,
+  className,
+}: DialogProps) {
+  React.useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = 'unset'
+    }
+    return () => {
+      document.body.style.overflow = 'unset'
+    }
+  }, [open])
+
+  if (!open) return null
+
+  return (
+    <div className={cn("relative z-50", className)}>
       {children}
-    </DialogPrimitive.Content>
-  </DialogPrimitive.Portal>
-))
-
-DialogContent.displayName = DialogPrimitive.Content.displayName
-
-export { Dialog, DialogContent } 
+    </div>
+  )
+} 
