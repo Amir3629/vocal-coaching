@@ -4,6 +4,9 @@ import { useState } from "react"
 import { motion } from "framer-motion"
 import Image from "next/image"
 
+// Add global styles
+import "./service-card.css"
+
 interface ServiceCardProps {
   title: string
   description: string
@@ -75,10 +78,10 @@ export default function ServiceCard({ title, description, icon, price, features,
           <div 
             className="absolute inset-0 transform-gpu transition-opacity duration-300 ease-in-out z-[1]"
             style={{
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.95) 100%)',
-              backdropFilter: 'blur(2px)',
-              WebkitBackdropFilter: 'blur(2px)',
-              opacity: isHovered ? 0.85 : 1
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.8) 100%)',
+              backdropFilter: 'blur(1px)',
+              WebkitBackdropFilter: 'blur(1px)',
+              opacity: isHovered ? 0.7 : 0.85
             } as React.CSSProperties}
           />
         </div>
@@ -89,7 +92,7 @@ export default function ServiceCard({ title, description, icon, price, features,
             {/* Title and Icon */}
             <div className="flex items-start gap-4 mb-6">
               <motion.div 
-                className="text-[#C8A97E] text-2xl"
+                className="text-[#C8A97E] text-2xl bg-black/30 p-2 rounded-lg"
                 animate={{ 
                   rotate: isHovered ? [0, -10, 10, 0] : 0,
                   scale: isHovered ? [1, 1.1, 1] : 1
@@ -102,10 +105,10 @@ export default function ServiceCard({ title, description, icon, price, features,
                 {icon}
               </motion.div>
               <div>
-                <h3 className="text-xl font-medium text-white mb-2">
+                <h3 className="text-xl font-medium text-white mb-2 text-shadow">
                   {title}
                 </h3>
-                <p className="text-white/70 whitespace-pre-line leading-relaxed">
+                <p className="text-white/90 whitespace-pre-line leading-relaxed text-shadow">
                   {description}
                 </p>
               </div>
@@ -116,7 +119,7 @@ export default function ServiceCard({ title, description, icon, price, features,
               {features.map((feature, index) => (
                 <motion.div 
                   key={index} 
-                  className="flex items-center gap-2"
+                  className="flex items-center gap-2 bg-black/30 rounded-lg px-3 py-1.5"
                   initial={false}
                   animate={isHovered ? {
                     x: [0, 5, 0],
@@ -128,7 +131,7 @@ export default function ServiceCard({ title, description, icon, price, features,
                   } : {}}
                 >
                   <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                  <p className="text-white/80 text-sm">{feature}</p>
+                  <p className="text-white/90 text-sm text-shadow">{feature}</p>
                 </motion.div>
               ))}
             </div>
