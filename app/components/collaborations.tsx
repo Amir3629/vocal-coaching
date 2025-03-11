@@ -68,8 +68,8 @@ export default function Collaborations() {
           <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
         </div>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-y-16 gap-x-8 items-center justify-items-center">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-12 items-center justify-items-center">
             {collaborations.map((collab, index) => (
               <motion.a
                 key={collab.name}
@@ -82,9 +82,9 @@ export default function Collaborations() {
                 transition={{ duration: 0.6, delay: index * 0.1 }}
                 onMouseEnter={() => setHoveredIndex(index)}
                 onMouseLeave={() => setHoveredIndex(null)}
-                className="relative aspect-[3/1] flex items-center justify-center bg-transparent transition-colors group w-full max-w-[220px]"
+                className="relative aspect-[3/1] flex items-center justify-center p-1 bg-transparent transition-colors group w-full max-w-[220px]"
               >
-                <div className="relative w-[65%] h-[65%]">
+                <div className="relative w-[66%] h-[66%]">
                   <Image
                     src={collab.logo}
                     alt={collab.name}
