@@ -277,19 +277,34 @@ select {
 }
 
 /* Calendar and Booking Modal Styles */
+.booking-modal {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 90% !important;
+  max-width: 500px !important;
+  max-height: 85vh !important;
+  overflow-y: auto !important;
+  background: #0A0A0A !important;
+  border-radius: 12px !important;
+  border: 2px solid rgba(200, 169, 126, 0.2) !important;
+  z-index: 100 !important;
+}
+
 .calendar-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  max-width: 400px;
-  margin: 0 auto;
-  padding: 1rem;
+  width: 100% !important;
+  max-width: 400px !important;
+  margin: 0 auto !important;
+  padding: 1rem !important;
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-radius: 12px !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
 }
 
 .rdp {
   margin: 0 !important;
-  width: 100% !important;
+  color: #fff !important;
 }
 
 .rdp-months {
@@ -297,34 +312,42 @@ select {
 }
 
 .rdp-month {
-  width: 100% !important;
-  max-width: 400px !important;
+  background: transparent !important;
+  border-radius: 8px !important;
 }
 
 .rdp-table {
   width: 100% !important;
+  border-spacing: 4px !important;
 }
 
 .rdp-cell {
+  padding: 4px !important;
   text-align: center !important;
-  height: 40px !important;
 }
 
 .rdp-button {
-  width: 100% !important;
-  height: 100% !important;
+  width: 36px !important;
+  height: 36px !important;
   border-radius: 8px !important;
-  font-size: 0.875rem !important;
+  color: #fff !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  transition: all 0.2s !important;
+}
+
+.rdp-button:hover:not([disabled]) {
+  background: rgba(200, 169, 126, 0.2) !important;
+  color: #C8A97E !important;
 }
 
 .rdp-day_selected {
-  background-color: #C8A97E !important;
+  background: #C8A97E !important;
   color: #000 !important;
 }
 
 .rdp-day_today {
+  border: 2px solid rgba(200, 169, 126, 0.5) !important;
   font-weight: bold !important;
-  color: #C8A97E !important;
 }
 
 /* Custom scrollbar */
