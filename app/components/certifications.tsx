@@ -94,46 +94,72 @@ export default function JourneyShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="group relative h-[320px] perspective-1000"
+              className="group relative"
               onMouseEnter={() => setHoveredId(card.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
               <motion.div
-                className={`w-full h-full transition-all duration-700 preserve-3d cursor-pointer ${
-                  hoveredId === card.id ? "scale-105" : ""
+                className={`w-full transition-all duration-500 ease-in-out ${
+                  hoveredId === card.id ? "h-[420px]" : "h-[320px]"
                 }`}
               >
-                {/* Front of card */}
                 <div className="absolute inset-0 rounded-xl overflow-hidden">
-                  <div className="relative h-full">
-                    {/* Background Image */}
+                  {/* Background Image */}
+                  <div className="relative w-full h-full">
                     <Image
                       src={card.bgImage}
                       alt={card.title}
                       fill
-                      className={`object-cover transition-all duration-700 ${
-                        hoveredId === card.id ? "blur-none scale-110" : "blur-sm scale-100"
+                      className={`object-cover transition-all duration-500 ${
+                        hoveredId === card.id ? "scale-110 blur-none" : "scale-100 blur-[6px]"
                       }`}
                     />
                     {/* Dark Overlay */}
-                    <div className={`absolute inset-0 bg-black/60 transition-opacity duration-700 ${
-                      hoveredId === card.id ? "opacity-40" : "opacity-70"
-                    }`} />
-                    
-                    {/* Content */}
-                    <div className="relative h-full p-5 flex flex-col">
-                      {/* Icon */}
-                      <div className="absolute top-4 left-4">
+                    <div 
+                      className={`absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80 transition-opacity duration-500 ${
+                        hoveredId === card.id ? "opacity-60" : "opacity-80"
+                      }`}
+                    />
+                  </div>
+
+                  {/* Content */}
+                  <div className="relative h-full p-6 flex flex-col">
+                    {/* Icon */}
+                    <div className="absolute top-4 left-4">
+                      <div className={`transition-transform duration-500 ${
+                        hoveredId === card.id ? "scale-110 translate-y-1" : ""
+                      }`}>
                         {card.icon}
                       </div>
+                    </div>
+
+                    {/* Main Content */}
+                    <div className="mt-auto">
+                      <h3 className="text-2xl font-medium text-white mb-2">{card.title}</h3>
+                      <p className="text-[#C8A97E] text-base mb-3">{card.subtitle}</p>
                       
-                      {/* Text Content */}
-                      <div className="mt-auto">
-                        <h3 className="text-xl font-medium text-white mb-2">{card.title}</h3>
-                        <p className="text-[#C8A97E] text-sm mb-3">{card.subtitle}</p>
-                        <p className="text-gray-200 text-sm transition-all duration-500 max-h-0 overflow-hidden group-hover:max-h-24">
-                          {card.description}
-                        </p>
+                      {/* Description - Only show on hover */}
+                      <div className={`overflow-hidden transition-all duration-500 ${
+                        hoveredId === card.id ? "max-h-[200px] opacity-100" : "max-h-0 opacity-0"
+                      }`}>
+                        <p className="text-gray-200 text-sm mb-4">{card.description}</p>
+                        <ul className="space-y-2">
+                          {card.details.map((detail, idx) => (
+                            <motion.li
+                              key={idx}
+                              initial={{ opacity: 0, x: -20 }}
+                              animate={{ 
+                                opacity: hoveredId === card.id ? 1 : 0,
+                                x: hoveredId === card.id ? 0 : -20
+                              }}
+                              transition={{ delay: idx * 0.1 }}
+                              className="flex items-center gap-2"
+                            >
+                              <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                              <span className="text-gray-300 text-sm">{detail}</span>
+                            </motion.li>
+                          ))}
+                        </ul>
                       </div>
                     </div>
                   </div>
@@ -153,7 +179,7 @@ export default function JourneyShowcase() {
           <motion.button
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
-            className="bg-[#C8A97E] text-black px-8 py-3 rounded-full font-medium text-lg transition-colors hover:bg-[#D4B88F]"
+            className="bg-[#C8A97E] text-black px-10 py-4 rounded-full font-medium text-lg transition-colors hover:bg-[#D4B88F]"
           >
             Jetzt Buchen
           </motion.button>
