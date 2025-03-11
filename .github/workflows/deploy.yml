@@ -27,10 +27,13 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          NODE_ENV: production
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: out
           branch: gh-pages
-          token: ${{ secrets.GITHUB_TOKEN }} 
+          clean: true
+          single-commit: true 
