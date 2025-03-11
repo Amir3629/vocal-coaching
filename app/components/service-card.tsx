@@ -59,7 +59,7 @@ export default function ServiceCard({ title, description, icon, price, features,
           damping: 25
         }}
       >
-        {/* Background Image Layer */}
+        {/* Background Image Layer with Overlay */}
         <div className="absolute inset-0 w-full h-full">
           <Image
             src={imagePath}
@@ -76,7 +76,7 @@ export default function ServiceCard({ title, description, icon, price, features,
             </div>
           )}
           <div 
-            className="absolute inset-0 transform-gpu transition-opacity duration-300 ease-in-out z-[1]"
+            className="absolute inset-0 transform-gpu transition-opacity duration-300 ease-in-out"
             style={{
               background: 'linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.9) 100%)',
               backdropFilter: 'blur(1.5px)',
@@ -86,8 +86,8 @@ export default function ServiceCard({ title, description, icon, price, features,
           />
         </div>
 
-        {/* Content Layer */}
-        <div className="relative border border-[#C8A97E]/20 hover:border-[#C8A97E]/50 rounded-2xl overflow-hidden">
+        {/* Content Layer - Now with higher z-index */}
+        <div className="relative z-10 border border-[#C8A97E]/20 hover:border-[#C8A97E]/50 rounded-2xl">
           <div className="p-6">
             {/* Title and Icon */}
             <div className="flex items-start gap-4 mb-6">
