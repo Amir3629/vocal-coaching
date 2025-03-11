@@ -202,10 +202,27 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     setCurrentStep("1");
   };
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const target = e.target;
+    const { name, value } = target;
+    
+    if (target instanceof HTMLInputElement && target.type === 'checkbox') {
+      setFormData(prev => ({
+        ...prev,
+        [name]: target.checked
+      }));
+    } else {
+      setFormData(prev => ({
+        ...prev,
+        [name]: value
+      }));
+    }
+  };
+
   return (
     <>
       <Dialog open={isOpen} onOpenChange={onClose}>
-        <DialogContent className="max-w-xl p-0 overflow-hidden bg-[#0A0A0A] border border-[#C8A97E]/20">
+        <DialogContent className="max-w-xl p-0 overflow-hidden bg-[#0A0A0A]/95 border border-[#C8A97E]/20 backdrop-blur-lg">
           {/* Progress Bar */}
           <div className="absolute top-0 left-0 right-0 h-1 bg-[#1A1A1A]">
             <motion.div
@@ -215,15 +232,15 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             />
           </div>
 
-          <div className="p-6">
+          <div className="p-8">
             {/* Step Title */}
             <motion.div
               key={`title-${currentStep}`}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
-              className="mb-6"
+              className="mb-8"
             >
-              <h2 className="text-2xl font-light text-[#C8A97E]">
+              <h2 className="text-2xl font-medium text-[#C8A97E]">
                 {currentStep === "1" && "Service auswählen"}
                 {currentStep === "2" && "Art des Unterrichts"}
                 {currentStep === "3" && "Datum auswählen"}
@@ -239,7 +256,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="min-h-[400px] max-h-[60vh] overflow-y-auto custom-scrollbar"
+                className="min-h-[400px] max-h-[60vh] overflow-y-auto custom-scrollbar pr-4"
               >
                 {/* Step 1: Service Selection */}
                 {currentStep === "1" && (
@@ -249,18 +266,18 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         key={service.id}
                         onClick={() => handleServiceSelect(service.id)}
                         className={cn(
-                          "p-4 rounded-lg border text-left transition-all",
-                          "hover:border-[#C8A97E] hover:bg-[#C8A97E]/5",
+                          "p-6 rounded-lg border text-left transition-all",
+                          "hover:border-[#C8A97E] hover:bg-[#C8A97E]/10",
                           selectedService === service.id
-                            ? "border-[#C8A97E] bg-[#C8A97E]/5"
-                            : "border-white/10 bg-black/20"
+                            ? "border-[#C8A97E] bg-[#C8A97E]/10"
+                            : "border-white/10 bg-black/40"
                         )}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
-                        <h3 className="text-lg font-medium text-white">{service.title}</h3>
-                        <p className="text-sm text-gray-400">{service.duration}</p>
-                        <p className="text-sm text-gray-400">{service.description}</p>
+                        <h3 className="text-xl font-medium text-white mb-2">{service.title}</h3>
+                        <p className="text-base text-white/70 mb-1">{service.duration}</p>
+                        <p className="text-sm text-white/60">{service.description}</p>
                       </motion.button>
                     ))}
                   </div>
@@ -274,17 +291,17 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         key={type.id}
                         onClick={() => handleServiceTypeSelect(type.id)}
                         className={cn(
-                          "p-4 rounded-lg border text-left transition-all",
-                          "hover:border-[#C8A97E] hover:bg-[#C8A97E]/5",
+                          "p-6 rounded-lg border text-left transition-all",
+                          "hover:border-[#C8A97E] hover:bg-[#C8A97E]/10",
                           selectedServiceType === type.id
-                            ? "border-[#C8A97E] bg-[#C8A97E]/5"
-                            : "border-white/10 bg-black/20"
+                            ? "border-[#C8A97E] bg-[#C8A97E]/10"
+                            : "border-white/10 bg-black/40"
                         )}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.98 }}
                       >
-                        <h3 className="text-lg font-medium text-white">{type.title}</h3>
-                        <p className="text-sm text-gray-400">{type.description}</p>
+                        <h3 className="text-xl font-medium text-white mb-2">{type.title}</h3>
+                        <p className="text-sm text-white/60">{type.description}</p>
                       </motion.button>
                     ))}
                   </div>
@@ -351,22 +368,35 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                 {/* Step 4: Time Selection */}
                 {currentStep === "4" && (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                  <div className="grid grid-cols-2 gap-3">
                     {timeSlots.map((time) => (
                       <motion.button
                         key={time}
                         onClick={() => handleTimeSelect(time)}
                         className={cn(
-                          "p-3 rounded-lg border text-center transition-all text-sm",
-                          "hover:border-[#C8A97E] hover:bg-[#C8A97E]/5",
+                          "p-4 rounded-lg border text-center transition-all relative overflow-hidden",
+                          "hover:border-[#C8A97E] hover:bg-[#C8A97E]/10",
                           selectedTime === time
-                            ? "border-[#C8A97E] bg-[#C8A97E]/5"
-                            : "border-white/10 bg-black/20"
+                            ? "border-[#C8A97E] bg-[#C8A97E]/10"
+                            : "border-white/10 bg-black/40"
                         )}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
-                        {time}
+                        <div className="relative z-10">
+                          <span className="text-lg font-medium text-white">{time}</span>
+                        </div>
+                        {selectedTime === time && (
+                          <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            className="absolute top-1 right-1"
+                          >
+                            <svg className="w-4 h-4 text-[#C8A97E]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                            </svg>
+                          </motion.div>
+                        )}
                       </motion.button>
                     ))}
                   </div>
@@ -374,117 +404,166 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                 {/* Step 5: Contact Form */}
                 {currentStep === "5" && (
-                  <form onSubmit={handleSubmit} className="space-y-4">
-                    <div className="grid grid-cols-2 gap-3">
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4 mb-8">
                       {skillLevels.map((level) => (
                         <motion.button
                           key={level.id}
                           type="button"
                           onClick={() => handleLevelSelect(level.id)}
                           className={cn(
-                            "p-3 rounded-lg border text-left transition-all",
-                            "hover:border-[#C8A97E] hover:bg-[#C8A97E]/5",
+                            "p-4 rounded-lg border text-left transition-all",
+                            "hover:border-[#C8A97E] hover:bg-[#C8A97E]/10",
                             selectedLevel === level.id
-                              ? "border-[#C8A97E] bg-[#C8A97E]/5"
-                              : "border-white/10 bg-black/20"
+                              ? "border-[#C8A97E] bg-[#C8A97E]/10"
+                              : "border-white/10 bg-black/40"
                           )}
                           whileHover={{ scale: 1.02 }}
                           whileTap={{ scale: 0.98 }}
                         >
-                          <h3 className="text-sm font-medium text-white">{level.title}</h3>
-                          <p className="text-xs text-gray-400 mt-1">{level.description}</p>
+                          <h3 className="text-base font-medium text-white mb-1">{level.title}</h3>
+                          <p className="text-sm text-white/60">{level.description}</p>
                         </motion.button>
                       ))}
                     </div>
 
-                    <div className="space-y-3">
-                      <input
-                        type="text"
-                        placeholder="Name"
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full p-2.5 rounded-lg bg-black/20 border border-white/10 focus:border-[#C8A97E] transition-colors text-sm"
-                        required
-                      />
-                      <input
-                        type="email"
-                        placeholder="Email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full p-2.5 rounded-lg bg-black/20 border border-white/10 focus:border-[#C8A97E] transition-colors text-sm"
-                        required
-                      />
-                      <input
-                        type="tel"
-                        placeholder="Telefon (optional)"
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full p-2.5 rounded-lg bg-black/20 border border-white/10 focus:border-[#C8A97E] transition-colors text-sm"
-                      />
-                      <textarea
-                        placeholder="Nachricht (optional)"
-                        value={formData.message}
-                        onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                        className="w-full p-2.5 rounded-lg bg-black/20 border border-white/10 focus:border-[#C8A97E] transition-colors text-sm min-h-[80px]"
-                      />
+                    <div className="space-y-4">
+                      <div>
+                        <label htmlFor="name" className="block text-sm font-medium text-white/80 mb-2">Name</label>
+                        <input
+                          type="text"
+                          id="name"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          className={cn(
+                            "w-full px-4 py-3 rounded-lg border bg-black/40 text-white placeholder-white/40",
+                            "focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50",
+                            errors.name ? "border-red-500" : "border-white/10 focus:border-[#C8A97E]"
+                          )}
+                          placeholder="Ihr vollständiger Name"
+                        />
+                        {errors.name && (
+                          <p className="mt-1 text-sm text-red-500">{errors.name}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-white/80 mb-2">Email</label>
+                        <input
+                          type="email"
+                          id="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          className={cn(
+                            "w-full px-4 py-3 rounded-lg border bg-black/40 text-white placeholder-white/40",
+                            "focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50",
+                            errors.email ? "border-red-500" : "border-white/10 focus:border-[#C8A97E]"
+                          )}
+                          placeholder="ihre@email.com"
+                        />
+                        {errors.email && (
+                          <p className="mt-1 text-sm text-red-500">{errors.email}</p>
+                        )}
+                      </div>
+
+                      <div>
+                        <label htmlFor="phone" className="block text-sm font-medium text-white/80 mb-2">
+                          Telefon <span className="text-white/40">(optional)</span>
+                        </label>
+                        <input
+                          type="tel"
+                          id="phone"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          className={cn(
+                            "w-full px-4 py-3 rounded-lg border border-white/10 bg-black/40",
+                            "text-white placeholder-white/40 focus:border-[#C8A97E]",
+                            "focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50"
+                          )}
+                          placeholder="+49"
+                        />
+                      </div>
+
+                      <div>
+                        <label htmlFor="message" className="block text-sm font-medium text-white/80 mb-2">
+                          Nachricht <span className="text-white/40">(optional)</span>
+                        </label>
+                        <textarea
+                          id="message"
+                          name="message"
+                          value={formData.message}
+                          onChange={handleInputChange}
+                          rows={4}
+                          className={cn(
+                            "w-full px-4 py-3 rounded-lg border border-white/10 bg-black/40",
+                            "text-white placeholder-white/40 focus:border-[#C8A97E]",
+                            "focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50",
+                            "resize-none"
+                          )}
+                          placeholder="Ihre Nachricht an uns..."
+                        />
+                      </div>
+
+                      <div className="flex items-start gap-3 pt-2">
+                        <input
+                          type="checkbox"
+                          id="terms"
+                          name="termsAccepted"
+                          checked={formData.termsAccepted}
+                          onChange={handleInputChange}
+                          className="mt-1"
+                        />
+                        <label htmlFor="terms" className="text-sm text-white/60">
+                          Ich akzeptiere die{" "}
+                          <button
+                            type="button"
+                            onClick={() => setShowLegalModal("agb")}
+                            className="text-[#C8A97E] hover:text-[#B89A6F] underline"
+                          >
+                            AGB
+                          </button>{" "}
+                          und die{" "}
+                          <button
+                            type="button"
+                            onClick={() => setShowLegalModal("datenschutz")}
+                            className="text-[#C8A97E] hover:text-[#B89A6F] underline"
+                          >
+                            Datenschutzerklärung
+                          </button>
+                        </label>
+                      </div>
+                      {errors.termsAccepted && (
+                        <p className="text-sm text-red-500 mt-1">{errors.termsAccepted}</p>
+                      )}
                     </div>
 
-                    <div className="flex items-start gap-2 mt-4">
-                      <input
-                        type="checkbox"
-                        id="terms"
-                        checked={formData.termsAccepted}
-                        onChange={(e) => setFormData({ ...formData, termsAccepted: e.target.checked })}
-                        className="mt-1"
-                      />
-                      <label htmlFor="terms" className="text-sm text-gray-400">
-                        Ich akzeptiere die{" "}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setShowLegalModal("agb");
-                          }}
-                          className="text-[#C8A97E] hover:underline"
-                        >
-                          AGB
-                        </button>{" "}
-                        und die{" "}
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setShowLegalModal("datenschutz");
-                          }}
-                          className="text-[#C8A97E] hover:underline"
-                        >
-                          Datenschutzerklärung
-                        </button>
-                      </label>
-                    </div>
-
-                    {errors.terms && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-red-500 text-sm"
-                      >
-                        {errors.terms}
-                      </motion.p>
-                    )}
+                    <motion.button
+                      type="submit"
+                      className={cn(
+                        "w-full px-6 py-3 mt-6 rounded-lg font-medium text-black",
+                        "bg-[#C8A97E] hover:bg-[#B89A6F] transition-colors"
+                      )}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      Absenden
+                    </motion.button>
                   </form>
                 )}
               </motion.div>
             </AnimatePresence>
 
             {/* Navigation */}
-            <div className="flex justify-between mt-6 pt-4 border-t border-white/10">
+            <div className="flex justify-between mt-8 pt-6 border-t border-white/10">
               {currentStep !== "1" && (
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => setCurrentStep((prev) => (parseInt(prev) - 1).toString() as Step)}
-                  className="px-4 py-2 rounded-lg border border-white/10 hover:border-[#C8A97E] transition-colors text-sm"
+                  className="px-6 py-3 rounded-lg border border-white/20 hover:border-[#C8A97E] transition-colors text-base text-white/80 hover:text-white"
                 >
                   Zurück
                 </motion.button>
@@ -492,8 +571,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               
               {currentStep !== "5" ? (
                 <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     if (currentStep === "1" && !selectedService) return;
                     if (currentStep === "2" && !selectedServiceType) return;
@@ -502,7 +581,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                     setCurrentStep((prev) => (parseInt(prev) + 1).toString() as Step);
                   }}
                   className={cn(
-                    "px-4 py-2 rounded-lg transition-colors ml-auto text-sm",
+                    "px-6 py-3 rounded-lg transition-colors ml-auto text-base font-medium",
                     "bg-[#C8A97E] hover:bg-[#B89A6F] text-black"
                   )}
                   disabled={
@@ -549,12 +628,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       </Dialog>
 
       {/* Success Message */}
-      <SuccessMessage
-        isOpen={showSuccess}
-        onClose={() => setShowSuccess(false)}
-        title="Buchung erfolgreich!"
-        message="Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigungs-E-Mail."
-      />
+      <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
+        <DialogContent>
+          <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Buchung erfolgreich!</h2>
+          <p className="text-white/70">Vielen Dank für Ihre Buchung. Wir werden uns in Kürze bei Ihnen melden.</p>
+        </DialogContent>
+      </Dialog>
     </>
   );
 } 
