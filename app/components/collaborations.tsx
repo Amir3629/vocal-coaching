@@ -69,60 +69,66 @@ export default function Collaborations() {
         </div>
 
         <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-8 gap-y-16 items-center">
-            {collaborations.slice(0, 4).map((collab, index) => (
-              <motion.a
-                key={collab.name}
-                href={collab.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                className="relative aspect-[3/1] flex items-center justify-center p-1 bg-transparent transition-colors group w-full"
-              >
-                <div className="relative w-[66%] h-[66%]">
-                  <Image
-                    src={collab.logo}
-                    alt={collab.name}
-                    fill
-                    className={`object-contain transition-all duration-500 ${
-                      hoveredIndex === index ? "filter-none" : "filter grayscale brightness-200"
-                    }`}
-                  />
-                </div>
-              </motion.a>
-            ))}
-            <div className="col-span-full h-0"></div>
-            {collaborations.slice(4, 8).map((collab, index) => (
-              <motion.a
-                key={collab.name}
-                href={collab.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: (index + 4) * 0.1 }}
-                onMouseEnter={() => setHoveredIndex(index + 4)}
-                onMouseLeave={() => setHoveredIndex(null)}
-                className="relative aspect-[3/1] flex items-center justify-center p-1 bg-transparent transition-colors group w-full"
-              >
-                <div className="relative w-[66%] h-[66%]">
-                  <Image
-                    src={collab.logo}
-                    alt={collab.name}
-                    fill
-                    className={`object-contain transition-all duration-500 ${
-                      hoveredIndex === index + 4 ? "filter-none" : "filter grayscale brightness-200"
-                    }`}
-                  />
-                </div>
-              </motion.a>
-            ))}
+          <div className="flex flex-col gap-16">
+            {/* First Row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center">
+              {collaborations.slice(0, 4).map((collab, index) => (
+                <motion.a
+                  key={collab.name}
+                  href={collab.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: index * 0.1 }}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  className="flex items-center justify-center p-1 bg-transparent transition-colors group"
+                >
+                  <div className="relative w-40 h-16">
+                    <Image
+                      src={collab.logo}
+                      alt={collab.name}
+                      fill
+                      className={`object-contain transition-all duration-500 ${
+                        hoveredIndex === index ? "filter-none" : "filter grayscale brightness-200"
+                      }`}
+                    />
+                  </div>
+                </motion.a>
+              ))}
+            </div>
+            
+            {/* Second Row */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center">
+              {collaborations.slice(4, 8).map((collab, index) => (
+                <motion.a
+                  key={collab.name}
+                  href={collab.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.6, delay: (index + 4) * 0.1 }}
+                  onMouseEnter={() => setHoveredIndex(index + 4)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                  className="flex items-center justify-center p-1 bg-transparent transition-colors group"
+                >
+                  <div className="relative w-40 h-16">
+                    <Image
+                      src={collab.logo}
+                      alt={collab.name}
+                      fill
+                      className={`object-contain transition-all duration-500 ${
+                        hoveredIndex === index + 4 ? "filter-none" : "filter grayscale brightness-200"
+                      }`}
+                    />
+                  </div>
+                </motion.a>
+              ))}
+            </div>
           </div>
         </div>
       </div>
