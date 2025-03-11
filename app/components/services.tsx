@@ -1,5 +1,5 @@
 import ServiceCard from './service-card'
-import { Service } from '../types/service'
+import { Service } from '@/app/types/service'
 
 interface ServicesProps {
   services: Service[]
