@@ -326,220 +326,308 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
-        <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[95%] max-w-2xl max-h-[90vh] overflow-hidden">
-          <div className="p-6 sm:p-8 border-b border-[#C8A97E]/20">
-            <div className="flex items-center justify-between">
-              <h2 className="text-2xl font-medium text-white">Termin buchen</h2>
+      <div className="fixed inset-0 z-[100]" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
+        <div className="fixed inset-0 overflow-y-auto">
+          <div className="flex min-h-full items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+              className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+            >
+              {/* Modal content */}
+              <div className="p-6">
+                {/* Steps content with transitions */}
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={currentStep}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  >
+                    {/* Service Selection */}
+                    {currentStep === "1" && (
+                      <div className="space-y-6">
+                        <h3 className="text-xl font-medium text-white">Service auswählen</h3>
+                        <div className="grid gap-4">
+                          {services.map((service) => (
+                            <ServiceOption
+                              key={service.id}
+                              service={service}
+                              isSelected={selectedService === service.id}
+                              onSelect={() => handleServiceSelect(service.id)}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Date Selection */}
+                    {currentStep === "2" && (
+                      <div className="space-y-6">
+                        <h3 className="text-xl font-medium text-white">Datum auswählen</h3>
+                        <div className="bg-black/20 rounded-xl border-2 border-[#C8A97E]/20 p-4 flex justify-center">
+                          <Calendar
+                            mode="single"
+                            selected={selectedDate || undefined}
+                            onSelect={(date) => date && handleDateSelect(date)}
+                            className="text-white"
+                            classNames={{
+                              months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                              month: "space-y-4",
+                              caption: "flex justify-center pt-1 relative items-center",
+                              caption_label: "text-base font-medium text-[#C8A97E]",
+                              nav: "space-x-1 flex items-center",
+                              nav_button: "h-8 w-8 bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
+                              nav_button_previous: "absolute left-1",
+                              nav_button_next: "absolute right-1",
+                              table: "w-full border-collapse space-y-1",
+                              head_row: "flex",
+                              head_cell: "text-[#C8A97E] rounded-md w-9 font-normal text-[0.8rem]",
+                              row: "flex w-full mt-2",
+                              cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-[#C8A97E]/10 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                              day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
+                              day_selected: "bg-[#C8A97E] text-black hover:bg-[#C8A97E] hover:text-black focus:bg-[#C8A97E] focus:text-black font-medium",
+                              day_today: "bg-white/5 text-white font-medium",
+                              day_outside: "text-gray-500 opacity-50",
+                              day_disabled: "text-gray-500 opacity-50",
+                              day_range_middle: "aria-selected:bg-[#C8A97E]/20 aria-selected:text-white",
+                              day_hidden: "invisible",
+                            }}
+                          />
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Time Selection */}
+                    {currentStep === "3" && (
+                      <div className="space-y-6">
+                        <h3 className="text-xl font-medium text-white">Uhrzeit auswählen</h3>
+                        <TimeGrid
+                          times={timeSlots}
+                          selectedTime={selectedTime}
+                          onTimeSelect={handleTimeSelect}
+                        />
+                      </div>
+                    )}
+
+                    {/* Personal Information */}
+                    {currentStep === "4" && (
+                      <div className="space-y-6">
+                        <h3 className="text-xl font-medium text-white">Persönliche Daten</h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          <div>
+                            <label className="text-sm font-medium text-white/80 mb-2 block">Name</label>
+                            <input
+                              type="text"
+                              name="name"
+                              value={formData.name}
+                              onChange={handleInputChange}
+                              required
+                              className="w-full bg-black/20 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                              placeholder="Ihr vollständiger Name"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-white/80 mb-2 block">Email</label>
+                            <input
+                              type="email"
+                              name="email"
+                              value={formData.email}
+                              onChange={handleInputChange}
+                              required
+                              className="w-full bg-black/20 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                              placeholder="ihre.email@beispiel.de"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-white/80 mb-2 block">Telefon</label>
+                            <input
+                              type="tel"
+                              name="phone"
+                              value={formData.phone}
+                              onChange={handleInputChange}
+                              required
+                              className="w-full bg-black/20 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                              placeholder="+49 123 45678900"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-sm font-medium text-white/80 mb-2 block">Nachricht (optional)</label>
+                            <textarea
+                              name="message"
+                              value={formData.message}
+                              onChange={handleInputChange}
+                              rows={4}
+                              className="w-full bg-black/20 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
+                              placeholder="Ihre Nachricht an uns..."
+                            />
+                          </div>
+                          <div className="md:col-span-2">
+                            <div className="flex items-start gap-3 p-4 rounded-lg bg-black/20 border-2 border-white/10">
+                              <input
+                                type="checkbox"
+                                id="termsAccepted"
+                                name="termsAccepted"
+                                checked={formData.termsAccepted}
+                                onChange={(e) => setFormData(prev => ({ ...prev, termsAccepted: e.target.checked }))}
+                                className="mt-1 h-4 w-4 rounded border-2 border-white/10 text-[#C8A97E] focus:ring-[#C8A97E]"
+                                required
+                              />
+                              <label htmlFor="termsAccepted" className="text-sm text-gray-300">
+                                Ich akzeptiere die <button type="button" onClick={() => setShowLegalModal("agb")} className="text-[#C8A97E] hover:underline">AGB</button> und die <button type="button" onClick={() => setShowLegalModal("datenschutz")} className="text-[#C8A97E] hover:underline">Datenschutzerklärung</button>
+                              </label>
+                            </div>
+                            {errors.terms && (
+                              <p className="text-red-500 text-sm mt-2">{errors.terms}</p>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+
+                {/* Navigation buttons with transitions */}
+                <div className="mt-6 flex justify-between gap-4">
+                  {currentStep !== "1" && (
+                    <motion.button
+                      initial={{ opacity: 0, x: -10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      exit={{ opacity: 0, x: -10 }}
+                      transition={{ duration: 0.3 }}
+                      onClick={handleBack}
+                      className="px-4 py-2 text-sm text-white/70 hover:text-white transition-colors"
+                    >
+                      Zurück
+                    </motion.button>
+                  )}
+                  <motion.button
+                    initial={{ opacity: 0, x: 10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: 10 }}
+                    transition={{ duration: 0.3 }}
+                    onClick={currentStep === "4" ? handleSubmit : handleNext}
+                    disabled={!canProceedToNextStep()}
+                    className={`px-6 py-2 rounded-lg text-sm font-medium transition-all duration-300 ${
+                      canProceedToNextStep()
+                        ? "bg-[#C8A97E] hover:bg-[#B69A6E] text-black"
+                        : "bg-gray-600 cursor-not-allowed text-gray-300"
+                    }`}
+                  >
+                    {currentStep === "4" ? "Absenden" : "Weiter"}
+                  </motion.button>
+                </div>
+              </div>
+
+              {/* Close button */}
               <button
                 onClick={onClose}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
               >
-                <X className="w-6 h-6 text-white/70 hover:text-white transition-colors" />
+                <X className="w-5 h-5" />
               </button>
-            </div>
-          </div>
-
-          <div className="p-6 sm:p-8 max-h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar">
-            <div className="space-y-8">
-              {/* Service Selection */}
-              <div className={`space-y-6 ${currentStep === "1" ? "block" : "hidden"}`}>
-                <h3 className="text-xl font-medium text-white">Service auswählen</h3>
-                <div className="grid gap-4">
-                  {services.map((service) => (
-                    <ServiceOption
-                      key={service.id}
-                      service={service}
-                      isSelected={selectedService === service.id}
-                      onSelect={() => handleServiceSelect(service.id)}
-                    />
-                  ))}
-                </div>
-              </div>
-
-              {/* Date Selection */}
-              <div className={`space-y-6 ${currentStep === "2" ? "block" : "hidden"}`}>
-                <h3 className="text-xl font-medium text-white">Datum auswählen</h3>
-                <div className="bg-black/20 rounded-xl border-2 border-[#C8A97E]/20 p-4 flex justify-center">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate || undefined}
-                    onSelect={(date) => date && handleDateSelect(date)}
-                    className="text-white"
-                    classNames={{
-                      months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-                      month: "space-y-4",
-                      caption: "flex justify-center pt-1 relative items-center",
-                      caption_label: "text-base font-medium text-[#C8A97E]",
-                      nav: "space-x-1 flex items-center",
-                      nav_button: "h-8 w-8 bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
-                      nav_button_previous: "absolute left-1",
-                      nav_button_next: "absolute right-1",
-                      table: "w-full border-collapse space-y-1",
-                      head_row: "flex",
-                      head_cell: "text-[#C8A97E] rounded-md w-9 font-normal text-[0.8rem]",
-                      row: "flex w-full mt-2",
-                      cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-[#C8A97E]/10 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                      day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
-                      day_selected: "bg-[#C8A97E] text-black hover:bg-[#C8A97E] hover:text-black focus:bg-[#C8A97E] focus:text-black font-medium",
-                      day_today: "bg-white/5 text-white font-medium",
-                      day_outside: "text-gray-500 opacity-50",
-                      day_disabled: "text-gray-500 opacity-50",
-                      day_range_middle: "aria-selected:bg-[#C8A97E]/20 aria-selected:text-white",
-                      day_hidden: "invisible",
-                    }}
-                  />
-                </div>
-              </div>
-
-              {/* Time Selection */}
-              <div className={`space-y-6 ${currentStep === "3" ? "block" : "hidden"}`}>
-                <h3 className="text-xl font-medium text-white">Uhrzeit auswählen</h3>
-                <TimeGrid
-                  times={timeSlots}
-                  selectedTime={selectedTime}
-                  onTimeSelect={handleTimeSelect}
-                />
-              </div>
-
-              {/* Personal Information */}
-              <div className={`space-y-6 ${currentStep === "4" ? "block" : "hidden"}`}>
-                <h3 className="text-xl font-medium text-white">Persönliche Daten</h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <label className="text-sm font-medium text-white/80 mb-2 block">Name</label>
-                    <input
-                      type="text"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full bg-black/20 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
-                      placeholder="Ihr vollständiger Name"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-white/80 mb-2 block">Email</label>
-                    <input
-                      type="email"
-                      name="email"
-                      value={formData.email}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full bg-black/20 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
-                      placeholder="ihre.email@beispiel.de"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-white/80 mb-2 block">Telefon</label>
-                    <input
-                      type="tel"
-                      name="phone"
-                      value={formData.phone}
-                      onChange={handleInputChange}
-                      required
-                      className="w-full bg-black/20 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
-                      placeholder="+49 123 45678900"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-white/80 mb-2 block">Nachricht (optional)</label>
-                    <textarea
-                      name="message"
-                      value={formData.message}
-                      onChange={handleInputChange}
-                      rows={4}
-                      className="w-full bg-black/20 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
-                      placeholder="Ihre Nachricht an uns..."
-                    />
-                  </div>
-                  <div className="md:col-span-2">
-                    <div className="flex items-start gap-3 p-4 rounded-lg bg-black/20 border-2 border-white/10">
-                      <input
-                        type="checkbox"
-                        id="termsAccepted"
-                        name="termsAccepted"
-                        checked={formData.termsAccepted}
-                        onChange={(e) => setFormData(prev => ({ ...prev, termsAccepted: e.target.checked }))}
-                        className="mt-1 h-4 w-4 rounded border-2 border-white/10 text-[#C8A97E] focus:ring-[#C8A97E]"
-                        required
-                      />
-                      <label htmlFor="termsAccepted" className="text-sm text-gray-300">
-                        Ich akzeptiere die <button type="button" onClick={() => setShowLegalModal("agb")} className="text-[#C8A97E] hover:underline">AGB</button> und die <button type="button" onClick={() => setShowLegalModal("datenschutz")} className="text-[#C8A97E] hover:underline">Datenschutzerklärung</button>
-                      </label>
-                    </div>
-                    {errors.terms && (
-                      <p className="text-red-500 text-sm mt-2">{errors.terms}</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="p-6 sm:p-8 border-t border-[#C8A97E]/20 flex justify-between">
-            {currentStep !== "1" && (
-              <Button
-                variant="outline"
-                onClick={handleBack}
-                className="border-2 border-white/10 text-white hover:bg-white/5 px-6 py-2.5 text-base"
-              >
-                Zurück
-              </Button>
-            )}
-            <div className="ml-auto">
-              <Button
-                onClick={currentStep === "4" ? handleSubmit : handleNext}
-                className={`px-6 py-2.5 text-base font-medium transition-all duration-300 ${
-                  canProceedToNextStep()
-                    ? 'bg-gradient-to-r from-[#C8A97E] to-[#B69A6E] hover:from-[#B69A6E] hover:to-[#C8A97E] text-black'
-                    : 'bg-white/5 text-white/50 cursor-not-allowed'
-                }`}
-                disabled={!canProceedToNextStep()}
-              >
-                {currentStep === "4" ? "Absenden" : "Weiter"}
-              </Button>
-            </div>
+            </motion.div>
           </div>
         </div>
       </div>
 
       {/* Legal Document Modal */}
-      <LegalDocumentModal
-        isOpen={showLegalModal === "agb"}
-        onClose={() => setShowLegalModal(null)}
-        title="AGB"
-      >
-        <LegalContent type="agb" />
-      </LegalDocumentModal>
-
-      <LegalDocumentModal
-        isOpen={showLegalModal === "datenschutz"}
-        onClose={() => setShowLegalModal(null)}
-        title="Datenschutzerklärung"
-      >
-        <LegalContent type="datenschutz" />
-      </LegalDocumentModal>
-
-      {/* Success Message */}
-      <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <div className="fixed inset-0 z-50 flex items-center justify-center">
-          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setShowSuccess(false)} />
-          <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[90%] max-w-md">
-            <div className="p-6">
-              <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Buchung erfolgreich!</h2>
-              <p className="text-white/70">Vielen Dank für Ihre Buchung. Wir werden uns in Kürze bei Ihnen melden.</p>
-              <button
-                onClick={() => setShowSuccess(false)}
-                className="absolute right-4 top-4 p-1.5 hover:bg-white/10 rounded-lg transition-colors"
-              >
-                <X className="w-5 h-5 text-white/70 hover:text-white transition-colors" />
-              </button>
+      <AnimatePresence>
+        {showLegalModal === "agb" && (
+          <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+                >
+                  <div className="p-6">
+                    <h2 className="text-xl font-medium text-[#C8A97E] mb-4">AGB</h2>
+                    <div className="prose prose-invert max-w-none">
+                      <LegalContent type="agb" />
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowLegalModal(null)}
+                    className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </motion.div>
+              </div>
             </div>
           </div>
-        </div>
-      </Dialog>
+        )}
+
+        {showLegalModal === "datenschutz" && (
+          <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+                >
+                  <div className="p-6">
+                    <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Datenschutzerklärung</h2>
+                    <div className="prose prose-invert max-w-none">
+                      <LegalContent type="datenschutz" />
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowLegalModal(null)}
+                    className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
+                  >
+                    <X className="w-5 h-5" />
+                  </button>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Success Message */}
+      <AnimatePresence>
+        {showSuccess && (
+          <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
+            <div className="fixed inset-0 overflow-y-auto">
+              <div className="flex min-h-full items-center justify-center p-4">
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  className="relative w-full max-w-md bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+                >
+                  <div className="p-6">
+                    <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Buchung erfolgreich!</h2>
+                    <p className="text-white/70">Vielen Dank für Ihre Buchung. Wir werden uns in Kürze bei Ihnen melden.</p>
+                    <button
+                      onClick={() => setShowSuccess(false)}
+                      className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </div>
+                </motion.div>
+              </div>
+            </div>
+          </div>
+        )}
+      </AnimatePresence>
     </Dialog>
   );
 } 
