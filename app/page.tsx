@@ -254,7 +254,7 @@ export default function Home() {
                 duration: "45-60 min",
                 location: "Online & Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/singing.jpg" : "/images/cards/singing.jpg"}
+              image="/images/cards/singing.jpg"
             />
 
             <ServiceCard
@@ -283,7 +283,7 @@ export default function Home() {
                 duration: "60-90 min",
                 location: "Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/vocal-coaching.jpg" : "/images/cards/vocal-coaching.jpg"}
+              image="/images/cards/vocal-coaching.jpg"
             />
 
             <ServiceCard
@@ -312,7 +312,7 @@ export default function Home() {
                 duration: "3-6 Stunden",
                 location: "Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/workshop.jpg" : "/images/cards/workshop.jpg"}
+              image="/images/cards/workshop.jpg"
             />
 
             <ServiceCard
@@ -341,7 +341,7 @@ export default function Home() {
                 duration: "90-120 min",
                 location: "Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/choir.jpg" : "/images/cards/choir.jpg"}
+              image="/images/cards/choir.jpg"
             />
           </div>
 

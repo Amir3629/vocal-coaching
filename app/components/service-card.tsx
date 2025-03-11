@@ -43,7 +43,7 @@ export default function ServiceCard({ title, description, icon, price, features,
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src={process.env.NODE_ENV === 'production' ? `/vocal-coaching${image}` : image}
+          src={image}
           alt={title}
           fill
           className={`object-cover transition-all duration-500 ${
@@ -51,7 +51,10 @@ export default function ServiceCard({ title, description, icon, price, features,
           }`}
           sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
           priority
-          onError={() => setImageError(true)}
+          onError={() => {
+            console.error('Image failed to load:', image);
+            setImageError(true);
+          }}
         />
         <div 
           className={`absolute inset-0 bg-gradient-to-b from-black/60 via-black/75 to-black/90 transition-opacity duration-300 ${
@@ -65,14 +68,14 @@ export default function ServiceCard({ title, description, icon, price, features,
         {/* Header */}
         <div className="flex items-center gap-3 mb-3">
           <div className="text-[#C8A97E]">{icon}</div>
-          <h3 className="text-2xl font-semibold text-white">{title}</h3>
+          <h3 className="text-2xl font-semibold text-white text-shadow">{title}</h3>
         </div>
-        <p className="text-white/90 text-lg mb-6">{description}</p>
+        <p className="text-white/90 text-lg mb-6 text-shadow">{description}</p>
 
         {/* Features */}
         <ul className="space-y-2 mb-6">
           {features.map((feature, index) => (
-            <li key={index} className="text-white/80 flex items-center gap-2">
+            <li key={index} className="text-white/80 flex items-center gap-2 text-shadow">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
               {feature}
             </li>
@@ -85,7 +88,7 @@ export default function ServiceCard({ title, description, icon, price, features,
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 10 }}
             transition={{ duration: 0.3 }}
-            className="text-sm text-white/70"
+            className="text-sm text-white/70 text-shadow"
           >
             <div className="flex items-center gap-1 mb-1">
               <span className="text-[#C8A97E]">Dauer:</span> {details.duration}
