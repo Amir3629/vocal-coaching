@@ -38,7 +38,7 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.3 }}
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100]"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999]"
             onClick={onClose}
           />
           <motion.div
@@ -51,7 +51,7 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
               damping: 25,
               duration: 0.4
             }}
-            className="fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[90%] max-w-2xl max-h-[85vh] bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl z-[101] overflow-hidden"
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-2xl max-h-[85vh] bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl z-[10000] overflow-hidden"
           >
             <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
               <h3 className="text-lg font-medium text-white">{title}</h3>
