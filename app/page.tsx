@@ -209,25 +209,25 @@ export default function Home() {
       </section>
 
       {/* Services Section */}
-      <section id="services" className="relative w-full min-h-screen py-16">
+      <section id="services" className="relative w-full py-20 bg-[#040202]">
         <div className="absolute inset-0 w-full h-full">
           <Image
             src="/vocal-coaching/images/backgrounds/services-bg.jpg"
             alt="Services Background"
             fill
-            className="object-cover"
+            className="object-cover opacity-30"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/85 to-black/90 backdrop-blur-sm" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/95 via-[#040202]/90 to-[#040202]/95" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <div className="text-center mb-12">
+          <div className="text-center mb-16">
             <h2 className="section-heading mb-4">Vocal Excellence</h2>
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
             <ServiceCard
               title="Singen"
               description="Gesangsunterricht für alle"
@@ -254,7 +254,7 @@ export default function Home() {
                 duration: "45-60 min",
                 location: "Online & Studio Berlin"
               }}
-              image="/images/cards/singing.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/singing.jpg" : "/images/cards/singing.jpg"}
             />
 
             <ServiceCard
@@ -283,7 +283,7 @@ export default function Home() {
                 duration: "60-90 min",
                 location: "Studio Berlin"
               }}
-              image="/images/cards/vocal-coaching.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/vocal-coaching.jpg" : "/images/cards/vocal-coaching.jpg"}
             />
 
             <ServiceCard
@@ -312,7 +312,7 @@ export default function Home() {
                 duration: "3-6 Stunden",
                 location: "Studio Berlin"
               }}
-              image="/images/cards/workshop.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/workshop.jpg" : "/images/cards/workshop.jpg"}
             />
 
             <ServiceCard
@@ -341,12 +341,12 @@ export default function Home() {
                 duration: "90-120 min",
                 location: "Studio Berlin"
               }}
-              image="/images/cards/choir.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/choir.jpg" : "/images/cards/choir.jpg"}
             />
           </div>
 
           <motion.div 
-            className="text-center mt-12"
+            className="text-center mt-16"
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
