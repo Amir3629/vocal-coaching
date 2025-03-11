@@ -146,20 +146,17 @@ select {
 
 /* Mobile-specific styles */
 @media (max-width: 768px) {
-  /* General Layout */
   .container {
     padding-left: 1rem;
     padding-right: 1rem;
   }
 
-  /* Typography */
   .section-heading {
     font-size: 2rem;
     line-height: 1.2;
     margin-bottom: 1.5rem;
   }
 
-  /* Hero Section */
   .hero h1 {
     font-size: 3.5rem !important;
   }
@@ -168,42 +165,22 @@ select {
     font-size: 1.25rem !important;
   }
 
-  /* Music Section */
-  #music .grid {
+  #music .grid,
+  #about .grid,
+  #gallery .grid,
+  #contact .grid {
     grid-template-columns: 1fr;
     gap: 1rem;
-  }
-
-  /* About Section */
-  #about .grid {
-    grid-template-columns: 1fr;
   }
 
   #about .aspect-[3/4] {
     max-height: 400px;
   }
 
-  /* Services Section */
   .service-card {
     margin-bottom: 1.5rem;
   }
 
-  /* Gallery Section */
-  #gallery .grid {
-    grid-template-columns: 1fr;
-  }
-
-  /* Contact Form */
-  #contact .grid {
-    grid-template-columns: 1fr;
-  }
-
-  #contact input,
-  #contact textarea {
-    font-size: 16px; /* Prevents iOS zoom on focus */
-  }
-
-  /* Booking Modal Improvements */
   .booking-modal {
     width: 100%;
     max-width: 95%;
@@ -211,7 +188,15 @@ select {
     max-height: 90vh;
   }
 
-  /* Calendar Positioning */
+  .calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin: 0 auto;
+  }
+
   .rdp {
     margin: 0 !important;
     width: 100% !important;
@@ -230,17 +215,6 @@ select {
     max-width: none !important;
   }
 
-  /* Center calendar container */
-  .calendar-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-    padding: 0;
-    margin: 0 auto;
-  }
-
-  /* Legal Document Modal */
   .legal-document-modal {
     position: fixed;
     top: 50%;
@@ -253,7 +227,6 @@ select {
     z-index: 100;
   }
 
-  /* Success Message */
   .success-message {
     position: fixed;
     top: 50%;
@@ -264,7 +237,6 @@ select {
     z-index: 200;
   }
 
-  /* Modal Backdrop */
   .modal-backdrop {
     position: fixed;
     inset: 0;
@@ -272,27 +244,18 @@ select {
     backdrop-filter: blur(4px);
   }
 
-  /* Time Grid */
   .time-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
     padding: 0.5rem;
   }
 
-  /* Improved touch targets for calendar */
-  .rdp-button {
-    min-height: 44px !important;
-    min-width: 44px !important;
-  }
-
-  /* Fix modal scrolling */
   .modal-content {
     max-height: calc(100vh - 6rem);
     overflow-y: auto;
     -webkit-overflow-scrolling: touch;
   }
 
-  /* Footer */
   footer .grid {
     grid-template-columns: 1fr;
     text-align: center;
@@ -302,51 +265,24 @@ select {
     justify-content: center;
   }
 
-  /* Navigation */
   .nav-menu {
     padding: 1rem;
   }
 
-  /* Testimonials */
   .testimonial-card {
     padding: 1rem;
   }
 
-  /* Custom Scrollbar for Mobile */
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 4px;
-  }
-
-  /* Animations */
-  @media (prefers-reduced-motion: no-preference) {
-    .animate-on-scroll {
-      transition-duration: 0.3s;
-    }
-  }
-
-  /* Touch Interactions */
-  .hover-effect {
-    -webkit-tap-highlight-color: transparent;
-  }
-
-  /* Fix for iOS Safari 100vh issue */
-  .min-h-screen {
-    min-height: -webkit-fill-available;
-  }
-
-  /* Improved touch targets */
   button,
   a {
     min-height: 44px;
     min-width: 44px;
   }
 
-  /* Font size adjustments */
   html {
     font-size: 16px;
   }
 
-  /* Prevent text overflow */
   * {
     word-wrap: break-word;
     -webkit-hyphens: auto;
@@ -354,7 +290,7 @@ select {
   }
 }
 
-/* Tablet specific adjustments */
+/* Tablet Styles */
 @media (min-width: 769px) and (max-width: 1024px) {
   .container {
     padding-left: 2rem;
@@ -367,6 +303,21 @@ select {
 
   .section-heading {
     font-size: 2.5rem;
+  }
+}
+
+/* Desktop Styles */
+@media (min-width: 1025px) {
+  .booking-modal,
+  .legal-document-modal,
+  .success-message {
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+
+  .calendar-container {
+    max-width: 400px;
+    margin: 0 auto;
   }
 }
 
@@ -392,20 +343,5 @@ select {
 @media (prefers-color-scheme: dark) and (orientation: portrait) {
   .dark-theme-black {
     background-color: #000;
-  }
-}
-
-/* Ensure modals are properly centered on all screen sizes */
-@media (min-width: 769px) {
-  .booking-modal,
-  .legal-document-modal,
-  .success-message {
-    max-width: 600px;
-    margin: 2rem auto;
-  }
-
-  .calendar-container {
-    max-width: 400px;
-    margin: 0 auto;
   }
 } 

@@ -7,14 +7,15 @@
     --animation-duration: 300ms;
     --transition-duration: 300ms;
     --card-transition-duration: 200ms;
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: #000000;
+    --foreground: #ffffff;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --primary: #C8A97E;
     --primary-foreground: 0 0% 98%;
+    --primary-hover: #B69A6E;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
@@ -64,6 +65,9 @@
   html {
     font-size: calc(16px * var(--font-scale-mobile));
     -webkit-text-size-adjust: 100%;
+    background: var(--background);
+    color: var(--foreground);
+    scroll-behavior: smooth;
   }
 
   @media (min-width: 768px) {
@@ -79,8 +83,9 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-color: #080404;
-    color: white;
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--foreground);
     overflow-x: hidden;
     cursor: url('/images/music-cursor.png'), auto;
   }
@@ -141,15 +146,14 @@
   }
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 /* Custom section heading styles */
 .section-heading {
   @apply text-4xl font-light tracking-wide text-white;
   font-family: var(--font-playfair);
   letter-spacing: 0.03em;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--foreground);
 }
 
 .section-heading-container {
@@ -165,7 +169,7 @@ html {
 /* Custom scrollbar styles */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: #C8A97E rgba(255, 255, 255, 0.1);
+  scrollbar-color: var(--primary) transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
@@ -173,14 +177,12 @@ html {
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 3px;
+  background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: #C8A97E;
+  background-color: var(--primary);
   border-radius: 3px;
-  transition: background 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
@@ -191,6 +193,7 @@ html {
 @media (max-width: 768px) {
   .section-heading {
     @apply text-3xl;
+    font-size: 2rem;
   }
 
   .prose {
@@ -400,10 +403,8 @@ html {
 /* Reduce motion when requested */
 @media (prefers-reduced-motion: reduce) {
   * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
   }
 }
 
@@ -453,14 +454,6 @@ html {
     overscroll-behavior-y: none;
   }
 
-  /* Reduce motion when requested */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation: none !important;
-      transition: none !important;
-    }
-  }
-
   /* Optimize images */
   img {
     content-visibility: auto;
@@ -470,21 +463,14 @@ html {
 @layer utilities {
   .perspective-1000 {
     perspective: 1000px;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    will-change: transform;
   }
 
   .preserve-3d {
     transform-style: preserve-3d;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .backface-hidden {
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .rotate-y-180 {
@@ -495,17 +481,14 @@ html {
 /* 3D Transform Classes */
 .perspective-1000 {
   perspective: 1000px;
-  transform-style: preserve-3d;
 }
 
 .preserve-3d {
   transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .backface-hidden {
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
 }
 
 .rotate-y-180 {
