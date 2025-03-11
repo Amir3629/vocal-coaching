@@ -42,12 +42,16 @@ export default function ServiceCard({ title, description, icon, price, features,
       className="relative service-card-container"
     >
       <motion.div
-        className={`relative w-full aspect-[4/5] rounded-xl overflow-hidden service-card`}
+        className={`relative w-full aspect-[4/5] rounded-xl overflow-hidden service-card transform transition-all duration-500 hover:scale-105`}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
+        whileHover={{ 
+          scale: 1.05,
+          transition: { duration: 0.3 }
+        }}
         animate={{
-          scale: isHovered ? 1.02 : 1,
-          boxShadow: isHovered ? "0 20px 25px -5px rgba(0, 0, 0, 0.1)" : "none"
+          scale: isHovered ? 1.05 : 1,
+          boxShadow: isHovered ? "0 20px 25px -5px rgba(0, 0, 0, 0.2)" : "none"
         }}
         transition={{ duration: 0.3 }}
         style={{ isolation: 'isolate' }}
@@ -56,7 +60,7 @@ export default function ServiceCard({ title, description, icon, price, features,
           src={imagePath}
           alt={title}
           fill
-          className={`object-cover transition-transform duration-300 ${
+          className={`object-cover transform transition-all duration-500 ${
             isHovered ? 'scale-110' : 'scale-100'
           }`}
           sizes="(max-width: 768px) 100vw, 33vw"
@@ -68,24 +72,29 @@ export default function ServiceCard({ title, description, icon, price, features,
             <p className="text-[#C8A97E]/50 text-sm">Image not found</p>
           </div>
         )}
-        <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition-opacity duration-300 service-card-content ${
+        <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent transition-all duration-500 service-card-content ${
           isHovered ? 'opacity-100' : 'opacity-80'
         }`}>
           <div className="absolute inset-0 p-6 flex flex-col justify-between service-card-interactive">
             <div className="space-y-2">
-              <div className={`w-12 h-12 rounded-full bg-[#C8A97E]/20 flex items-center justify-center transition-transform duration-300 ${
-                isHovered ? 'scale-110' : 'scale-100'
-              }`}>
+              <motion.div 
+                className={`w-12 h-12 rounded-full bg-[#C8A97E]/20 flex items-center justify-center`}
+                animate={{ 
+                  scale: isHovered ? 1.1 : 1,
+                  rotate: isHovered ? 5 : 0
+                }}
+                transition={{ duration: 0.3 }}
+              >
                 {icon}
-              </div>
-              <h3 className="text-2xl font-medium text-white">{title}</h3>
-              <p className="text-gray-300">{description}</p>
+              </motion.div>
+              <h3 className="text-2xl font-medium text-white transform transition-all duration-300">{title}</h3>
+              <p className="text-gray-300 transform transition-all duration-300">{description}</p>
             </div>
 
             <motion.div
               initial={false}
               animate={isHovered ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
-              transition={{ duration: 0.2 }}
+              transition={{ duration: 0.3 }}
               className="space-y-4"
             >
               {features && features.length > 0 && (

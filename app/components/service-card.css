@@ -5,4 +5,32 @@
 /* Add a stronger text shadow for headings */
 h3.text-shadow {
   text-shadow: 0 2px 8px rgba(0, 0, 0, 0.8), 0 0 1px rgba(0, 0, 0, 0.5);
+}
+
+.service-card {
+  transform-style: preserve-3d;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  will-change: transform;
+}
+
+.service-card:hover {
+  transform: translateY(-5px) scale(1.05);
+}
+
+.service-card-container {
+  perspective: 1000px;
+}
+
+.service-card-content {
+  backface-visibility: hidden;
+  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card-interactive {
+  transform: translateZ(20px);
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.service-card:hover .service-card-interactive {
+  transform: translateZ(30px);
 } 
