@@ -417,7 +417,7 @@ select {
   padding: 1.5rem;
 }
 
-/* Service Card Hover Fix */
+/* Service Card Hover Fix - Updated */
 .service-card-container {
   position: relative;
   z-index: 1;
