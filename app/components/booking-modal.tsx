@@ -108,7 +108,7 @@ const timeSlots = [
   "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"
 ]
 
-type Step = "1" | "2" | "3" | "4" | "5"
+type Step = "1" | "2" | "3" | "4"
 
 interface FormData {
   name: string;
@@ -211,12 +211,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   const handleDateSelect = (date: Date) => {
     setSelectedDate(date);
-    setCurrentStep("4");
+    setCurrentStep("3");
   };
 
   const handleTimeSelect = (time: string) => {
     setSelectedTime(time);
-    setCurrentStep("5");
+    setCurrentStep("4");
   };
 
   const handleLevelSelect = (levelId: string) => {
@@ -275,6 +275,33 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         [name]: value
       }));
     }
+  };
+
+  const canProceedToNextStep = () => {
+    switch (currentStep) {
+      case "1":
+        return selectedService !== "";
+      case "2":
+        return selectedDate !== null;
+      case "3":
+        return selectedTime !== "";
+      case "4":
+        return formData.name && formData.email && formData.phone && formData.termsAccepted;
+      default:
+        return false;
+    }
+  };
+
+  const handleNext = () => {
+    if (!canProceedToNextStep()) return;
+    
+    const nextStep = (parseInt(currentStep) + 1).toString() as Step;
+    setCurrentStep(nextStep);
+  };
+
+  const handleBack = () => {
+    const prevStep = (parseInt(currentStep) - 1).toString() as Step;
+    setCurrentStep(prevStep);
   };
 
   return (
@@ -427,7 +454,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             {currentStep !== "1" && (
               <Button
                 variant="outline"
-                onClick={() => setCurrentStep((prev) => (parseInt(prev) - 1).toString() as Step)}
+                onClick={handleBack}
                 className="border-2 border-white/10 text-white hover:bg-white/5 px-6 py-2.5 text-base"
               >
                 Zurück
@@ -435,9 +462,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             )}
             <div className="ml-auto">
               <Button
-                onClick={currentStep === "4" ? handleSubmit : () => setCurrentStep((prev) => (parseInt(prev) + 1).toString() as Step)}
+                onClick={currentStep === "4" ? handleSubmit : handleNext}
                 className="bg-[#C8A97E] hover:bg-[#B69A6E] text-black px-6 py-2.5 text-base font-medium"
-                disabled={currentStep === "4" && (!formData.termsAccepted || !formData.name || !formData.email || !formData.phone)}
+                disabled={!canProceedToNextStep()}
               >
                 {currentStep === "4" ? "Absenden" : "Weiter"}
               </Button>
