@@ -16,7 +16,7 @@ import SuccessMessage from "./success-message"
 import LegalDocumentModal from "./legal-document-modal"
 import LegalContent from "./legal-content"
 import CustomAlert from "./custom-alert"
-import { Calendar } from "./ui/calendar"
+import { Calendar } from "@/app/components/ui/calendar"
 
 interface BookingModalProps {
   isOpen: boolean
@@ -172,7 +172,7 @@ const TimeGrid = ({ times, selectedTime, onTimeSelect }: {
   selectedTime: string | null,
   onTimeSelect: (time: string) => void 
 }) => (
-  <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 max-h-[400px] overflow-y-auto p-2">
+  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[300px] overflow-y-auto p-1">
     {times.map((time) => (
       <button
         key={time}
@@ -180,7 +180,7 @@ const TimeGrid = ({ times, selectedTime, onTimeSelect }: {
         className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
           selectedTime === time
             ? "bg-[#C8A97E] text-black"
-            : "bg-white/5 hover:bg-white/10 text-white"
+            : "bg-white/5 text-white hover:bg-white/10"
         }`}
       >
         {time}
@@ -197,7 +197,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [currentStep, setCurrentStep] = useState<Step>("1")
   const [selectedService, setSelectedService] = useState<string>("")
   const [selectedServiceType, setSelectedServiceType] = useState<string>("")
-  const [selectedDate, setSelectedDate] = useState<Date | null>(null)
+  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState<string>("")
   const [selectedLevel, setSelectedLevel] = useState<string>("")
   const [currentDate, setCurrentDate] = useState<Date>(new Date())
@@ -229,12 +229,14 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     setCurrentStep("3");
   };
 
-  const handleDateSelect = (date: Date) => {
-    setSelectedDate(date);
-    if (selectedService === "workshop") {
-      setCurrentStep("4");
-    } else {
-      setCurrentStep("3");
+  const handleDateSelect = (date: Date | undefined) => {
+    if (date) {
+      setSelectedDate(date)
+      if (selectedService === "workshop") {
+        setCurrentStep("4")
+      } else {
+        setCurrentStep("3")
+      }
     }
   };
 
@@ -248,30 +250,26 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
+    setShowSuccess(true)
     
-    if (!formData.termsAccepted) {
-      setErrors({ terms: "Bitte akzeptieren Sie die AGB und Datenschutzerklärung" });
-      return;
-    }
-
-    try {
-      setShowSuccess(true);
-      
-      setTimeout(() => {
-        setShowSuccess(false);
-        onClose();
-        resetForm();
-      }, 3000);
-    } catch (error) {
-      setErrors({ submit: "Ein Fehler ist aufgetreten. Bitte versuchen Sie es später erneut." });
-    }
-  };
+    // Close success message after 3 seconds with smooth animation
+    setTimeout(() => {
+      const successTimeout = setTimeout(() => {
+        setShowSuccess(false)
+        // After success message fades out, close the modal smoothly
+        setTimeout(() => {
+          onClose()
+        }, 500) // Additional delay for smooth transition
+      }, 3000)
+      return () => clearTimeout(successTimeout)
+    }, 0)
+  }
 
   const resetForm = () => {
     setSelectedService("");
     setSelectedServiceType("");
-    setSelectedDate(null);
+    setSelectedDate(undefined);
     setSelectedTime("");
     setSelectedLevel("");
       setFormData({
@@ -306,7 +304,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       case "1":
         return selectedService !== "";
       case "2":
-        return selectedDate !== null;
+        return selectedDate !== undefined;
       case "3":
         return selectedTime !== "";
       case "4":
@@ -383,15 +381,23 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                         {/* Date Selection */}
                         {currentStep === "2" && (
-                          <div className="space-y-4">
-                            <h3 className="text-lg font-medium text-white mb-4">Wählen Sie ein Datum</h3>
-                            <div className="bg-white/5 rounded-lg p-4">
+                          <div className="flex flex-col items-center justify-center w-full">
+                            <h3 className="text-xl font-medium text-white mb-6">
+                              Wählen Sie ein Datum
+                            </h3>
+                            <div className="w-full max-w-sm mx-auto bg-[#1A1A1A] rounded-xl p-4">
                               <Calendar
                                 mode="single"
-                                selected={selectedDate || undefined}
-                                onSelect={(date) => date && handleDateSelect(date)}
-                                disabled={disabledDays}
-                                className="mx-auto bg-transparent text-white"
+                                selected={selectedDate}
+                                onSelect={(date) => handleDateSelect(date)}
+                                className="mx-auto"
+                                disabled={(date) => {
+                                  const today = new Date()
+                                  today.setHours(0, 0, 0, 0)
+                                  const tomorrow = new Date(today)
+                                  tomorrow.setDate(tomorrow.getDate() + 1)
+                                  return date < tomorrow || date.getDay() === 0
+                                }}
                               />
                             </div>
                           </div>
@@ -594,31 +600,31 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       {/* Success Message */}
       <AnimatePresence>
         {showSuccess && (
-          <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
+            className="absolute inset-0 flex items-center justify-center bg-black/90 backdrop-blur-sm z-50"
+          >
             <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.8 }}
-              className="fixed inset-0 bg-black/80 backdrop-blur-sm"
-            />
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex min-h-full items-center justify-center p-4">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative w-full max-w-md bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
-                >
-                  <div className="p-6">
-                    <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Buchung erfolgreich!</h2>
-                    <p className="text-white/70">Vielen Dank für Ihre Buchung. Wir werden uns in Kürze bei Ihnen melden.</p>
-                  </div>
-                </motion.div>
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="bg-[#0A0A0A] rounded-xl p-8 max-w-md w-full mx-4 border border-[#C8A97E]/20"
+            >
+              <div className="text-center">
+                <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mx-auto mb-4">
+                  <Check className="w-8 h-8 text-[#C8A97E]" />
+                </div>
+                <h3 className="text-xl font-medium text-white mb-2">Buchung erfolgreich!</h3>
+                <p className="text-gray-400">
+                  Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigung per E-Mail.
+                </p>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
         )}
       </AnimatePresence>
     </Dialog>
