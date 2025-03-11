@@ -125,17 +125,26 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
 }) => (
   <motion.div
     onClick={onSelect}
-    className={`relative w-full p-4 rounded-lg border-2 transition-all overflow-hidden ${
+    className={`relative w-full p-6 rounded-lg border-2 transition-all overflow-hidden cursor-pointer ${
       isSelected 
-        ? 'border-[#C8A97E] bg-[#C8A97E]/10' 
-        : 'border-white/10 hover:border-[#C8A97E]/50 hover:bg-white/5'
+        ? 'border-[#C8A97E] bg-[#C8A97E]/10 shadow-[0_0_15px_rgba(200,169,126,0.15)]' 
+        : 'border-white/10 hover:border-[#C8A97E]/50 hover:bg-white/5 hover:shadow-[0_0_10px_rgba(200,169,126,0.1)]'
     }`}
     whileHover={{ scale: 1.02 }}
     transition={{ type: "spring", stiffness: 400, damping: 25 }}
   >
-    <h3 className="text-lg font-medium text-white mb-1">{service.title}</h3>
-    <p className="text-sm text-gray-400 mb-2">{service.duration}</p>
-    <p className="text-sm text-gray-400">{service.description}</p>
+    <h3 className="text-xl font-medium text-white mb-2">{service.title}</h3>
+    <p className="text-base text-[#C8A97E] mb-2">{service.duration}</p>
+    <p className="text-sm text-gray-300">{service.description}</p>
+    {isSelected && (
+      <motion.div
+        initial={{ scale: 0 }}
+        animate={{ scale: 1 }}
+        className="absolute top-4 right-4 w-6 h-6 rounded-full bg-[#C8A97E] flex items-center justify-center"
+      >
+        <Check className="w-4 h-4 text-black" />
+      </motion.div>
+    )}
   </motion.div>
 )
 
@@ -144,22 +153,24 @@ const TimeGrid = ({ times, selectedTime, onTimeSelect }: {
   selectedTime: string | null,
   onTimeSelect: (time: string) => void 
 }) => (
-  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
-    {times.map((time) => (
-      <motion.button
-        key={time}
-        onClick={() => onTimeSelect(time)}
-        className={`p-2 rounded-lg text-sm border-2 transition-all ${
-          selectedTime === time
-            ? 'border-[#C8A97E] bg-[#C8A97E]/10 text-white'
-            : 'border-white/10 text-gray-400 hover:border-[#C8A97E]/50 hover:bg-white/5 hover:text-white'
-        }`}
-        whileHover={{ scale: 1.05 }}
-        transition={{ type: "spring", stiffness: 400, damping: 25 }}
-      >
-        {time}
-      </motion.button>
-    ))}
+  <div className="bg-[#0A0A0A] rounded-lg border-2 border-[#C8A97E]/20 p-6">
+    <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+      {times.map((time) => (
+        <motion.button
+          key={time}
+          onClick={() => onTimeSelect(time)}
+          className={`p-3 rounded-lg text-base border-2 transition-all ${
+            selectedTime === time
+              ? 'border-[#C8A97E] bg-[#C8A97E]/10 text-white shadow-[0_0_15px_rgba(200,169,126,0.15)]'
+              : 'border-white/10 text-gray-400 hover:border-[#C8A97E]/50 hover:bg-white/5 hover:text-white'
+          }`}
+          whileHover={{ scale: 1.05 }}
+          transition={{ type: "spring", stiffness: 400, damping: 25 }}
+        >
+          {time}
+        </motion.button>
+      ))}
+    </div>
   </div>
 )
 
@@ -269,24 +280,24 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
-        <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose} />
-        <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[90%] max-w-2xl max-h-[90vh] overflow-hidden">
-          <div className="p-6 border-b border-[#C8A97E]/20">
-            <h2 className="text-xl font-medium text-white">Termin buchen</h2>
+        <div className="fixed inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
+        <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[95%] max-w-3xl max-h-[90vh] overflow-hidden">
+          <div className="p-8 border-b border-[#C8A97E]/20">
+            <h2 className="text-2xl font-medium text-white">Termin buchen</h2>
             <button
               onClick={onClose}
-              className="absolute right-4 top-4 p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+              className="absolute right-6 top-6 p-2 hover:bg-white/10 rounded-lg transition-colors"
             >
-              <X className="w-5 h-5 text-white/70 hover:text-white transition-colors" />
+              <X className="w-6 h-6 text-white/70 hover:text-white transition-colors" />
             </button>
           </div>
 
-          <div className="p-6 max-h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar">
+          <div className="p-8 max-h-[calc(85vh-200px)] overflow-y-auto custom-scrollbar">
             <div className="space-y-8">
               {/* Service Selection */}
-              <div className={`space-y-4 ${currentStep === "1" ? "block" : "hidden"}`}>
-                <h3 className="text-lg font-medium text-white mb-4">Service auswählen</h3>
-                <div className="grid gap-4">
+              <div className={`space-y-6 ${currentStep === "1" ? "block" : "hidden"}`}>
+                <h3 className="text-xl font-medium text-white mb-6">Service auswählen</h3>
+                <div className="grid gap-6">
                   {services.map((service) => (
                     <ServiceOption
                       key={service.id}
@@ -299,9 +310,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               </div>
 
               {/* Date Selection */}
-              <div className={`space-y-4 ${currentStep === "2" ? "block" : "hidden"}`}>
-                <h3 className="text-lg font-medium text-white mb-4">Datum auswählen</h3>
-                <div className="bg-[#0A0A0A] rounded-lg border-2 border-[#C8A97E]/20 p-4">
+              <div className={`space-y-6 ${currentStep === "2" ? "block" : "hidden"}`}>
+                <h3 className="text-xl font-medium text-white mb-6">Datum auswählen</h3>
+                <div className="bg-[#0A0A0A] rounded-lg border-2 border-[#C8A97E]/20 p-6">
                   <Calendar
                     mode="single"
                     selected={selectedDate || undefined}
@@ -311,17 +322,17 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
                       month: "space-y-4",
                       caption: "flex justify-center pt-1 relative items-center",
-                      caption_label: "text-sm font-medium text-[#C8A97E]",
+                      caption_label: "text-base font-medium text-[#C8A97E]",
                       nav: "space-x-1 flex items-center",
-                      nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
+                      nav_button: "h-8 w-8 bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
                       nav_button_previous: "absolute left-1",
                       nav_button_next: "absolute right-1",
                       table: "w-full border-collapse space-y-1",
                       head_row: "flex",
-                      head_cell: "text-[#C8A97E] rounded-md w-9 font-normal text-[0.8rem]",
+                      head_cell: "text-[#C8A97E] rounded-md w-10 font-normal text-[0.9rem]",
                       row: "flex w-full mt-2",
                       cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-[#C8A97E]/10 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                      day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
+                      day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
                       day_selected: "bg-[#C8A97E] text-white hover:bg-[#C8A97E] hover:text-white focus:bg-[#C8A97E] focus:text-white",
                       day_today: "bg-white/5 text-white",
                       day_outside: "text-gray-500 opacity-50",
@@ -334,98 +345,99 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               </div>
 
               {/* Time Selection */}
-              <div className={`space-y-4 ${currentStep === "3" ? "block" : "hidden"}`}>
-                <h3 className="text-lg font-medium text-white mb-4">Uhrzeit auswählen</h3>
-                <div className="bg-[#0A0A0A] rounded-lg border-2 border-[#C8A97E]/20 p-4">
-                  <TimeGrid
-                    times={timeSlots}
-                    selectedTime={selectedTime}
-                    onTimeSelect={handleTimeSelect}
-                  />
-                </div>
+              <div className={`space-y-6 ${currentStep === "3" ? "block" : "hidden"}`}>
+                <h3 className="text-xl font-medium text-white mb-6">Uhrzeit auswählen</h3>
+                <TimeGrid
+                  times={timeSlots}
+                  selectedTime={selectedTime}
+                  onTimeSelect={handleTimeSelect}
+                />
               </div>
 
               {/* Personal Information */}
-              <div className={`space-y-4 ${currentStep === "4" ? "block" : "hidden"}`}>
-                <h3 className="text-lg font-medium text-white mb-4">Persönliche Daten</h3>
-                <div className="space-y-4">
+              <div className={`space-y-6 ${currentStep === "4" ? "block" : "hidden"}`}>
+                <h3 className="text-xl font-medium text-white mb-6">Persönliche Daten</h3>
+                <div className="space-y-6">
                   <div>
-                    <label className="text-sm text-gray-400 mb-1.5 block">Name</label>
+                    <label className="text-base text-gray-300 mb-2 block">Name</label>
                     <input
                       type="text"
                       name="name"
                       value={formData.name}
                       onChange={handleInputChange}
                       required
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                      className="w-full bg-white/5 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-gray-400 mb-1.5 block">Email</label>
+                    <label className="text-base text-gray-300 mb-2 block">Email</label>
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
                       required
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                      className="w-full bg-white/5 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-gray-400 mb-1.5 block">Telefon</label>
+                    <label className="text-base text-gray-300 mb-2 block">Telefon</label>
                     <input
                       type="tel"
                       name="phone"
                       value={formData.phone}
                       onChange={handleInputChange}
                       required
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                      className="w-full bg-white/5 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors"
                     />
                   </div>
                   <div>
-                    <label className="text-sm text-gray-400 mb-1.5 block">Nachricht (optional)</label>
+                    <label className="text-base text-gray-300 mb-2 block">Nachricht (optional)</label>
                     <textarea
                       name="message"
                       value={formData.message}
                       onChange={handleInputChange}
-                      rows={3}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
+                      rows={4}
+                      className="w-full bg-white/5 border-2 border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
                     />
                   </div>
-                  <div className="flex items-start gap-2 mt-4">
+                  <div className="flex items-start gap-3 mt-6">
                     <input
                       type="checkbox"
                       id="termsAccepted"
                       name="termsAccepted"
                       checked={formData.termsAccepted}
                       onChange={(e) => setFormData(prev => ({ ...prev, termsAccepted: e.target.checked }))}
-                      className="mt-1"
+                      className="mt-1.5 h-4 w-4 rounded border-2 border-white/10 text-[#C8A97E] focus:ring-[#C8A97E]"
                       required
                     />
-                    <label htmlFor="termsAccepted" className="text-sm text-gray-400">
+                    <label htmlFor="termsAccepted" className="text-base text-gray-300">
                       Ich akzeptiere die <button type="button" onClick={() => setShowLegalModal("agb")} className="text-[#C8A97E] hover:underline">AGB</button> und die <button type="button" onClick={() => setShowLegalModal("datenschutz")} className="text-[#C8A97E] hover:underline">Datenschutzerklärung</button>
                     </label>
                   </div>
+                  {errors.terms && (
+                    <p className="text-red-500 text-sm mt-2">{errors.terms}</p>
+                  )}
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="p-6 border-t border-[#C8A97E]/20 flex justify-between">
+          <div className="p-8 border-t border-[#C8A97E]/20 flex justify-between">
             {currentStep !== "1" && (
               <Button
                 variant="outline"
                 onClick={() => setCurrentStep((prev) => (parseInt(prev) - 1).toString() as Step)}
-                className="border-white/10 text-white hover:bg-white/5"
+                className="border-2 border-white/10 text-white hover:bg-white/5 px-6 py-2.5 text-base"
               >
                 Zurück
               </Button>
             )}
             <div className="ml-auto">
               <Button
-                onClick={handleSubmit}
-                className="bg-[#C8A97E] hover:bg-[#B69A6E] text-black"
-                disabled={!formData.termsAccepted || !formData.name || !formData.email}
+                onClick={currentStep === "4" ? handleSubmit : () => setCurrentStep((prev) => (parseInt(prev) + 1).toString() as Step)}
+                className="bg-[#C8A97E] hover:bg-[#B69A6E] text-black px-6 py-2.5 text-base font-medium"
+                disabled={currentStep === "4" && (!formData.termsAccepted || !formData.name || !formData.email || !formData.phone)}
               >
                 {currentStep === "4" ? "Absenden" : "Weiter"}
               </Button>
