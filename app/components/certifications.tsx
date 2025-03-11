@@ -90,12 +90,12 @@ export default function JourneyShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="relative h-[320px] perspective-1000 pointer-events-none"
+              className="relative h-[320px] perspective-1000"
               onMouseEnter={() => setHoveredId(card.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
               <motion.div
-                className={`w-full h-full transition-all duration-500 preserve-3d cursor-pointer pointer-events-auto ${
+                className={`w-full h-full transition-all duration-500 preserve-3d cursor-pointer ${
                   hoveredId === card.id ? "rotate-y-180" : ""
                 }`}
               >
