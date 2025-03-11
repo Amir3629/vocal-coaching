@@ -125,7 +125,7 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
 }) => (
   <motion.div
     onClick={onSelect}
-    className={`relative w-full p-4 rounded-lg border transition-all overflow-hidden ${
+    className={`relative w-full p-4 rounded-lg border-2 transition-all overflow-hidden ${
       isSelected 
         ? 'border-[#C8A97E] bg-[#C8A97E]/10' 
         : 'border-white/10 hover:border-[#C8A97E]/50 hover:bg-white/5'
@@ -144,17 +144,17 @@ const TimeGrid = ({ times, selectedTime, onTimeSelect }: {
   selectedTime: string | null,
   onTimeSelect: (time: string) => void 
 }) => (
-  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
+  <div className="grid grid-cols-4 sm:grid-cols-6 gap-2 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
     {times.map((time) => (
       <motion.button
         key={time}
         onClick={() => onTimeSelect(time)}
-        className={`p-2 rounded-lg text-sm border transition-all ${
+        className={`p-2 rounded-lg text-sm border-2 transition-all ${
           selectedTime === time
             ? 'border-[#C8A97E] bg-[#C8A97E]/10 text-white'
             : 'border-white/10 text-gray-400 hover:border-[#C8A97E]/50 hover:bg-white/5 hover:text-white'
         }`}
-        whileHover={{ scale: 1.02 }}
+        whileHover={{ scale: 1.05 }}
         transition={{ type: "spring", stiffness: 400, damping: 25 }}
       >
         {time}
@@ -293,22 +293,33 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             {/* Date Selection */}
             <div className={`space-y-4 ${currentStep === "2" ? "block" : "hidden"}`}>
               <h3 className="text-lg font-medium text-white mb-4">Datum auswählen</h3>
-              <div className="bg-[#0A0A0A] rounded-lg border border-white/10 p-4">
+              <div className="bg-[#0A0A0A] rounded-lg border-2 border-[#C8A97E]/20 p-4">
                 <Calendar
                   mode="single"
                   selected={selectedDate || undefined}
                   onSelect={(date) => date && handleDateSelect(date)}
                   className="text-white"
                   classNames={{
-                    head_cell: "text-[#C8A97E] font-medium",
-                    cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-[#C8A97E]/10",
-                    day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg",
+                    months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
+                    month: "space-y-4",
+                    caption: "flex justify-center pt-1 relative items-center",
+                    caption_label: "text-sm font-medium text-[#C8A97E]",
+                    nav: "space-x-1 flex items-center",
+                    nav_button: "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
+                    nav_button_previous: "absolute left-1",
+                    nav_button_next: "absolute right-1",
+                    table: "w-full border-collapse space-y-1",
+                    head_row: "flex",
+                    head_cell: "text-[#C8A97E] rounded-md w-9 font-normal text-[0.8rem]",
+                    row: "flex w-full mt-2",
+                    cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-[#C8A97E]/10 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                    day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
                     day_selected: "bg-[#C8A97E] text-white hover:bg-[#C8A97E] hover:text-white focus:bg-[#C8A97E] focus:text-white",
                     day_today: "bg-white/5 text-white",
                     day_outside: "text-gray-500 opacity-50",
-                    nav_button: "hover:bg-white/5 rounded-lg",
-                    nav_button_previous: "absolute left-1",
-                    nav_button_next: "absolute right-1"
+                    day_disabled: "text-gray-500 opacity-50",
+                    day_range_middle: "aria-selected:bg-[#C8A97E]/20 aria-selected:text-white",
+                    day_hidden: "invisible",
                   }}
                 />
               </div>
@@ -317,11 +328,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             {/* Time Selection */}
             <div className={`space-y-4 ${currentStep === "3" ? "block" : "hidden"}`}>
               <h3 className="text-lg font-medium text-white mb-4">Uhrzeit auswählen</h3>
-              <TimeGrid
-                times={timeSlots}
-                selectedTime={selectedTime}
-                onTimeSelect={handleTimeSelect}
-              />
+              <div className="bg-[#0A0A0A] rounded-lg border-2 border-[#C8A97E]/20 p-4">
+                <TimeGrid
+                  times={timeSlots}
+                  selectedTime={selectedTime}
+                  onTimeSelect={handleTimeSelect}
+                />
+              </div>
             </div>
 
             {/* Personal Information */}
@@ -413,47 +426,29 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       </DialogContent>
 
       {/* Legal Document Modal */}
-      <Dialog open={showLegalModal === "agb"} onOpenChange={() => setShowLegalModal(null)}>
-        <DialogContent className="max-w-2xl bg-[#0A0A0A] border-[#C8A97E]/20">
-          <DialogHeader>
-            <DialogTitle>AGB</DialogTitle>
-            <Button
-              variant="outline"
-              className="absolute right-4 top-4 p-1.5 hover:bg-white/10 rounded-lg"
-              onClick={() => setShowLegalModal(null)}
-            >
-              <X className="w-5 h-5 text-white/70 hover:text-white" />
-            </Button>
-          </DialogHeader>
-          <div className="max-h-[60vh] overflow-y-auto p-6">
-            <LegalContent type="agb" />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <LegalDocumentModal
+        isOpen={showLegalModal === "agb"}
+        onClose={() => setShowLegalModal(null)}
+        title="AGB"
+      >
+        <LegalContent type="agb" />
+      </LegalDocumentModal>
 
-      <Dialog open={showLegalModal === "datenschutz"} onOpenChange={() => setShowLegalModal(null)}>
-        <DialogContent className="max-w-2xl bg-[#0A0A0A] border-[#C8A97E]/20">
-          <DialogHeader>
-            <DialogTitle>Datenschutzerklärung</DialogTitle>
-            <Button
-              variant="outline"
-              className="absolute right-4 top-4 p-1.5 hover:bg-white/10 rounded-lg"
-              onClick={() => setShowLegalModal(null)}
-            >
-              <X className="w-5 h-5 text-white/70 hover:text-white" />
-            </Button>
-          </DialogHeader>
-          <div className="max-h-[60vh] overflow-y-auto p-6">
-            <LegalContent type="datenschutz" />
-          </div>
-        </DialogContent>
-      </Dialog>
+      <LegalDocumentModal
+        isOpen={showLegalModal === "datenschutz"}
+        onClose={() => setShowLegalModal(null)}
+        title="Datenschutzerklärung"
+      >
+        <LegalContent type="datenschutz" />
+      </LegalDocumentModal>
 
       {/* Success Message */}
       <Dialog open={showSuccess} onOpenChange={setShowSuccess}>
-        <DialogContent>
-          <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Buchung erfolgreich!</h2>
-          <p className="text-white/70">Vielen Dank für Ihre Buchung. Wir werden uns in Kürze bei Ihnen melden.</p>
+        <DialogContent className="max-w-md bg-[#0A0A0A] border-[#C8A97E]/20">
+          <div className="p-6">
+            <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Buchung erfolgreich!</h2>
+            <p className="text-white/70">Vielen Dank für Ihre Buchung. Wir werden uns in Kürze bei Ihnen melden.</p>
+          </div>
         </DialogContent>
       </Dialog>
     </Dialog>
