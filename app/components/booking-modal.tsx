@@ -16,7 +16,7 @@ import SuccessMessage from "./success-message"
 import LegalDocumentModal from "./legal-document-modal"
 import LegalContent from "./legal-content"
 import CustomAlert from "./custom-alert"
-import { Calendar } from "@/components/ui/calendar"
+import { Calendar } from "./ui/calendar"
 
 interface BookingModalProps {
   isOpen: boolean
