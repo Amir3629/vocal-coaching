@@ -382,22 +382,19 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         {/* Date Selection */}
                         {currentStep === "2" && (
                           <div className="flex flex-col items-center justify-center w-full">
-                            <h3 className="text-xl font-medium text-white mb-6">
-                              Wählen Sie ein Datum
-                            </h3>
-                            <div className="w-full max-w-sm mx-auto bg-[#1A1A1A] rounded-xl p-4">
+                            <h3 className="text-lg font-medium text-white mb-4">Wählen Sie ein Datum</h3>
+                            <div className="w-full max-w-sm mx-auto bg-[#0A0A0A] rounded-lg p-4">
                               <Calendar
                                 mode="single"
                                 selected={selectedDate}
-                                onSelect={(date) => handleDateSelect(date)}
-                                className="mx-auto"
+                                onSelect={handleDateSelect}
                                 disabled={(date) => {
-                                  const today = new Date()
-                                  today.setHours(0, 0, 0, 0)
-                                  const tomorrow = new Date(today)
-                                  tomorrow.setDate(tomorrow.getDate() + 1)
-                                  return date < tomorrow || date.getDay() === 0
+                                  const tomorrow = new Date();
+                                  tomorrow.setDate(tomorrow.getDate() + 1);
+                                  tomorrow.setHours(0, 0, 0, 0);
+                                  return date < tomorrow || date.getDay() === 0;
                                 }}
+                                className="w-full border-none bg-transparent text-white"
                               />
                             </div>
                           </div>
@@ -600,31 +597,23 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       {/* Success Message */}
       <AnimatePresence>
         {showSuccess && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
-            transition={{ duration: 0.8, ease: "easeInOut" }}
-            className="absolute inset-0 flex items-center justify-center bg-black/90 backdrop-blur-sm z-50"
-          >
+          <div className="fixed inset-0 z-[200] flex items-center justify-center">
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
             <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="bg-[#0A0A0A] rounded-xl p-8 max-w-md w-full mx-4 border border-[#C8A97E]/20"
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              className="relative bg-[#0A0A0A] rounded-xl p-6 border border-[#C8A97E]/20 shadow-2xl w-[90%] max-w-md z-[201]"
             >
-              <div className="text-center">
-                <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mx-auto mb-4">
+              <div className="flex flex-col items-center text-center">
+                <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mb-4">
                   <Check className="w-8 h-8 text-[#C8A97E]" />
                 </div>
                 <h3 className="text-xl font-medium text-white mb-2">Buchung erfolgreich!</h3>
-                <p className="text-gray-400">
-                  Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigung per E-Mail.
-                </p>
+                <p className="text-gray-400">Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigung per E-Mail.</p>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
         )}
       </AnimatePresence>
     </Dialog>

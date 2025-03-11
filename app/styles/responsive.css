@@ -203,15 +203,93 @@ select {
     font-size: 16px; /* Prevents iOS zoom on focus */
   }
 
-  /* Booking Modal */
+  /* Booking Modal Improvements */
   .booking-modal {
-    width: 95%;
+    width: 100%;
+    max-width: 95%;
+    margin: 1rem auto;
     max-height: 90vh;
   }
 
+  /* Calendar Positioning */
+  .rdp {
+    margin: 0 !important;
+    width: 100% !important;
+  }
+
+  .rdp-months {
+    justify-content: center !important;
+  }
+
+  .rdp-month {
+    width: 100% !important;
+  }
+
+  .rdp-table {
+    width: 100% !important;
+    max-width: none !important;
+  }
+
+  /* Center calendar container */
+  .calendar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    padding: 0;
+    margin: 0 auto;
+  }
+
+  /* Legal Document Modal */
+  .legal-document-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 500px;
+    max-height: 85vh;
+    margin: 0;
+    z-index: 100;
+  }
+
+  /* Success Message */
+  .success-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 90%;
+    max-width: 400px;
+    z-index: 200;
+  }
+
+  /* Modal Backdrop */
+  .modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+  }
+
+  /* Time Grid */
   .time-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  /* Improved touch targets for calendar */
+  .rdp-button {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  /* Fix modal scrolling */
+  .modal-content {
+    max-height: calc(100vh - 6rem);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   /* Footer */
@@ -237,13 +315,6 @@ select {
   /* Custom Scrollbar for Mobile */
   .custom-scrollbar::-webkit-scrollbar {
     width: 4px;
-  }
-
-  /* Modals */
-  .modal-content {
-    width: 95%;
-    margin: 1rem;
-    max-height: 85vh;
   }
 
   /* Animations */
@@ -321,5 +392,20 @@ select {
 @media (prefers-color-scheme: dark) and (orientation: portrait) {
   .dark\:bg-true-black {
     background-color: #000;
+  }
+}
+
+/* Ensure modals are properly centered on all screen sizes */
+@media (min-width: 769px) {
+  .booking-modal,
+  .legal-document-modal,
+  .success-message {
+    max-width: 600px;
+    margin: 2rem auto;
+  }
+
+  .calendar-container {
+    max-width: 400px;
+    margin: 0 auto;
   }
 } 
