@@ -2,105 +2,89 @@
 
 import { useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react"
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Youtube } from "lucide-react"
+import Image from "next/image"
 
 interface Track {
   id: number
   title: string
   subtitle: string
   duration: string
-  src: string
+  youtubeId: string
+  thumbnail: string
 }
 
 const tracks: Track[] = [
   {
     id: 1,
-    title: "Jazz Standards",
-    subtitle: "Live Performance Highlights",
-    duration: "3:45",
-    src: "/audio/jazz-standards.mp3"
+    title: "Jazz Performance",
+    subtitle: "Live at Jazz Club",
+    duration: "4:32",
+    youtubeId: "hFdMHvB6-Jk",
+    thumbnail: `https://img.youtube.com/vi/hFdMHvB6-Jk/maxresdefault.jpg`
   },
   {
     id: 2,
-    title: "Vocal Jazz",
-    subtitle: "Studio Session",
-    duration: "4:20",
-    src: "/audio/vocal-jazz.mp3"
+    title: "Vocal Session",
+    subtitle: "Studio Recording",
+    duration: "5:15",
+    youtubeId: "ZvWZr6TNh9Y",
+    thumbnail: `https://img.youtube.com/vi/ZvWZr6TNh9Y/maxresdefault.jpg`
   },
   {
     id: 3,
-    title: "Jazz Performance",
-    subtitle: "Live at B-Flat Jazz Club Berlin",
-    duration: "5:15",
-    src: "/audio/jazz-performance.mp3"
+    title: "Jazz Standards",
+    subtitle: "Live Performance",
+    duration: "6:20",
+    youtubeId: "r58-5DBfMpY",
+    thumbnail: `https://img.youtube.com/vi/r58-5DBfMpY/maxresdefault.jpg`
   },
   {
     id: 4,
-    title: "Vocal Workshop",
-    subtitle: "Complete Vocal Technique Demonstration",
-    duration: "3:30",
-    src: "/audio/vocal-workshop.mp3"
+    title: "Vocal Jazz",
+    subtitle: "Concert Highlights",
+    duration: "4:45",
+    youtubeId: "0zARqh3xwnw",
+    thumbnail: `https://img.youtube.com/vi/0zARqh3xwnw/maxresdefault.jpg`
+  },
+  {
+    id: 5,
+    title: "Jazz Ensemble",
+    subtitle: "Live at Festival",
+    duration: "5:30",
+    youtubeId: "AWsarzdZ1u8",
+    thumbnail: `https://img.youtube.com/vi/AWsarzdZ1u8/maxresdefault.jpg`
+  },
+  {
+    id: 6,
+    title: "Vocal Performance",
+    subtitle: "Jazz Club Session",
+    duration: "4:15",
+    youtubeId: "GidIMbCmtyk",
+    thumbnail: `https://img.youtube.com/vi/GidIMbCmtyk/maxresdefault.jpg`
+  },
+  {
+    id: 7,
+    title: "Jazz Vocals",
+    subtitle: "Live Recording",
+    duration: "5:00",
+    youtubeId: "QgZKO_f5FlM",
+    thumbnail: `https://img.youtube.com/vi/QgZKO_f5FlM/maxresdefault.jpg`
   }
 ]
 
 export default function MusicSection() {
-  const [isPlaying, setIsPlaying] = useState(false)
-  const [currentTrack, setCurrentTrack] = useState<Track>(tracks[0])
-  const [progress, setProgress] = useState(0)
-  const [isMuted, setIsMuted] = useState(false)
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const progressRef = useRef<NodeJS.Timeout | null>(null)
+  const [selectedTrack, setSelectedTrack] = useState<Track | null>(null)
+  const [isModalOpen, setIsModalOpen] = useState(false)
 
-  useEffect(() => {
-    return () => {
-      if (progressRef.current) {
-        clearInterval(progressRef.current)
-      }
-    }
-  }, [])
-
-  const handlePlayPause = () => {
-    if (audioRef.current) {
-      if (isPlaying) {
-        audioRef.current.pause()
-        if (progressRef.current) {
-          clearInterval(progressRef.current)
-        }
-      } else {
-        audioRef.current.play()
-        progressRef.current = setInterval(() => {
-          if (audioRef.current) {
-            setProgress((audioRef.current.currentTime / audioRef.current.duration) * 100)
-          }
-        }, 100)
-      }
-      setIsPlaying(!isPlaying)
-    }
+  const openYoutubeModal = (track: Track) => {
+    setSelectedTrack(track)
+    setIsModalOpen(true)
   }
 
-  const handleTrackChange = (direction: "next" | "prev") => {
-    const currentIndex = tracks.findIndex(track => track.id === currentTrack.id)
-    let newIndex: number
-
-    if (direction === "next") {
-      newIndex = currentIndex + 1 >= tracks.length ? 0 : currentIndex + 1
-    } else {
-      newIndex = currentIndex - 1 < 0 ? tracks.length - 1 : currentIndex - 1
-    }
-
-    setCurrentTrack(tracks[newIndex])
-    setProgress(0)
-    setIsPlaying(false)
-    if (progressRef.current) {
-      clearInterval(progressRef.current)
-    }
-  }
-
-  const toggleMute = () => {
-    if (audioRef.current) {
-      audioRef.current.muted = !audioRef.current.muted
-      setIsMuted(!isMuted)
-    }
+  const closeModal = () => {
+    setSelectedTrack(null)
+    setIsModalOpen(false)
   }
 
   return (
@@ -116,166 +100,70 @@ export default function MusicSection() {
           <div className="w-12 h-0.5 bg-[#C8A97E] mx-auto"></div>
         </motion.div>
 
-        <div className="max-w-3xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="bg-gradient-to-br from-black/40 to-black/20 backdrop-blur-sm rounded-2xl border border-[#C8A97E]/20 p-6 relative overflow-hidden"
-          >
-            {/* Animated Background */}
-            <div className="absolute inset-0 overflow-hidden">
-              <motion.div
-                className="absolute inset-0 opacity-30"
-                animate={{
-                  background: [
-                    "radial-gradient(circle at 0% 0%, #C8A97E 0%, transparent 50%)",
-                    "radial-gradient(circle at 100% 100%, #C8A97E 0%, transparent 50%)",
-                    "radial-gradient(circle at 0% 100%, #C8A97E 0%, transparent 50%)",
-                    "radial-gradient(circle at 100% 0%, #C8A97E 0%, transparent 50%)",
-                  ]
-                }}
-                transition={{
-                  duration: 10,
-                  repeat: Infinity,
-                  repeatType: "reverse"
-                }}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          {tracks.map((track, index) => (
+            <motion.div
+              key={track.id}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1 }}
+              className="group relative aspect-video rounded-xl overflow-hidden cursor-pointer"
+              onClick={() => openYoutubeModal(track)}
+            >
+              <Image
+                src={track.thumbnail}
+                alt={track.title}
+                fill
+                className="object-cover transition-transform duration-300 group-hover:scale-105"
               />
-            </div>
-
-            {/* Music Visualizer */}
-            <div className="relative">
-              <div className="flex justify-center items-center gap-1 h-16 mb-6">
-                {Array.from({ length: 12 }).map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="w-1 bg-[#C8A97E]"
-                    animate={{
-                      height: isPlaying ? [20, 40, 15, 35, 25] : 20
-                    }}
-                    transition={{
-                      duration: 1.5,
-                      repeat: Infinity,
-                      delay: i * 0.1,
-                      ease: "easeInOut"
-                    }}
-                  />
-                ))}
-              </div>
-
-              {/* Track Info */}
-              <div className="text-center mb-8">
-                <motion.h3
-                  key={currentTrack.id + "-title"}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-xl font-medium text-white mb-2"
-                >
-                  {currentTrack.title}
-                </motion.h3>
-                <motion.p
-                  key={currentTrack.id + "-subtitle"}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="text-[#C8A97E]"
-                >
-                  {currentTrack.subtitle}
-                </motion.p>
-              </div>
-
-              {/* Progress Bar */}
-              <div className="relative w-full h-1 bg-white/10 rounded-full mb-6">
-                <motion.div
-                  className="absolute left-0 top-0 h-full bg-[#C8A97E] rounded-full"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-
-              {/* Controls */}
-              <div className="flex items-center justify-center gap-8">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => handleTrackChange("prev")}
-                  className="p-2 text-white/70 hover:text-white transition-colors"
-                >
-                  <SkipBack className="w-6 h-6" />
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={handlePlayPause}
-                  className="p-4 rounded-full bg-[#C8A97E] text-black hover:bg-[#B69A6E] transition-colors"
-                >
-                  {isPlaying ? (
-                    <Pause className="w-6 h-6" />
-                  ) : (
-                    <Play className="w-6 h-6" />
-                  )}
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={() => handleTrackChange("next")}
-                  className="p-2 text-white/70 hover:text-white transition-colors"
-                >
-                  <SkipForward className="w-6 h-6" />
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.9 }}
-                  onClick={toggleMute}
-                  className="p-2 text-white/70 hover:text-white transition-colors"
-                >
-                  {isMuted ? (
-                    <VolumeX className="w-6 h-6" />
-                  ) : (
-                    <Volume2 className="w-6 h-6" />
-                  )}
-                </motion.button>
-              </div>
-            </div>
-
-            {/* Hidden Audio Element */}
-            <audio
-              ref={audioRef}
-              src={currentTrack.src}
-              onEnded={() => handleTrackChange("next")}
-            />
-          </motion.div>
-
-          {/* Playlist */}
-          <div className="mt-8 space-y-2">
-            {tracks.map((track) => (
-              <motion.button
-                key={track.id}
-                onClick={() => {
-                  setCurrentTrack(track)
-                  setProgress(0)
-                  setIsPlaying(false)
-                }}
-                className={`w-full p-4 rounded-xl transition-all duration-300 ${
-                  currentTrack.id === track.id
-                    ? "bg-[#C8A97E]/20 border border-[#C8A97E]/50"
-                    : "bg-black/20 border border-white/5 hover:border-[#C8A97E]/30"
-                }`}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center justify-between">
-                  <div className="text-left">
-                    <p className="text-white font-medium">{track.title}</p>
-                    <p className="text-sm text-gray-400">{track.subtitle}</p>
-                  </div>
-                  <span className="text-sm text-[#C8A97E]">{track.duration}</span>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="absolute inset-x-0 bottom-0 p-4">
+                  <h3 className="text-white font-medium mb-1">{track.title}</h3>
+                  <p className="text-gray-300 text-sm">{track.subtitle}</p>
                 </div>
-              </motion.button>
-            ))}
-          </div>
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <motion.div
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.9 }}
+                    className="w-12 h-12 rounded-full bg-[#C8A97E] flex items-center justify-center"
+                  >
+                    <Youtube className="w-6 h-6 text-black" />
+                  </motion.div>
+                </div>
+              </div>
+            </motion.div>
+          ))}
         </div>
+
+        {/* YouTube Modal */}
+        <AnimatePresence>
+          {isModalOpen && selectedTrack && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/90 backdrop-blur-sm"
+                onClick={closeModal}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                className="relative w-full max-w-4xl aspect-video z-[101] rounded-xl overflow-hidden"
+              >
+                <iframe
+                  src={`https://www.youtube.com/embed/${selectedTrack.youtubeId}?autoplay=1`}
+                  title={selectedTrack.title}
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+              </motion.div>
+            </div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   )
