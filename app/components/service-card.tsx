@@ -65,7 +65,7 @@ export default function ServiceCard({ title, description, icon, price, features,
             src={imagePath}
             alt={title}
             fill
-            className="object-cover transform-gpu transition-transform duration-1000 scale-110"
+            className="object-cover transform-gpu transition-transform duration-1000 scale-110 filter blur-[0.5px]"
             sizes="(max-width: 768px) 100vw, 33vw"
             priority
             onError={() => setImageError(true)}
@@ -78,10 +78,10 @@ export default function ServiceCard({ title, description, icon, price, features,
           <div 
             className="absolute inset-0 transform-gpu transition-opacity duration-300 ease-in-out z-[1]"
             style={{
-              background: 'linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.7) 50%, rgba(0,0,0,0.8) 100%)',
-              backdropFilter: 'blur(1px)',
-              WebkitBackdropFilter: 'blur(1px)',
-              opacity: isHovered ? 0.7 : 0.85
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.9) 100%)',
+              backdropFilter: 'blur(1.5px)',
+              WebkitBackdropFilter: 'blur(1.5px)',
+              opacity: isHovered ? 0.8 : 0.9
             } as React.CSSProperties}
           />
         </div>
@@ -92,7 +92,7 @@ export default function ServiceCard({ title, description, icon, price, features,
             {/* Title and Icon */}
             <div className="flex items-start gap-4 mb-6">
               <motion.div 
-                className="text-[#C8A97E] text-2xl bg-black/30 p-2 rounded-lg"
+                className="text-[#C8A97E] text-2xl bg-black/40 p-2 rounded-lg"
                 animate={{ 
                   rotate: isHovered ? [0, -10, 10, 0] : 0,
                   scale: isHovered ? [1, 1.1, 1] : 1
@@ -105,10 +105,10 @@ export default function ServiceCard({ title, description, icon, price, features,
                 {icon}
               </motion.div>
               <div>
-                <h3 className="text-xl font-medium text-white mb-2 text-shadow">
+                <h3 className="text-xl font-medium text-white mb-2 text-shadow brightness-110">
                   {title}
                 </h3>
-                <p className="text-white/90 whitespace-pre-line leading-relaxed text-shadow">
+                <p className="text-white whitespace-pre-line leading-relaxed text-shadow brightness-110">
                   {description}
                 </p>
               </div>
@@ -119,7 +119,7 @@ export default function ServiceCard({ title, description, icon, price, features,
               {features.map((feature, index) => (
                 <motion.div 
                   key={index} 
-                  className="flex items-center gap-2 bg-black/30 rounded-lg px-3 py-1.5"
+                  className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1.5"
                   initial={false}
                   animate={isHovered ? {
                     x: [0, 5, 0],
@@ -131,7 +131,7 @@ export default function ServiceCard({ title, description, icon, price, features,
                   } : {}}
                 >
                   <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                  <p className="text-white/90 text-sm text-shadow">{feature}</p>
+                  <p className="text-white text-sm text-shadow brightness-110">{feature}</p>
                 </motion.div>
               ))}
             </div>
