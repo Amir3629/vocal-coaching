@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
-import { ChevronDown, MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube } from "lucide-react"
+import { ChevronDown, MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube, Trophy } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import TestimonialSlider from "@/app/components/testimonial-slider"
 import Navigation from "@/app/components/navigation"
@@ -227,12 +227,11 @@ export default function Home() {
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
             <ServiceCard
-              title="Gesangsunterricht"
-              description="Individueller Unterricht für alle Level"
+              title="Singen"
+              description="Gesangsunterricht"
               icon={<Music className="w-6 h-6" />}
-              price="Ab 60€/Std"
               features={[
                 "Stimmbildung",
                 "Atemtechnik",
@@ -255,65 +254,94 @@ export default function Home() {
                 duration: "60-90 min",
                 location: "Online & Studio Berlin"
               }}
-              image="/images/services/singing.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/singing.jpg" : "/images/cards/singing.jpg"}
             />
 
             <ServiceCard
-              title="Jazz Improvisation"
-              description="Entdecke die Freiheit des Jazz"
-              icon={<Music className="w-6 h-6" />}
-              price="Ab 70€/Std"
+              title="Sprechen"
+              description="Sprechtraining"
+              icon={<Mic className="w-6 h-6" />}
               features={[
-                "Scat-Gesang",
-                "Harmonielehre",
-                "Rhythmik",
-                "Stilkunde"
+                "Artikulation",
+                "Resonanz",
+                "Sprachmelodie",
+                "Atmung"
+              ]}
+              details={{
+                includes: [
+                  "Sprachanalyse",
+                  "Atemübungen",
+                  "Textarbeit",
+                  "Präsentationstechnik"
+                ],
+                suitable: [
+                  "Sprecher",
+                  "Moderatoren",
+                  "Schauspieler",
+                  "Präsentatoren"
+                ],
+                duration: "60 min",
+                location: "Studio Berlin"
+              }}
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/speaking.jpg" : "/images/cards/speaking.jpg"}
+            />
+
+            <ServiceCard
+              title="Lernen"
+              description="Musiktheorie"
+              icon={<BookOpen className="w-6 h-6" />}
+              features={[
+                "Grundlagen der Musiktheorie",
+                "Rhythmus und Timing",
+                "Gehörbildung",
+                "Harmonielehre"
               ]}
               details={{
                 includes: [
                   "Theoretische Grundlagen",
                   "Praktische Übungen",
-                  "Repertoire-Aufbau",
-                  "Jam-Session Vorbereitung"
+                  "Notenlesen",
+                  "Rhythmustraining"
                 ],
                 suitable: [
+                  "Anfänger",
                   "Fortgeschrittene",
-                  "Profis",
-                  "Jazz-Enthusiasten"
+                  "Musikstudenten",
+                  "Hobbymusiker"
                 ],
-                duration: "60-90 min",
-                location: "Studio Berlin"
+                duration: "60 min",
+                location: "Online & Studio Berlin"
               }}
-              image="/images/services/jazz.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/learning.jpg" : "/images/cards/learning.jpg"}
             />
 
             <ServiceCard
-              title="Performance Coaching"
-              description="Präsenz und Ausdruck auf der Bühne"
-              icon={<Theater className="w-6 h-6" />}
-              price="Ab 80€/Std"
+              title="Erfolg"
+              description="Zertifizierung"
+              icon={<Trophy className="w-6 h-6" />}
               features={[
-                "Bühnenpräsenz",
-                "Mikrofonarbeit",
-                "Interpretation",
-                "Körpersprache"
+                "Prüfungsvorbereitung",
+                "Auftrittstraining",
+                "Feedback und Evaluation",
+                "Zertifikatsabschluss"
               ]}
               details={{
                 includes: [
-                  "Videoanalyse",
-                  "Bühnenroutinen",
-                  "Mentales Training",
-                  "Auftrittsvorbereitung"
+                  "Individuelles Coaching",
+                  "Prüfungssimulation",
+                  "Dokumentation",
+                  "Zertifikat"
                 ],
                 suitable: [
-                  "Performer",
-                  "Bands",
-                  "Künstler"
+                  "Musikstudenten",
+                  "Profis",
+                  "Fortgeschrittene",
+                  "Zertifizierungskandidaten"
                 ],
                 duration: "90 min",
                 location: "Studio Berlin"
               }}
-              image="/images/services/performance.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/success.jpg" : "/images/cards/success.jpg"}
             />
           </div>
 
