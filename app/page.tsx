@@ -18,6 +18,7 @@ import MusicNotes from "@/app/components/music-notes-animation"
 import ContactForm from "@/app/components/contact-form"
 import BookingModal from "@/app/components/booking-modal"
 import Collaborations from "@/app/components/collaborations"
+import ServiceCard from "@/app/components/service-card"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -221,8 +222,101 @@ export default function Home() {
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
-          <Certifications />
-          
+          <div className="text-center mb-12">
+            <h2 className="section-heading mb-4">Vocal Excellence</h2>
+            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <ServiceCard
+              title="Gesangsunterricht"
+              description="Individueller Unterricht für alle Level"
+              icon={<Music className="w-6 h-6" />}
+              price="Ab 60€/Std"
+              features={[
+                "Stimmbildung",
+                "Atemtechnik",
+                "Interpretation",
+                "Bühnenpräsenz"
+              ]}
+              details={{
+                includes: [
+                  "Stimmanalyse",
+                  "Individueller Trainingsplan",
+                  "Aufnahmen",
+                  "Übe-Material"
+                ],
+                suitable: [
+                  "Anfänger",
+                  "Fortgeschrittene",
+                  "Profis",
+                  "Alle Genres"
+                ],
+                duration: "60-90 min",
+                location: "Online & Studio Berlin"
+              }}
+              image="/images/services/singing.jpg"
+            />
+
+            <ServiceCard
+              title="Jazz Improvisation"
+              description="Entdecke die Freiheit des Jazz"
+              icon={<Music className="w-6 h-6" />}
+              price="Ab 70€/Std"
+              features={[
+                "Scat-Gesang",
+                "Harmonielehre",
+                "Rhythmik",
+                "Stilkunde"
+              ]}
+              details={{
+                includes: [
+                  "Theoretische Grundlagen",
+                  "Praktische Übungen",
+                  "Repertoire-Aufbau",
+                  "Jam-Session Vorbereitung"
+                ],
+                suitable: [
+                  "Fortgeschrittene",
+                  "Profis",
+                  "Jazz-Enthusiasten"
+                ],
+                duration: "60-90 min",
+                location: "Studio Berlin"
+              }}
+              image="/images/services/jazz.jpg"
+            />
+
+            <ServiceCard
+              title="Performance Coaching"
+              description="Präsenz und Ausdruck auf der Bühne"
+              icon={<Theater className="w-6 h-6" />}
+              price="Ab 80€/Std"
+              features={[
+                "Bühnenpräsenz",
+                "Mikrofonarbeit",
+                "Interpretation",
+                "Körpersprache"
+              ]}
+              details={{
+                includes: [
+                  "Videoanalyse",
+                  "Bühnenroutinen",
+                  "Mentales Training",
+                  "Auftrittsvorbereitung"
+                ],
+                suitable: [
+                  "Performer",
+                  "Bands",
+                  "Künstler"
+                ],
+                duration: "90 min",
+                location: "Studio Berlin"
+              }}
+              image="/images/services/performance.jpg"
+            />
+          </div>
+
           <motion.div 
             className="text-center mt-12"
             initial={{ opacity: 0, y: 20 }}
