@@ -63,6 +63,21 @@
     grid-template-columns: 1fr;
     text-align: center;
   }
+
+  .booking-step {
+    padding: 1rem;
+  }
+
+  .booking-button {
+    padding: 0.625rem 1.25rem;
+    min-width: 100px;
+  }
+
+  .rdp-button {
+    width: 36px;
+    height: 36px;
+    font-size: 0.8125rem;
+  }
 }
 
 /* Tablet Styles (768px and up) */
@@ -234,4 +249,106 @@ select {
   .dark-theme-black {
     background-color: #000;
   }
+}
+
+/* Calendar and Booking Modal Styles */
+.calendar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.rdp {
+  margin: 0 !important;
+  width: 100% !important;
+}
+
+.rdp-months {
+  justify-content: center !important;
+  width: 100%;
+}
+
+.rdp-month {
+  width: 100% !important;
+  max-width: 320px;
+}
+
+.rdp-table {
+  width: 100% !important;
+  max-width: none !important;
+}
+
+.rdp-cell {
+  text-align: center;
+  padding: 0;
+}
+
+.rdp-button {
+  width: 40px;
+  height: 40px;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+}
+
+.rdp-day_selected {
+  background-color: #C8A97E !important;
+  color: #000 !important;
+}
+
+.rdp-day_today {
+  font-weight: bold;
+  color: #C8A97E;
+}
+
+/* Booking Modal Navigation Buttons */
+.booking-nav-buttons {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 0;
+  margin-top: 1rem;
+  border-top: 1px solid rgba(200, 169, 126, 0.2);
+}
+
+.booking-button {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.875rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  min-width: 120px;
+  text-align: center;
+}
+
+.booking-button-back {
+  background-color: transparent;
+  border: 1px solid rgba(200, 169, 126, 0.3);
+  color: #C8A97E;
+}
+
+.booking-button-back:hover {
+  border-color: #C8A97E;
+  background-color: rgba(200, 169, 126, 0.1);
+}
+
+.booking-button-next {
+  background-color: #C8A97E;
+  color: #000;
+  border: 1px solid #C8A97E;
+}
+
+.booking-button-next:hover {
+  background-color: #B69A6E;
+  border-color: #B69A6E;
+}
+
+/* Booking Steps Container */
+.booking-step {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 1.5rem;
 } 
