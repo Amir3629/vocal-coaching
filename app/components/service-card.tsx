@@ -72,7 +72,15 @@ export default function ServiceCard({ title, description, icon, price, features,
               <p className="text-[#C8A97E]/50 text-sm">Image not found</p>
             </div>
           )}
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/90 to-black/95 backdrop-blur-[2px]" />
+          <div 
+            className="absolute inset-0 transform-gpu transition-opacity duration-300 ease-in-out z-[1]"
+            style={{
+              background: 'linear-gradient(to bottom, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.9) 50%, rgba(0,0,0,0.95) 100%)',
+              backdropFilter: 'blur(2px)',
+              WebkitBackdropFilter: 'blur(2px)',
+              opacity: isHovered ? 0.85 : 1
+            } as React.CSSProperties}
+          />
         </div>
 
         {/* Content Layer */}
