@@ -93,135 +93,116 @@ export default function JourneyShowcase() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="group relative overflow-hidden rounded-xl cursor-pointer transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:shadow-[#C8A97E]/10"
+              className="relative h-[320px] rounded-xl overflow-hidden cursor-pointer"
               onMouseEnter={() => setHoveredId(card.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
               <motion.div
-                className={`relative w-full transition-all duration-500 ease-out ${
-                  hoveredId === card.id ? "h-[420px]" : "h-[320px]"
-                }`}
+                className="absolute inset-0 w-full h-full"
+                animate={{
+                  height: hoveredId === card.id ? "420px" : "320px",
+                  scale: hoveredId === card.id ? 1.05 : 1
+                }}
+                transition={{
+                  duration: 0.3,
+                  ease: "easeOut"
+                }}
                 style={{
-                  transformOrigin: "center top",
-                  willChange: "transform, height"
+                  transformOrigin: "center top"
                 }}
               >
-                <div className="absolute inset-0 overflow-hidden">
-                  {/* Background Image */}
-                  <div className="relative w-full h-full transform transition-all duration-500 ease-out">
-                    <Image
-                      src={card.bgImage}
-                      alt={card.title}
-                      fill
-                      sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
-                      className={`object-cover transition-all duration-500 ease-out will-change-transform ${
-                        hoveredId === card.id ? "scale-110 blur-0" : "scale-100 blur-md"
-                      }`}
-                      priority
-                    />
-                    {/* Dark Overlay */}
-                    <div 
-                      className={`absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/90 transition-all duration-500 ease-out ${
-                        hoveredId === card.id ? "opacity-50" : "opacity-90"
-                      }`}
-                    />
-                  </div>
+                {/* Background Image Container */}
+                <div className="absolute inset-0">
+                  <Image
+                    src={card.bgImage}
+                    alt={card.title}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
+                    className={`object-cover transition-all duration-500 ${
+                      hoveredId === card.id ? "scale-110 blur-0" : "scale-100 blur-[8px]"
+                    }`}
+                    priority
+                  />
+                  {/* Dark Overlay */}
+                  <motion.div 
+                    className="absolute inset-0 bg-gradient-to-b from-black/90 via-black/70 to-black/90"
+                    animate={{
+                      opacity: hoveredId === card.id ? 0.5 : 0.9
+                    }}
+                    transition={{ duration: 0.3 }}
+                  />
+                </div>
 
-                  {/* Content */}
-                  <div className="relative h-full p-6 flex flex-col">
-                    {/* Icon */}
-                    <div className="absolute top-4 left-4 z-10">
-                      <motion.div
-                        animate={{
-                          scale: hoveredId === card.id ? 1.2 : 1,
-                          y: hoveredId === card.id ? 4 : 0
-                        }}
-                        transition={{ 
-                          duration: 0.3,
-                          ease: "easeOut"
-                        }}
-                      >
-                        {card.icon}
-                      </motion.div>
-                    </div>
+                {/* Content */}
+                <div className="relative h-full p-6 flex flex-col">
+                  {/* Icon */}
+                  <motion.div
+                    className="absolute top-4 left-4"
+                    animate={{
+                      scale: hoveredId === card.id ? 1.2 : 1,
+                      y: hoveredId === card.id ? 4 : 0
+                    }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {card.icon}
+                  </motion.div>
 
-                    {/* Main Content */}
-                    <div className="mt-auto">
-                      <motion.h3 
-                        className="text-2xl font-medium text-white mb-2 drop-shadow-lg"
-                        animate={{
-                          scale: hoveredId === card.id ? 1.1 : 1,
-                          y: hoveredId === card.id ? -4 : 0
-                        }}
-                        transition={{ 
-                          duration: 0.3,
-                          ease: "easeOut"
-                        }}
-                      >
-                        {card.title}
-                      </motion.h3>
-                      <motion.p 
-                        className="text-[#C8A97E] text-base mb-3"
-                        animate={{
-                          y: hoveredId === card.id ? -2 : 0
-                        }}
-                        transition={{ duration: 0.3 }}
-                      >
-                        {card.subtitle}
-                      </motion.p>
-                      
-                      {/* Description - Only show on hover */}
-                      <motion.div 
-                        className="overflow-hidden"
-                        animate={{
-                          height: hoveredId === card.id ? "auto" : 0,
-                          opacity: hoveredId === card.id ? 1 : 0
-                        }}
-                        transition={{ 
-                          duration: 0.5,
-                          ease: "easeOut"
-                        }}
-                      >
-                        <motion.p 
-                          className="text-gray-200 text-sm mb-4"
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ 
-                            opacity: hoveredId === card.id ? 1 : 0,
-                            y: hoveredId === card.id ? 0 : 10
-                          }}
-                          transition={{ duration: 0.3, delay: 0.1 }}
-                        >
-                          {card.description}
-                        </motion.p>
-                        <ul className="space-y-2">
-                          {card.details.map((detail, idx) => (
-                            <motion.li
-                              key={idx}
-                              initial={{ opacity: 0, x: -20 }}
-                              animate={{ 
-                                opacity: hoveredId === card.id ? 1 : 0,
-                                x: hoveredId === card.id ? 0 : -20
-                              }}
-                              transition={{ 
-                                duration: 0.3,
-                                delay: 0.2 + idx * 0.1,
-                                ease: "easeOut"
-                              }}
-                              className="flex items-center gap-2"
-                            >
-                              <motion.div 
-                                className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]"
-                                animate={{
-                                  scale: hoveredId === card.id ? 1.2 : 1
-                                }}
-                                transition={{ duration: 0.2 }}
-                              />
-                              <span className="text-gray-200 text-sm">{detail}</span>
-                            </motion.li>
-                          ))}
-                        </ul>
-                      </motion.div>
-                    </div>
+                  {/* Text Content */}
+                  <div className="mt-auto">
+                    <motion.h3 
+                      className="text-2xl font-medium text-white mb-2"
+                      animate={{
+                        scale: hoveredId === card.id ? 1.1 : 1,
+                        y: hoveredId === card.id ? -4 : 0
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {card.title}
+                    </motion.h3>
+                    <motion.p 
+                      className="text-[#C8A97E] text-base mb-3"
+                      animate={{
+                        y: hoveredId === card.id ? -2 : 0
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      {card.subtitle}
+                    </motion.p>
+                    
+                    {/* Description */}
+                    <motion.div
+                      className="overflow-hidden"
+                      initial={false}
+                      animate={{
+                        height: hoveredId === card.id ? "auto" : 0,
+                        opacity: hoveredId === card.id ? 1 : 0
+                      }}
+                      transition={{ duration: 0.3 }}
+                    >
+                      <p className="text-gray-200 text-sm mb-4">
+                        {card.description}
+                      </p>
+                      <ul className="space-y-2">
+                        {card.details.map((detail, idx) => (
+                          <motion.li
+                            key={idx}
+                            initial={{ opacity: 0, x: -20 }}
+                            animate={{ 
+                              opacity: hoveredId === card.id ? 1 : 0,
+                              x: hoveredId === card.id ? 0 : -20
+                            }}
+                            transition={{ 
+                              duration: 0.3,
+                              delay: idx * 0.1
+                            }}
+                            className="flex items-center gap-2"
+                          >
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                            <span className="text-gray-200 text-sm">{detail}</span>
+                          </motion.li>
+                        ))}
+                      </ul>
+                    </motion.div>
                   </div>
                 </div>
               </motion.div>
