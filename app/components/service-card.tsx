@@ -103,13 +103,12 @@ export default function ServiceCard({ title, description, icon, price, features,
               {/* Title and Icon */}
               <div className="flex items-start gap-4 mb-6">
                 <motion.div 
-                  className="text-[#C8A97E] text-2xl bg-black/40 p-2 rounded-lg"
+                  className="text-[#C8A97E] text-2xl"
                   animate={{ 
-                    rotate: isHovered ? [0, -10, 10, 0] : 0,
-                    scale: isHovered ? [1, 1.1, 1] : 1
+                    scale: isHovered ? 1.1 : 1
                   }}
                   transition={{ 
-                    duration: 0.5,
+                    duration: 0.3,
                     ease: "easeInOut"
                   }}
                 >
@@ -130,16 +129,7 @@ export default function ServiceCard({ title, description, icon, price, features,
                 {features.map((feature, index) => (
                   <motion.div 
                     key={index} 
-                    className="flex items-center gap-2 bg-black/40 rounded-lg px-3 py-1.5"
-                    initial={false}
-                    animate={isHovered ? {
-                      x: [0, 5, 0],
-                      transition: {
-                        duration: 0.5,
-                        delay: index * 0.1,
-                        ease: "easeInOut"
-                      }
-                    } : {}}
+                    className="flex items-center gap-2"
                   >
                     <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
                     <p className="text-white text-sm text-shadow brightness-110">{feature}</p>
