@@ -97,7 +97,7 @@ export default function Collaborations() {
                       alt={collab.name}
                       fill
                       className={`object-contain transition-all duration-500 ${
-                        hoveredIndex === index ? "filter-none" : "filter grayscale brightness-200"
+                        hoveredIndex === index ? "filter-none" : "filter grayscale brightness-[1.5]"
                       }`}
                     />
                   </div>
@@ -127,7 +127,7 @@ export default function Collaborations() {
                       alt={collab.name}
                       fill
                       className={`object-contain transition-all duration-500 ${
-                        hoveredIndex === index + 4 ? "filter-none" : "filter grayscale brightness-200"
+                        hoveredIndex === index + 4 ? "filter-none" : "filter grayscale brightness-[1.5]"
                       }`}
                     />
                   </div>

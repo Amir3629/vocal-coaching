@@ -88,7 +88,13 @@ export default function Navigation() {
                   e.preventDefault()
                   const element = document.querySelector(link.href.split('#')[1] ? `#${link.href.split('#')[1]}` : 'body')
                   if (element) {
-                    element.scrollIntoView({ behavior: 'smooth' })
+                    const headerOffset = 80
+                    const elementPosition = element.getBoundingClientRect().top
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+                    window.scrollTo({
+                      top: offsetPosition,
+                      behavior: 'smooth'
+                    })
                   }
                 }}
                 className={`text-sm font-medium transition-colors ${
@@ -160,7 +166,13 @@ export default function Navigation() {
                       setIsOpen(false)
                       const element = document.querySelector(link.href.split('#')[1] ? `#${link.href.split('#')[1]}` : 'body')
                       if (element) {
-                        element.scrollIntoView({ behavior: 'smooth' })
+                        const headerOffset = 80
+                        const elementPosition = element.getBoundingClientRect().top
+                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+                        window.scrollTo({
+                          top: offsetPosition,
+                          behavior: 'smooth'
+                        })
                       }
                     }}
                     className={`text-sm font-medium transition-colors ${
