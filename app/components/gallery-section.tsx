@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
-import { Dialog, DialogContent } from "@/app/components/ui/dialog"
+import { Dialog } from "@/app/components/ui/dialog"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
 
 interface GalleryImage {
@@ -190,96 +190,52 @@ export default function GallerySection() {
           ))}
         </div>
 
-        {selectedImage !== null && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-[#040202]/95 backdrop-blur-sm"
-            onClick={handleClose}
-          >
-            <div className="h-full flex items-center justify-center p-4">
-              <div className="relative w-full max-w-4xl mx-auto">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={selectedImage.src}
-                    initial={{ opacity: 0, scale: 0.95 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 1.05 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
-                    className="relative aspect-[4/3] w-full overflow-hidden rounded-[32px]"
-                  >
-                    <Image
-                      src={selectedImage.src}
-                      alt={selectedImage.alt}
-                      fill
-                      className="object-contain"
-                      sizes="90vw"
-                      quality={90}
-                      priority
-                    />
-                  </motion.div>
-                </AnimatePresence>
+        {/* Image Modal */}
+        <Dialog open={selectedImage !== null} onOpenChange={() => setSelectedImage(null)}>
+          <div className="fixed inset-0 z-[100] flex items-center justify-center">
+            <div className="fixed inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedImage(null)} />
+            <div className="relative w-full max-w-5xl max-h-[90vh] z-[101]">
+              {/* Close button */}
+              <button
+                onClick={() => setSelectedImage(null)}
+                className="absolute -top-12 right-0 p-2 text-white/70 hover:text-white transition-colors"
+              >
+                <X className="w-6 h-6" />
+              </button>
 
-                {nextImage && (
-                  <div className="absolute inset-0 pointer-events-none">
-                    <Image
-                      src={nextImage.src}
-                      alt={nextImage.alt}
-                      fill
-                      className="object-contain opacity-0"
-                      sizes="90vw"
-                      quality={90}
-                      priority
-                    />
-                  </div>
-                )}
-
-                <div className="absolute left-0 right-0 bottom-0 p-4 bg-gradient-to-t from-[#040202]/90 via-[#040202]/60 to-transparent">
-                  <motion.div
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 0.2 }}
-                    className="max-w-[80%]"
-                  >
-                    <h3 className="text-white text-base sm:text-lg font-medium mb-1">{selectedImage.alt}</h3>
-                    <p className="text-[#C8A97E] text-sm">{selectedImage.description}</p>
-                  </motion.div>
-                </div>
+              {/* Navigation buttons */}
+              <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex justify-between px-4 z-20">
+                <button
+                  onClick={handlePrev}
+                  className="p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all transform hover:scale-105"
+                  disabled={!selectedImage}
+                >
+                  <ChevronLeft className="w-6 h-6" />
+                </button>
+                <button
+                  onClick={handleNext}
+                  className="p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all transform hover:scale-105"
+                  disabled={!selectedImage}
+                >
+                  <ChevronRight className="w-6 h-6" />
+                </button>
               </div>
+
+              {/* Image */}
+              {selectedImage && (
+                <div className="relative w-full aspect-[3/2] rounded-lg overflow-hidden">
+                  <Image
+                    src={selectedImage.src}
+                    alt={selectedImage.alt}
+                    fill
+                    className="object-contain"
+                    priority
+                  />
+                </div>
+              )}
             </div>
-
-            {/* Navigation Buttons */}
-            <motion.button
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="fixed top-1/2 right-4 z-50 p-3 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 text-white transform -translate-y-1/2 transition-colors"
-              onClick={handleNext}
-              disabled={isTransitioning}
-            >
-              <ChevronRight className="w-6 h-6" />
-            </motion.button>
-
-            <motion.button
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="fixed top-1/2 left-4 z-50 p-3 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 text-white transform -translate-y-1/2 transition-colors"
-              onClick={handlePrev}
-              disabled={isTransitioning}
-            >
-              <ChevronLeft className="w-6 h-6" />
-            </motion.button>
-
-            <motion.button
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="fixed top-4 right-4 z-50 p-3 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 text-white transition-colors"
-              onClick={handleClose}
-            >
-              <X className="w-6 h-6" />
-            </motion.button>
-          </motion.div>
-        )}
+          </div>
+        </Dialog>
       </div>
     </section>
   )
