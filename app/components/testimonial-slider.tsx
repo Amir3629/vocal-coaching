@@ -132,9 +132,9 @@ export default function TestimonialSlider() {
 
         <div 
           className="relative max-w-4xl mx-auto"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
+        >
           <AnimatePresence mode="wait">
             <motion.div
               key={page}
@@ -142,23 +142,23 @@ export default function TestimonialSlider() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.5 }}
-              className="bg-black/30 rounded-xl p-8 backdrop-blur-sm"
+              className="bg-black/30 rounded-xl p-8 backdrop-blur-sm min-h-[400px] flex items-center"
             >
-                <div className="flex flex-col items-center text-center">
-                <div className="w-20 h-20 rounded-full overflow-hidden mb-4 border-2 border-[#C8A97E]/20">
+                <div className="flex flex-col items-center text-center w-full">
+                <div className="w-20 h-20 rounded-full overflow-hidden mb-4 border-2 border-[#C8A97E]/20 shrink-0">
                   <Image
                     src={testimonials[page].image}
                     alt={testimonials[page].name}
                     width={80}
                     height={80}
-                        className="w-full h-full object-cover"
+                    className="w-full h-full object-cover"
                     onError={() => setImageError(true)}
-                      />
-                    </div>
-                <blockquote className="max-w-2xl mx-auto mb-6">
+                  />
+                </div>
+                <blockquote className="max-w-2xl mx-auto mb-6 h-[120px] flex items-center justify-center">
                   <p className="text-gray-300 text-lg italic">"{testimonials[page].content}"</p>
                 </blockquote>
-                <div className="flex flex-col items-center">
+                <div className="flex flex-col items-center shrink-0">
                   <cite className="text-[#C8A97E] font-medium not-italic">
                     {testimonials[page].name}
                   </cite>
