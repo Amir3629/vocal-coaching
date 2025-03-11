@@ -8,7 +8,7 @@ const journeyData = [
     title: "Singen",
     subtitle: "Gesangsunterricht",
     icon: Music,
-    image: "singing.jpg",
+    image: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/singing.jpg" : "/images/cards/singing.jpg",
     items: [
       "Stimmbildung und Atemtechnik",
       "Repertoire-Aufbau",
@@ -21,7 +21,7 @@ const journeyData = [
     title: "Sprechen",
     subtitle: "Sprechtraining",
     icon: Mic2,
-    image: "speaking.jpg",
+    image: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/speaking.jpg" : "/images/cards/speaking.jpg",
     items: [
       "Artikulation",
       "Resonanz",
@@ -34,7 +34,7 @@ const journeyData = [
     title: "Lernen",
     subtitle: "Musiktheorie",
     icon: BookOpen,
-    image: "learning.jpg",
+    image: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/learning.jpg" : "/images/cards/learning.jpg",
     items: [
       "Grundlagen der Musiktheorie",
       "Rhythmus und Timing",
@@ -47,7 +47,7 @@ const journeyData = [
     title: "Erfolg",
     subtitle: "Zertifizierung",
     icon: Trophy,
-    image: "success.jpg",
+    image: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/success.jpg" : "/images/cards/success.jpg",
     items: [
       "Prüfungsvorbereitung",
       "Auftrittstraining",
@@ -60,104 +60,114 @@ const journeyData = [
 
 export default function JourneyShowcase() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 p-6">
-      {journeyData.map((journey, idx) => {
-        const Icon = journey.icon
-        return (
-          <div
-            key={idx}
-            className="
-              relative w-full rounded-xl overflow-hidden
-              h-[320px] hover:h-[420px]
-              transition-all duration-300 ease-out
-              group
-            "
-          >
-            {/* Background Image */}
-            <div className="absolute inset-0">
-              <Image
-                src={process.env.NODE_ENV === 'production' ? `/vocal-coaching/images/cards/${journey.image}` : `/images/cards/${journey.image}`}
-                alt={journey.title}
-                fill
+    <section className="py-20 bg-[#040202]">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-12">
+          <h2 className="section-heading mb-4">Vocal Excellence</h2>
+          <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+          {journeyData.map((journey, idx) => {
+            const Icon = journey.icon
+            return (
+              <div
+                key={idx}
                 className="
-                  object-cover 
-                  scale-100 blur-[8px]
-                  group-hover:scale-110 group-hover:blur-none
-                  transition-all duration-500
+                  relative w-full rounded-xl overflow-hidden
+                  h-[320px] hover:h-[420px]
+                  transition-all duration-500 ease-out
+                  group
                 "
-              />
-              
-              {/* Overlay */}
-              <div 
-                className="
-                  absolute inset-0 
-                  bg-gradient-to-b from-black/90 via-black/70 to-black/90
-                  opacity-90 group-hover:opacity-50
-                  transition-opacity duration-300
-                "
-              />
-            </div>
+              >
+                {/* Background Image */}
+                <div className="absolute inset-0">
+                  <Image
+                    src={journey.image}
+                    alt={journey.title}
+                    fill
+                    className="
+                      object-cover 
+                      scale-100 blur-[8px]
+                      group-hover:scale-110 group-hover:blur-none
+                      transition-all duration-700
+                    "
+                  />
+                  
+                  {/* Dark Overlay */}
+                  <div 
+                    className="
+                      absolute inset-0 
+                      bg-gradient-to-b from-black/90 via-black/70 to-black/90
+                      opacity-90 group-hover:opacity-50
+                      transition-opacity duration-500
+                    "
+                  />
+                </div>
 
-            {/* Content */}
-            <div className="relative h-full p-6 flex flex-col">
-              {/* Icon */}
-              <div className="
-                absolute top-4 left-4
-                transform group-hover:scale-110 group-hover:translate-y-1
-                transition-transform duration-300
-              ">
-                <Icon className="w-8 h-8 text-white" />
-              </div>
+                {/* Content */}
+                <div className="relative h-full p-6 flex flex-col">
+                  {/* Icon */}
+                  <div className="
+                    absolute top-4 left-4
+                    transform 
+                    group-hover:scale-110 group-hover:translate-y-1
+                    transition-all duration-500 ease-out
+                  ">
+                    <Icon className="w-8 h-8 text-white" />
+                  </div>
 
-              {/* Text Content */}
-              <div className="mt-auto">
-                <h3 className="
-                  text-2xl font-medium text-white mb-2
-                  transform group-hover:scale-110 group-hover:-translate-y-1
-                  transition-transform duration-300
-                ">
-                  {journey.title}
-                </h3>
-                
-                <p className="
-                  text-[#C8A97E] text-base mb-3
-                  transform group-hover:-translate-y-1
-                  transition-transform duration-300
-                ">
-                  {journey.subtitle}
-                </p>
+                  {/* Text Content */}
+                  <div className="mt-auto">
+                    <h3 className="
+                      text-2xl font-medium text-white mb-2
+                      transform 
+                      group-hover:scale-110 group-hover:-translate-y-1
+                      transition-transform duration-500
+                    ">
+                      {journey.title}
+                    </h3>
+                    
+                    <p className="
+                      text-[#C8A97E] text-base mb-3
+                      transform group-hover:-translate-y-1
+                      transition-transform duration-500
+                    ">
+                      {journey.subtitle}
+                    </p>
 
-                {/* Expandable Content */}
-                <div className="
-                  overflow-hidden
-                  opacity-0 group-hover:opacity-100
-                  translate-y-4 group-hover:translate-y-0
-                  transition-all duration-300
-                ">
-                  <ul className="space-y-2">
-                    {journey.items.map((item, idx) => (
-                      <li
-                        key={idx}
-                        className="
-                          flex items-center gap-2
-                          opacity-0 group-hover:opacity-100
-                          -translate-x-4 group-hover:translate-x-0
-                          transition-all duration-300
-                          group-hover:delay-[var(--delay)]
-                        "
-                        style={{ '--delay': `${idx * 100}ms` } as any}
-                      >
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                        <span className="text-gray-200 text-sm">{item}</span>
-                      </li>
-                    ))}
-                  </ul>
+                    {/* Expandable Content */}
+                    <div className="
+                      overflow-hidden
+                      opacity-0 group-hover:opacity-100
+                      translate-y-4 group-hover:translate-y-0
+                      transition-all duration-500
+                    ">
+                      <ul className="space-y-2">
+                        {journey.items.map((item, idx) => (
+                          <li
+                            key={idx}
+                            className="
+                              flex items-center gap-2
+                              opacity-0 group-hover:opacity-100
+                              -translate-x-4 group-hover:translate-x-0
+                              transition-all duration-500
+                            "
+                            style={{ transitionDelay: `${idx * 100}ms` }}
+                          >
+                            <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                            <span className="text-gray-200 text-sm">{item}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </div>
-        )
-      })}
-    </div>
+            )
+          })}
+        </div>
+      </div>
+    </section>
   )
 }
