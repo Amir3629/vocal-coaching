@@ -390,7 +390,7 @@ select {
 
 /* Dark mode adjustments for OLED screens */
 @media (prefers-color-scheme: dark) and (orientation: portrait) {
-  .dark\\:bg-true-black {
+  [data-theme="dark"] .bg-true-black {
     background-color: #000;
   }
 }
