@@ -247,101 +247,94 @@ export default function Home() {
                 ],
                 suitable: [
                   "Anfänger",
-                  "Fortgeschrittene",
-                  "Hobbysänger",
-                  "Chorsänger"
+                  "Fortgeschrittene"
                 ],
-                duration: "45-60 min",
-                location: "Online & Studio Berlin"
+                duration: "45-60 Minuten",
+                location: "Studio Berlin"
               }}
               image="/images/cards/singing.jpg"
+              delay={0}
             />
-
             <ServiceCard
               title="Vocal Coaching"
-              description="Professionelles Stimmtraining"
+              description="Professionelles Coaching"
               icon={<Mic className="w-6 h-6" />}
               features={[
                 "Stimmtechnik",
-                "Gesangsübungen",
-                "Repertoire-Entwicklung",
-                "Performance Training"
+                "Performance",
+                "Repertoire",
+                "Stilentwicklung"
               ]}
               details={{
                 includes: [
-                  "Individuelle Analyse",
-                  "Maßgeschneidertes Training",
-                  "Aufnahmen & Feedback",
-                  "Professionelle Betreuung"
+                  "Individuelle Beratung",
+                  "Techniktraining",
+                  "Repertoireaufbau",
+                  "Auftrittsvorbereitung"
                 ],
                 suitable: [
                   "Profis",
-                  "Semi-Profis",
-                  "Ambitionierte Sänger",
-                  "Alle Genres"
+                  "Semi-Profis"
                 ],
-                duration: "60-90 min",
+                duration: "60-90 Minuten",
                 location: "Studio Berlin"
               }}
               image="/images/cards/vocal-coaching.jpg"
+              delay={0.2}
             />
-
             <ServiceCard
               title="Workshop"
-              description="Intensive Gruppenarbeit"
-              icon={<Users className="w-6 h-6" />}
+              description="Gruppenunterricht"
+              icon={<Theater className="w-6 h-6" />}
               features={[
                 "Ensemble-Arbeit",
-                "Groove & Timing",
-                "Harmoniearbeit",
-                "Performance"
+                "Harmonielehre",
+                "Improvisation",
+                "Auftrittspraxis"
               ]}
               details={{
                 includes: [
                   "Gruppenübungen",
-                  "Praktische Anwendung",
-                  "Gemeinsames Singen",
-                  "Abschlusspräsentation"
+                  "Theorie",
+                  "Praxis",
+                  "Feedback"
                 ],
                 suitable: [
                   "Alle Level",
-                  "Bands",
-                  "Ensembles",
-                  "Interessierte"
+                  "Gruppen"
                 ],
-                duration: "3-6 Stunden",
+                duration: "2-3 Stunden",
                 location: "Studio Berlin"
               }}
               image="/images/cards/workshop.jpg"
+              delay={0.4}
             />
-
             <ServiceCard
               title="Chor"
-              description="Gemeinsam singen"
+              description="Gemeinsam Singen"
               icon={<Users2 className="w-6 h-6" />}
               features={[
                 "Mehrstimmigkeit",
-                "Chorklang",
-                "Blattlesen",
-                "Ensemble-Gesang"
+                "Harmonie",
+                "Rhythmus",
+                "Gemeinschaft"
               ]}
               details={{
                 includes: [
                   "Stimmbildung",
-                  "Repertoire-Arbeit",
-                  "Auftrittsvorbereitung",
-                  "Gemeinschaftserlebnis"
+                  "Chorgesang",
+                  "Auftritte",
+                  "Events"
                 ],
                 suitable: [
-                  "Alle Altersgruppen",
-                  "Alle Niveaus",
-                  "Musikbegeisterte",
-                  "Teamplayer"
+                  "Alle Level",
+                  "Gruppenbegeisterte"
                 ],
-                duration: "90-120 min",
+                duration: "90-120 Minuten",
                 location: "Studio Berlin"
               }}
               image="/images/cards/choir.jpg"
+              delay={0.6}
             />
           </div>
 

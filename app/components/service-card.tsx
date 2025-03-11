@@ -43,7 +43,7 @@ export default function ServiceCard({ title, description, icon, price, features,
       {/* Background Image */}
       <div className="absolute inset-0">
         <Image
-          src={image}
+          src={`/vocal-coaching${image}`}
           alt={title}
           fill
           className={`object-cover transition-all duration-500 ${
@@ -56,6 +56,11 @@ export default function ServiceCard({ title, description, icon, price, features,
             setImageError(true);
           }}
         />
+        {imageError && (
+          <div className="absolute inset-0 flex items-center justify-center bg-black/80">
+            <p className="text-white/70">Image not found</p>
+          </div>
+        )}
         <div 
           className={`absolute inset-0 bg-gradient-to-b from-black/60 via-black/75 to-black/90 transition-opacity duration-300 ${
             isHovered ? 'opacity-75' : 'opacity-85'
