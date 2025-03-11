@@ -90,7 +90,7 @@ export default function JourneyShowcase() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="relative h-[400px] perspective-1000"
+              className="relative h-[320px] perspective-1000"
               onMouseEnter={() => setHoveredId(card.id)}
               onMouseLeave={() => setHoveredId(null)}
             >
@@ -101,19 +101,19 @@ export default function JourneyShowcase() {
               >
                 {/* Front of card */}
                 <div className="absolute inset-0 backface-hidden">
-                  <div className="h-full bg-[#0A0A0A] rounded-xl p-6 flex flex-col items-center justify-center border border-[#C8A97E]/20">
-                    <div className="mb-6">{card.icon}</div>
+                  <div className="h-full bg-[#0A0A0A] rounded-xl p-5 flex flex-col items-center justify-center border border-[#C8A97E]/20">
+                    <div className="mb-4">{card.icon}</div>
                     <h3 className="text-xl font-medium text-white mb-2">{card.title}</h3>
-                    <p className="text-[#C8A97E] text-sm mb-4">{card.subtitle}</p>
-                    <p className="text-gray-400 text-center">{card.description}</p>
+                    <p className="text-[#C8A97E] text-sm mb-3">{card.subtitle}</p>
+                    <p className="text-gray-400 text-center text-sm">{card.description}</p>
                   </div>
                 </div>
 
                 {/* Back of card */}
                 <div className="absolute inset-0 backface-hidden rotate-y-180">
-                  <div className="h-full bg-[#0A0A0A] rounded-xl p-6 flex flex-col items-center justify-center border border-[#C8A97E]/20">
-                    <h4 className="text-[#C8A97E] font-medium mb-4">Highlights</h4>
-                    <ul className="space-y-3">
+                  <div className="h-full bg-[#0A0A0A] rounded-xl p-5 flex flex-col items-center justify-center border border-[#C8A97E]/20">
+                    <h4 className="text-[#C8A97E] font-medium mb-3">Highlights</h4>
+                    <ul className="space-y-2">
                       {card.details.map((detail, idx) => (
                         <motion.li
                           key={idx}
@@ -127,7 +127,7 @@ export default function JourneyShowcase() {
                         </motion.li>
                       ))}
                     </ul>
-                    <div className="mt-6">
+                    <div className="mt-4">
                       <span className="text-[#C8A97E]/60 text-sm">{card.year}</span>
                     </div>
                   </div>
