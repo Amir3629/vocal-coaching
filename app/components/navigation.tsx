@@ -25,7 +25,6 @@ export default function Navigation() {
     { href: "/#references", label: t.nav.references },
     { href: "/#testimonials", label: t.nav.testimonials },
     { href: "/#contact", label: t.nav.contact },
-    { href: "/music-styles", label: "Music Styles" }
   ]
 
   useEffect(() => {

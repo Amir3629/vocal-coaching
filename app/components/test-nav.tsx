@@ -3,10 +3,16 @@
 import { useState, useEffect } from "react"
 import { useLanguage } from "./language-switcher"
 
-export default function NavBar() {
+export default function TestNav() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMenuOpen, setIsMenuOpen] = useState(false)
-  const { currentLang, toggleLanguage, t } = useLanguage()
+  
+  // Test different ways of using useLanguage
+  const context = useLanguage() // Raw usage
+  console.log("Raw context:", context)
+
+  const { currentLang, toggleLanguage, t } = useLanguage() // Correct destructuring
+  console.log("Destructured values:", { currentLang, toggleLanguage, t })
 
   useEffect(() => {
     const handleScroll = () => {
@@ -24,10 +30,11 @@ export default function NavBar() {
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
           <a href="/" className="text-white font-medium text-xl">
-            Mel jazz
+            Logo
           </a>
 
           <div className="hidden md:flex items-center space-x-8">
+            {/* Using t directly from useLanguage */}
             <a href="#home" className="text-white hover:text-[#C8A97E]">
               {t.nav.home}
             </a>
@@ -36,15 +43,6 @@ export default function NavBar() {
             </a>
             <a href="#about" className="text-white hover:text-[#C8A97E]">
               {t.nav.about}
-            </a>
-            <a href="#references" className="text-white hover:text-[#C8A97E]">
-              {t.nav.references}
-            </a>
-            <a href="#testimonials" className="text-white hover:text-[#C8A97E]">
-              {t.nav.testimonials}
-            </a>
-            <a href="#contact" className="text-white hover:text-[#C8A97E]">
-              {t.nav.contact}
             </a>
           </div>
 

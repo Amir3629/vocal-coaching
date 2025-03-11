@@ -19,7 +19,6 @@ import MusicNotes from "@/app/components/music-notes-animation"
 import ContactForm from "@/app/components/contact-form"
 import BookingModal from "@/app/components/booking-modal"
 import Collaborations from "@/app/components/collaborations"
-import MusicPlayer from "./components/music-player"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -188,7 +187,7 @@ export default function Home() {
             <h2 className="section-heading mb-4">Meine Musik</h2>
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
-          <MusicPlayer />
+          <EnhancedMusicPlayer />
         </div>
       </section>
 
