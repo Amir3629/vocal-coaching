@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
+import { Play, Pause, Volume2, VolumeX } from "lucide-react";
 
-const defaultTracks = [
+const tracks = [
   {
     id: 1,
     title: "Jazz Performance",
@@ -12,20 +13,38 @@ const defaultTracks = [
   },
   {
     id: 2,
-    title: "Vocal Workshop",
-    description: "Complete Vocal Tech Demonstration",
-    youtubeId: "AWsarzdZ1u8"
+    title: "Jazz Ensemble",
+    description: "Live Performance",
+    youtubeId: "ZvWZr6TNh9Y"
   },
   {
     id: 3,
-    title: "Jazz Standards",
-    description: "Live Performance Highlights",
-    youtubeId: "GidIMbCmtyk"
+    title: "Jazz Collection",
+    description: "Selected Performances",
+    youtubeId: "r58-5DBfMpY"
   },
   {
     id: 4,
-    title: "Vocal Jazz",
-    description: "Studio Session",
+    title: "Jazz Highlights",
+    description: "Best Moments",
+    youtubeId: "0zARqh3xwnw"
+  },
+  {
+    id: 5,
+    title: "Vocal Workshop",
+    description: "Complete Vocal Technique",
+    youtubeId: "AWsarzdZ1u8"
+  },
+  {
+    id: 6,
+    title: "Jazz Standards",
+    description: "Live Performance Collection",
+    youtubeId: "GidIMbCmtyk"
+  },
+  {
+    id: 7,
+    title: "Special Performance",
+    description: "Live Jazz Session",
     youtubeId: "QgZKO_f5FlM"
   }
 ];
@@ -35,21 +54,17 @@ export default function EnhancedMusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
-  const [rotation, setRotation] = useState(0);
   const playerRef = useRef<any>(null);
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    // Load YouTube API
     if (!window.YT) {
       const tag = document.createElement('script');
       tag.src = 'https://www.youtube.com/iframe_api';
       const firstScriptTag = document.getElementsByTagName('script')[0];
       firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
-      window.onYouTubeIframeAPIReady = () => {
-        initializePlayer();
-      };
+      window.onYouTubeIframeAPIReady = initializePlayer;
     } else {
       initializePlayer();
     }
@@ -65,7 +80,7 @@ export default function EnhancedMusicPlayer() {
     playerRef.current = new window.YT.Player("youtube-player", {
       height: "0",
       width: "0",
-      videoId: defaultTracks[currentTrack].youtubeId,
+      videoId: tracks[currentTrack].youtubeId,
       playerVars: {
         autoplay: 0,
         controls: 0,
@@ -98,7 +113,6 @@ export default function EnhancedMusicPlayer() {
         const currentTime = playerRef.current.getCurrentTime();
         const duration = playerRef.current.getDuration();
         setProgress(currentTime / duration);
-        setRotation((currentTime / duration) * 360);
       }
     }, 100);
   };
@@ -116,7 +130,7 @@ export default function EnhancedMusicPlayer() {
   const handleTrackSelect = (index: number) => {
     setCurrentTrack(index);
     if (playerRef.current) {
-      playerRef.current.loadVideoById(defaultTracks[index].youtubeId);
+      playerRef.current.loadVideoById(tracks[index].youtubeId);
       if (!isPlaying) {
         handlePlayPause();
       }
@@ -135,28 +149,49 @@ export default function EnhancedMusicPlayer() {
   };
 
   return (
-    <section className="py-20 bg-black">
+    <section className="py-20 bg-black min-h-screen">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl font-serif text-white">Meine Musik</h2>
-          <div className="w-16 h-[1px] bg-white/20 mx-auto mt-4"></div>
-        </div>
+        <motion.h2 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-4xl font-serif text-white text-center mb-16"
+        >
+          Meine Musik
+          <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto mt-4"></div>
+        </motion.h2>
 
         <div id="youtube-player" className="hidden"></div>
 
-        {/* Main Player */}
-        <div className="max-w-3xl mx-auto mb-16">
-          <div className="aspect-video relative w-full bg-[#0A0A0A] rounded-lg overflow-hidden">
+        {/* Main Player Section */}
+        <div className="max-w-6xl mx-auto">
+          {/* Current Track Display */}
+          <motion.div 
+            className="relative aspect-[16/9] mb-8 rounded-2xl overflow-hidden bg-[#0A0A0A] border border-white/5"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+          >
             <div className="absolute inset-0 flex flex-col items-center justify-center">
-              <h3 className="text-white text-xl mb-1">
-                {defaultTracks[currentTrack].title}
-              </h3>
-              <p className="text-gray-400 text-sm mb-8">
-                {defaultTracks[currentTrack].description}
-              </p>
-              
+              <motion.h3
+                key={tracks[currentTrack].title}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="text-2xl text-white mb-2"
+              >
+                {tracks[currentTrack].title}
+              </motion.h3>
+              <motion.p
+                key={tracks[currentTrack].description}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-gray-400 mb-8"
+              >
+                {tracks[currentTrack].description}
+              </motion.p>
+
+              {/* Progress Circle */}
               <div className="relative w-32 h-32">
-                {/* Progress Circle */}
                 <svg className="absolute inset-0 w-full h-full -rotate-90">
                   <circle
                     cx="64"
@@ -164,7 +199,7 @@ export default function EnhancedMusicPlayer() {
                     r="60"
                     fill="none"
                     stroke="#1A1A1A"
-                    strokeWidth="2"
+                    strokeWidth="4"
                   />
                   <circle
                     cx="64"
@@ -172,85 +207,92 @@ export default function EnhancedMusicPlayer() {
                     r="60"
                     fill="none"
                     stroke="#C8A97E"
-                    strokeWidth="2"
+                    strokeWidth="4"
                     strokeDasharray={`${progress * 377} 377`}
                     className="transition-all duration-100"
                   />
                 </svg>
 
-                {/* Play/Pause Dot */}
-                <motion.div
-                  className="absolute"
-                  style={{
-                    width: "8px",
-                    height: "8px",
-                    borderRadius: "50%",
-                    backgroundColor: "#C8A97E",
-                    top: "50%",
-                    left: "50%",
-                    x: "32px",
-                    y: "-4px",
-                    rotate: `${rotation}deg`,
-                    transformOrigin: "-32px 4px"
-                  }}
-                />
-
                 {/* Control Buttons */}
                 <div className="absolute inset-0 flex items-center justify-center gap-4">
-                  <button
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={toggleMute}
-                    className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center"
+                    className="p-3 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
                   >
-                    <div className={`w-4 h-4 ${isMuted ? 'bg-white/40' : 'bg-[#C8A97E]'} rounded-full transition-colors`} />
-                  </button>
-                  <button
+                    {isMuted ? (
+                      <VolumeX className="w-5 h-5 text-white/60" />
+                    ) : (
+                      <Volume2 className="w-5 h-5 text-white" />
+                    )}
+                  </motion.button>
+
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                     onClick={handlePlayPause}
-                    className="w-10 h-10 rounded-full bg-[#C8A97E] flex items-center justify-center"
+                    className="p-4 rounded-full bg-[#C8A97E] hover:bg-[#B69A6E] transition-colors"
                   >
-                    <div className={`${isPlaying ? 'w-3 h-3 bg-black' : 'w-0 h-0 border-t-[5px] border-b-[5px] border-l-[8px] ml-0.5 border-transparent border-l-black'}`} />
-                  </button>
+                    {isPlaying ? (
+                      <Pause className="w-6 h-6 text-black" />
+                    ) : (
+                      <Play className="w-6 h-6 text-black ml-1" />
+                    )}
+                  </motion.button>
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Track Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-3xl mx-auto">
-          {defaultTracks.map((track, index) => (
-            <motion.button
-              key={track.id}
-              onClick={() => handleTrackSelect(index)}
-              className={`group relative aspect-video w-full overflow-hidden rounded-lg ${
-                currentTrack === index ? 'ring-1 ring-[#C8A97E]' : ''
-              }`}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-            >
-              <div className="absolute inset-0 bg-[#0A0A0A] flex flex-col items-center justify-center p-4">
-                <h3 className="text-white text-lg font-medium mb-1">{track.title}</h3>
-                <p className="text-gray-400 text-sm">{track.description}</p>
-                {currentTrack === index && isPlaying && (
-                  <div className="absolute bottom-3 flex gap-0.5">
-                    {[...Array(3)].map((_, i) => (
-                      <motion.div
-                        key={i}
-                        className="w-0.5 h-3 bg-[#C8A97E]"
-                        animate={{
-                          height: [12, 16, 12],
-                          transition: {
-                            duration: 0.6,
-                            repeat: Infinity,
-                            delay: i * 0.2
-                          }
-                        }}
-                      />
-                    ))}
-                  </div>
-                )}
-              </div>
-            </motion.button>
-          ))}
+          {/* Track Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {tracks.map((track, index) => (
+              <motion.button
+                key={track.id}
+                onClick={() => handleTrackSelect(index)}
+                className={`group relative aspect-video w-full overflow-hidden rounded-lg ${
+                  currentTrack === index ? 'ring-2 ring-[#C8A97E]' : ''
+                }`}
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: index * 0.1 }}
+              >
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-black/20 group-hover:from-black/90 group-hover:to-black/30 transition-all duration-300" />
+                
+                <div className="absolute inset-0 flex flex-col items-center justify-center p-4">
+                  <h3 className="text-white text-lg font-medium mb-1 group-hover:text-[#C8A97E] transition-colors">
+                    {track.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm text-center">
+                    {track.description}
+                  </p>
+                  
+                  {currentTrack === index && isPlaying && (
+                    <div className="absolute bottom-4 flex gap-1">
+                      {[...Array(3)].map((_, i) => (
+                        <motion.div
+                          key={i}
+                          className="w-1 h-4 bg-[#C8A97E]"
+                          animate={{
+                            height: [16, 24, 16],
+                            transition: {
+                              duration: 0.6,
+                              repeat: Infinity,
+                              delay: i * 0.2
+                            }
+                          }}
+                        />
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </motion.button>
+            ))}
+          </div>
         </div>
       </div>
     </section>
