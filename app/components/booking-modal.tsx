@@ -328,45 +328,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     <Dialog open={isOpen} onOpenChange={onClose}>
       <div className="fixed inset-0 z-50 flex items-center justify-center">
         <div className="fixed inset-0 bg-black/90 backdrop-blur-sm" onClick={onClose} />
-        <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[95%] max-w-4xl max-h-[90vh] overflow-hidden">
+        <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[95%] max-w-2xl max-h-[90vh] overflow-hidden">
           <div className="p-6 sm:p-8 border-b border-[#C8A97E]/20">
             <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-medium text-white mb-2">Termin buchen</h2>
-                <div className="flex items-center space-x-2">
-                  {["1", "2", "3", "4"].map((step) => (
-                    <div
-                      key={step}
-                      className={`flex items-center ${parseInt(step) === 4 ? "" : "w-full max-w-[100px]"}`}
-                    >
-                      <div
-                        className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
-                          parseInt(step) === parseInt(currentStep)
-                            ? "border-[#C8A97E] bg-[#C8A97E] text-black"
-                            : parseInt(step) < parseInt(currentStep)
-                            ? "border-[#C8A97E] bg-[#C8A97E]/20 text-[#C8A97E]"
-                            : "border-white/20 text-white/40"
-                        }`}
-                      >
-                        {parseInt(step) < parseInt(currentStep) ? (
-                          <Check className="w-4 h-4" />
-                        ) : (
-                          step
-                        )}
-                      </div>
-                      {parseInt(step) !== 4 && (
-                        <div
-                          className={`h-0.5 w-full ml-2 transition-all duration-300 ${
-                            parseInt(step) < parseInt(currentStep)
-                              ? "bg-[#C8A97E]"
-                              : "bg-white/20"
-                          }`}
-                        />
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <h2 className="text-2xl font-medium text-white">Termin buchen</h2>
               <button
                 onClick={onClose}
                 className="p-2 hover:bg-white/10 rounded-lg transition-colors"
@@ -380,10 +345,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             <div className="space-y-8">
               {/* Service Selection */}
               <div className={`space-y-6 ${currentStep === "1" ? "block" : "hidden"}`}>
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-medium text-white">Service auswählen</h3>
-                  <p className="text-sm text-[#C8A97E]">Schritt 1 von 4</p>
-                </div>
+                <h3 className="text-xl font-medium text-white">Service auswählen</h3>
                 <div className="grid gap-4">
                   {services.map((service) => (
                     <ServiceOption
@@ -398,16 +360,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
               {/* Date Selection */}
               <div className={`space-y-6 ${currentStep === "2" ? "block" : "hidden"}`}>
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-medium text-white">Datum auswählen</h3>
-                  <p className="text-sm text-[#C8A97E]">Schritt 2 von 4</p>
-                </div>
-                <div className="bg-black/20 rounded-xl border-2 border-[#C8A97E]/20 p-6">
+                <h3 className="text-xl font-medium text-white">Datum auswählen</h3>
+                <div className="bg-black/20 rounded-xl border-2 border-[#C8A97E]/20 p-4 flex justify-center">
                   <Calendar
                     mode="single"
                     selected={selectedDate || undefined}
                     onSelect={(date) => date && handleDateSelect(date)}
-                    className="text-white mx-auto"
+                    className="text-white"
                     classNames={{
                       months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
                       month: "space-y-4",
@@ -419,10 +378,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       nav_button_next: "absolute right-1",
                       table: "w-full border-collapse space-y-1",
                       head_row: "flex",
-                      head_cell: "text-[#C8A97E] rounded-md w-10 font-normal text-[0.9rem]",
+                      head_cell: "text-[#C8A97E] rounded-md w-9 font-normal text-[0.8rem]",
                       row: "flex w-full mt-2",
                       cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-[#C8A97E]/10 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                      day: "h-10 w-10 p-0 font-normal aria-selected:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
+                      day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
                       day_selected: "bg-[#C8A97E] text-black hover:bg-[#C8A97E] hover:text-black focus:bg-[#C8A97E] focus:text-black font-medium",
                       day_today: "bg-white/5 text-white font-medium",
                       day_outside: "text-gray-500 opacity-50",
@@ -436,10 +395,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
               {/* Time Selection */}
               <div className={`space-y-6 ${currentStep === "3" ? "block" : "hidden"}`}>
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-medium text-white">Uhrzeit auswählen</h3>
-                  <p className="text-sm text-[#C8A97E]">Schritt 3 von 4</p>
-                </div>
+                <h3 className="text-xl font-medium text-white">Uhrzeit auswählen</h3>
                 <TimeGrid
                   times={timeSlots}
                   selectedTime={selectedTime}
@@ -449,10 +405,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
               {/* Personal Information */}
               <div className={`space-y-6 ${currentStep === "4" ? "block" : "hidden"}`}>
-                <div className="flex items-center justify-between mb-6">
-                  <h3 className="text-xl font-medium text-white">Persönliche Daten</h3>
-                  <p className="text-sm text-[#C8A97E]">Schritt 4 von 4</p>
-                </div>
+                <h3 className="text-xl font-medium text-white">Persönliche Daten</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   <div>
                     <label className="text-sm font-medium text-white/80 mb-2 block">Name</label>
