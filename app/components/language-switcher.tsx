@@ -9,7 +9,7 @@ const translations = {
       home: "Start",
       services: "Unterricht",
       about: "Über mich",
-      references: "Partner",
+      references: "Referenzen & Kooperationen",
       testimonials: "Erfahrungen",
       contact: "Kontakt",
     },
@@ -65,7 +65,7 @@ const translations = {
       less: "Weniger anzeigen"
     },
     references: {
-      title: "Referenzen"
+      title: "Referenzen & Kooperationen"
     },
     testimonials: {
       title: "Erfahrungen"
@@ -85,7 +85,7 @@ const translations = {
       home: "Home",
       services: "Lessons",
       about: "About",
-      references: "Partners",
+      references: "References & Collaborations",
       testimonials: "Testimonials",
       contact: "Contact",
     },
@@ -141,7 +141,7 @@ const translations = {
       less: "Show Less"
     },
     references: {
-      title: "Partners & Collaborations"
+      title: "References & Collaborations"
     },
     testimonials: {
       title: "Testimonials"
