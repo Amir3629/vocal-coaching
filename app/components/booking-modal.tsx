@@ -173,7 +173,7 @@ const TimeGrid = ({ times, selectedTime, onTimeSelect }: {
   onTimeSelect: (time: string) => void 
 }) => (
   <div className="bg-black/20 rounded-xl border-2 border-[#C8A97E]/20 p-6">
-    <div className="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
+    <div className="grid grid-cols-4 gap-3">
       {times.map((time) => (
         <motion.button
           key={time}
@@ -325,8 +325,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   };
 
   const handleBack = () => {
-    const prevStep = (parseInt(currentStep) - 1).toString() as Step;
-    setCurrentStep(prevStep);
+    if (selectedService === "workshop" && currentStep === "4") {
+      setCurrentStep("2");
+    } else {
+      const prevStep = (parseInt(currentStep) - 1).toString() as Step;
+      setCurrentStep(prevStep);
+    }
   };
 
   return (
@@ -623,7 +627,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.5 }}
+              transition={{ duration: 0.8 }}
               className="fixed inset-0 bg-black/80 backdrop-blur-sm"
             />
             <div className="fixed inset-0 overflow-y-auto">
@@ -632,7 +636,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                   className="relative w-full max-w-md bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
                 >
                   <div className="p-6">
