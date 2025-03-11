@@ -354,25 +354,23 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         </div>
 
         {/* Content */}
-        <div className="overflow-y-auto custom-scrollbar">
-          <div className="booking-step">
+        <div className="p-4 overflow-y-auto max-h-[calc(85vh-8rem)] custom-scrollbar">
+          <div className="space-y-4">
             {currentStep === "1" && (
               <motion.div
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
+                className="space-y-4"
               >
-                <div className="space-y-4">
-                  {services.map((service) => (
-                    <ServiceOption
-                      key={service.id}
-                      service={service}
-                      isSelected={selectedService === service.id}
-                      onSelect={() => handleServiceSelect(service.id)}
-                    />
-                  ))}
-                </div>
+                {services.map((service) => (
+                  <ServiceOption
+                    key={service.id}
+                    service={service}
+                    isSelected={selectedService === service.id}
+                    onSelect={() => handleServiceSelect(service.id)}
+                  />
+                ))}
               </motion.div>
             )}
 
@@ -381,9 +379,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
+                className="flex justify-center"
               >
-                <div className="calendar-container">
+                <div className="w-full max-w-[400px]">
                   <Calendar
                     mode="single"
                     selected={selectedDate}
@@ -402,7 +400,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
+                className="space-y-4"
               >
                 <TimeGrid
                   times={timeSlots}
@@ -417,7 +415,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="space-y-6"
+                className="space-y-4"
               >
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <input
@@ -496,22 +494,28 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         </div>
 
         {/* Footer Navigation */}
-        <div className="booking-nav-buttons">
-          {currentStep !== "1" && (
+        <div className="p-4 border-t border-[#C8A97E]/20">
+          <div className="flex justify-between gap-4">
+            {currentStep !== "1" && (
+              <button
+                onClick={handleBack}
+                className="px-6 py-2 rounded-lg border border-[#C8A97E]/30 text-[#C8A97E] hover:bg-[#C8A97E]/10 transition-colors"
+              >
+                Zurück
+              </button>
+            )}
             <button
-              onClick={handleBack}
-              className="booking-button booking-button-back"
+              onClick={currentStep === "4" ? handleSubmit : handleNext}
+              disabled={!canProceedToNextStep()}
+              className={`px-6 py-2 rounded-lg transition-colors ${
+                canProceedToNextStep()
+                  ? "bg-[#C8A97E] text-black hover:bg-[#B69A6E]"
+                  : "bg-[#C8A97E]/50 text-black/50 cursor-not-allowed"
+              } ${currentStep === "1" ? "ml-auto" : ""}`}
             >
-              Zurück
+              {currentStep === "4" ? "Buchen" : "Weiter"}
             </button>
-          )}
-          <button
-            onClick={currentStep === "4" ? handleSubmit : handleNext}
-            disabled={!canProceedToNextStep()}
-            className="booking-button booking-button-next ml-auto"
-          >
-            {currentStep === "4" ? "Buchen" : "Weiter"}
-          </button>
+          </div>
         </div>
       </motion.div>
 
