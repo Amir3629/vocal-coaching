@@ -89,8 +89,8 @@ export default function Navigation() {
                   const element = document.querySelector(link.href.split('#')[1] ? `#${link.href.split('#')[1]}` : 'body')
                   if (element) {
                     const headerOffset = 80
-                    const elementPosition = element.getBoundingClientRect().top
-                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+                    const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+                    const offsetPosition = elementPosition - headerOffset
                     window.scrollTo({
                       top: offsetPosition,
                       behavior: 'smooth'
@@ -167,8 +167,8 @@ export default function Navigation() {
                       const element = document.querySelector(link.href.split('#')[1] ? `#${link.href.split('#')[1]}` : 'body')
                       if (element) {
                         const headerOffset = 80
-                        const elementPosition = element.getBoundingClientRect().top
-                        const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+                        const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
+                        const offsetPosition = elementPosition - headerOffset
                         window.scrollTo({
                           top: offsetPosition,
                           behavior: 'smooth'

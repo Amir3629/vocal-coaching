@@ -7,9 +7,9 @@ const translations = {
   de: {
     nav: {
       home: "Start",
-      services: "Angebote",
+      services: "Unterricht",
       about: "Über mich",
-      references: "Referenzen",
+      references: "Partner",
       testimonials: "Erfahrungen",
       contact: "Kontakt",
     },
@@ -83,9 +83,9 @@ const translations = {
   en: {
     nav: {
       home: "Home",
-      services: "Services",
+      services: "Lessons",
       about: "About",
-      references: "References",
+      references: "Partners",
       testimonials: "Testimonials",
       contact: "Contact",
     },
