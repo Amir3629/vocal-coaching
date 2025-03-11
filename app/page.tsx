@@ -382,7 +382,7 @@ export default function Home() {
       </section>
 
       {/* References Section */}
-      <section id="references" className="py-20 bg-[#040202]">
+      <section className="py-20 bg-[#040202]">
         <GallerySection />
         <Certifications />
         <Collaborations />
