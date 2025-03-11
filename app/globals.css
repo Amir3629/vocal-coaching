@@ -82,6 +82,7 @@
     background-color: #080404;
     color: white;
     overflow-x: hidden;
+    cursor: url('/images/music-cursor.png'), auto;
   }
 }
 
@@ -162,29 +163,28 @@ html {
 }
 
 /* Custom scrollbar styles */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #C8A97E rgba(255, 255, 255, 0.1);
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(200, 169, 126, 0.3);
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
+  background: #C8A97E;
+  border-radius: 3px;
+  transition: background 0.2s ease;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(200, 169, 126, 0.5);
-}
-
-/* Firefox scrollbar */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(200, 169, 126, 0.3) rgba(255, 255, 255, 0.05);
+  background: #b69a6e;
 }
 
 /* Mobile optimizations */

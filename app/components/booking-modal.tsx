@@ -189,6 +189,10 @@ const TimeGrid = ({ times, selectedTime, onTimeSelect }: {
   </div>
 )
 
+const disabledDays = {
+  before: new Date(new Date().setHours(new Date().getHours() + 12)), // Disable dates less than 12 hours from now
+}
+
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [currentStep, setCurrentStep] = useState<Step>("1")
   const [selectedService, setSelectedService] = useState<string>("")
@@ -379,36 +383,15 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                         {/* Date Selection */}
                         {currentStep === "2" && (
-                          <div className="space-y-6">
-                            <h3 className="text-xl font-medium text-white">Datum auswählen</h3>
-                            <div className="bg-black/20 rounded-xl border-2 border-[#C8A97E]/20 p-4 flex justify-center">
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-medium text-white mb-4">Wählen Sie ein Datum</h3>
+                            <div className="bg-white/5 rounded-lg p-4">
                               <Calendar
                                 mode="single"
                                 selected={selectedDate || undefined}
                                 onSelect={(date) => date && handleDateSelect(date)}
-                                className="text-white"
-                                classNames={{
-                                  months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
-                                  month: "space-y-4",
-                                  caption: "flex justify-center pt-1 relative items-center",
-                                  caption_label: "text-base font-medium text-[#C8A97E]",
-                                  nav: "space-x-1 flex items-center",
-                                  nav_button: "h-8 w-8 bg-transparent p-0 opacity-50 hover:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
-                                  nav_button_previous: "absolute left-1",
-                                  nav_button_next: "absolute right-1",
-                                  table: "w-full border-collapse space-y-1",
-                                  head_row: "flex",
-                                  head_cell: "text-[#C8A97E] rounded-md w-9 font-normal text-[0.8rem]",
-                                  row: "flex w-full mt-2",
-                                  cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-[#C8A97E]/10 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
-                                  day: "h-9 w-9 p-0 font-normal aria-selected:opacity-100 hover:bg-[#C8A97E]/20 rounded-lg transition-colors",
-                                  day_selected: "bg-[#C8A97E] text-black hover:bg-[#C8A97E] hover:text-black focus:bg-[#C8A97E] focus:text-black font-medium",
-                                  day_today: "bg-white/5 text-white font-medium",
-                                  day_outside: "text-gray-500 opacity-50",
-                                  day_disabled: "text-gray-500 opacity-50",
-                                  day_range_middle: "aria-selected:bg-[#C8A97E]/20 aria-selected:text-white",
-                                  day_hidden: "invisible",
-                                }}
+                                disabled={disabledDays}
+                                className="mx-auto bg-transparent text-white"
                               />
                             </div>
                           </div>
@@ -416,13 +399,27 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
                         {/* Time Selection */}
                         {currentStep === "3" && (
-                          <div className="space-y-6">
-                            <h3 className="text-xl font-medium text-white">Uhrzeit auswählen</h3>
-                            <TimeGrid
-                              times={timeSlots}
-                              selectedTime={selectedTime}
-                              onTimeSelect={handleTimeSelect}
-                            />
+                          <div className="space-y-4">
+                            <h3 className="text-lg font-medium text-white mb-4">Wählen Sie eine Uhrzeit</h3>
+                            <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                              <div className="grid grid-cols-3 gap-3 p-4 bg-white/5 rounded-lg">
+                                {timeSlots.map((time, index) => (
+                                  <motion.button
+                                    key={index}
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    onClick={() => handleTimeSelect(time)}
+                                    className={`p-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                      selectedTime === time
+                                        ? "bg-[#C8A97E] text-black"
+                                        : "bg-black/20 text-white hover:bg-[#C8A97E]/20"
+                                    }`}
+                                  >
+                                    {time}
+                                  </motion.button>
+                                ))}
+                              </div>
+                            </div>
                           </div>
                         )}
 
