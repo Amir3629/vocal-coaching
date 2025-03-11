@@ -3,7 +3,7 @@
 import { useEffect, useState, useRef } from "react"
 import Image from "next/image"
 import { motion, useScroll, useTransform, AnimatePresence } from "framer-motion"
-import { ChevronDown, MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube, Trophy } from "lucide-react"
+import { ChevronDown, MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube, Trophy, Users, Users2 } from "lucide-react"
 import { Button } from "@/app/components/ui/button"
 import TestimonialSlider from "@/app/components/testimonial-slider"
 import Navigation from "@/app/components/navigation"
@@ -229,119 +229,119 @@ export default function Home() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
             <ServiceCard
+              title="Vocal Coaching"
+              description="Professionelles Stimmtraining"
+              icon={<Mic className="w-6 h-6" />}
+              features={[
+                "Stimmtechnik",
+                "Gesangsübungen",
+                "Repertoire-Entwicklung",
+                "Performance Training"
+              ]}
+              details={{
+                includes: [
+                  "Individuelle Analyse",
+                  "Maßgeschneidertes Training",
+                  "Aufnahmen & Feedback",
+                  "Professionelle Betreuung"
+                ],
+                suitable: [
+                  "Profis",
+                  "Semi-Profis",
+                  "Ambitionierte Sänger",
+                  "Alle Genres"
+                ],
+                duration: "60-90 min",
+                location: "Studio Berlin"
+              }}
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/vocal-coaching.jpg" : "/images/cards/vocal-coaching.jpg"}
+            />
+
+            <ServiceCard
               title="Singen"
-              description="Gesangsunterricht"
+              description="Gesangsunterricht für alle"
               icon={<Music className="w-6 h-6" />}
               features={[
+                "Grundtechniken",
                 "Stimmbildung",
                 "Atemtechnik",
-                "Interpretation",
-                "Bühnenpräsenz"
+                "Liedinterpretation"
               ]}
               details={{
                 includes: [
                   "Stimmanalyse",
-                  "Individueller Trainingsplan",
-                  "Aufnahmen",
-                  "Übe-Material"
+                  "Grundlagentraining",
+                  "Liedauswahl",
+                  "Übungsmaterial"
                 ],
                 suitable: [
                   "Anfänger",
                   "Fortgeschrittene",
-                  "Profis",
-                  "Alle Genres"
+                  "Hobbysänger",
+                  "Chorsänger"
                 ],
-                duration: "60-90 min",
+                duration: "45-60 min",
                 location: "Online & Studio Berlin"
               }}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/singing.jpg" : "/images/cards/singing.jpg"}
             />
 
             <ServiceCard
-              title="Sprechen"
-              description="Sprechtraining"
-              icon={<Mic className="w-6 h-6" />}
+              title="Workshop"
+              description="Intensive Gruppenarbeit"
+              icon={<Users className="w-6 h-6" />}
               features={[
-                "Artikulation",
-                "Resonanz",
-                "Sprachmelodie",
-                "Atmung"
+                "Ensemble-Arbeit",
+                "Groove & Timing",
+                "Harmoniearbeit",
+                "Performance"
               ]}
               details={{
                 includes: [
-                  "Sprachanalyse",
-                  "Atemübungen",
-                  "Textarbeit",
-                  "Präsentationstechnik"
+                  "Gruppenübungen",
+                  "Praktische Anwendung",
+                  "Gemeinsames Singen",
+                  "Abschlusspräsentation"
                 ],
                 suitable: [
-                  "Sprecher",
-                  "Moderatoren",
-                  "Schauspieler",
-                  "Präsentatoren"
+                  "Alle Level",
+                  "Bands",
+                  "Ensembles",
+                  "Interessierte"
                 ],
-                duration: "60 min",
+                duration: "3-6 Stunden",
                 location: "Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/speaking.jpg" : "/images/cards/speaking.jpg"}
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/workshop.jpg" : "/images/cards/workshop.jpg"}
             />
 
             <ServiceCard
-              title="Lernen"
-              description="Musiktheorie"
-              icon={<BookOpen className="w-6 h-6" />}
+              title="Chor"
+              description="Gemeinsam singen"
+              icon={<Users2 className="w-6 h-6" />}
               features={[
-                "Grundlagen der Musiktheorie",
-                "Rhythmus und Timing",
-                "Gehörbildung",
-                "Harmonielehre"
+                "Mehrstimmigkeit",
+                "Chorklang",
+                "Blattlesen",
+                "Ensemble-Gesang"
               ]}
               details={{
                 includes: [
-                  "Theoretische Grundlagen",
-                  "Praktische Übungen",
-                  "Notenlesen",
-                  "Rhythmustraining"
+                  "Stimmbildung",
+                  "Repertoire-Arbeit",
+                  "Auftrittsvorbereitung",
+                  "Gemeinschaftserlebnis"
                 ],
                 suitable: [
-                  "Anfänger",
-                  "Fortgeschrittene",
-                  "Musikstudenten",
-                  "Hobbymusiker"
+                  "Alle Altersgruppen",
+                  "Alle Niveaus",
+                  "Musikbegeisterte",
+                  "Teamplayer"
                 ],
-                duration: "60 min",
-                location: "Online & Studio Berlin"
-              }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/learning.jpg" : "/images/cards/learning.jpg"}
-            />
-
-            <ServiceCard
-              title="Erfolg"
-              description="Zertifizierung"
-              icon={<Trophy className="w-6 h-6" />}
-              features={[
-                "Prüfungsvorbereitung",
-                "Auftrittstraining",
-                "Feedback und Evaluation",
-                "Zertifikatsabschluss"
-              ]}
-              details={{
-                includes: [
-                  "Individuelles Coaching",
-                  "Prüfungssimulation",
-                  "Dokumentation",
-                  "Zertifikat"
-                ],
-                suitable: [
-                  "Musikstudenten",
-                  "Profis",
-                  "Fortgeschrittene",
-                  "Zertifizierungskandidaten"
-                ],
-                duration: "90 min",
+                duration: "90-120 min",
                 location: "Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/success.jpg" : "/images/cards/success.jpg"}
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/cards/choir.jpg" : "/images/cards/choir.jpg"}
             />
           </div>
 
