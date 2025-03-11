@@ -8,9 +8,10 @@ import Footer from "./components/footer"
 import { LanguageProvider } from "@/app/components/language-switcher"
 
 const inter = Inter({ subsets: ["latin"] })
-const playfair = Playfair_Display({ 
-  subsets: ["latin"],
-  variable: '--font-playfair'
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair',
 })
 
 export const viewport: Viewport = {

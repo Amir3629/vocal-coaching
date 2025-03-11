@@ -30,12 +30,25 @@ export default function Hero() {
           transition={{ duration: 0.8 }}
           className="text-center"
         >
-          <h1 className="text-4xl md:text-6xl font-bold mb-4">
-            {t.hero.title}
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 text-gray-300">
+          <motion.div
+            initial={{ scale: 0.9, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.2 }}
+            className="mb-8"
+          >
+            <h1 className="font-playfair text-7xl md:text-8xl lg:text-9xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[#C8A97E] to-[#E5D5B7] tracking-wider">
+              Mel jazz
+            </h1>
+            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80 mt-4"></div>
+          </motion.div>
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+            className="text-2xl md:text-3xl mb-8 text-gray-300 font-light tracking-wide"
+          >
             {t.hero.subtitle}
-          </p>
+          </motion.h2>
           <motion.a
             href="#contact"
             whileHover={{ scale: 1.05 }}
