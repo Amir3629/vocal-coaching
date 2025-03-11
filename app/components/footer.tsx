@@ -7,6 +7,7 @@ import Link from "next/link"
 import LegalDocumentModal from "./legal-document-modal"
 import dynamic from "next/dynamic"
 import Image from "next/image"
+import { X } from "lucide-react"
 
 // Dynamically import legal document contents
 const DatenschutzContent = dynamic(
@@ -178,14 +179,26 @@ export default function Footer() {
         </div>
 
         {/* Legal Document Modal */}
-        <LegalDocumentModal
-          isOpen={selectedDoc !== null}
-          onClose={handleCloseModal}
-          title={selectedDoc || ""}
-        >
-          {selectedDoc && legalDocs.find(doc => doc.title === selectedDoc)?.component && 
-            createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
-        </LegalDocumentModal>
+        {selectedDoc && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center">
+            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={handleCloseModal} />
+            <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[90%] max-w-2xl max-h-[85vh] overflow-hidden z-[101]">
+              <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
+                <h3 className="text-lg font-medium text-white">{selectedDoc}</h3>
+                <button
+                  onClick={handleCloseModal}
+                  className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <X className="w-5 h-5 text-white/70 hover:text-white transition-colors" />
+                </button>
+              </div>
+              <div className="p-6 overflow-y-auto max-h-[calc(85vh-80px)] custom-scrollbar">
+                {selectedDoc && legalDocs.find(doc => doc.title === selectedDoc)?.component && 
+                  createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </footer>
   )
