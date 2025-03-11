@@ -2,45 +2,31 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion } from "framer-motion";
-import Image from "next/image";
-import { Volume2, VolumeX } from "lucide-react";
 
 const defaultTracks = [
   {
     id: 1,
     title: "Jazz Performance",
     description: "Live at B-Flat Jazz Club Berlin",
-    youtubeId: "hFdMHvB6-Jk",
-    coverImage: process.env.NODE_ENV === 'production' 
-      ? "/vocal-coaching/images/performances/jazz-live.jpg"
-      : "/images/performances/jazz-live.jpg"
+    youtubeId: "hFdMHvB6-Jk"
   },
   {
     id: 2,
     title: "Vocal Workshop",
     description: "Complete Vocal Tech Demonstration",
-    youtubeId: "AWsarzdZ1u8",
-    coverImage: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/performances/workshop.jpg"
-      : "/images/performances/workshop.jpg"
+    youtubeId: "AWsarzdZ1u8"
   },
   {
     id: 3,
     title: "Jazz Standards",
-    description: "Live Performance Collection",
-    youtubeId: "GidIMbCmtyk",
-    coverImage: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/performances/standards.jpg"
-      : "/images/performances/standards.jpg"
+    description: "Live Performance Highlights",
+    youtubeId: "GidIMbCmtyk"
   },
   {
     id: 4,
     title: "Vocal Jazz",
     description: "Studio Session",
-    youtubeId: "QgZKO_f5FlM",
-    coverImage: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/performances/studio.jpg"
-      : "/images/performances/studio.jpg"
+    youtubeId: "QgZKO_f5FlM"
   }
 ];
 
@@ -49,6 +35,7 @@ export default function EnhancedMusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [rotation, setRotation] = useState(0);
   const playerRef = useRef<any>(null);
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
 
@@ -111,6 +98,7 @@ export default function EnhancedMusicPlayer() {
         const currentTime = playerRef.current.getCurrentTime();
         const duration = playerRef.current.getDuration();
         setProgress(currentTime / duration);
+        setRotation((currentTime / duration) * 360);
       }
     }, 100);
   };
@@ -158,7 +146,7 @@ export default function EnhancedMusicPlayer() {
 
         {/* Main Player */}
         <div className="max-w-3xl mx-auto mb-16">
-          <div className="aspect-video relative w-full bg-zinc-900/50 rounded-lg overflow-hidden">
+          <div className="aspect-video relative w-full bg-[#0A0A0A] rounded-lg overflow-hidden">
             <div className="absolute inset-0 flex flex-col items-center justify-center">
               <h3 className="text-white text-xl mb-1">
                 {defaultTracks[currentTrack].title}
@@ -167,37 +155,62 @@ export default function EnhancedMusicPlayer() {
                 {defaultTracks[currentTrack].description}
               </p>
               
-              <div className="flex gap-6">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handlePlayPause}
-                  className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-                >
-                  <div className={`${isPlaying ? 'w-3 h-3 bg-white' : 'w-0 h-0 border-t-[6px] border-b-[6px] border-l-[10px] ml-0.5 border-transparent border-l-white'}`} />
-                </motion.button>
-                
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={toggleMute}
-                  className="w-12 h-12 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center transition-colors"
-                >
-                  {isMuted ? (
-                    <VolumeX className="w-5 h-5 text-white" />
-                  ) : (
-                    <Volume2 className="w-5 h-5 text-white" />
-                  )}
-                </motion.button>
-              </div>
-            </div>
+              <div className="relative w-32 h-32">
+                {/* Progress Circle */}
+                <svg className="absolute inset-0 w-full h-full -rotate-90">
+                  <circle
+                    cx="64"
+                    cy="64"
+                    r="60"
+                    fill="none"
+                    stroke="#1A1A1A"
+                    strokeWidth="2"
+                  />
+                  <circle
+                    cx="64"
+                    cy="64"
+                    r="60"
+                    fill="none"
+                    stroke="#C8A97E"
+                    strokeWidth="2"
+                    strokeDasharray={`${progress * 377} 377`}
+                    className="transition-all duration-100"
+                  />
+                </svg>
 
-            {/* Progress Bar */}
-            <div className="absolute bottom-0 left-0 right-0 h-1 bg-white/10">
-              <motion.div
-                className="h-full bg-white"
-                style={{ width: `${progress * 100}%` }}
-              />
+                {/* Play/Pause Dot */}
+                <motion.div
+                  className="absolute"
+                  style={{
+                    width: "8px",
+                    height: "8px",
+                    borderRadius: "50%",
+                    backgroundColor: "#C8A97E",
+                    top: "50%",
+                    left: "50%",
+                    x: "32px",
+                    y: "-4px",
+                    rotate: `${rotation}deg`,
+                    transformOrigin: "-32px 4px"
+                  }}
+                />
+
+                {/* Control Buttons */}
+                <div className="absolute inset-0 flex items-center justify-center gap-4">
+                  <button
+                    onClick={toggleMute}
+                    className="w-10 h-10 rounded-full bg-[#1A1A1A] flex items-center justify-center"
+                  >
+                    <div className={`w-4 h-4 ${isMuted ? 'bg-white/40' : 'bg-[#C8A97E]'} rounded-full transition-colors`} />
+                  </button>
+                  <button
+                    onClick={handlePlayPause}
+                    className="w-10 h-10 rounded-full bg-[#C8A97E] flex items-center justify-center"
+                  >
+                    <div className={`${isPlaying ? 'w-3 h-3 bg-black' : 'w-0 h-0 border-t-[5px] border-b-[5px] border-l-[8px] ml-0.5 border-transparent border-l-black'}`} />
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -209,26 +222,20 @@ export default function EnhancedMusicPlayer() {
               key={track.id}
               onClick={() => handleTrackSelect(index)}
               className={`group relative aspect-video w-full overflow-hidden rounded-lg ${
-                currentTrack === index ? 'ring-1 ring-white/20' : ''
+                currentTrack === index ? 'ring-1 ring-[#C8A97E]' : ''
               }`}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
             >
-              <Image
-                src={track.coverImage}
-                alt={track.title}
-                fill
-                className="object-cover"
-              />
-              <div className="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors flex flex-col items-center justify-center p-4">
+              <div className="absolute inset-0 bg-[#0A0A0A] flex flex-col items-center justify-center p-4">
                 <h3 className="text-white text-lg font-medium mb-1">{track.title}</h3>
-                <p className="text-gray-300 text-sm">{track.description}</p>
+                <p className="text-gray-400 text-sm">{track.description}</p>
                 {currentTrack === index && isPlaying && (
                   <div className="absolute bottom-3 flex gap-0.5">
                     {[...Array(3)].map((_, i) => (
                       <motion.div
                         key={i}
-                        className="w-0.5 h-3 bg-white"
+                        className="w-0.5 h-3 bg-[#C8A97E]"
                         animate={{
                           height: [12, 16, 12],
                           transition: {
