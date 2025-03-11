@@ -30,42 +30,42 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
   }, [isOpen, onClose])
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
+            transition={{ duration: 0.3 }}
             className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
             onClick={onClose}
           />
-
-          {/* Modal Container */}
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-            <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
-              transition={{ duration: 0.3, ease: [0.32, 0.72, 0, 1] }}
-              className="w-full max-w-4xl bg-[#0A0A0A] rounded-xl shadow-xl overflow-hidden relative"
-            >
-              <div className="sticky top-0 bg-[#0A0A0A] z-10 px-6 py-4 border-b border-white/10 flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-white">{title}</h2>
-                <button
-                  onClick={onClose}
-                  className="p-2 text-gray-400 hover:text-white transition-colors rounded-lg hover:bg-white/5"
-                >
-                  <X className="w-6 h-6" />
-                </button>
-              </div>
-              <div className="p-6 max-h-[80vh] overflow-y-auto custom-scrollbar">
-                {children}
-              </div>
-            </motion.div>
-          </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.95, y: 20 }}
+            transition={{ 
+              duration: 0.3,
+              type: "spring",
+              stiffness: 300,
+              damping: 30
+            }}
+            className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[90%] max-w-2xl max-h-[80vh] bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-xl z-50 overflow-hidden"
+          >
+            <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
+              <h3 className="text-lg font-medium text-white">{title}</h3>
+              <button
+                onClick={onClose}
+                className="p-1 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-white/70 hover:text-white" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto max-h-[calc(80vh-80px)]">
+              {children}
+            </div>
+          </motion.div>
         </>
       )}
     </AnimatePresence>

@@ -16,6 +16,7 @@ import SuccessMessage from "./success-message"
 import LegalDocumentModal from "./legal-document-modal"
 import LegalContent from "./legal-content"
 import CustomAlert from "./custom-alert"
+import { Calendar } from "@/components/ui/calendar"
 
 interface BookingModalProps {
   isOpen: boolean
@@ -117,6 +118,28 @@ interface FormData {
   termsAccepted: boolean;
 }
 
+const TimeGrid = ({ times, selectedTime, onTimeSelect }: { 
+  times: string[], 
+  selectedTime: string | null,
+  onTimeSelect: (time: string) => void 
+}) => (
+  <div className="grid grid-cols-4 gap-2 p-2">
+    {times.map((time) => (
+      <button
+        key={time}
+        onClick={() => onTimeSelect(time)}
+        className={`p-2 rounded-lg text-center transition-all ${
+          selectedTime === time
+            ? "bg-[#C8A97E] text-black"
+            : "bg-white/5 hover:bg-white/10 text-white"
+        }`}
+      >
+        {time}
+      </button>
+    ))}
+  </div>
+)
+
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [currentStep, setCurrentStep] = useState<Step>("1")
   const [selectedService, setSelectedService] = useState<string>("")
@@ -135,6 +158,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   })
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showSuccess, setShowSuccess] = useState(false)
+  const [date, setDate] = useState<Date>()
 
   const handleServiceSelect = (serviceId: string) => {
     setSelectedService(serviceId);
@@ -242,9 +266,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             >
               <h2 className="text-xl font-medium text-[#C8A97E]">
                 {currentStep === "1" && "Service auswählen"}
-                {currentStep === "2" && "Art des Unterrichts"}
-                {currentStep === "3" && "Datum auswählen"}
-                {currentStep === "4" && "Uhrzeit auswählen"}
+                {currentStep === "2" && "Datum auswählen"}
+                {currentStep === "3" && "Uhrzeit auswählen"}
+                {currentStep === "4" && "Persönliche Daten"}
                 {currentStep === "5" && "Persönliche Daten"}
               </h2>
             </motion.div>
@@ -283,133 +307,50 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   </div>
                 )}
 
-                {/* Step 2: Service Type Selection */}
+                {/* Step 2: Date Selection */}
                 {currentStep === "2" && (
-                  <div className="grid grid-cols-1 gap-4">
-                    {services.find(s => s.id === selectedService)?.types?.map((type) => (
-                      <motion.button
-                        key={type.id}
-                        onClick={() => handleServiceTypeSelect(type.id)}
-                        className={cn(
-                          "p-6 rounded-lg border text-left transition-all",
-                          "hover:border-[#C8A97E] hover:bg-[#C8A97E]/10",
-                          selectedServiceType === type.id
-                            ? "border-[#C8A97E] bg-[#C8A97E]/10"
-                            : "border-white/10 bg-black/40"
-                        )}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <h3 className="text-xl font-medium text-white mb-2">{type.title}</h3>
-                        <p className="text-sm text-white/60">{type.description}</p>
-                      </motion.button>
-                    ))}
+                  <div className="space-y-4">
+                    <h3 className="text-lg font-medium text-white mb-4">Datum auswählen</h3>
+                    <div className="bg-white/5 rounded-lg p-4">
+                      <Calendar
+                        mode="single"
+                        selected={date}
+                        onSelect={setDate}
+                        locale={de}
+                        className="bg-transparent border-[#C8A97E]/20"
+                        classNames={{
+                          day_selected: "bg-[#C8A97E] text-black",
+                          day: "hover:bg-white/10",
+                          head_cell: "text-[#C8A97E]",
+                          nav_button: "hover:bg-white/10",
+                          nav_button_previous: "absolute left-1",
+                          nav_button_next: "absolute right-1",
+                        }}
+                      />
+                    </div>
                   </div>
                 )}
 
-                {/* Step 3: Date Selection */}
+                {/* Step 3: Time Selection */}
                 {currentStep === "3" && (
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between mb-4">
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setCurrentDate(subMonths(currentDate, 1))}
-                        className="p-2 rounded-lg hover:bg-white/5"
-                      >
-                        <ChevronLeft className="w-4 h-4" />
-                      </motion.button>
-                      <h3 className="text-lg font-medium">
-                        {format(currentDate, "MMMM yyyy", { locale: de })}
-                      </h3>
-                      <motion.button
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.9 }}
-                        onClick={() => setCurrentDate(addMonths(currentDate, 1))}
-                        className="p-2 rounded-lg hover:bg-white/5"
-                      >
-                        <ChevronRight className="w-4 h-4" />
-                      </motion.button>
-                    </div>
-
-                    <div className="grid grid-cols-7 gap-2">
-                      {["Mo", "Di", "Mi", "Do", "Fr", "Sa", "So"].map((day) => (
-                        <div key={day} className="text-sm text-gray-400 text-center font-medium">
-                          {day}
-                        </div>
-                      ))}
-                    </div>
-
-                    <div className="grid grid-cols-7 gap-2">
-                      {Array.from({ length: new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay() - 1 }).map((_, i) => (
-                        <div key={`empty-${i}`} className="aspect-square" />
-                      ))}
-                      
-                      {eachDayOfInterval({
-                        start: startOfMonth(currentDate),
-                        end: endOfMonth(currentDate)
-                      }).map((day) => {
-                        const isSelected = selectedDate && isSameDay(day, selectedDate);
-                        const isDisabled = isBefore(day, startOfToday());
-                        return (
-                          <motion.button
-                            key={day.toString()}
-                            onClick={() => !isDisabled && handleDateSelect(day)}
-                            className={cn(
-                              "aspect-square flex items-center justify-center rounded-lg text-center transition-all",
-                              isSelected && "bg-[#C8A97E] text-black font-medium",
-                              !isSelected && !isDisabled && "hover:bg-[#C8A97E]/10 hover:border-[#C8A97E]",
-                              !isSelected && !isDisabled && "border border-white/10",
-                              isDisabled && "opacity-25 cursor-not-allowed border border-white/5"
-                            )}
-                            whileHover={!isDisabled ? { scale: 1.05 } : {}}
-                            whileTap={!isDisabled ? { scale: 0.95 } : {}}
-                            disabled={isDisabled}
-                          >
-                            {format(day, "d")}
-                          </motion.button>
-                        );
-                      })}
+                    <h3 className="text-lg font-medium text-white mb-4">Uhrzeit auswählen</h3>
+                    <div className="bg-white/5 rounded-lg">
+                      <TimeGrid
+                        times={[
+                          "09:00", "10:00", "11:00", "12:00",
+                          "13:00", "14:00", "15:00", "16:00",
+                          "17:00", "18:00", "19:00", "20:00"
+                        ]}
+                        selectedTime={selectedTime}
+                        onTimeSelect={handleTimeSelect}
+                      />
                     </div>
                   </div>
                 )}
 
-                {/* Step 4: Time Selection */}
+                {/* Step 4: Contact Form */}
                 {currentStep === "4" && (
-                  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3">
-                    {timeSlots.map((time) => (
-                      <motion.button
-                        key={time}
-                        onClick={() => handleTimeSelect(time)}
-                        className={cn(
-                          "p-3 rounded-lg border text-center transition-all relative overflow-hidden",
-                          "hover:border-[#C8A97E] hover:bg-[#C8A97E]/10",
-                          selectedTime === time
-                            ? "border-[#C8A97E] bg-[#C8A97E]/10"
-                            : "border-white/10 bg-black/40"
-                        )}
-                        whileHover={{ scale: 1.02 }}
-                        whileTap={{ scale: 0.98 }}
-                      >
-                        <div className="relative z-10">
-                          <span className="text-base font-medium text-white">{time}</span>
-                        </div>
-                        {selectedTime === time && (
-                          <motion.div
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            className="absolute top-1 right-1"
-                          >
-                            <Check className="w-3 h-3 text-[#C8A97E]" />
-                          </motion.div>
-                        )}
-                      </motion.button>
-                    ))}
-                  </div>
-                )}
-
-                {/* Step 5: Contact Form */}
-                {currentStep === "5" && (
                   <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="grid grid-cols-2 gap-4 mb-8">
                       {skillLevels.map((level) => (
@@ -587,9 +528,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
                     if (currentStep === "1" && !selectedService) return;
-                    if (currentStep === "2" && !selectedServiceType) return;
-                    if (currentStep === "3" && !selectedDate) return;
-                    if (currentStep === "4" && !selectedTime) return;
+                    if (currentStep === "2" && !date) return;
+                    if (currentStep === "3" && !selectedTime) return;
                     setCurrentStep((prev) => (parseInt(prev) + 1).toString() as Step);
                   }}
                   className={cn(
@@ -598,9 +538,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   )}
                   disabled={
                     (currentStep === "1" && !selectedService) ||
-                    (currentStep === "2" && !selectedServiceType) ||
-                    (currentStep === "3" && !selectedDate) ||
-                    (currentStep === "4" && !selectedTime)
+                    (currentStep === "2" && !date) ||
+                    (currentStep === "3" && !selectedTime)
                   }
                 >
                   Weiter
