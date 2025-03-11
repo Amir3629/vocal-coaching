@@ -54,54 +54,77 @@ export default function EnhancedMusicPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [progress, setProgress] = useState(0);
+  const [apiReady, setApiReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const playerRef = useRef<any>(null);
   const progressInterval = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (!window.YT) {
-      const tag = document.createElement('script');
-      tag.src = 'https://www.youtube.com/iframe_api';
-      const firstScriptTag = document.getElementsByTagName('script')[0];
-      firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
-
-      window.onYouTubeIframeAPIReady = initializePlayer;
-    } else {
+    // Define the callback in the window object
+    (window as any).onYouTubeIframeAPIReady = () => {
+      setApiReady(true);
       initializePlayer();
-    }
+    };
+
+    // Load the YouTube IFrame API
+    const tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
     return () => {
       if (progressInterval.current) {
         clearInterval(progressInterval.current);
       }
+      // Cleanup
+      if (playerRef.current) {
+        playerRef.current.destroy();
+      }
     };
   }, []);
 
   const initializePlayer = () => {
-    playerRef.current = new window.YT.Player("youtube-player", {
-      height: "0",
-      width: "0",
-      videoId: tracks[currentTrack].youtubeId,
-      playerVars: {
-        autoplay: 0,
-        controls: 0,
-        disablekb: 1,
-        fs: 0,
-        rel: 0
-      },
-      events: {
-        onStateChange: (event: any) => {
-          if (event.data === window.YT.PlayerState.PLAYING) {
-            setIsPlaying(true);
-            startProgressTracking();
-          } else {
-            setIsPlaying(false);
-            if (progressInterval.current) {
-              clearInterval(progressInterval.current);
+    try {
+      if (!(window as any).YT || !(window as any).YT.Player) {
+        setError("YouTube API not loaded yet");
+        return;
+      }
+
+      playerRef.current = new (window as any).YT.Player("youtube-player", {
+        height: "0",
+        width: "0",
+        videoId: tracks[currentTrack].youtubeId,
+        playerVars: {
+          autoplay: 0,
+          controls: 0,
+          disablekb: 1,
+          fs: 0,
+          rel: 0
+        },
+        events: {
+          onReady: () => {
+            setError(null);
+          },
+          onError: () => {
+            setError("Error loading video");
+          },
+          onStateChange: (event: any) => {
+            if (event.data === (window as any).YT.PlayerState.PLAYING) {
+              setIsPlaying(true);
+              startProgressTracking();
+            } else {
+              setIsPlaying(false);
+              if (progressInterval.current) {
+                clearInterval(progressInterval.current);
+              }
             }
           }
         }
-      }
-    });
+      });
+    } catch (err) {
+      setError("Failed to initialize player");
+      console.error("Player initialization error:", err);
+    }
   };
 
   const startProgressTracking = () => {
@@ -161,7 +184,13 @@ export default function EnhancedMusicPlayer() {
           <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto mt-4"></div>
         </motion.h2>
 
-        <div id="youtube-player" className="hidden"></div>
+        <div id="youtube-player" style={{ display: 'none' }}></div>
+
+        {error && (
+          <div className="text-red-500 text-center mb-4">
+            {error}
+          </div>
+        )}
 
         {/* Main Player Section */}
         <div className="max-w-6xl mx-auto">
