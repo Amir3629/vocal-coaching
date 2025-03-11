@@ -39,7 +39,7 @@ export default function ServiceCard({ title, description, icon, price, features,
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: "easeOut", delay }}
-      className={`relative transform-gpu ${isHovered ? 'z-10' : 'z-0'}`}
+      className={`relative transform-gpu ${isHovered ? 'z-10' : 'z-0'} group`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{ 
@@ -48,7 +48,7 @@ export default function ServiceCard({ title, description, icon, price, features,
       }}
     >
       <motion.div
-        className="relative w-full rounded-2xl overflow-hidden"
+        className="relative w-full rounded-2xl overflow-hidden pointer-events-none"
         animate={{ 
           scale: isHovered ? 1.05 : 1,
           y: isHovered ? -10 : 0
@@ -65,7 +65,9 @@ export default function ServiceCard({ title, description, icon, price, features,
             src={imagePath}
             alt={title}
             fill
-            className="object-cover transform-gpu transition-transform duration-1000 scale-110 filter blur-[0.5px]"
+            className={`object-cover transform-gpu transition-all duration-700 scale-110 ${
+              isHovered ? 'blur-none' : 'blur-[2px]'
+            }`}
             sizes="(max-width: 768px) 100vw, 33vw"
             priority
             onError={() => setImageError(true)}
@@ -81,13 +83,13 @@ export default function ServiceCard({ title, description, icon, price, features,
               background: 'linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.9) 100%)',
               backdropFilter: 'blur(1.5px)',
               WebkitBackdropFilter: 'blur(1.5px)',
-              opacity: isHovered ? 0.8 : 0.9
+              opacity: 0.9
             } as React.CSSProperties}
           />
         </div>
 
-        {/* Content Layer - Now with higher z-index */}
-        <div className="relative z-10 border border-[#C8A97E]/20 hover:border-[#C8A97E]/50 rounded-2xl overflow-visible">
+        {/* Content Layer */}
+        <div className="relative z-10 border border-[#C8A97E]/20 group-hover:border-[#C8A97E]/50 rounded-2xl overflow-visible pointer-events-auto">
           <motion.div 
             className="relative w-full h-full"
             animate={{ 
