@@ -29,17 +29,13 @@ export default function ServiceCard({ title, description, icon, price, features,
   const [isHovered, setIsHovered] = useState(false)
   const [imageError, setImageError] = useState(false)
 
-  const imagePath = process.env.NODE_ENV === 'production'
-    ? `/vocal-coaching${image}`
-    : image
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.7, ease: "easeOut", delay }}
-      className={`relative transform-gpu ${isHovered ? 'z-10' : 'z-0'} group`}
+      className={`relative transform-gpu ${isHovered ? 'z-10' : 'z-0'} group h-[420px]`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{ 
@@ -48,7 +44,7 @@ export default function ServiceCard({ title, description, icon, price, features,
       }}
     >
       <motion.div
-        className="relative w-full rounded-2xl overflow-hidden pointer-events-none"
+        className="relative w-full h-full rounded-2xl overflow-hidden pointer-events-none"
         animate={{ 
           scale: isHovered ? 1.05 : 1,
           y: isHovered ? -10 : 0
@@ -62,13 +58,13 @@ export default function ServiceCard({ title, description, icon, price, features,
         {/* Background Image Layer with Overlay */}
         <div className="absolute inset-0 w-full h-full">
           <Image
-            src={imagePath}
+            src={process.env.NODE_ENV === 'production' ? `/vocal-coaching${image}` : image}
             alt={title}
             fill
             className={`object-cover transform-gpu transition-all duration-700 scale-110 ${
               isHovered ? 'blur-none' : 'blur-[2px]'
             }`}
-            sizes="(max-width: 768px) 100vw, 33vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
             priority
             onError={() => setImageError(true)}
           />
@@ -83,7 +79,7 @@ export default function ServiceCard({ title, description, icon, price, features,
               background: 'linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.85) 50%, rgba(0,0,0,0.9) 100%)',
               backdropFilter: 'blur(1.5px)',
               WebkitBackdropFilter: 'blur(1.5px)',
-              opacity: 0.9
+              opacity: isHovered ? 0.8 : 0.9
             } as React.CSSProperties}
           />
         </div>
