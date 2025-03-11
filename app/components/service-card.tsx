@@ -106,13 +106,14 @@ export default function ServiceCard({ title, description, icon, price, features,
                 className="text-[#C8A97E] text-2xl"
                 animate={{ 
                   scale: isHovered ? 1.1 : 1,
-                  rotate: isHovered ? [0, 5, -5, 0] : 0,
-                  y: isHovered ? [0, -5, 0] : 0
+                  y: isHovered ? [-2, 2, -2] : 0,
+                  rotate: isHovered ? [-3, 3, -3] : 0
                 }}
                 transition={{ 
                   duration: 3,
                   repeat: Infinity,
-                  ease: "easeInOut"
+                  ease: "easeInOut",
+                  times: [0, 0.5, 1]
                 }}
               >
                 {icon}
