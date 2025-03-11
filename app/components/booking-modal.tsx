@@ -328,7 +328,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <motion.div
+          <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
@@ -417,7 +417,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 exit={{ opacity: 0, x: -20 }}
                 className="space-y-4"
               >
-                <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
                   <input
                     type="text"
                     name="name"
@@ -453,11 +453,11 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                     rows={3}
                     className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
                   />
-                  <div className="flex items-start gap-2">
-                    <input
-                      type="checkbox"
+                <div className="flex items-start gap-2">
+                  <input
+                    type="checkbox"
                       name="termsAccepted"
-                      id="terms"
+                    id="terms"
                       checked={formData.termsAccepted}
                       onChange={(e) =>
                         setFormData({
@@ -466,28 +466,28 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         })
                       }
                       required
-                      className="mt-1"
-                    />
-                    <label htmlFor="terms" className="text-sm text-gray-400">
-                      Ich akzeptiere die{" "}
-                      <button
-                        type="button"
+                    className="mt-1"
+                  />
+                  <label htmlFor="terms" className="text-sm text-gray-400">
+                    Ich akzeptiere die{" "}
+                    <button
+                      type="button"
                         onClick={() => setShowLegalModal("agb")}
                         className="text-[#C8A97E] hover:text-[#B69A6E] underline"
-                      >
-                        AGB
-                      </button>{" "}
-                      und{" "}
-                      <button
-                        type="button"
+                    >
+                      AGB
+                    </button>{" "}
+                    und{" "}
+                    <button
+                      type="button"
                         onClick={() => setShowLegalModal("datenschutz")}
                         className="text-[#C8A97E] hover:text-[#B69A6E] underline"
-                      >
-                        Datenschutzerklärung
-                      </button>
-                    </label>
-                  </div>
-                </form>
+                    >
+                      Datenschutzerklärung
+                    </button>
+                  </label>
+                </div>
+              </form>
               </motion.div>
             )}
           </div>
@@ -496,12 +496,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         {/* Footer Navigation */}
         <div className="p-4 border-t border-[#C8A97E]/20">
           <div className="flex justify-between gap-4">
-            {currentStep !== "1" && (
+          {currentStep !== "1" && (
               <button
                 onClick={handleBack}
                 className="px-6 py-2 rounded-lg border border-[#C8A97E]/30 text-[#C8A97E] hover:bg-[#C8A97E]/10 transition-colors"
               >
-                Zurück
+              Zurück
               </button>
             )}
             <button
@@ -547,7 +547,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   <div className="p-6">
                     <h2 className="text-xl font-medium text-[#C8A97E] mb-4">AGB</h2>
                     <div className="prose prose-invert max-w-none">
-                      <LegalContent type="agb" />
+        <LegalContent type="agb" />
                     </div>
                   </div>
                   <button
@@ -577,7 +577,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   <div className="p-6">
                     <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Datenschutzerklärung</h2>
                     <div className="prose prose-invert max-w-none">
-                      <LegalContent type="datenschutz" />
+        <LegalContent type="datenschutz" />
                     </div>
                   </div>
                   <button

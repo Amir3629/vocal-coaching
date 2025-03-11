@@ -61,15 +61,15 @@ export default function Collaborations() {
     <section id="references" className="py-20 bg-[#040202]">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+        <motion.h2
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6 }}
             className="section-heading mb-4"
-          >
-            {t.references.title}
-          </motion.h2>
+        >
+          {t.references.title}
+        </motion.h2>
           <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
         </div>
 
@@ -78,17 +78,17 @@ export default function Collaborations() {
             {/* First Row */}
             <div className="flex justify-center items-center gap-8">
               {firstRow.map((collab, index) => (
-                <motion.a
-                  key={collab.name}
-                  href={collab.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.6, delay: index * 0.1 }}
-                  onMouseEnter={() => setHoveredIndex(index)}
-                  onMouseLeave={() => setHoveredIndex(null)}
+            <motion.a
+              key={collab.name}
+              href={collab.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: index * 0.1 }}
+              onMouseEnter={() => setHoveredIndex(index)}
+              onMouseLeave={() => setHoveredIndex(null)}
                   className="flex items-center justify-center w-[17.5%]"
                 >
                   <div className="relative w-full aspect-[3/1]">
@@ -122,17 +122,17 @@ export default function Collaborations() {
                   className="flex items-center justify-center w-[17.5%]"
                 >
                   <div className="relative w-full aspect-[3/1]">
-                    <Image
-                      src={collab.logo}
-                      alt={collab.name}
-                      fill
+                <Image
+                  src={collab.logo}
+                  alt={collab.name}
+                  fill
                       className={`object-contain transition-all duration-500 ${
                         hoveredIndex === index + 4 ? "filter-none" : "filter grayscale brightness-[1.5]"
-                      }`}
-                    />
-                  </div>
-                </motion.a>
-              ))}
+                  }`}
+                />
+              </div>
+            </motion.a>
+          ))}
             </div>
           </div>
         </div>

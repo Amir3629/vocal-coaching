@@ -193,8 +193,8 @@ export default function Footer() {
                 </button>
               </div>
               <div className="p-6 overflow-y-auto max-h-[calc(85vh-80px)] custom-scrollbar">
-                {selectedDoc && legalDocs.find(doc => doc.title === selectedDoc)?.component && 
-                  createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
+          {selectedDoc && legalDocs.find(doc => doc.title === selectedDoc)?.component && 
+            createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
               </div>
             </div>
           </div>

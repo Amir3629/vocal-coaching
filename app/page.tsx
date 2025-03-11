@@ -19,7 +19,6 @@ import MusicNotes from "@/app/components/music-notes-animation"
 import ContactForm from "@/app/components/contact-form"
 import BookingModal from "@/app/components/booking-modal"
 import Collaborations from "@/app/components/collaborations"
-import TestCard from "./components/test-card"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -401,7 +400,6 @@ export default function Home() {
         <ContactForm />
       </section>
 
-      <TestCard />
       <BookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
     </div>
   )

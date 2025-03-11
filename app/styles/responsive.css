@@ -277,34 +277,19 @@ select {
 }
 
 /* Calendar and Booking Modal Styles */
-.booking-modal {
-  position: fixed !important;
-  top: 50% !important;
-  left: 50% !important;
-  transform: translate(-50%, -50%) !important;
-  width: 90% !important;
-  max-width: 500px !important;
-  max-height: 85vh !important;
-  overflow-y: auto !important;
-  background: #0A0A0A !important;
-  border-radius: 12px !important;
-  border: 2px solid rgba(200, 169, 126, 0.2) !important;
-  z-index: 100 !important;
-}
-
 .calendar-container {
-  width: 100% !important;
-  max-width: 400px !important;
-  margin: 0 auto !important;
-  padding: 1rem !important;
-  background: rgba(255, 255, 255, 0.03) !important;
-  border-radius: 12px !important;
-  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  max-width: 400px;
+  margin: 0 auto;
+  padding: 1rem;
 }
 
 .rdp {
   margin: 0 !important;
-  color: #fff !important;
+  width: 100% !important;
 }
 
 .rdp-months {
@@ -312,42 +297,34 @@ select {
 }
 
 .rdp-month {
-  background: transparent !important;
-  border-radius: 8px !important;
+  width: 100% !important;
+  max-width: 400px !important;
 }
 
 .rdp-table {
   width: 100% !important;
-  border-spacing: 4px !important;
 }
 
 .rdp-cell {
-  padding: 4px !important;
   text-align: center !important;
+  height: 40px !important;
 }
 
 .rdp-button {
-  width: 36px !important;
-  height: 36px !important;
+  width: 100% !important;
+  height: 100% !important;
   border-radius: 8px !important;
-  color: #fff !important;
-  background: rgba(255, 255, 255, 0.05) !important;
-  transition: all 0.2s !important;
-}
-
-.rdp-button:hover:not([disabled]) {
-  background: rgba(200, 169, 126, 0.2) !important;
-  color: #C8A97E !important;
+  font-size: 0.875rem !important;
 }
 
 .rdp-day_selected {
-  background: #C8A97E !important;
+  background-color: #C8A97E !important;
   color: #000 !important;
 }
 
 .rdp-day_today {
-  border: 2px solid rgba(200, 169, 126, 0.5) !important;
   font-weight: bold !important;
+  color: #C8A97E !important;
 }
 
 /* Custom scrollbar */
@@ -415,57 +392,4 @@ select {
   max-width: 500px;
   margin: 0 auto;
   padding: 1.5rem;
-}
-
-/* Service Card Hover Fix - Updated */
-.service-card-container {
-  position: relative;
-  z-index: 1;
-  perspective: 1000px;
-  transform-style: preserve-3d;
-}
-
-.service-card {
-  position: relative;
-  z-index: 1;
-  isolation: isolate;
-  transform-style: preserve-3d;
-  transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  will-change: transform;
-}
-
-.service-card-content {
-  pointer-events: none;
-}
-
-.service-card-interactive {
-  pointer-events: auto;
-}
-
-@media (hover: hover) {
-  .service-card:hover {
-    transform: translateY(-5px) scale(1.05);
-  }
-
-  .service-card:hover .service-card-interactive {
-    transform: translateZ(30px);
-  }
-
-  .service-card:hover .service-card-content {
-    opacity: 1;
-  }
-}
-
-@media (max-width: 768px) {
-  .service-card {
-    transform: none !important;
-  }
-
-  .service-card-interactive {
-    transform: none !important;
-  }
-
-  .service-card-content {
-    opacity: 1 !important;
-  }
 } 

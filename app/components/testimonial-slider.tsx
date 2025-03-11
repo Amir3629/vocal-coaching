@@ -132,9 +132,9 @@ export default function TestimonialSlider() {
 
         <div 
           className="relative max-w-4xl mx-auto"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+    >
           <AnimatePresence mode="wait">
             <motion.div
               key={page}
@@ -151,10 +151,10 @@ export default function TestimonialSlider() {
                     alt={testimonials[page].name}
                     width={80}
                     height={80}
-                    className="w-full h-full object-cover"
+                        className="w-full h-full object-cover"
                     onError={() => setImageError(true)}
-                  />
-                </div>
+                      />
+                    </div>
                 <blockquote className="max-w-2xl mx-auto mb-6 flex-1 flex items-center justify-center overflow-y-auto">
                   <p className="text-gray-300 text-lg italic px-4">"{testimonials[page].content}"</p>
                 </blockquote>

@@ -224,15 +224,15 @@ export default function GallerySection() {
               {/* Image */}
               {selectedImage && (
                 <div className="relative w-full aspect-[3/2] rounded-lg overflow-hidden">
-                  <Image
-                    src={selectedImage.src}
-                    alt={selectedImage.alt}
-                    fill
-                    className="object-contain"
-                    priority
-                  />
-                </div>
-              )}
+                    <Image
+                      src={selectedImage.src}
+                      alt={selectedImage.alt}
+                      fill
+                      className="object-contain"
+                      priority
+                    />
+                  </div>
+                )}
             </div>
           </div>
         </Dialog>
