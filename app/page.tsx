@@ -252,7 +252,7 @@ export default function Home() {
                 duration: "45-60 Minuten",
                 location: "Studio Berlin"
               }}
-              image="/images/cards/singing.jpg"
+              image="/vocal-coaching/images/cards/singing.jpg"
               delay={0}
             />
             <ServiceCard
@@ -279,7 +279,7 @@ export default function Home() {
                 duration: "60-90 Minuten",
                 location: "Studio Berlin"
               }}
-              image="/images/cards/vocal-coaching.jpg"
+              image="/vocal-coaching/images/cards/vocal-coaching.jpg"
               delay={0.2}
             />
             <ServiceCard
@@ -306,7 +306,7 @@ export default function Home() {
                 duration: "2-3 Stunden",
                 location: "Studio Berlin"
               }}
-              image="/images/cards/workshop.jpg"
+              image="/vocal-coaching/images/cards/workshop.jpg"
               delay={0.4}
             />
             <ServiceCard
@@ -333,7 +333,7 @@ export default function Home() {
                 duration: "90-120 Minuten",
                 location: "Studio Berlin"
               }}
-              image="/images/cards/choir.jpg"
+              image="/vocal-coaching/images/cards/choir.jpg"
               delay={0.6}
             />
           </div>
