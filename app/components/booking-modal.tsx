@@ -296,8 +296,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               <div className="bg-[#0A0A0A] rounded-lg border border-white/10 p-4">
                 <Calendar
                   mode="single"
-                  selected={selectedDate}
-                  onSelect={handleDateSelect}
+                  selected={selectedDate || undefined}
+                  onSelect={(date) => date && handleDateSelect(date)}
                   className="text-white"
                   classNames={{
                     head_cell: "text-[#C8A97E] font-medium",
@@ -418,7 +418,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
           <DialogHeader>
             <DialogTitle>AGB</DialogTitle>
             <Button
-              variant="ghost"
+              variant="outline"
               className="absolute right-4 top-4 p-1.5 hover:bg-white/10 rounded-lg"
               onClick={() => setShowLegalModal(null)}
             >
@@ -436,7 +436,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
           <DialogHeader>
             <DialogTitle>Datenschutzerklärung</DialogTitle>
             <Button
-              variant="ghost"
+              variant="outline"
               className="absolute right-4 top-4 p-1.5 hover:bg-white/10 rounded-lg"
               onClick={() => setShowLegalModal(null)}
             >
