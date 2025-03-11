@@ -249,7 +249,6 @@ export default function Home() {
       {/* References Section */}
       <section className="py-20 bg-[#040202]">
         <GallerySection />
-        <Certifications />
         <Collaborations />
       </section>
 
