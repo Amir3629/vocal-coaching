@@ -32,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="de" className={`dark ${playfair.variable}`}>
+    <html lang="de" className={`dark-theme-black ${playfair.variable}`}>
       <body className={`${inter.className} antialiased`}>
         <LanguageProvider>
           {children}
