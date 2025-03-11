@@ -6,6 +6,7 @@ import { useState } from "react"
 import { useLanguage } from "./language-switcher"
 
 const collaborations = [
+  // First Row
   {
     name: "B-Flat",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/bflat.svg" : "/images/collaborations/bflat.svg",
@@ -26,6 +27,7 @@ const collaborations = [
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-deutschland.svg" : "/images/collaborations/cvt-deutschland.svg",
     link: "https://cvtdeutschland.de/de"
   },
+  // Second Row
   {
     name: "Jazz Institut Berlin",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/jib.svg" : "/images/collaborations/jib.svg",
@@ -52,6 +54,9 @@ export default function Collaborations() {
   const { t } = useLanguage()
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
+  const firstRow = collaborations.slice(0, 4)
+  const secondRow = collaborations.slice(4, 8)
+
   return (
     <section id="references" className="py-20 bg-[#040202]">
       <div className="container mx-auto px-4">
@@ -68,11 +73,11 @@ export default function Collaborations() {
           <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
         </div>
 
-        <div className="max-w-6xl mx-auto">
-          <div className="flex flex-col gap-16">
+        <div className="max-w-5xl mx-auto">
+          <div className="flex flex-col space-y-16">
             {/* First Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center">
-              {collaborations.slice(0, 4).map((collab, index) => (
+            <div className="flex justify-between items-center">
+              {firstRow.map((collab, index) => (
                 <motion.a
                   key={collab.name}
                   href={collab.link}
@@ -84,9 +89,9 @@ export default function Collaborations() {
                   transition={{ duration: 0.6, delay: index * 0.1 }}
                   onMouseEnter={() => setHoveredIndex(index)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className="flex items-center justify-center p-1 bg-transparent transition-colors group"
+                  className="flex items-center justify-center w-1/4 px-4"
                 >
-                  <div className="relative w-40 h-16">
+                  <div className="relative w-full aspect-[3/1]">
                     <Image
                       src={collab.logo}
                       alt={collab.name}
@@ -99,10 +104,10 @@ export default function Collaborations() {
                 </motion.a>
               ))}
             </div>
-            
+
             {/* Second Row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-8 items-center">
-              {collaborations.slice(4, 8).map((collab, index) => (
+            <div className="flex justify-between items-center">
+              {secondRow.map((collab, index) => (
                 <motion.a
                   key={collab.name}
                   href={collab.link}
@@ -114,9 +119,9 @@ export default function Collaborations() {
                   transition={{ duration: 0.6, delay: (index + 4) * 0.1 }}
                   onMouseEnter={() => setHoveredIndex(index + 4)}
                   onMouseLeave={() => setHoveredIndex(null)}
-                  className="flex items-center justify-center p-1 bg-transparent transition-colors group"
+                  className="flex items-center justify-center w-1/4 px-4"
                 >
-                  <div className="relative w-40 h-16">
+                  <div className="relative w-full aspect-[3/1]">
                     <Image
                       src={collab.logo}
                       alt={collab.name}
