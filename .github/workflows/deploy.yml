@@ -15,6 +15,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -26,7 +28,12 @@ jobs:
         run: npm install
 
       - name: Build
-        run: npm run build
+        run: |
+          echo "Starting build process..."
+          npm run build
+          echo "Build completed"
+          echo "Contents of out directory:"
+          ls -la out/
         env:
           NODE_ENV: production
 
@@ -36,4 +43,22 @@ jobs:
           folder: out
           branch: gh-pages
           clean: true
-          single-commit: true 
+          clean-exclude: |
+            .nojekyll
+          single-commit: true
+          git-config-name: GitHub Actions
+          git-config-email: actions@github.com
+
+      - name: Create .nojekyll file
+        run: |
+          cd out
+          touch .nojekyll
+          echo "Created .nojekyll file"
+
+      - name: Verify deployment
+        run: |
+          echo "Deployment completed"
+          echo "Checking gh-pages branch..."
+          git fetch origin gh-pages
+          git checkout gh-pages
+          ls -la 
