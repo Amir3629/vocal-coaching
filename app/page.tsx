@@ -216,12 +216,12 @@ export default function Home() {
             src="/vocal-coaching/images/backgrounds/services-bg.jpg"
             alt="Services Background"
             fill
-            className="object-cover opacity-70"
+            className="object-cover opacity-50"
             priority
             quality={100}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/95 via-transparent to-[#040202]/95" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_30%,_#040202_100%)] opacity-90" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/80 via-[#040202]/60 to-[#040202]/80" />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_40%,_#040202_90%)] opacity-80" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
@@ -236,6 +236,7 @@ export default function Home() {
               subtitle="Gesangsunterricht für alle"
               description="Professionelles Stimmtraining für Bands, Musiker und ambitionierte Sänger - maßgeschneidert für Ihre künstlerische Entwicklung."
               icon={<Music className="w-6 h-6" />}
+              image="/images/services/singing.jpg"
               features={[
                 "Grundtechniken",
                 "Stimmbildung",
@@ -264,6 +265,7 @@ export default function Home() {
               subtitle="Professionelles Coaching"
               description="CVT-basiertes Stimmtraining für Profis - entwickeln Sie Ihre einzigartige Stimme und Performance auf höchstem Niveau."
               icon={<Mic className="w-6 h-6" />}
+              image="/images/services/coaching.jpg"
               features={[
                 "CVT Technik",
                 "Performance",
@@ -291,6 +293,7 @@ export default function Home() {
               subtitle="Individuell & Intensiv"
               description="Maßgeschneiderte Intensiv-Workshops ab 3 Stunden - ein tiefgreifendes Erlebnis für Ihre stimmliche Entwicklung."
               icon={<Theater className="w-6 h-6" />}
+              image="/images/services/workshop.jpg"
               features={[
                 "Ensemble-Arbeit",
                 "Harmonielehre",
@@ -318,6 +321,7 @@ export default function Home() {
               subtitle="Gemeinsam Singen"
               description="Entdecken Sie die Freude am gemeinsamen Singen in unserem dynamischen Nachbarschaftschor - für alle Levels offen."
               icon={<Users2 className="w-6 h-6" />}
+              image="/images/services/chor.jpg"
               features={[
                 "Mehrstimmigkeit",
                 "Harmonie",
