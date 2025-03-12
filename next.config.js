@@ -8,6 +8,10 @@ const nextConfig = {
   basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/vocal-coaching/' : '',
   trailingSlash: true,
+  optimizeFonts: true,
+  experimental: {
+    optimizeFonts: true,
+  },
 }
 
 module.exports = nextConfig
