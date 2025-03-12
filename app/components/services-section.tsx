@@ -34,8 +34,8 @@ const services = [
       location: "Studio Berlin / Online"
     },
     image: process.env.NODE_ENV === 'production' 
-      ? "/vocal-coaching/images/cards/singing.jpg" 
-      : "/images/cards/singing.jpg"
+      ? "/vocal-coaching/images/services/singing.jpg" 
+      : "/images/services/singing.jpg"
   },
   {
     title: "Vocal Coaching",
@@ -64,8 +64,8 @@ const services = [
       location: "Studio Berlin / Online"
     },
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/cards/coaching.jpg"
-      : "/images/cards/coaching.jpg"
+      ? "/vocal-coaching/images/services/coaching.jpg"
+      : "/images/services/coaching.jpg"
   },
   {
     title: "Workshop",
@@ -94,8 +94,8 @@ const services = [
       location: "Nach Vereinbarung"
     },
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/cards/workshop.jpg"
-      : "/images/cards/workshop.jpg"
+      ? "/vocal-coaching/images/services/workshop.jpg"
+      : "/images/services/workshop.jpg"
   },
   {
     title: "Chor Next Door",
@@ -125,8 +125,8 @@ const services = [
     },
     link: "https://chornextdoor.de",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/cards/choir.jpg"
-      : "/images/cards/choir.jpg"
+      ? "/vocal-coaching/images/services/chor.jpg"
+      : "/images/services/chor.jpg"
   }
 ]
 
