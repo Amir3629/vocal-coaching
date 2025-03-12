@@ -19,6 +19,7 @@ import ContactForm from "@/app/components/contact-form"
 import BookingModal from "@/app/components/booking-modal"
 import Collaborations from "@/app/components/collaborations"
 import ServiceCard from "@/app/components/service-card"
+import ServicesSection from "./components/services-section"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
