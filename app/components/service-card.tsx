@@ -61,12 +61,13 @@ export default function ServiceCard({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={`object-cover opacity-60 blur-[2px] transition-all duration-700
-              ${isHovered ? 'blur-none' : ''}`}
+            className={`object-cover opacity-60 transition-all duration-700
+              ${isHovered ? 'opacity-80 scale-110' : 'scale-100'}`}
             priority={delay === 0}
             loading={delay === 0 ? "eager" : "lazy"}
+            quality={90}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-black/70" />
         </div>
       )}
 
