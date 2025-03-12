@@ -312,7 +312,7 @@ export default function Home() {
                   "Kleine Gruppen",
                   "Bands"
                 ],
-                duration: "Ab 3 Stunden",
+                duration: "⏱️ Ab 3 Stunden (600€)",
                 location: "Nach Vereinbarung"
               }}
             />

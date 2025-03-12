@@ -90,7 +90,7 @@ const services = [
         "Kleine Gruppen",
         "Bands"
       ],
-      duration: "Ab 3 Stunden",
+      duration: "Ab 3 Stunden (600€)",
       location: "Nach Vereinbarung"
     },
     image: process.env.NODE_ENV === 'production'
