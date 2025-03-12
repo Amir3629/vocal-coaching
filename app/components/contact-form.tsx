@@ -138,7 +138,7 @@ export default function ContactForm() {
                   </div>
                   <motion.button
                     type="submit"
-                    className="max-w-[200px] mx-auto bg-[#C8A97E] hover:bg-[#B89A6F] text-black font-medium rounded-lg px-5 py-2.5 flex items-center justify-center gap-2 transition-all duration-300 text-sm"
+                    className="max-w-[200px] mx-auto bg-[#C8A97E] hover:bg-[#B89A6F] text-black font-medium rounded-full px-5 py-2.5 flex items-center justify-center gap-2 transition-all duration-300 text-sm"
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                   >
