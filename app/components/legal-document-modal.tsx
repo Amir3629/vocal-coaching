@@ -67,8 +67,7 @@ export default function LegalDocumentModal({ isOpen, onClose, title, children }:
             }}
             className="fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[90%] max-w-2xl max-h-[85vh] bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl z-[101] overflow-hidden"
           >
-            <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
-              <h3 className="text-lg font-medium text-white">{title}</h3>
+            <div className="flex items-center justify-end p-4 border-b border-[#C8A97E]/20">
               <button
                 onClick={onClose}
                 className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
