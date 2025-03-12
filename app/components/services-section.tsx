@@ -7,120 +7,115 @@ import { useLanguage } from "./language-switcher"
 
 const services = [
   {
-    title: "Singen",
-    subtitle: "Gesangsunterricht für alle",
+    title: "Professionelles Stimmtraining",
+    subtitle: "Für Musiker & Bands 🎤",
     icon: Music,
     features: [
-      "Grundtechniken",
-      "Stimmbildung",
-      "Atemtechnik",
-      "Liedinterpretation"
+      "🎵 Grundtechniken",
+      "🎶 Stimmbildung",
+      "💨 Atemtechnik", 
+      "🎭 Bühnenpräsenz"
     ],
     details: {
       includes: [
-        "Stimmanalyse",
-        "Trainingsplan",
-        "Aufnahmen",
-        "Übe-Material"
+        "Digitale Analyse Tools",
+        "Individueller Trainingsplan",
+        "Online/Präsenz Optionen",
+        "Band-Coaching möglich"
       ],
       suitable: [
-        "Anfänger",
-        "Fortgeschrittene",
-        "Profis",
-        "Alle Genres"
+        "Solisten",
+        "Bandmitglieder"
       ],
-      duration: "45-60 Minuten",
-      location: "Studio Berlin"
+      duration: "60-90 Minuten",
+      location: "Studio Berlin oder Online"
     },
     image: process.env.NODE_ENV === 'production' 
       ? "/vocal-coaching/images/services/singing.jpg" 
       : "/images/services/singing.jpg"
   },
   {
-    title: "Vocal Coaching",
-    subtitle: "Professionelles Coaching",
+    title: "Vocal Performance",
+    subtitle: "Professionelles Coaching 🎯",
     icon: Mic,
     features: [
-      "Stimmtechnik",
-      "Performance",
-      "Repertoire",
-      "Stilentwicklung"
+      "🎤 Stimmtechnik",
+      "🎬 Performance",
+      "📚 Repertoire",
+      "🎨 Stilentwicklung"
     ],
     details: {
       includes: [
         "Technikanalyse",
         "Performancetraining",
         "Videoaufnahmen",
-        "Feedback"
+        "Detailliertes Feedback"
       ],
       suitable: [
-        "Sänger",
-        "Musiker",
+        "Profis",
         "Performer",
-        "Sprecher"
+        "Künstler"
       ],
-      duration: "60-90 Minuten",
-      location: "Studio Berlin"
+      duration: "90 Minuten",
+      location: "Ab 120€ | Studio Berlin"
     },
     image: process.env.NODE_ENV === 'production'
       ? "/vocal-coaching/images/services/coaching.jpg"
       : "/images/services/coaching.jpg"
   },
   {
-    title: "Workshop",
-    subtitle: "Gruppenunterricht",
+    title: "Intensiv-Workshops",
+    subtitle: "Gruppencoaching 👥",
     icon: Theater,
     features: [
-      "Ensemble-Arbeit",
-      "Harmonielehre",
-      "Improvisation",
-      "Auftritts­praxis"
+      "🎯 Zielorientierte Konzepte",
+      "🤝 Ensemble-Arbeit",
+      "🎹 Live-Begleitung",
+      "📈 Fortschrittsanalyse"
     ],
     details: {
       includes: [
+        "Professionelle Aufnahmen",
+        "Video-Analyse",
         "Gruppenübungen",
-        "Theorie",
-        "Praxis",
-        "Dokumentation"
+        "Abschlusspräsentation"
       ],
       suitable: [
-        "Gruppen",
+        "Teams",
         "Chöre",
-        "Bands",
-        "Ensembles"
+        "Musikgruppen"
       ],
-      duration: "120-180 Minuten",
-      location: "Studio Berlin"
+      duration: "3-5 Stunden",
+      location: "Ab 600€ | Studio Berlin"
     },
     image: process.env.NODE_ENV === 'production'
       ? "/vocal-coaching/images/services/workshop.jpg"
       : "/images/services/workshop.jpg"
   },
   {
-    title: "Chor",
-    subtitle: "Gemeinsam Singen",
+    title: "Chor & Ensemble",
+    subtitle: "Gemeinsam Wachsen 🌟",
     icon: Users2,
     features: [
-      "Mehrstimmigkeit",
-      "Harmonie",
-      "Rhythmus",
-      "Gemeinschaft"
+      "🎵 Mehrstimmigkeit",
+      "🎶 Harmoniebildung",
+      "🎭 Auftrittstraining",
+      "💫 Gruppendynamik"
     ],
     details: {
       includes: [
-        "Stimmbildung",
-        "Chorleitung",
-        "Repertoire",
-        "Auftritte"
+        "Stimmbildung im Ensemble",
+        "Repertoire-Entwicklung",
+        "Auftrittsvorbereitung",
+        "Regelmäßige Events"
       ],
       suitable: [
         "Alle Level",
-        "Alle Alter",
-        "Hobby",
-        "Semi-Pro"
+        "Hobby-Sänger",
+        "Ensembles"
       ],
-      duration: "90-120 Minuten",
-      location: "Studio Berlin"
+      duration: "120 Minuten",
+      location: "Ab 45€ | Studio Berlin"
     },
     image: process.env.NODE_ENV === 'production'
       ? "/vocal-coaching/images/services/choir.jpg"
