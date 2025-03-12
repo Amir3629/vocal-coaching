@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 interface ServiceCardProps {
   title: string
   subtitle: string
+  description: string
   features: string[]
   details?: {
     duration?: string
@@ -22,6 +23,7 @@ interface ServiceCardProps {
 export default function ServiceCard({
   title,
   subtitle,
+  description,
   features,
   details,
   image,
@@ -49,21 +51,17 @@ export default function ServiceCard({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={`object-cover opacity-40 blur-[2px] transition-all duration-700
-              ${isHovered ? 'scale-105 blur-none' : 'scale-100'}`}
+            className={`object-cover opacity-60 blur-[2px] transition-all duration-700
+              ${isHovered ? 'blur-none' : ''}`}
             priority={delay === 0}
             loading={delay === 0 ? "eager" : "lazy"}
           />
-          <div className={`absolute inset-0 bg-gradient-to-b transition-opacity duration-700
-            ${isHovered 
-              ? 'from-black/40 via-black/50 to-black/70' 
-              : 'from-black/50 via-black/60 to-black/80'}`} 
-          />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/70" />
         </div>
       )}
 
       <div className="relative p-6 flex flex-col h-full">
-        <div className="flex items-start gap-3 mb-6">
+        <div className="flex items-start gap-3 mb-4">
           {icon && (
             <motion.div
               className="text-[#C8A97E]"
@@ -85,6 +83,8 @@ export default function ServiceCard({
             <p className="text-sm text-[#C8A97E]/90 mt-1">{subtitle}</p>
           </div>
         </div>
+
+        <p className="text-sm text-gray-300 mb-6">{description}</p>
 
         <ul className="space-y-2 mb-6">
           {features.map((feature, index) => (
@@ -116,7 +116,7 @@ export default function ServiceCard({
           >
             {details.includes && (
               <div>
-                <h4 className="text-[#C8A97E] text-sm font-medium mb-2">Enthält</h4>
+                <h4 className="text-[#C8A97E] text-sm font-medium mb-2">✨ Enthält</h4>
                 <ul className="grid grid-cols-2 gap-2">
                   {details.includes.map((item, index) => (
                     <motion.li
@@ -135,7 +135,7 @@ export default function ServiceCard({
             
             {details.suitable && (
               <div>
-                <h4 className="text-[#C8A97E] text-sm font-medium mb-2">Geeignet für</h4>
+                <h4 className="text-[#C8A97E] text-sm font-medium mb-2">👥 Geeignet für</h4>
                 <ul className="grid grid-cols-2 gap-2">
                   {details.suitable.map((item, index) => (
                     <motion.li
@@ -155,13 +155,13 @@ export default function ServiceCard({
             <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
               {details.duration && (
                 <div>
-                  <p className="text-[#C8A97E] text-xs mb-1">Dauer</p>
+                  <p className="text-[#C8A97E] text-xs mb-1">⏱️ Dauer</p>
                   <p className="text-white/90 text-sm">{details.duration}</p>
                 </div>
               )}
               {details.location && (
                 <div>
-                  <p className="text-[#C8A97E] text-xs mb-1">Ort</p>
+                  <p className="text-[#C8A97E] text-xs mb-1">📍 Ort</p>
                   <p className="text-white/90 text-sm">{details.location}</p>
                 </div>
               )}

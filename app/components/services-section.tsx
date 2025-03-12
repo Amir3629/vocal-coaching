@@ -9,6 +9,7 @@ const services = [
   {
     title: "Singen",
     subtitle: "Gesangsunterricht für alle",
+    description: "Professionelles Stimmtraining für Bands, Musiker und ambitionierte Sänger - maßgeschneidert für Ihre künstlerische Entwicklung.",
     icon: Music,
     features: [
       "Grundtechniken",
@@ -24,11 +25,13 @@ const services = [
         "Übungsmaterial"
       ],
       suitable: [
+        "Bands",
+        "Musiker",
         "Anfänger",
         "Fortgeschrittene"
       ],
       duration: "45-60 Minuten",
-      location: "Studio Berlin"
+      location: "Studio Berlin / Online"
     },
     image: process.env.NODE_ENV === 'production' 
       ? "/vocal-coaching/images/services/singing.jpg" 
@@ -37,26 +40,28 @@ const services = [
   {
     title: "Vocal Coaching",
     subtitle: "Professionelles Coaching",
+    description: "CVT-basiertes Stimmtraining für Profis - entwickeln Sie Ihre einzigartige Stimme und Performance auf höchstem Niveau.",
     icon: Mic,
     features: [
-      "Stimmtechnik",
+      "CVT Technik",
       "Performance",
       "Repertoire",
       "Stilentwicklung"
     ],
     details: {
       includes: [
-        "Individuelle Beratung",
+        "CVT Stimmanalyse",
         "Techniktraining",
         "Repertoireaufbau",
         "Auftrittsvorbereitung"
       ],
       suitable: [
         "Profis",
-        "Semi-Profis"
+        "Semi-Profis",
+        "Fortgeschrittene"
       ],
       duration: "60-90 Minuten",
-      location: "Studio Berlin"
+      location: "Studio Berlin / Online"
     },
     image: process.env.NODE_ENV === 'production'
       ? "/vocal-coaching/images/services/coaching.jpg"
@@ -64,7 +69,8 @@ const services = [
   },
   {
     title: "Workshop",
-    subtitle: "Gruppenunterricht",
+    subtitle: "Individuell & Intensiv",
+    description: "Maßgeschneiderte Intensiv-Workshops ab 3 Stunden - ein tiefgreifendes Erlebnis für Ihre stimmliche Entwicklung.",
     icon: Theater,
     features: [
       "Ensemble-Arbeit",
@@ -74,25 +80,27 @@ const services = [
     ],
     details: {
       includes: [
-        "Gruppenübungen",
-        "Theorie",
-        "Praxis",
-        "Feedback"
+        "Intensivtraining",
+        "Theorie & Praxis",
+        "Individuelles Feedback",
+        "Auftrittsvorbereitung"
       ],
       suitable: [
-        "Alle Level",
-        "Gruppen"
+        "Einzelpersonen",
+        "Kleine Gruppen",
+        "Bands"
       ],
-      duration: "2-3 Stunden",
-      location: "Studio Berlin"
+      duration: "Ab 3 Stunden",
+      location: "Studio Berlin (ab 600€)"
     },
     image: process.env.NODE_ENV === 'production'
       ? "/vocal-coaching/images/services/workshop.jpg"
       : "/images/services/workshop.jpg"
   },
   {
-    title: "Chor",
+    title: "Chor Next Door",
     subtitle: "Gemeinsam Singen",
+    description: "Entdecken Sie die Freude am gemeinsamen Singen in unserem dynamischen Nachbarschaftschor - für alle Levels offen.",
     icon: Users2,
     features: [
       "Mehrstimmigkeit",
@@ -109,7 +117,8 @@ const services = [
       ],
       suitable: [
         "Alle Level",
-        "Gruppenbegeisterte"
+        "Nachbarn",
+        "Musikbegeisterte"
       ],
       duration: "90-120 Minuten",
       location: "Studio Berlin"
@@ -143,6 +152,7 @@ export default function ServicesSection() {
               key={service.title}
               title={service.title}
               subtitle={service.subtitle}
+              description={service.description}
               icon={<service.icon className="w-6 h-6" />}
               features={service.features}
               details={service.details}
