@@ -11,6 +11,8 @@ interface ServiceCardProps {
   details?: {
     duration?: string
     location?: string
+    includes?: string[]
+    suitable?: string[]
   }
   image?: string
   icon?: React.ReactNode
@@ -81,17 +83,59 @@ export default function ServiceCard({
         </ul>
 
         {details && (
-          <div className="mt-auto pt-6">
-            {details.duration && (
-              <p className="text-sm text-white/60">
-                <span className="text-[#C8A97E]">Dauer:</span> {details.duration}
-              </p>
+          <div className="mt-auto pt-6 space-y-4">
+            {details.includes && (
+              <div>
+                <h4 className="text-[#C8A97E] text-sm font-medium mb-2">Enthält</h4>
+                <ul className="grid grid-cols-2 gap-2">
+                  {details.includes.map((item, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="text-white/60 text-sm"
+                    >
+                      • {item}
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
             )}
-            {details.location && (
-              <p className="text-sm text-white/60 mt-1">
-                <span className="text-[#C8A97E]">Ort:</span> {details.location}
-              </p>
+            
+            {details.suitable && (
+              <div>
+                <h4 className="text-[#C8A97E] text-sm font-medium mb-2">Geeignet für</h4>
+                <ul className="grid grid-cols-2 gap-2">
+                  {details.suitable.map((item, index) => (
+                    <motion.li
+                      key={index}
+                      initial={{ opacity: 0, y: 5 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: index * 0.1 }}
+                      className="text-white/60 text-sm"
+                    >
+                      • {item}
+                    </motion.li>
+                  ))}
+                </ul>
+              </div>
             )}
+
+            <div className="grid grid-cols-2 gap-4">
+              {details.duration && (
+                <div>
+                  <p className="text-white/60 text-xs mb-1">Dauer</p>
+                  <p className="text-white text-sm">{details.duration}</p>
+                </div>
+              )}
+              {details.location && (
+                <div>
+                  <p className="text-white/60 text-xs mb-1">Ort</p>
+                  <p className="text-white text-sm">{details.location}</p>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>
