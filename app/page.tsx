@@ -236,7 +236,7 @@ export default function Home() {
               subtitle="Gesangsunterricht für alle"
               description="Professionelles Stimmtraining für Bands, Musiker und ambitionierte Sänger - maßgeschneidert für Ihre künstlerische Entwicklung."
               icon={<Music className="w-6 h-6" />}
-              image="/images/services/singing.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/singing.jpg" : "/images/services/singing.jpg"}
               features={[
                 "Grundtechniken",
                 "Stimmbildung",
@@ -265,7 +265,7 @@ export default function Home() {
               subtitle="Professionelles Coaching"
               description="CVT-basiertes Stimmtraining für Profis - entwickeln Sie Ihre einzigartige Stimme und Performance auf höchstem Niveau."
               icon={<Mic className="w-6 h-6" />}
-              image="/images/services/coaching.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/coaching.jpg" : "/images/services/coaching.jpg"}
               features={[
                 "CVT Technik",
                 "Performance",
@@ -293,7 +293,7 @@ export default function Home() {
               subtitle="Individuell & Intensiv"
               description="Maßgeschneiderte Intensiv-Workshops für ein tiefgreifendes Erlebnis Ihrer stimmlichen Entwicklung."
               icon={<Theater className="w-6 h-6" />}
-              image="/images/services/workshop.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/workshop.jpg" : "/images/services/workshop.jpg"}
               features={[
                 "Ensemble-Arbeit",
                 "Harmonielehre",
@@ -321,7 +321,7 @@ export default function Home() {
               subtitle="Gemeinsam Singen"
               description="Entdecken Sie die Freude am gemeinsamen Singen in unserem dynamischen Nachbarschaftschor - für alle Levels offen."
               icon={<Users2 className="w-6 h-6" />}
-              image="/images/services/chor.jpg"
+              image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/chor.jpg" : "/images/services/chor.jpg"}
               features={[
                 "Mehrstimmigkeit",
                 "Harmonie",
