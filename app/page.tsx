@@ -216,10 +216,10 @@ export default function Home() {
             src="/vocal-coaching/images/backgrounds/services-bg.jpg"
             alt="Services Background"
             fill
-            className="object-cover opacity-30"
+            className="object-cover opacity-50"
             priority
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/95 via-[#040202]/90 to-[#040202]/95" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/70 via-[#040202]/60 to-[#040202]/70" />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">

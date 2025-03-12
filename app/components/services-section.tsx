@@ -69,8 +69,8 @@ const services = [
   },
   {
     title: "Workshop",
-    subtitle: "Individuell & Intensiv",
-    description: "Maßgeschneiderte Intensiv-Workshops ab 3 Stunden - ein tiefgreifendes Erlebnis für Ihre stimmliche Entwicklung.",
+    subtitle: "Individuelles Coaching",
+    description: "Maßgeschneiderte Intensiv-Workshops für ein tiefgreifendes Erlebnis Ihrer stimmlichen Entwicklung.",
     icon: Theater,
     features: [
       "Ensemble-Arbeit",
@@ -90,8 +90,8 @@ const services = [
         "Kleine Gruppen",
         "Bands"
       ],
-      duration: "Ab 3 Stunden",
-      location: "Studio Berlin (ab 600€)"
+      duration: "Ab 3 Stunden (ab 600€)",
+      location: "Nach Vereinbarung"
     },
     image: process.env.NODE_ENV === 'production'
       ? "/vocal-coaching/images/services/workshop.jpg"
@@ -123,6 +123,7 @@ const services = [
       duration: "90-120 Minuten",
       location: "Studio Berlin"
     },
+    link: "https://chornextdoor.de",
     image: process.env.NODE_ENV === 'production'
       ? "/vocal-coaching/images/services/choir.jpg"
       : "/images/services/choir.jpg"
