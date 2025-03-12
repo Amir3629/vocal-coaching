@@ -250,8 +250,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setShowSuccess(true)
+    e.preventDefault();
+    if (!formData.termsAccepted) {
+      setErrors({ termsAccepted: "You must accept the terms and conditions." });
+      return;
+    }
+    setShowSuccess(true);
     
     // Close success message after 3 seconds with smooth animation
     setTimeout(() => {
@@ -328,271 +332,278 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-          <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
-        onClick={onClose}
-      />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-        transition={{ duration: 0.2 }}
-        className="booking-modal fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[90%] max-w-[500px] max-h-[85vh] bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl z-[51] overflow-hidden"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
-          <h3 className="text-lg font-medium text-white">Buchung</h3>
-          <button
-            onClick={onClose}
-            className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <X className="w-5 h-5 text-white/70 hover:text-white transition-colors" />
-          </button>
-        </div>
-
-        {/* Content */}
-        <div className="p-4 overflow-y-auto max-h-[calc(85vh-8rem)] custom-scrollbar">
-          <div className="space-y-4">
-            {currentStep === "1" && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-4"
-              >
-                {services.map((service) => (
-                  <ServiceOption
-                    key={service.id}
-                    service={service}
-                    isSelected={selectedService === service.id}
-                    onSelect={() => handleServiceSelect(service.id)}
-                  />
-                ))}
-              </motion.div>
-            )}
-
-            {currentStep === "2" && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="flex flex-col items-center justify-center w-full"
-              >
-                <div className="w-full max-w-[350px] mx-auto">
-                  <Calendar
-                    mode="single"
-                    selected={selectedDate}
-                    onSelect={handleDateSelect}
-                    disabled={(date) =>
-                      date < new Date() || date > addMonths(new Date(), 2)
-                    }
-                    initialFocus
-                    className="rounded-lg border border-[#C8A97E]/20 bg-black/20"
-                  />
-                </div>
-              </motion.div>
-            )}
-
-            {currentStep === "3" && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-4"
-              >
-                <TimeGrid
-                  times={timeSlots}
-                  selectedTime={selectedTime}
-                  onTimeSelect={handleTimeSelect}
-                />
-              </motion.div>
-            )}
-
-            {currentStep === "4" && (
-              <motion.div
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                className="space-y-4"
-              >
-              <form onSubmit={handleSubmit} className="space-y-4">
-                  <input
-                    type="text"
-                    name="name"
-                    placeholder="Name"
-                    value={formData.name}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
-                  />
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="Email"
-                    value={formData.email}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
-                  />
-                  <input
-                    type="tel"
-                    name="phone"
-                    placeholder="Telefon"
-                    value={formData.phone}
-                    onChange={handleInputChange}
-                    required
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
-                  />
-                  <textarea
-                    name="message"
-                    placeholder="Nachricht (optional)"
-                    value={formData.message}
-                    onChange={handleInputChange}
-                    rows={3}
-                    className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
-                  />
-                <div className="flex items-start gap-2">
-                  <input
-                    type="checkbox"
-                      name="termsAccepted"
-                    id="terms"
-                      checked={formData.termsAccepted}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          termsAccepted: e.target.checked,
-                        })
-                      }
-                      required
-                    className="mt-1"
-                  />
-                  <label htmlFor="terms" className="text-sm text-gray-400">
-                    Ich akzeptiere die{" "}
-                    <button
-                      type="button"
-                        onClick={() => setShowLegalModal("agb")}
-                        className="text-[#C8A97E] hover:text-[#B69A6E] underline"
-                    >
-                      AGB
-                    </button>{" "}
-                    und{" "}
-                    <button
-                      type="button"
-                        onClick={() => setShowLegalModal("datenschutz")}
-                        className="text-[#C8A97E] hover:text-[#B69A6E] underline"
-                    >
-                      Datenschutzerklärung
-                    </button>
-                  </label>
-                </div>
-              </form>
-              </motion.div>
-            )}
-          </div>
-        </div>
-
-        {/* Footer Navigation */}
-        <div className="p-4 border-t border-[#C8A97E]/20">
-          <div className="flex justify-between gap-4">
-          {currentStep !== "1" && (
-              <button
-                onClick={handleBack}
-                className="px-6 py-2 rounded-lg border border-[#C8A97E]/30 text-[#C8A97E] hover:bg-[#C8A97E]/10 transition-colors"
-              >
-              Zurück
-              </button>
-            )}
+      <div role="dialog" aria-labelledby="booking-modal-title" aria-describedby="booking-modal-description">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50"
+          onClick={onClose}
+        />
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95, y: 20 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.95, y: 20 }}
+          transition={{ duration: 0.2 }}
+          className="booking-modal fixed left-[50%] top-[50%] -translate-x-[50%] -translate-y-[50%] w-[90%] max-w-[500px] max-h-[85vh] bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl z-[51] overflow-hidden"
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
+            <h3 id="booking-modal-title" className="text-lg font-medium text-white">Buchung</h3>
             <button
-              onClick={currentStep === "4" ? handleSubmit : handleNext}
-              disabled={!canProceedToNextStep()}
-              className={`px-6 py-2 rounded-lg transition-colors ${
-                canProceedToNextStep()
-                  ? "bg-[#C8A97E] text-black hover:bg-[#B69A6E]"
-                  : "bg-[#C8A97E]/50 text-black/50 cursor-not-allowed"
-              } ${currentStep === "1" ? "ml-auto" : ""}`}
+              onClick={onClose}
+              className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
             >
-              {currentStep === "4" ? "Buchen" : "Weiter"}
+              <X className="w-5 h-5 text-white/70 hover:text-white transition-colors" />
             </button>
           </div>
-        </div>
-      </motion.div>
 
-      {/* Success Message */}
-      <SuccessMessage
-        isOpen={showSuccess}
-        onClose={() => {
-          setShowSuccess(false)
-          onClose()
-        }}
-        title="Buchung erfolgreich!"
-        message="Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigung per Email."
-      />
-
-      {/* Legal Document Modals */}
-      <AnimatePresence>
-        {showLegalModal === "agb" && (
-          <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex min-h-full items-center justify-center p-4">
+          {/* Content */}
+          <div className="p-4 overflow-y-auto max-h-[calc(85vh-8rem)] custom-scrollbar">
+            <div className="space-y-4">
+              {currentStep === "1" && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-4"
                 >
-                  <div className="p-6">
-                    <h2 className="text-xl font-medium text-[#C8A97E] mb-4">AGB</h2>
-                    <div className="prose prose-invert max-w-none">
-        <LegalContent type="agb" />
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setShowLegalModal(null)}
-                    className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
+                  {services.map((service) => (
+                    <ServiceOption
+                      key={service.id}
+                      service={service}
+                      isSelected={selectedService === service.id}
+                      onSelect={() => handleServiceSelect(service.id)}
+                    />
+                  ))}
                 </motion.div>
-              </div>
+              )}
+
+              {currentStep === "2" && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="flex flex-col items-center justify-center w-full"
+                >
+                  <div className="w-full max-w-[350px] mx-auto">
+                    <Calendar
+                      mode="single"
+                      selected={selectedDate}
+                      onSelect={handleDateSelect}
+                      disabled={(date) =>
+                        date < new Date() || date > addMonths(new Date(), 2)
+                      }
+                      initialFocus
+                      className="rounded-lg border border-[#C8A97E]/20 bg-black/20"
+                    />
+                  </div>
+                </motion.div>
+              )}
+
+              {currentStep === "3" && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-4"
+                >
+                  <TimeGrid
+                    times={timeSlots}
+                    selectedTime={selectedTime}
+                    onTimeSelect={handleTimeSelect}
+                  />
+                </motion.div>
+              )}
+
+              {currentStep === "4" && (
+                <motion.div
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="space-y-4"
+                >
+                <form onSubmit={handleSubmit} className="space-y-4" aria-describedby="booking-form-description">
+                    <input
+                      type="text"
+                      name="name"
+                      placeholder="Name"
+                      aria-label="Name"
+                      value={formData.name}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                    />
+                    <input
+                      type="email"
+                      name="email"
+                      placeholder="Email"
+                      value={formData.email}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                    />
+                    <input
+                      type="tel"
+                      name="phone"
+                      placeholder="Telefon"
+                      value={formData.phone}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                    />
+                    <textarea
+                      name="message"
+                      placeholder="Nachricht (optional)"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      rows={3}
+                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
+                    />
+                  <div className="flex items-start gap-2">
+                    <input
+                      type="checkbox"
+                        name="termsAccepted"
+                      id="terms"
+                        checked={formData.termsAccepted}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            termsAccepted: e.target.checked,
+                          })
+                        }
+                        required
+                      className="mt-1"
+                    />
+                    <label htmlFor="terms" className="text-sm text-gray-400">
+                      Ich akzeptiere die{" "}
+                      <button
+                        type="button"
+                          onClick={() => setShowLegalModal("agb")}
+                          className="text-[#C8A97E] hover:text-[#B69A6E] underline"
+                      >
+                        AGB
+                      </button>{" "}
+                      und{" "}
+                      <button
+                        type="button"
+                          onClick={() => setShowLegalModal("datenschutz")}
+                          className="text-[#C8A97E] hover:text-[#B69A6E] underline"
+                      >
+                        Datenschutzerklärung
+                      </button>
+                    </label>
+                  </div>
+                </form>
+                </motion.div>
+              )}
             </div>
           </div>
-        )}
 
-        {showLegalModal === "datenschutz" && (
-          <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
-            <div className="fixed inset-0 overflow-y-auto">
-              <div className="flex min-h-full items-center justify-center p-4">
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-                  className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+          {/* Footer Navigation */}
+          <div className="p-4 border-t border-[#C8A97E]/20">
+            <div className="flex justify-between gap-4">
+            {currentStep !== "1" && (
+                <button
+                  onClick={handleBack}
+                  className="px-6 py-2 rounded-lg border border-[#C8A97E]/30 text-[#C8A97E] hover:bg-[#C8A97E]/10 transition-colors"
                 >
-                  <div className="p-6">
-                    <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Datenschutzerklärung</h2>
-                    <div className="prose prose-invert max-w-none">
-        <LegalContent type="datenschutz" />
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => setShowLegalModal(null)}
-                    className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
-                  >
-                    <X className="w-5 h-5" />
-                  </button>
-                </motion.div>
-              </div>
+                Zurück
+                </button>
+              )}
+              <button
+                onClick={currentStep === "4" ? handleSubmit : handleNext}
+                disabled={!canProceedToNextStep()}
+                aria-label={currentStep === "4" ? "Submit Booking" : "Next Step"}
+                className={`px-6 py-2 rounded-lg transition-colors ${
+                  canProceedToNextStep()
+                    ? "bg-[#C8A97E] text-black hover:bg-[#B69A6E]"
+                    : "bg-[#C8A97E]/50 text-black/50 cursor-not-allowed"
+                } ${currentStep === "1" ? "ml-auto" : ""}`}
+              >
+                {currentStep === "4" ? "Buchen" : "Weiter"}
+              </button>
             </div>
           </div>
-        )}
-      </AnimatePresence>
+        </motion.div>
+
+        {/* Success Message */}
+        <SuccessMessage
+          isOpen={showSuccess}
+          onClose={() => {
+            setShowSuccess(false)
+            onClose()
+          }}
+          title="Buchung erfolgreich!"
+          message="Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigung per Email."
+        />
+
+        {/* Legal Document Modals */}
+        <AnimatePresence>
+          {showLegalModal === "agb" && (
+            <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
+              <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+                  >
+                    <div className="p-6">
+                      <h2 className="text-xl font-medium text-[#C8A97E] mb-4">AGB</h2>
+                      <div className="prose prose-invert max-w-none">
+            <LegalContent type="agb" />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowLegalModal(null)}
+                      className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {showLegalModal === "datenschutz" && (
+            <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
+              <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
+              <div className="fixed inset-0 overflow-y-auto">
+                <div className="flex min-h-full items-center justify-center p-4">
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+                  >
+                    <div className="p-6">
+                      <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Datenschutzerklärung</h2>
+                      <div className="prose prose-invert max-w-none">
+            <LegalContent type="datenschutz" />
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => setShowLegalModal(null)}
+                      className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+          )}
+        </AnimatePresence>
+
+        {/* Error Messages */}
+        {errors.termsAccepted && <p className="text-red-500 text-sm">{errors.termsAccepted}</p>}
+      </div>
     </Dialog>
   )
 } 

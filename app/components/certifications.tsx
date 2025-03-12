@@ -146,7 +146,7 @@ export default function JourneyShowcase() {
                       <ul className="space-y-2">
                         {journey.items.map((item, idx) => (
                           <li
-                            key={idx}
+                          key={idx}
                             className="
                               flex items-center gap-2
                               opacity-0 group-hover:opacity-100
@@ -154,12 +154,12 @@ export default function JourneyShowcase() {
                               transition-all duration-500
                             "
                             style={{ transitionDelay: `${idx * 100}ms` }}
-                          >
-                            <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                        >
+                          <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
                             <span className="text-gray-200 text-sm">{item}</span>
                           </li>
-                        ))}
-                      </ul>
+                      ))}
+                    </ul>
                     </div>
                   </div>
                 </div>
@@ -170,4 +170,4 @@ export default function JourneyShowcase() {
       </div>
     </section>
   )
-}
+} 
