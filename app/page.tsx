@@ -232,6 +232,7 @@ export default function Home() {
             <ServiceCard
               title="Singen"
               subtitle="Gesangsunterricht für alle"
+              description="Professionelles Stimmtraining für Bands, Musiker und ambitionierte Sänger - maßgeschneidert für Ihre künstlerische Entwicklung."
               icon={<Music className="w-6 h-6" />}
               features={[
                 "Grundtechniken",
@@ -247,78 +248,73 @@ export default function Home() {
                   "Übungsmaterial"
                 ],
                 suitable: [
+                  "Bands",
+                  "Musiker",
                   "Anfänger",
                   "Fortgeschrittene"
                 ],
                 duration: "45-60 Minuten",
-                location: "Studio Berlin"
+                location: "Studio Berlin / Online"
               }}
-              image={process.env.NODE_ENV === 'production' 
-                ? "/vocal-coaching/images/cards/singing.jpg" 
-                : "/images/cards/singing.jpg"}
-              delay={0}
             />
             <ServiceCard
               title="Vocal Coaching"
               subtitle="Professionelles Coaching"
+              description="CVT-basiertes Stimmtraining für Profis - entwickeln Sie Ihre einzigartige Stimme und Performance auf höchstem Niveau."
               icon={<Mic className="w-6 h-6" />}
               features={[
-                "Stimmtechnik",
+                "CVT Technik",
                 "Performance",
                 "Repertoire",
                 "Stilentwicklung"
               ]}
               details={{
                 includes: [
-                  "Individuelle Beratung",
+                  "CVT Stimmanalyse",
                   "Techniktraining",
                   "Repertoireaufbau",
                   "Auftrittsvorbereitung"
                 ],
                 suitable: [
                   "Profis",
-                  "Semi-Profis"
+                  "Semi-Profis",
+                  "Fortgeschrittene"
                 ],
                 duration: "60-90 Minuten",
-                location: "Studio Berlin"
+                location: "Studio Berlin / Online"
               }}
-              image={process.env.NODE_ENV === 'production' 
-                ? "/vocal-coaching/images/cards/vocal-coaching.jpg" 
-                : "/images/cards/vocal-coaching.jpg"}
-              delay={0.2}
             />
             <ServiceCard
               title="Workshop"
-              subtitle="Gruppenunterricht"
+              subtitle="Individuell & Intensiv"
+              description="Maßgeschneiderte Intensiv-Workshops ab 3 Stunden - ein tiefgreifendes Erlebnis für Ihre stimmliche Entwicklung."
               icon={<Theater className="w-6 h-6" />}
               features={[
                 "Ensemble-Arbeit",
                 "Harmonielehre",
                 "Improvisation",
-                "Auftrittspraxis"
+                "Auftritts­praxis"
               ]}
               details={{
                 includes: [
-                  "Gruppenübungen",
-                  "Theorie",
-                  "Praxis",
-                  "Feedback"
+                  "Intensivtraining",
+                  "Theorie & Praxis",
+                  "Individuelles Feedback",
+                  "Auftrittsvorbereitung"
                 ],
                 suitable: [
-                  "Alle Level",
-                  "Gruppen"
+                  "Einzelpersonen",
+                  "Kleine Gruppen",
+                  "Bands"
                 ],
-                duration: "2-3 Stunden",
-                location: "Studio Berlin"
+                duration: "Ab 3 Stunden",
+                location: "Studio Berlin (ab 600€)"
               }}
-              image={process.env.NODE_ENV === 'production' 
-                ? "/vocal-coaching/images/cards/workshop.jpg" 
-                : "/images/cards/workshop.jpg"}
-              delay={0.4}
             />
             <ServiceCard
-              title="Chor"
+              title="Chor Next Door"
               subtitle="Gemeinsam Singen"
+              description="Entdecken Sie die Freude am gemeinsamen Singen in unserem dynamischen Nachbarschaftschor - für alle Levels offen."
               icon={<Users2 className="w-6 h-6" />}
               features={[
                 "Mehrstimmigkeit",
@@ -335,15 +331,12 @@ export default function Home() {
                 ],
                 suitable: [
                   "Alle Level",
-                  "Gruppenbegeisterte"
+                  "Nachbarn",
+                  "Musikbegeisterte"
                 ],
                 duration: "90-120 Minuten",
                 location: "Studio Berlin"
               }}
-              image={process.env.NODE_ENV === 'production' 
-                ? "/vocal-coaching/images/cards/choir.jpg" 
-                : "/images/cards/choir.jpg"}
-              delay={0.6}
             />
           </div>
 

@@ -40,7 +40,7 @@ export default function ServiceCard({
       transition={{ duration: 0.5, delay }}
       className={`group relative w-full bg-black/20 backdrop-blur-sm rounded-xl overflow-hidden 
         ${isHovered ? 'min-h-[520px]' : 'min-h-[320px]'} 
-        transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)]`}
+        transition-all duration-700 ease-[cubic-bezier(0.34\,1.56\,0.64\,1)]`}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
