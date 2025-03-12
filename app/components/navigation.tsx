@@ -16,7 +16,7 @@ export default function Navigation() {
   const { currentLang, toggleLanguage, t } = useLanguage()
 
   const logoPath = process.env.NODE_ENV === 'production'
-    ? "/vocal-coaching/vocal-coaching/images/logo/ml-logo.PNG"
+    ? "/vocal-coaching/images/logo/ml-logo.PNG"
     : "/vocal-coaching/images/logo/ml-logo.PNG"
 
   const links = [
