@@ -59,8 +59,8 @@ export function ServiceCard({
     >
       <div 
         className={cn(
-          "relative overflow-hidden rounded-2xl transition-all duration-500 ease-in-out",
-          isHovered ? "h-[600px]" : "h-[480px]"
+          "relative overflow-hidden rounded-2xl transition-all duration-700 ease-in-out transform",
+          isHovered ? "h-[600px] scale-[1.02]" : "h-[480px]"
         )}
       >
         {/* Background Image with Blur Effect */}
@@ -70,101 +70,127 @@ export function ServiceCard({
             alt={title}
             fill
             className={cn(
-              "object-cover transition-all duration-500",
-              !isHovered && "scale-110 blur-sm",
+              "object-cover transition-all duration-700 ease-in-out transform",
+              !isHovered && "scale-110 blur-[8px]",
               imageLoaded ? "opacity-100" : "opacity-0"
             )}
             onLoad={() => setImageLoaded(true)}
             onError={() => setImageError(true)}
             priority
           />
-          {/* Gradient Overlay */}
+          {/* Dark Gradient Overlay */}
           <div 
             className={cn(
-              "absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 transition-opacity duration-500",
-              isHovered ? "opacity-50" : "opacity-70"
+              "absolute inset-0 transition-opacity duration-700 ease-in-out",
+              isHovered 
+                ? "bg-gradient-to-t from-black/90 via-black/50 to-transparent opacity-60" 
+                : "bg-gradient-to-t from-black/95 via-black/80 to-black/60 opacity-90"
             )}
           />
         </div>
 
         {/* Content */}
-        <div className="relative h-full p-6 flex flex-col justify-between z-10">
+        <div className="relative h-full p-8 flex flex-col justify-between z-10">
           {/* Icon and Title */}
           <div>
             <motion.div
-              initial={{ scale: 1 }}
-              animate={{ scale: isHovered ? 1.1 : 1 }}
-              transition={{ duration: 0.3 }}
-              className="mb-4 text-primary"
+              animate={{ 
+                scale: isHovered ? 1.1 : 1,
+                y: isHovered ? -10 : 0
+              }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-[#C8A97E] mb-4"
             >
               {icon}
             </motion.div>
             <motion.h3
-              initial={{ y: 0 }}
-              animate={{ y: isHovered ? -10 : 0 }}
-              transition={{ duration: 0.3 }}
-              className="text-2xl font-bold text-white mb-2"
+              animate={{ 
+                y: isHovered ? -10 : 0,
+                scale: isHovered ? 1.05 : 1
+              }}
+              transition={{ duration: 0.5, ease: "easeOut" }}
+              className="text-2xl font-bold text-white mb-3"
             >
               {title}
             </motion.h3>
-            <p className="text-gray-300">{description}</p>
+            <motion.p 
+              animate={{ opacity: isHovered ? 0.7 : 1 }}
+              transition={{ duration: 0.3 }}
+              className="text-gray-300"
+            >
+              {description}
+            </motion.p>
           </div>
 
           {/* Features List */}
           <motion.ul
-            initial={{ opacity: 1 }}
-            animate={{ opacity: isHovered ? 0 : 1 }}
-            transition={{ duration: 0.2 }}
+            animate={{ 
+              opacity: isHovered ? 0 : 1,
+              y: isHovered ? 20 : 0
+            }}
+            transition={{ duration: 0.3 }}
             className={cn(
-              "space-y-2 text-gray-200",
+              "space-y-3 text-gray-200",
               isHovered && "pointer-events-none"
             )}
           >
             {features.map((feature, index) => (
-              <li key={index} className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+              <motion.li 
+                key={index}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: index * 0.1 }}
+                className="flex items-center gap-2"
+              >
+                <span className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
                 {feature}
-              </li>
+              </motion.li>
             ))}
           </motion.ul>
 
           {/* Expandable Details */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
-            transition={{ duration: 0.3 }}
+            initial={{ opacity: 0 }}
+            animate={{ 
+              opacity: isHovered ? 1 : 0,
+              y: isHovered ? 0 : 20
+            }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             className={cn(
-              "absolute inset-x-0 bottom-0 p-6 space-y-4 bg-gradient-to-t from-black/90 to-transparent",
+              "absolute inset-x-0 bottom-0 p-8 space-y-6",
+              "bg-gradient-to-t from-black/95 via-black/90 to-transparent",
               !isHovered && "pointer-events-none"
             )}
           >
-            <div className="space-y-3">
-              <h4 className="font-semibold text-white">Includes:</h4>
-              <ul className="grid grid-cols-2 gap-2">
+            <div className="space-y-4">
+              <h4 className="text-[#C8A97E] font-medium">Details</h4>
+              <ul className="grid grid-cols-2 gap-3">
                 {details.includes.map((item, index) => (
                   <motion.li
                     key={index}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: index * 0.1 }}
-                    className="text-gray-300 text-sm"
+                    className="text-gray-300 text-sm flex items-center gap-2"
                   >
-                    • {item}
+                    <span className="w-1 h-1 rounded-full bg-[#C8A97E]/70" />
+                    {item}
                   </motion.li>
                 ))}
               </ul>
             </div>
+            
             <div className="space-y-2">
-              <p className="text-gray-300">
-                <span className="font-semibold text-white">Suitable for: </span>
+              <p className="text-gray-300 text-sm">
+                <span className="text-[#C8A97E]">Geeignet für: </span>
                 {details.suitable.join(", ")}
               </p>
-              <p className="text-gray-300">
-                <span className="font-semibold text-white">Duration: </span>
+              <p className="text-gray-300 text-sm">
+                <span className="text-[#C8A97E]">Dauer: </span>
                 {details.duration}
               </p>
-              <p className="text-gray-300">
-                <span className="font-semibold text-white">Location: </span>
+              <p className="text-gray-300 text-sm">
+                <span className="text-[#C8A97E]">Ort: </span>
                 {details.location}
               </p>
             </div>
