@@ -291,7 +291,7 @@ export default function Home() {
             <ServiceCard
               title="Workshop"
               subtitle="Individuell & Intensiv"
-              description="Maßgeschneiderte Intensiv-Workshops ab 3 Stunden - ein tiefgreifendes Erlebnis für Ihre stimmliche Entwicklung."
+              description="Maßgeschneiderte Intensiv-Workshops für ein tiefgreifendes Erlebnis Ihrer stimmlichen Entwicklung."
               icon={<Theater className="w-6 h-6" />}
               image="/images/services/workshop.jpg"
               features={[
@@ -313,7 +313,7 @@ export default function Home() {
                   "Bands"
                 ],
                 duration: "Ab 3 Stunden",
-                location: "Studio Berlin (ab 600€)"
+                location: "Nach Vereinbarung"
               }}
             />
             <ServiceCard
@@ -343,6 +343,7 @@ export default function Home() {
                 duration: "90-120 Minuten",
                 location: "Studio Berlin"
               }}
+              link="https://chornextdoor.de"
             />
           </div>
 
