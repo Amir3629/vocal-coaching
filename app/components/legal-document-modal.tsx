@@ -7,11 +7,10 @@ import { useEffect } from "react"
 interface LegalDocumentModalProps {
   isOpen: boolean
   onClose: () => void
-  title: string
   children: React.ReactNode
 }
 
-export default function LegalDocumentModal({ isOpen, onClose, title, children }: LegalDocumentModalProps) {
+export default function LegalDocumentModal({ isOpen, onClose, children }: LegalDocumentModalProps) {
   // Close on escape key
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
