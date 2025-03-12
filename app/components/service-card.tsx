@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 import Image from "next/image"
-import { motion, AnimatePresence } from "framer-motion"
+import { motion } from "framer-motion"
 import { cn } from "@/lib/utils"
 
 // Add global styles
@@ -26,158 +26,150 @@ interface ServiceCardProps {
   delay?: number
 }
 
-export default function ServiceCard({ title, description, icon, price, features, details, image, delay = 0 }: ServiceCardProps) {
+export function ServiceCard({
+  title,
+  description,
+  icon,
+  price,
+  features,
+  details,
+  image,
+  delay = 0,
+}: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
   const [imageLoaded, setImageLoaded] = useState(false)
+  const [imageError, setImageError] = useState(false)
+
+  // Default background colors for each service type
+  const defaultBgColors: { [key: string]: string } = {
+    "Singen": "bg-gradient-to-br from-amber-900/30 to-amber-950/50",
+    "Vocal Coaching": "bg-gradient-to-br from-purple-900/30 to-purple-950/50",
+    "Workshop": "bg-gradient-to-br from-blue-900/30 to-blue-950/50",
+    "Chor": "bg-gradient-to-br from-emerald-900/30 to-emerald-950/50"
+  }
 
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.7, ease: "easeOut", delay }}
-      className={cn(
-        "relative w-full bg-[#0A0A0A] rounded-2xl overflow-hidden shadow-xl",
-        "transition-all duration-700 ease-in-out transform",
-        isHovered ? "h-[600px]" : "h-[480px]"
-      )}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay }}
+      className="relative group"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Background Image */}
-      <div className="absolute inset-0 bg-black">
-        <Image
-          src={image}
-          alt={title}
-          fill
-          className={cn(
-            "object-cover transition-all duration-1000 ease-in-out transform",
-            isHovered ? "scale-110 blur-0" : "scale-100 blur-[2px]",
-            !imageLoaded && "opacity-0",
-            imageLoaded && "opacity-100"
-          )}
-          sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          priority
-          onLoad={() => setImageLoaded(true)}
-        />
-        <div 
-          className={cn(
-            "absolute inset-0 bg-gradient-to-b from-black/50 via-black/70 to-black/90",
-            "transition-opacity duration-700 ease-in-out",
-            isHovered ? "opacity-75" : "opacity-90"
-          )}
-        />
-      </div>
+      <div 
+        className={cn(
+          "relative overflow-hidden rounded-2xl transition-all duration-500 ease-in-out",
+          isHovered ? "h-[600px]" : "h-[480px]"
+        )}
+      >
+        {/* Background Image with Blur Effect */}
+        <div className="absolute inset-0 w-full h-full">
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className={cn(
+              "object-cover transition-all duration-500",
+              !isHovered && "scale-110 blur-sm",
+              imageLoaded ? "opacity-100" : "opacity-0"
+            )}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageError(true)}
+            priority
+          />
+          {/* Gradient Overlay */}
+          <div 
+            className={cn(
+              "absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-black/20 transition-opacity duration-500",
+              isHovered ? "opacity-50" : "opacity-70"
+            )}
+          />
+        </div>
 
-      {/* Content */}
-      <div className="relative h-full flex flex-col p-6">
-        {/* Icon and Title */}
-        <motion.div 
-          className="flex items-start gap-3 mb-4"
-          animate={{
-            transform: isHovered ? "translateY(-8px)" : "translateY(0)",
-            transition: { duration: 0.5, ease: "easeOut" }
-          }}
-        >
-          <motion.div
-            className="text-[#C8A97E]"
-            animate={{
-              scale: isHovered ? 1.1 : 1,
-              transition: { duration: 0.5, ease: "spring" }
-            }}
-          >
-            {icon}
-          </motion.div>
+        {/* Content */}
+        <div className="relative h-full p-6 flex flex-col justify-between z-10">
+          {/* Icon and Title */}
           <div>
-            <h3 className="text-2xl font-semibold text-white">{title}</h3>
-            <p className="text-[#C8A97E]/80 text-sm mt-1">{description}</p>
-          </div>
-        </motion.div>
-
-        {/* Features */}
-        <ul className="space-y-3">
-          {features.map((feature, index) => (
-            <motion.li
-              key={index}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ 
-                opacity: 1, 
-                x: 0,
-                transition: { 
-                  duration: 0.5,
-                  delay: index * 0.1 + (isHovered ? 0.2 : 0)
-                }
-              }}
-              className="flex items-center gap-2 text-white/80"
-            >
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-              {feature}
-            </motion.li>
-          ))}
-        </ul>
-
-        {/* Expandable Details */}
-        <AnimatePresence>
-          {isHovered && (
             <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ 
-                opacity: 1, 
-                height: "auto",
-                transition: { 
-                  duration: 0.5,
-                  ease: "easeOut"
-                }
-              }}
-              exit={{ 
-                opacity: 0, 
-                height: 0,
-                transition: { 
-                  duration: 0.3,
-                  ease: "easeIn"
-                }
-              }}
-              className="mt-6 space-y-4"
+              initial={{ scale: 1 }}
+              animate={{ scale: isHovered ? 1.1 : 1 }}
+              transition={{ duration: 0.3 }}
+              className="mb-4 text-primary"
             >
-              <div className="space-y-2">
-                <h4 className="text-[#C8A97E] text-sm font-medium">Details</h4>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-white/60 text-xs mb-1">Dauer</p>
-                    <p className="text-white text-sm">{details.duration}</p>
-                  </div>
-                  <div>
-                    <p className="text-white/60 text-xs mb-1">Ort</p>
-                    <p className="text-white text-sm">{details.location}</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="space-y-2">
-                <h4 className="text-[#C8A97E] text-sm font-medium">Geeignet für</h4>
-                <ul className="grid grid-cols-2 gap-2">
-                  {details.suitable.map((item, index) => (
-                    <motion.li
-                      key={index}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ 
-                        opacity: 1, 
-                        y: 0,
-                        transition: { 
-                          duration: 0.3,
-                          delay: index * 0.1
-                        }
-                      }}
-                      className="text-white/80 text-sm"
-                    >
-                      • {item}
-                    </motion.li>
-                  ))}
-                </ul>
-              </div>
+              {icon}
             </motion.div>
-          )}
-        </AnimatePresence>
+            <motion.h3
+              initial={{ y: 0 }}
+              animate={{ y: isHovered ? -10 : 0 }}
+              transition={{ duration: 0.3 }}
+              className="text-2xl font-bold text-white mb-2"
+            >
+              {title}
+            </motion.h3>
+            <p className="text-gray-300">{description}</p>
+          </div>
+
+          {/* Features List */}
+          <motion.ul
+            initial={{ opacity: 1 }}
+            animate={{ opacity: isHovered ? 0 : 1 }}
+            transition={{ duration: 0.2 }}
+            className={cn(
+              "space-y-2 text-gray-200",
+              isHovered && "pointer-events-none"
+            )}
+          >
+            {features.map((feature, index) => (
+              <li key={index} className="flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary" />
+                {feature}
+              </li>
+            ))}
+          </motion.ul>
+
+          {/* Expandable Details */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: isHovered ? 1 : 0, y: isHovered ? 0 : 20 }}
+            transition={{ duration: 0.3 }}
+            className={cn(
+              "absolute inset-x-0 bottom-0 p-6 space-y-4 bg-gradient-to-t from-black/90 to-transparent",
+              !isHovered && "pointer-events-none"
+            )}
+          >
+            <div className="space-y-3">
+              <h4 className="font-semibold text-white">Includes:</h4>
+              <ul className="grid grid-cols-2 gap-2">
+                {details.includes.map((item, index) => (
+                  <motion.li
+                    key={index}
+                    initial={{ opacity: 0, x: -10 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="text-gray-300 text-sm"
+                  >
+                    • {item}
+                  </motion.li>
+                ))}
+              </ul>
+            </div>
+            <div className="space-y-2">
+              <p className="text-gray-300">
+                <span className="font-semibold text-white">Suitable for: </span>
+                {details.suitable.join(", ")}
+              </p>
+              <p className="text-gray-300">
+                <span className="font-semibold text-white">Duration: </span>
+                {details.duration}
+              </p>
+              <p className="text-gray-300">
+                <span className="font-semibold text-white">Location: </span>
+                {details.location}
+              </p>
+            </div>
+          </motion.div>
+        </div>
       </div>
     </motion.div>
   )
