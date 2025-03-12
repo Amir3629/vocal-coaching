@@ -16,6 +16,7 @@ interface ServiceCardProps {
   }
   image?: string
   icon?: React.ReactNode
+  delay?: number
 }
 
 export default function ServiceCard({
@@ -24,7 +25,8 @@ export default function ServiceCard({
   features,
   details,
   image,
-  icon
+  icon,
+  delay = 0
 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
 
@@ -32,6 +34,7 @@ export default function ServiceCard({
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
+      transition={{ delay }}
       viewport={{ once: true }}
       className="relative w-full bg-black/30 backdrop-blur-sm rounded-xl overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}

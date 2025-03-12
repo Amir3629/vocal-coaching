@@ -230,7 +230,7 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
             <ServiceCard
               title="Singen"
-              description="Gesangsunterricht für alle"
+              subtitle="Gesangsunterricht für alle"
               icon={<Music className="w-6 h-6" />}
               features={[
                 "Grundtechniken",
@@ -259,7 +259,7 @@ export default function Home() {
             />
             <ServiceCard
               title="Vocal Coaching"
-              description="Professionelles Coaching"
+              subtitle="Professionelles Coaching"
               icon={<Mic className="w-6 h-6" />}
               features={[
                 "Stimmtechnik",
@@ -288,7 +288,7 @@ export default function Home() {
             />
             <ServiceCard
               title="Workshop"
-              description="Gruppenunterricht"
+              subtitle="Gruppenunterricht"
               icon={<Theater className="w-6 h-6" />}
               features={[
                 "Ensemble-Arbeit",
@@ -317,7 +317,7 @@ export default function Home() {
             />
             <ServiceCard
               title="Chor"
-              description="Gemeinsam Singen"
+              subtitle="Gemeinsam Singen"
               icon={<Users2 className="w-6 h-6" />}
               features={[
                 "Mehrstimmigkeit",
