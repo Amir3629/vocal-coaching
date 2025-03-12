@@ -41,6 +41,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Copy images to production directory
+        run: |
+          mkdir -p public/vocal-coaching/images
+          cp -r public/images/* public/vocal-coaching/images/
+
       - name: Build project
         run: npm run build
 

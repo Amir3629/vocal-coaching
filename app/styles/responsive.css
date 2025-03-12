@@ -102,6 +102,20 @@
     height: 36px;
     font-size: 0.8125rem;
   }
+
+  .rdp-month {
+    padding: 0.5rem !important;
+  }
+
+  .rdp-button {
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 0.8125rem !important;
+  }
+
+  .rdp-cell {
+    height: 36px !important;
+  }
 }
 
 /* Tablet Styles (768px and up) */
@@ -282,7 +296,7 @@ select {
   flex-direction: column;
   align-items: center;
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;
   margin: 0 auto;
   padding: 1rem;
 }
@@ -294,27 +308,34 @@ select {
 
 .rdp-months {
   justify-content: center !important;
+  width: 100% !important;
 }
 
 .rdp-month {
   width: 100% !important;
-  max-width: 400px !important;
+  max-width: 350px !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+  border-radius: 0.75rem !important;
+  padding: 1rem !important;
 }
 
 .rdp-table {
   width: 100% !important;
+  border-spacing: 0.25rem !important;
 }
 
 .rdp-cell {
   text-align: center !important;
   height: 40px !important;
+  padding: 0 !important;
 }
 
 .rdp-button {
-  width: 100% !important;
-  height: 100% !important;
-  border-radius: 8px !important;
+  width: 36px !important;
+  height: 36px !important;
   font-size: 0.875rem !important;
+  border-radius: 0.5rem !important;
+  transition: all 0.2s ease !important;
 }
 
 .rdp-day_selected {

@@ -379,9 +379,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 initial={{ opacity: 0, x: 20 }}
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
-                className="flex justify-center"
+                className="flex flex-col items-center justify-center w-full"
               >
-                <div className="w-full max-w-[400px]">
+                <div className="w-full max-w-[350px] mx-auto">
                   <Calendar
                     mode="single"
                     selected={selectedDate}
@@ -390,6 +390,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       date < new Date() || date > addMonths(new Date(), 2)
                     }
                     initialFocus
+                    className="rounded-lg border border-[#C8A97E]/20 bg-black/20"
                   />
                 </div>
               </motion.div>
