@@ -34,8 +34,8 @@ const services = [
       location: "Studio Berlin / Online"
     },
     image: process.env.NODE_ENV === 'production' 
-      ? "/vocal-coaching/images/services/singing.jpg" 
-      : "/images/services/singing.jpg"
+      ? "/vocal-coaching/images/cards/singing.jpg" 
+      : "/images/cards/singing.jpg"
   },
   {
     title: "Vocal Coaching",
@@ -64,12 +64,12 @@ const services = [
       location: "Studio Berlin / Online"
     },
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/services/coaching.jpg"
-      : "/images/services/coaching.jpg"
+      ? "/vocal-coaching/images/cards/coaching.jpg"
+      : "/images/cards/coaching.jpg"
   },
   {
     title: "Workshop",
-    subtitle: "Individuelles Coaching",
+    subtitle: "Individuell & Intensiv",
     description: "Maßgeschneiderte Intensiv-Workshops für ein tiefgreifendes Erlebnis Ihrer stimmlichen Entwicklung.",
     icon: Theater,
     features: [
@@ -90,12 +90,12 @@ const services = [
         "Kleine Gruppen",
         "Bands"
       ],
-      duration: "Ab 3 Stunden (ab 600€)",
+      duration: "Ab 3 Stunden",
       location: "Nach Vereinbarung"
     },
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/services/workshop.jpg"
-      : "/images/services/workshop.jpg"
+      ? "/vocal-coaching/images/cards/workshop.jpg"
+      : "/images/cards/workshop.jpg"
   },
   {
     title: "Chor Next Door",
@@ -125,8 +125,8 @@ const services = [
     },
     link: "https://chornextdoor.de",
     image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/services/choir.jpg"
-      : "/images/services/choir.jpg"
+      ? "/vocal-coaching/images/cards/choir.jpg"
+      : "/images/cards/choir.jpg"
   }
 ]
 
