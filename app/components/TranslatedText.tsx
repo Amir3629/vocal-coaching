@@ -9,6 +9,10 @@ interface TranslatedTextProps {
   as?: 'div' | 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   className?: string;
   html?: boolean;
+  translations?: {
+    de: string;
+    en: string;
+  };
 }
 
 const motionProps = {
@@ -22,17 +26,27 @@ export default function TranslatedText({
   text, 
   as = 'div', 
   className = '', 
-  html = false 
+  html = false,
+  translations
 }: TranslatedTextProps) {
   const { currentLang } = useLanguage();
   const [translatedText, setTranslatedText] = useState(text);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    // This component now just displays the text without translation
-    // The translation is handled by the language-switcher context
-    setTranslatedText(text);
-  }, [text, currentLang]);
+    // If translations are provided, use them
+    if (translations) {
+      setIsTransitioning(true);
+      const newText = currentLang === 'de' ? translations.de : translations.en;
+      setTranslatedText(newText);
+      setTimeout(() => {
+        setIsTransitioning(false);
+      }, 300);
+    } else {
+      // Otherwise just use the original text
+      setTranslatedText(text);
+    }
+  }, [text, currentLang, translations]);
 
   const combinedClassName = `${className} ${isTransitioning ? 'opacity-50' : ''}`;
 

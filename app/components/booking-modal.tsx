@@ -147,10 +147,26 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
             as="h3"
             text={service.title}
             className="text-xl font-medium text-white mb-1 drop-shadow-lg"
+            translations={{
+              de: service.title,
+              en: service.id === "singen" 
+                ? "Professional Singing Performance" 
+                : service.id === "vocal-coaching" 
+                  ? "Vocal Coaching" 
+                  : "Workshop"
+            }}
           />
           <TranslatedText
             text={service.duration}
             className="text-[#C8A97E] drop-shadow-md"
+            translations={{
+              de: service.duration,
+              en: service.id === "singen" 
+                ? "By arrangement" 
+                : service.id === "vocal-coaching" 
+                  ? "60 min" 
+                  : "3 hours"
+            }}
           />
         </div>
         {isSelected && (
@@ -166,6 +182,14 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
       <TranslatedText
         text={service.description}
         className="text-gray-100 text-sm font-medium drop-shadow-lg"
+        translations={{
+          de: service.description,
+          en: service.id === "singen" 
+            ? "High-quality vocal performance for your events, celebrations, and special occasions. As one of Berlin's most sought-after singers, I'll elevate your event to a new level." 
+            : service.id === "vocal-coaching" 
+              ? "Professional voice training using the Complete Vocal Technique (CVT) - a scientifically based method for all singing styles. As one of only three certified CVT trainers in Berlin, I offer you access to this revolutionary technique." 
+              : "Intensive group training for vocal techniques and performance. Expand your vocal potential in an inspiring group atmosphere."
+        }}
       />
       {service.types && (
         <div className="mt-4 pt-4 border-t border-white/20">
@@ -176,6 +200,20 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
                 <TranslatedText
                   text={type.title}
                   className="drop-shadow-md"
+                  translations={{
+                    de: type.title,
+                    en: type.id === "solo" 
+                      ? "Solo Performance" 
+                      : type.id === "band" 
+                        ? "With Band" 
+                        : type.id === "custom" 
+                          ? "Customized" 
+                          : type.id === "private" 
+                            ? "Private Lessons" 
+                            : type.id === "online" 
+                              ? "Online Coaching" 
+                              : "Group Lessons"
+                  }}
                 />
               </div>
             ))}
@@ -411,7 +449,15 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
-                    <h3 id="booking-modal-title" className="text-lg font-medium text-white">Buchung</h3>
+                    <h3 id="booking-modal-title" className="text-lg font-medium text-white">
+                      <TranslatedText
+                        text="Buchung"
+                        translations={{
+                          de: "Buchung",
+                          en: "Booking"
+                        }}
+                      />
+                    </h3>
                     <button
                       onClick={handleSmoothClose}
                       className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
@@ -634,7 +680,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           onClick={handleBack}
                           className="px-6 py-2 rounded-lg border border-[#C8A97E]/30 text-[#C8A97E] hover:bg-[#C8A97E]/10 transition-colors"
                         >
-                          Zurück
+                          <TranslatedText
+                            text="Zurück"
+                            translations={{
+                              de: "Zurück",
+                              en: "Back"
+                            }}
+                          />
                         </button>
                       )}
                       <button
@@ -647,7 +699,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             : "bg-[#C8A97E]/50 text-black/50 cursor-not-allowed"
                         } ${currentStep === "1" ? "ml-auto" : ""}`}
                       >
-                        {currentStep === "4" ? "Buchen" : "Weiter"}
+                        <TranslatedText
+                          text={currentStep === "4" ? "Buchen" : "Weiter"}
+                          translations={{
+                            de: currentStep === "4" ? "Buchen" : "Weiter",
+                            en: currentStep === "4" ? "Book" : "Next"
+                          }}
+                        />
                       </button>
                     </div>
                   </div>
