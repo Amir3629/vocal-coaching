@@ -545,7 +545,9 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{ 
-        transition: 'background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease'
+        minHeight: isHovered ? '420px' : '320px',
+        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, min-height 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+        willChange: 'transform, min-height, background-color'
       }}
     >
       {isSelected && (
@@ -580,16 +582,42 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
         ))}
       </div>
       
-      <AnimatePresence>
+      <AnimatePresence mode="sync">
         {isHovered && (
           <motion.div 
             className="mt-4 space-y-3 overflow-hidden"
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ 
-              duration: 0.5,
-              ease: [0.34, 1.56, 0.64, 1]
+            animate={{ 
+              opacity: 1, 
+              height: 'auto',
+              transition: {
+                height: {
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 20,
+                  duration: 0.5
+                },
+                opacity: {
+                  duration: 0.3,
+                  ease: "easeInOut"
+                }
+              }
+            }}
+            exit={{ 
+              opacity: 0,
+              height: 0,
+              transition: {
+                height: {
+                  type: "spring",
+                  stiffness: 100,
+                  damping: 20,
+                  duration: 0.5
+                },
+                opacity: {
+                  duration: 0.2,
+                  ease: "easeInOut"
+                }
+              }
             }}
           >
             <div className="pt-4 border-t border-white/10">
