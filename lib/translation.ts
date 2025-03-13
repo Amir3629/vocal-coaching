@@ -36,7 +36,7 @@ export const useTranslation = create<TranslationState>()(
   )
 )
 
-const DEEPL_API_KEY = '3a52f5c8-1967-43a4-b037-790934c51c82:fx'
+const DEEPL_API_KEY = process.env.NEXT_PUBLIC_DEEPL_API_KEY || '3a52f5c8-1967-43a4-b037-790934c51c82:fx'
 let monthlyCharCount = 0
 const MONTHLY_CHAR_LIMIT = 500000
 
@@ -68,6 +68,7 @@ export async function translateText(text: string, targetLang: 'DE' | 'EN'): Prom
       body: JSON.stringify({
         text: [text],
         target_lang: targetLang,
+        formality: 'more'
       }),
     })
 
@@ -84,14 +85,6 @@ export async function translateText(text: string, targetLang: 'DE' | 'EN'): Prom
     // Cache the translation
     addToCache(text, translation)
 
-    // Get usage info from headers
-    const charCount = response.headers.get('X-Character-Count')
-    const charLimit = response.headers.get('X-Character-Limit')
-    if (charCount && charLimit) {
-      monthlyCharCount = parseInt(charCount)
-      console.log(`DeepL API Usage: ${charCount}/${charLimit} characters`)
-    }
-
     return translation
   } catch (error) {
     console.error('Translation error:', error)
@@ -99,36 +92,25 @@ export async function translateText(text: string, targetLang: 'DE' | 'EN'): Prom
   }
 }
 
-export function useTranslatedText(text: string): { translatedText: string; isLoading: boolean } {
-  const { currentLanguage, isTranslating, cache } = useTranslation()
+export function useTranslatedText(text: string) {
+  const { currentLanguage, isTranslating, setIsTranslating } = useTranslation()
   const [translatedText, setTranslatedText] = useState(text)
-  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     let isMounted = true
 
     async function performTranslation() {
-      if (currentLanguage === 'en') {
-        // Check cache first
-        const cachedTranslation = cache[text]
-        if (cachedTranslation && Date.now() - cachedTranslation.timestamp < CACHE_DURATION) {
-          if (isMounted) {
-            setTranslatedText(cachedTranslation.en)
-            return
-          }
-        }
+      if (currentLanguage === 'de') {
+        setTranslatedText(text)
+        return
+      }
 
-        setIsLoading(true)
-        const translated = await translateText(text, 'EN')
-        if (isMounted) {
-          setTranslatedText(translated)
-          setIsLoading(false)
-        }
-      } else {
-        if (isMounted) {
-          setTranslatedText(text)
-          setIsLoading(false)
-        }
+      setIsTranslating(true)
+      const translation = await translateText(text, 'EN')
+      
+      if (isMounted) {
+        setTranslatedText(translation)
+        setIsTranslating(false)
       }
     }
 
@@ -137,7 +119,10 @@ export function useTranslatedText(text: string): { translatedText: string; isLoa
     return () => {
       isMounted = false
     }
-  }, [text, currentLanguage, cache])
+  }, [text, currentLanguage, setIsTranslating])
 
-  return { translatedText, isLoading }
+  return {
+    translatedText,
+    isLoading: isTranslating
+  }
 } 
