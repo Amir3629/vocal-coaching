@@ -293,4 +293,7 @@ export function LanguageSwitcher() {
       </AnimatePresence>
     </motion.button>
   )
-} 
+}
+
+// Add default export for backward compatibility
+export default LanguageSwitcher; 
