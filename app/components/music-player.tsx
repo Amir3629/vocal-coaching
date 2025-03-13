@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
@@ -65,11 +65,14 @@ export default function MusicPlayer() {
   const [playerReady, setPlayerReady] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
+  const [dragOffset, setDragOffset] = useState(0);
   const [showTutorial, setShowTutorial] = useState(false);
+  const [showNotification, setShowNotification] = useState(false);
   const videoRef = useRef<HTMLIFrameElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const discControls = useAnimation();
   const tutorialControls = useAnimation();
+  const notificationControls = useAnimation();
 
   const currentSong = songs[currentSongIndex];
 
@@ -89,12 +92,13 @@ export default function MusicPlayer() {
     
     if (!hasSeenTutorial && playerReady) {
       setShowTutorial(true);
+      setShowNotification(true);
       
       // Animate the tutorial hand
       tutorialControls.start({
-        x: [-20, 20, -20],
+        x: [-40, 40, -40],
         transition: {
-          duration: 2,
+          duration: 2.5,
           repeat: 1,
           ease: "easeInOut"
         }
@@ -102,8 +106,21 @@ export default function MusicPlayer() {
         setShowTutorial(false);
         localStorage.setItem('music-tutorial-seen', 'true');
       });
+
+      // Animate the notification
+      notificationControls.start({
+        opacity: [0, 1, 1, 0],
+        y: [20, 0, 0, -20],
+        transition: {
+          duration: 4,
+          times: [0, 0.1, 0.9, 1],
+          ease: "easeInOut"
+        }
+      }).then(() => {
+        setShowNotification(false);
+      });
     }
-  }, [playerReady, tutorialControls]);
+  }, [playerReady, tutorialControls, notificationControls]);
 
   // Handle YouTube player messages
   useEffect(() => {
@@ -216,28 +233,42 @@ export default function MusicPlayer() {
     }, 500);
   };
 
-  // Drag handlers for disc navigation
+  // Drag handlers for disc navigation with real-time movement
   const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
     setDragStartX(e.clientX);
+    setDragOffset(0);
   };
 
   const handleDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     
     const dragDistance = e.clientX - dragStartX;
+    setDragOffset(dragDistance);
     
     // If dragged far enough, change song immediately
-    if (dragDistance > 80) {
+    if (dragDistance > 100) {
       setIsDragging(false);
+      setDragOffset(0);
       playPreviousSong();
-    } else if (dragDistance < -80) {
+    } else if (dragDistance < -100) {
       setIsDragging(false);
+      setDragOffset(0);
       playNextSong();
     }
   };
 
   const handleDragEnd = () => {
+    if (isDragging) {
+      // If not dragged far enough, animate back to center
+      if (dragOffset > 0 && dragOffset <= 100) {
+        // Not far enough right, animate back
+        setDragOffset(0);
+      } else if (dragOffset < 0 && dragOffset >= -100) {
+        // Not far enough left, animate back
+        setDragOffset(0);
+      }
+    }
     setIsDragging(false);
   };
 
@@ -247,35 +278,21 @@ export default function MusicPlayer() {
         <div className="flex items-center justify-center">
           <AnimatePresence mode="wait">
             <div className="relative flex items-center justify-center">
-              {/* Previous song button (only visible during transitions) */}
-              <button 
-                className="absolute left-[-60px] z-10 text-gray-400 hover:text-[#C8A97E] transition-colors"
-                onClick={playPreviousSong}
-                aria-label="Previous song"
-              >
-                <ChevronLeft size={32} />
-              </button>
-
-              {/* Next song button (only visible during transitions) */}
-              <button 
-                className="absolute right-[-60px] z-10 text-gray-400 hover:text-[#C8A97E] transition-colors"
-                onClick={playNextSong}
-                aria-label="Next song"
-              >
-                <ChevronRight size={32} />
-              </button>
-
               {/* Current song disc */}
               <motion.div
                 key={currentSongIndex}
                 initial={{ opacity: 0, scale: 0.8, x: isTransitioning ? (dragStartX > 0 ? 100 : -100) : 0 }}
-                animate={{ opacity: 1, scale: 1, x: 0 }}
+                animate={{ 
+                  opacity: 1, 
+                  scale: 1, 
+                  x: isDragging ? dragOffset : 0 
+                }}
                 exit={{ opacity: 0, scale: 0.8, x: dragStartX > 0 ? -100 : 100 }}
                 transition={{ 
-                  type: "spring", 
+                  type: isDragging ? "tween" : "spring", 
                   stiffness: 100, 
                   damping: 15,
-                  duration: 0.8
+                  duration: isDragging ? 0.1 : 0.8
                 }}
                 className="relative z-10"
                 onMouseDown={handleDragStart}
@@ -360,13 +377,19 @@ export default function MusicPlayer() {
                   </div>
                 </motion.div>
               )}
+
+              {/* Temporary notification */}
+              {showNotification && (
+                <motion.div 
+                  className="absolute z-30 pointer-events-none bg-black/80 text-white px-4 py-2 rounded-full"
+                  animate={notificationControls}
+                  style={{ bottom: "-60px", left: "50%", transform: "translateX(-50%)" }}
+                >
+                  Drag disc left or right to change songs
+                </motion.div>
+              )}
             </div>
           </AnimatePresence>
-        </div>
-
-        {/* Swipe instruction */}
-        <div className="text-center mt-20 text-gray-400 text-sm">
-          <p>Drag the disc left or right to change songs</p>
         </div>
       </div>
 
