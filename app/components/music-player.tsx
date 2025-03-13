@@ -203,11 +203,11 @@ export default function MusicPlayer() {
     
     const dragDistance = e.clientX - dragStartX;
     
-    // If dragged far enough, change song
-    if (dragDistance > 100) {
+    // If dragged far enough, change song immediately
+    if (dragDistance > 80) {
       setIsDragging(false);
       playPreviousSong();
-    } else if (dragDistance < -100) {
+    } else if (dragDistance < -80) {
       setIsDragging(false);
       playNextSong();
     }
@@ -215,6 +215,17 @@ export default function MusicPlayer() {
 
   const handleDragEnd = () => {
     setIsDragging(false);
+  };
+
+  // Direct click handlers for background discs
+  const handlePreviousClick = () => {
+    if (!playerReady || isTransitioning) return;
+    playPreviousSong();
+  };
+
+  const handleNextClick = () => {
+    if (!playerReady || isTransitioning) return;
+    playNextSong();
   };
 
   return (
@@ -225,29 +236,32 @@ export default function MusicPlayer() {
             {/* Previous song disc (peeking from behind) */}
             {showIndicators && (
               <motion.div
-                className="absolute rounded-full bg-black z-0"
+                className="absolute rounded-full bg-black z-0 cursor-pointer"
                 style={{ 
                   width: "320px",
                   height: "320px",
                   left: "-30px", 
-                  opacity: 0.4,
-                  filter: "blur(2px)",
+                  opacity: 0.3,
+                  filter: "blur(3px)",
                   transform: "translateY(10px)"
                 }}
                 whileHover={{ 
                   left: "-40px", 
-                  opacity: 0.6, 
-                  filter: "blur(1px)",
+                  opacity: 0.5, 
+                  filter: "blur(2px)",
                   scale: 1.05
                 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.3 }}
+                onClick={handlePreviousClick}
               >
-                <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
+                <div className="absolute inset-0 rounded-full overflow-hidden opacity-60 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-black/70 z-[1]" /> {/* Darker overlay */}
                   <Image
                     src={`https://img.youtube.com/vi/${songs[currentSongIndex === 0 ? songs.length - 1 : currentSongIndex - 1].youtubeId}/maxresdefault.jpg`}
                     alt="Previous song"
                     fill
                     className="object-cover grayscale"
+                    unoptimized={true}
                   />
                 </div>
               </motion.div>
@@ -256,29 +270,32 @@ export default function MusicPlayer() {
             {/* Next song disc (peeking from behind) */}
             {showIndicators && (
               <motion.div
-                className="absolute rounded-full bg-black z-0"
+                className="absolute rounded-full bg-black z-0 cursor-pointer"
                 style={{ 
                   width: "320px",
                   height: "320px",
                   right: "-30px", 
-                  opacity: 0.4,
-                  filter: "blur(2px)",
+                  opacity: 0.3,
+                  filter: "blur(3px)",
                   transform: "translateY(10px)"
                 }}
                 whileHover={{ 
                   right: "-40px", 
-                  opacity: 0.6, 
-                  filter: "blur(1px)",
+                  opacity: 0.5, 
+                  filter: "blur(2px)",
                   scale: 1.05
                 }}
-                transition={{ duration: 0.5 }}
+                transition={{ duration: 0.3 }}
+                onClick={handleNextClick}
               >
-                <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
+                <div className="absolute inset-0 rounded-full overflow-hidden opacity-60 transition-opacity duration-500">
+                  <div className="absolute inset-0 bg-black/70 z-[1]" /> {/* Darker overlay */}
                   <Image
                     src={`https://img.youtube.com/vi/${songs[currentSongIndex === songs.length - 1 ? 0 : currentSongIndex + 1].youtubeId}/maxresdefault.jpg`}
                     alt="Next song"
                     fill
                     className="object-cover grayscale"
+                    unoptimized={true}
                   />
                 </div>
               </motion.div>
@@ -302,11 +319,26 @@ export default function MusicPlayer() {
               onMouseUp={handleDragEnd}
               onMouseLeave={handleDragEnd}
             >
+              {/* 3D shadow effect for main disc */}
+              <div 
+                className="absolute w-[400px] h-[400px] rounded-full bg-black/0"
+                style={{
+                  boxShadow: '0 0 40px 5px rgba(0, 0, 0, 0.7), 0 0 80px 10px rgba(0, 0, 0, 0.5)',
+                  transform: 'translateZ(0)',
+                  zIndex: -1
+                }}
+              />
+              
               {/* Vinyl disc background - removed border */}
               <motion.div 
                 className="w-[400px] h-[400px] rounded-full bg-black relative cursor-grab active:cursor-grabbing"
                 animate={discControls}
                 initial={{ rotate: 0 }}
+                style={{
+                  boxShadow: isPlaying 
+                    ? '0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(200, 169, 126, 0.2)' 
+                    : '0 10px 20px rgba(0, 0, 0, 0.6)'
+                }}
               >
                 {/* Vinyl grooves - adjusted colors */}
                 <div className="absolute inset-0 rounded-full border-4 border-gray-800" style={{ margin: '10%' }} />
@@ -327,7 +359,7 @@ export default function MusicPlayer() {
                 </div>
 
                 {/* Video thumbnail as background */}
-                <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
+                <div className="absolute inset-0 rounded-full overflow-hidden opacity-70 transition-opacity duration-500">
                   <div className="absolute inset-0 bg-black/40 z-[1]" /> {/* Darkening overlay */}
                   <Image
                     src={`https://img.youtube.com/vi/${currentSong.youtubeId}/maxresdefault.jpg`}
@@ -351,7 +383,7 @@ export default function MusicPlayer() {
 
       {/* Swipe instruction */}
       <div className="text-center mt-20 text-gray-400 text-sm">
-        <p>Drag the disc left or right to change songs</p>
+        <p>Drag the disc or click side discs to change songs</p>
       </div>
 
       {/* YouTube iframe for audio */}
