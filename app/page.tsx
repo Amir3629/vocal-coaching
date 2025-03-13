@@ -20,7 +20,7 @@ import BookingModal from "@/app/components/booking-modal"
 import Collaborations from "@/app/components/collaborations"
 import ServiceCard from "@/app/components/service-card"
 import ServicesSection from "./components/services-section"
-import TranslatedText from "@/components/translated-text"
+import TranslatedText from "@/app/components/translated-text"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
