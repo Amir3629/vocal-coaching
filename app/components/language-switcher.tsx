@@ -6,7 +6,7 @@ import { motion } from "framer-motion"
 // Add Google Translate type definitions
 declare global {
   interface Window {
-    doGTranslate: (lang_pair: string) => void;
+    translateTo: (lang: string) => void;
   }
 }
 
@@ -201,33 +201,22 @@ const LanguageContext = createContext<{
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [currentLang, setCurrentLang] = useState("de")
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const toggleAttempts = useRef(0);
-  const lastToggleTime = useRef(0);
+  const lastToggleTime = useRef(0)
 
   // Initialize language from localStorage if available
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      // Check for Google Translate cookie first
-      const googtrans = getCookie('googtrans');
-      if (googtrans && googtrans.endsWith('/en')) {
-        setCurrentLang('en');
-        localStorage.setItem('preferredLanguage', 'en');
-        return;
-      }
-      
-      // Then check localStorage
       const savedLang = localStorage.getItem('preferredLanguage');
       if (savedLang && (savedLang === 'de' || savedLang === 'en')) {
         setCurrentLang(savedLang);
         
-        // Also set Google Translate to the saved language on initial load
-        if (savedLang === 'en' && window.doGTranslate) {
-          // Set the cookie directly
-          setCookie('googtrans', '/de/en', 1);
-          
-          // Then try the doGTranslate function
+        // Apply the saved language on initial load
+        if (savedLang === 'en' && window.translateTo) {
           try {
-            window.doGTranslate('de|en');
+            // Small delay to ensure Google Translate is initialized
+            setTimeout(() => {
+              window.translateTo('en');
+            }, 1500);
           } catch (error) {
             console.error('Error setting initial language:', error);
           }
@@ -256,26 +245,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       if (typeof window !== 'undefined') {
         localStorage.setItem('preferredLanguage', newLang);
         
-        // Use Google Translate for the main content
+        // Use the simplified translation function
         try {
-          // Set the cookie directly first
-          setCookie('googtrans', newLang === 'en' ? '/de/en' : '/de/de', 1);
-          
-          // Then try the doGTranslate function
-          const langPair = newLang === 'en' ? 'de|en' : 'en|de';
-          if (window.doGTranslate) {
-            window.doGTranslate(langPair);
+          if (window.translateTo) {
+            window.translateTo(newLang);
           }
-          
-          // Reset toggle attempts on successful toggle
-          toggleAttempts.current = 0;
         } catch (error) {
-          console.error('Error toggling Google Translate:', error);
+          console.error('Error toggling language:', error);
           
-          // If we've tried a few times and it's not working, force reload
-          toggleAttempts.current += 1;
-          if (toggleAttempts.current >= 2) {
-            toggleAttempts.current = 0;
+          // If translation fails, try reloading the page
+          if (newLang !== prev) {
             window.location.reload();
           }
         }

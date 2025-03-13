@@ -35,31 +35,10 @@ export default function RootLayout({
   return (
     <html lang="de" className={`dark-theme-black ${playfair.variable}`}>
       <head>
-        {/* Google Translate Integration - Hidden but functional */}
+        {/* Simple Google Translate Integration */}
         <Script id="gtranslate" strategy="afterInteractive">
           {`
-            // Set default language to German
-            function setCookie(name, value, days) {
-              var expires = "";
-              if (days) {
-                var date = new Date();
-                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-                expires = "; expires=" + date.toUTCString();
-              }
-              document.cookie = name + "=" + (value || "") + expires + "; path=/";
-            }
-            
-            function getCookie(name) {
-              var nameEQ = name + "=";
-              var ca = document.cookie.split(';');
-              for(var i=0; i < ca.length; i++) {
-                var c = ca[i];
-                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
-                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-              }
-              return null;
-            }
-            
+            // Simple Google Translate initialization
             function googleTranslateElementInit() {
               new google.translate.TranslateElement({
                 pageLanguage: 'de',
@@ -94,71 +73,24 @@ export default function RootLayout({
                   }
                 \`;
                 document.head.appendChild(style);
-                
-                // Check if we need to initialize with English
-                const savedLang = localStorage.getItem('preferredLanguage');
-                if (savedLang === 'en') {
-                  // Set the Google Translate cookie directly
-                  setCookie('googtrans', '/de/en', 1);
-                  
-                  // Force reload once to apply the translation
-                  if (!sessionStorage.getItem('initialTranslationDone')) {
-                    sessionStorage.setItem('initialTranslationDone', 'true');
-                    location.reload();
-                  }
-                }
               }, 1000);
             }
             
-            // Make this function available globally
-            window.doGTranslate = function(lang_pair) {
-              if (lang_pair.value) lang_pair = lang_pair.value;
-              if (lang_pair == '') return;
-              var lang = lang_pair.split('|')[1];
+            // Simple global function to trigger translation
+            window.translateTo = function(lang) {
+              if (lang !== 'de' && lang !== 'en') return;
               
-              // Set the Google Translate cookie directly
-              setCookie('googtrans', '/de/' + lang, 1);
-              
-              // Try to use the Google Translate select element
-              var teCombo = document.querySelector('.goog-te-combo');
-              if (teCombo) {
-                teCombo.value = lang;
-                if (document.createEvent) {
-                  var event = document.createEvent('HTMLEvents');
-                  event.initEvent('change', true, true);
-                  teCombo.dispatchEvent(event);
-                } else {
-                  teCombo.fireEvent('onchange');
-                }
+              // Get the Google Translate select element
+              const selectElement = document.querySelector('.goog-te-combo');
+              if (selectElement) {
+                // Set the value to the target language
+                selectElement.value = lang;
+                
+                // Trigger the change event
+                const event = new Event('change');
+                selectElement.dispatchEvent(event);
               }
-              
-              // Force a reload if needed for stubborn translations
-              if (getCookie('googtrans') !== '/de/' + lang) {
-                location.reload();
-              }
-            }
-            
-            // Create an observer to remove Google Translate's top bar
-            document.addEventListener('DOMContentLoaded', function() {
-              const observer = new MutationObserver(function() {
-                if (document.body && document.body.style.top) {
-                  document.body.style.top = '';
-                }
-                const banner = document.querySelector('.goog-te-banner-frame');
-                if (banner) {
-                  banner.style.display = 'none';
-                }
-              });
-              
-              if (document.body) {
-                observer.observe(document.body, { 
-                  attributes: true, 
-                  childList: true,
-                  subtree: true,
-                  attributeFilter: ['style']
-                });
-              }
-            });
+            };
           `}
         </Script>
         <Script 
