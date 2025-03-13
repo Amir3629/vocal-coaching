@@ -5,7 +5,8 @@ import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import CookieConsent from "./components/cookie-consent"
 import Footer from "./components/footer"
-import { LanguageProvider } from "@/app/components/language-switcher"
+import { LanguageProvider } from "@/lib/LanguageContext"
+import LanguageToggle from "./components/LanguageToggle"
 
 const inter = Inter({ subsets: ["latin"] })
 const playfair = Playfair_Display({
@@ -22,8 +23,8 @@ export const viewport: Viewport = {
 }
 
 export const metadata: Metadata = {
-  title: "Mel jazz - Vocal Coaching Berlin",
-  description: "Professional vocal coaching in Berlin. Discover your voice with experienced vocal coach Melanie Wainwright.",
+  title: "Mel jazz - Vocal Coaching in Berlin",
+  description: "Professional vocal coaching and performance in Berlin",
 }
 
 export default function RootLayout({
@@ -32,9 +33,12 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="de" className={`dark-theme-black ${playfair.variable}`}>
+    <html lang="en" className={`dark-theme-black ${playfair.variable}`}>
       <body className={`${inter.className} antialiased`}>
         <LanguageProvider>
+          <div className="fixed top-4 right-4 z-50">
+            <LanguageToggle />
+          </div>
           {children}
           <Footer />
           <CookieConsent />

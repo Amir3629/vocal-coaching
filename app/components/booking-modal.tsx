@@ -17,6 +17,7 @@ import LegalDocumentModal from "./legal-document-modal"
 import LegalContent from "./legal-content"
 import CustomAlert from "./custom-alert"
 import { Calendar } from "@/app/components/ui/calendar"
+import TranslatedText from './TranslatedText'
 
 interface BookingModalProps {
   isOpen: boolean
@@ -142,8 +143,15 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
     <div className="relative flex flex-col h-full z-10">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-xl font-medium text-white mb-1 drop-shadow-lg">{service.title}</h3>
-          <p className="text-[#C8A97E] drop-shadow-md">{service.duration}</p>
+          <TranslatedText
+            as="h3"
+            text={service.title}
+            className="text-xl font-medium text-white mb-1 drop-shadow-lg"
+          />
+          <TranslatedText
+            text={service.duration}
+            className="text-[#C8A97E] drop-shadow-md"
+          />
         </div>
         {isSelected && (
           <motion.div
@@ -155,14 +163,20 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
           </motion.div>
         )}
       </div>
-      <p className="text-gray-100 text-sm font-medium drop-shadow-lg">{service.description}</p>
+      <TranslatedText
+        text={service.description}
+        className="text-gray-100 text-sm font-medium drop-shadow-lg"
+      />
       {service.types && (
         <div className="mt-4 pt-4 border-t border-white/20">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {service.types.map((type) => (
               <div key={type.id} className="flex items-center gap-2 text-sm text-gray-200">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                <span className="drop-shadow-md">{type.title}</span>
+                <TranslatedText
+                  text={type.title}
+                  className="drop-shadow-md"
+                />
               </div>
             ))}
           </div>
