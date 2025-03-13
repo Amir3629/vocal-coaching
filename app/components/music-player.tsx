@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
@@ -13,6 +13,12 @@ interface Song {
 }
 
 const songs: Song[] = [
+  {
+    title: "Vocal Workshop",
+    artist: "Melvo Coaching",
+    youtubeId: "GidIMbCmtyk",
+    description: "Advanced vocal techniques"
+  },
   {
     title: "Jazz Piano Performance",
     artist: "Melvo Coaching",
@@ -44,12 +50,6 @@ const songs: Song[] = [
     description: "Jazz ensemble performance"
   },
   {
-    title: "Vocal Workshop",
-    artist: "Melvo Coaching",
-    youtubeId: "GidIMbCmtyk",
-    description: "Advanced vocal techniques"
-  },
-  {
     title: "Piano Jazz",
     artist: "Melvo Coaching",
     youtubeId: "QgZKO_f5FlM",
@@ -65,10 +65,11 @@ export default function MusicPlayer() {
   const [playerReady, setPlayerReady] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
+  const [showTutorial, setShowTutorial] = useState(false);
   const videoRef = useRef<HTMLIFrameElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const discControls = useAnimation();
-  const [showIndicators, setShowIndicators] = useState(true);
+  const tutorialControls = useAnimation();
 
   const currentSong = songs[currentSongIndex];
 
@@ -80,6 +81,29 @@ export default function MusicPlayer() {
     
     return () => clearTimeout(timer);
   }, []);
+
+  // Show tutorial animation on first load
+  useEffect(() => {
+    // Check if this is the first visit
+    const hasSeenTutorial = localStorage.getItem('music-tutorial-seen');
+    
+    if (!hasSeenTutorial && playerReady) {
+      setShowTutorial(true);
+      
+      // Animate the tutorial hand
+      tutorialControls.start({
+        x: [-20, 20, -20],
+        transition: {
+          duration: 2,
+          repeat: 1,
+          ease: "easeInOut"
+        }
+      }).then(() => {
+        setShowTutorial(false);
+        localStorage.setItem('music-tutorial-seen', 'true');
+      });
+    }
+  }, [playerReady, tutorialControls]);
 
   // Handle YouTube player messages
   useEffect(() => {
@@ -217,109 +241,29 @@ export default function MusicPlayer() {
     setIsDragging(false);
   };
 
-  // Direct click handlers for background discs
-  const handlePreviousClick = () => {
-    if (!playerReady || isTransitioning) return;
-    playPreviousSong();
-  };
-
-  const handleNextClick = () => {
-    if (!playerReady || isTransitioning) return;
-    playNextSong();
-  };
-
   return (
     <div className="max-w-5xl mx-auto relative py-10">
-      {/* Interactive area wrapper - entire blue frame area is clickable */}
-      <div className="relative mx-auto" style={{ maxWidth: "600px" }}>
-        {/* Left click area */}
-        <div 
-          className="absolute left-0 top-0 bottom-0 w-1/3 z-20 cursor-pointer"
-          onClick={handlePreviousClick}
-          style={{ 
-            background: 'linear-gradient(to right, rgba(0,0,0,0.01), rgba(0,0,0,0))',
-          }}
-        />
-        
-        {/* Right click area */}
-        <div 
-          className="absolute right-0 top-0 bottom-0 w-1/3 z-20 cursor-pointer"
-          onClick={handleNextClick}
-          style={{ 
-            background: 'linear-gradient(to left, rgba(0,0,0,0.01), rgba(0,0,0,0))',
-          }}
-        />
-
+      <div className="relative mx-auto" style={{ maxWidth: "500px" }}>
         <div className="flex items-center justify-center">
           <AnimatePresence mode="wait">
             <div className="relative flex items-center justify-center">
-              {/* Previous song disc (peeking from behind) */}
-              {showIndicators && (
-                <motion.div
-                  className="absolute rounded-full bg-black z-0 cursor-pointer"
-                  style={{ 
-                    width: "320px",
-                    height: "320px",
-                    left: "-30px", 
-                    opacity: 0.3,
-                    filter: "blur(3px)",
-                    transform: "translateY(10px)"
-                  }}
-                  whileHover={{ 
-                    left: "-40px", 
-                    opacity: 0.5, 
-                    filter: "blur(2px)",
-                    scale: 1.05
-                  }}
-                  transition={{ duration: 0.3 }}
-                  onClick={handlePreviousClick}
-                >
-                  <div className="absolute inset-0 rounded-full overflow-hidden opacity-60 transition-opacity duration-500">
-                    <div className="absolute inset-0 bg-black/70 z-[1]" /> {/* Darker overlay */}
-                    <Image
-                      src={`https://img.youtube.com/vi/${songs[currentSongIndex === 0 ? songs.length - 1 : currentSongIndex - 1].youtubeId}/maxresdefault.jpg`}
-                      alt="Previous song"
-                      fill
-                      className="object-cover grayscale"
-                      unoptimized={true}
-                    />
-                  </div>
-                </motion.div>
-              )}
+              {/* Previous song button (only visible during transitions) */}
+              <button 
+                className="absolute left-[-60px] z-10 text-gray-400 hover:text-[#C8A97E] transition-colors"
+                onClick={playPreviousSong}
+                aria-label="Previous song"
+              >
+                <ChevronLeft size={32} />
+              </button>
 
-              {/* Next song disc (peeking from behind) */}
-              {showIndicators && (
-                <motion.div
-                  className="absolute rounded-full bg-black z-0 cursor-pointer"
-                  style={{ 
-                    width: "320px",
-                    height: "320px",
-                    right: "-30px", 
-                    opacity: 0.3,
-                    filter: "blur(3px)",
-                    transform: "translateY(10px)"
-                  }}
-                  whileHover={{ 
-                    right: "-40px", 
-                    opacity: 0.5, 
-                    filter: "blur(2px)",
-                    scale: 1.05
-                  }}
-                  transition={{ duration: 0.3 }}
-                  onClick={handleNextClick}
-                >
-                  <div className="absolute inset-0 rounded-full overflow-hidden opacity-60 transition-opacity duration-500">
-                    <div className="absolute inset-0 bg-black/70 z-[1]" /> {/* Darker overlay */}
-                    <Image
-                      src={`https://img.youtube.com/vi/${songs[currentSongIndex === songs.length - 1 ? 0 : currentSongIndex + 1].youtubeId}/maxresdefault.jpg`}
-                      alt="Next song"
-                      fill
-                      className="object-cover grayscale"
-                      unoptimized={true}
-                    />
-                  </div>
-                </motion.div>
-              )}
+              {/* Next song button (only visible during transitions) */}
+              <button 
+                className="absolute right-[-60px] z-10 text-gray-400 hover:text-[#C8A97E] transition-colors"
+                onClick={playNextSong}
+                aria-label="Next song"
+              >
+                <ChevronRight size={32} />
+              </button>
 
               {/* Current song disc */}
               <motion.div
@@ -339,34 +283,22 @@ export default function MusicPlayer() {
                 onMouseUp={handleDragEnd}
                 onMouseLeave={handleDragEnd}
               >
-                {/* 3D shadow effect for main disc */}
-                <div 
-                  className="absolute w-[400px] h-[400px] rounded-full bg-black/0"
-                  style={{
-                    boxShadow: '0 0 40px 5px rgba(0, 0, 0, 0.7), 0 0 80px 10px rgba(0, 0, 0, 0.5)',
-                    transform: 'translateZ(0)',
-                    zIndex: -1
-                  }}
-                />
-                
-                {/* Vinyl disc background - removed border */}
+                {/* Vinyl disc background */}
                 <motion.div 
                   className="w-[400px] h-[400px] rounded-full bg-black relative cursor-grab active:cursor-grabbing"
                   animate={discControls}
                   initial={{ rotate: 0 }}
                   style={{
-                    boxShadow: isPlaying 
-                      ? '0 10px 30px rgba(0, 0, 0, 0.8), 0 0 20px rgba(200, 169, 126, 0.2)' 
-                      : '0 10px 20px rgba(0, 0, 0, 0.6)'
+                    boxShadow: '0 10px 20px rgba(0, 0, 0, 0.6)'
                   }}
                 >
-                  {/* Vinyl grooves - adjusted colors */}
+                  {/* Vinyl grooves */}
                   <div className="absolute inset-0 rounded-full border-4 border-gray-800" style={{ margin: '10%' }} />
                   <div className="absolute inset-0 rounded-full border-4 border-gray-800" style={{ margin: '20%' }} />
                   <div className="absolute inset-0 rounded-full border-4 border-gray-800" style={{ margin: '30%' }} />
                   <div className="absolute inset-0 rounded-full border-4 border-gray-800" style={{ margin: '40%' }} />
                   
-                  {/* Center label - simplified design */}
+                  {/* Center label */}
                   <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-black flex items-center justify-center z-10 shadow-inner border-2 border-gray-800">
                     <motion.button
                       whileHover={{ scale: 1.1 }}
@@ -397,13 +329,44 @@ export default function MusicPlayer() {
                   <p className="text-gray-400 text-sm">{currentSong.artist}</p>
                 </div>
               </motion.div>
+
+              {/* Tutorial animation */}
+              {showTutorial && (
+                <motion.div 
+                  className="absolute z-20 pointer-events-none"
+                  animate={tutorialControls}
+                  style={{ bottom: "50%", left: "50%" }}
+                >
+                  <div className="relative">
+                    <div className="w-10 h-10 rounded-full bg-white/20 absolute" 
+                      style={{ 
+                        filter: "blur(8px)",
+                        transform: "translate(-50%, -50%)"
+                      }} 
+                    />
+                    <div className="w-8 h-8 border-2 border-white rounded-full absolute"
+                      style={{ 
+                        transform: "translate(-50%, -50%)"
+                      }} 
+                    />
+                    <div className="absolute" style={{ transform: "translate(-50%, -50%)" }}>
+                      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M9 11.5C9 12.8807 7.88071 14 6.5 14C5.11929 14 4 12.8807 4 11.5C4 10.1193 5.11929 9 6.5 9C7.88071 9 9 10.1193 9 11.5Z" fill="white"/>
+                        <path d="M19 11.5C19 12.8807 17.8807 14 16.5 14C15.1193 14 14 12.8807 14 11.5C14 10.1193 15.1193 9 16.5 9C17.8807 9 19 10.1193 19 11.5Z" fill="white"/>
+                        <path d="M14 5.5C14 6.88071 12.8807 8 11.5 8C10.1193 8 9 6.88071 9 5.5C9 4.11929 10.1193 3 11.5 3C12.8807 3 14 4.11929 14 5.5Z" fill="white"/>
+                        <path d="M14 17.5C14 18.8807 12.8807 20 11.5 20C10.1193 20 9 18.8807 9 17.5C9 16.1193 10.1193 15 11.5 15C12.8807 15 14 16.1193 14 17.5Z" fill="white"/>
+                      </svg>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
             </div>
           </AnimatePresence>
         </div>
 
         {/* Swipe instruction */}
         <div className="text-center mt-20 text-gray-400 text-sm">
-          <p>Click anywhere on the left or right side to change songs</p>
+          <p>Drag the disc left or right to change songs</p>
         </div>
       </div>
 
