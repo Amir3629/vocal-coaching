@@ -68,6 +68,7 @@ export default function MusicPlayer() {
   const videoRef = useRef<HTMLIFrameElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const discControls = useAnimation();
+  const [showIndicators, setShowIndicators] = useState(true);
 
   const currentSong = songs[currentSongIndex];
 
@@ -222,9 +223,9 @@ export default function MusicPlayer() {
         <AnimatePresence mode="wait">
           <div className="relative flex items-center justify-center">
             {/* Previous song disc (peeking from behind) */}
-            {currentSongIndex > 0 && (
+            {showIndicators && currentSongIndex > 0 && (
               <motion.div
-                className="absolute rounded-full bg-black border-8 border-[#C8A97E]/40 z-0"
+                className="absolute rounded-full bg-black z-0"
                 style={{ 
                   width: "320px",
                   height: "320px",
@@ -253,9 +254,9 @@ export default function MusicPlayer() {
             )}
 
             {/* Next song disc (peeking from behind) */}
-            {currentSongIndex < songs.length - 1 && (
+            {showIndicators && currentSongIndex < songs.length - 1 && (
               <motion.div
-                className="absolute rounded-full bg-black border-8 border-[#C8A97E]/40 z-0"
+                className="absolute rounded-full bg-black z-0"
                 style={{ 
                   width: "320px",
                   height: "320px",
@@ -301,27 +302,27 @@ export default function MusicPlayer() {
               onMouseUp={handleDragEnd}
               onMouseLeave={handleDragEnd}
             >
-              {/* Vinyl disc background */}
+              {/* Vinyl disc background - removed border */}
               <motion.div 
-                className="w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/60 relative cursor-grab active:cursor-grabbing"
+                className="w-[400px] h-[400px] rounded-full bg-black relative cursor-grab active:cursor-grabbing"
                 animate={discControls}
                 initial={{ rotate: 0 }}
               >
                 {/* Vinyl grooves - adjusted colors */}
-                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '10%' }} />
-                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '20%' }} />
-                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '30%' }} />
-                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '40%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-gray-800" style={{ margin: '10%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-gray-800" style={{ margin: '20%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-gray-800" style={{ margin: '30%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-gray-800" style={{ margin: '40%' }} />
                 
-                {/* Center label - more subtle gold color */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-gradient-to-br from-[#8A6D40] to-[#6D5430] flex items-center justify-center z-10 shadow-inner">
+                {/* Center label - simplified design */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-black flex items-center justify-center z-10 shadow-inner border-2 border-gray-800">
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={togglePlay}
                     className="w-16 h-16 flex items-center justify-center rounded-full bg-black"
                   >
-                    {isPlaying ? <Pause size={32} className="text-[#8A6D40]" /> : <Play size={32} className="text-[#8A6D40] ml-1" />}
+                    {isPlaying ? <Pause size={32} className="text-white" /> : <Play size={32} className="text-white ml-1" />}
                   </motion.button>
                 </div>
 
@@ -347,8 +348,29 @@ export default function MusicPlayer() {
         </AnimatePresence>
       </div>
 
+      {/* Song navigation indicators */}
+      <div className="flex justify-center mt-20 gap-2">
+        {songs.map((_, index) => (
+          <div 
+            key={index}
+            className={`w-2 h-2 rounded-full cursor-pointer transition-all duration-300 ${
+              index === currentSongIndex ? 'bg-[#C8A97E] w-4' : 'bg-gray-600'
+            }`}
+            onClick={() => {
+              if (index !== currentSongIndex) {
+                setCurrentSongIndex(index);
+                if (videoRef.current) {
+                  const message = `{"event":"command","func":"loadVideoById","args":"${songs[index].youtubeId}"}`;
+                  videoRef.current.contentWindow?.postMessage(message, '*');
+                }
+              }
+            }}
+          />
+        ))}
+      </div>
+
       {/* Swipe instruction */}
-      <div className="text-center mt-20 text-gray-400 text-sm">
+      <div className="text-center mt-4 text-gray-400 text-sm">
         <p>Drag the disc left or right to change songs</p>
       </div>
 
