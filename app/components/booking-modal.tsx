@@ -123,23 +123,19 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
   isSelected: boolean, 
   onSelect: () => void 
 }) => (
-  <motion.div
+  <div
     onClick={onSelect}
-    className={`group relative w-full p-6 rounded-xl transition-all duration-300 cursor-pointer overflow-hidden ${
+    className={`relative w-full p-6 rounded-xl transition-colors duration-300 cursor-pointer overflow-hidden ${
       isSelected 
         ? 'bg-gradient-to-br from-[#C8A97E]/20 to-[#C8A97E]/5 border-2 border-[#C8A97E] shadow-[0_0_20px_rgba(200,169,126,0.2)]' 
         : 'bg-black/20 hover:bg-[#C8A97E]/5 border-2 border-white/10 hover:border-[#C8A97E]/50'
     }`}
-    whileHover={{ scale: 1.02 }}
-    whileTap={{ scale: 0.98 }}
-    transition={{ type: "spring", stiffness: 400, damping: 25 }}
   >
     {/* Background Image with Blur Effect */}
     <div 
-      className="absolute inset-0 bg-cover bg-center transition-all duration-700 filter blur-sm group-hover:blur-none opacity-30 group-hover:opacity-40"
+      className="absolute inset-0 bg-cover bg-center transition-opacity duration-700 filter blur-sm opacity-30 hover:opacity-40"
       style={{ 
-        backgroundImage: `url(/images/${service.id}-bg.jpg)`,
-        transform: isSelected ? 'scale(1.1)' : 'scale(1)'
+        backgroundImage: `url(/images/${service.id}-bg.jpg)`
       }}
     />
 
@@ -174,34 +170,17 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
       )}
 
       {/* Service Icon with Animation */}
-      <div className="absolute top-4 left-4 text-[#C8A97E] opacity-50 group-hover:opacity-100">
-        {service.id === "singen" && (
-          <motion.div
-            whileHover={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-          >
-            <Music className="w-6 h-6" />
-          </motion.div>
-        )}
-        {service.id === "vocal-coaching" && (
-          <motion.div
-            whileHover={{ y: [0, -5, 0] }}
-            transition={{ duration: 1.5, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
-          >
-            <Mic className="w-6 h-6" />
-          </motion.div>
-        )}
-        {service.id === "workshop" && (
-          <motion.div
-            whileHover={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 1.5, ease: "easeInOut" }}
-          >
-            <Users className="w-6 h-6" />
-          </motion.div>
-        )}
-      </div>
+      <motion.div 
+        className="absolute top-4 left-4 text-[#C8A97E] opacity-50 hover:opacity-100 transition-opacity"
+        whileHover={{ scale: 1.1 }}
+        transition={{ type: "spring", stiffness: 400, damping: 10 }}
+      >
+        {service.id === "singen" && <Music className="w-6 h-6" />}
+        {service.id === "vocal-coaching" && <Mic className="w-6 h-6" />}
+        {service.id === "workshop" && <Users className="w-6 h-6" />}
+      </motion.div>
     </div>
-  </motion.div>
+  </div>
 )
 
 const TimeGrid = ({ times, selectedTime, onTimeSelect }: { 
