@@ -45,9 +45,32 @@ interface ServiceType {
 const services: Service[] = [
   {
     id: "singen",
-    title: "Singen",
+    title: "Gesangsperformance",
+    duration: "Nach Vereinbarung",
+    description: "Professionelle Gesangsdarbietung für Events, Feiern und besondere Anlässe",
+    types: [
+      {
+        id: "solo",
+        title: "Solo-Performance",
+        description: "Individuelle Gesangsdarbietung"
+      },
+      {
+        id: "band",
+        title: "Mit Band",
+        description: "Performance mit Klavierbegleitung, Gitarre und weiteren Instrumenten"
+      },
+      {
+        id: "custom",
+        title: "Maßgeschneidert",
+        description: "Individuell angepasste Performance"
+      }
+    ]
+  },
+  {
+    id: "vocal-coaching",
+    title: "Vocal Coaching",
     duration: "60 min",
-    description: "Professioneller Gesangsunterricht",
+    description: "Professionelles Stimmtraining nach der Complete Vocal Technique (CVT) - einer wissenschaftlich fundierten Methode für alle Gesangsstile",
     types: [
       {
         id: "private",
@@ -67,40 +90,17 @@ const services: Service[] = [
     ]
   },
   {
-    id: "vocal-coaching",
-    title: "Vocal Coaching",
-    duration: "60 min",
-    description: "CVT-basiertes Stimmtraining",
-    types: [
-      {
-        id: "private",
-        title: "Einzelunterricht",
-        description: "Individuelles Training"
-      },
-      {
-        id: "online",
-        title: "Online Coaching",
-        description: "Flexibel von zu Hause"
-      },
-      {
-        id: "group",
-    title: "Gruppenunterricht",
-        description: "Lernen in der Gruppe"
-      }
-    ]
-  },
-  {
     id: "workshop",
     title: "Workshop",
     duration: "3 Stunden",
-    description: "Intensives Gruppentraining"
+    description: "Intensives Gruppentraining für Gesangstechniken und Performance"
   }
 ];
 
 const skillLevels = [
-  { id: "beginner", title: "Anfänger", description: "Erste Schritte in der Musik" },
-  { id: "intermediate", title: "Fortgeschritten", description: "Grundlagen sind vorhanden" },
-  { id: "advanced", title: "Profi", description: "Fortgeschrittene Techniken" }
+  { id: "beginner", title: "Einsteiger", description: "Erste Schritte in der Musik" },
+  { id: "intermediate", title: "Erfahren", description: "Grundlagen sind vorhanden" },
+  { id: "advanced", title: "Professionell", description: "Fortgeschrittene Techniken" }
 ];
 
 const timeSlots = [
@@ -244,6 +244,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [currentStep, setCurrentStep] = useState<Step>("1")
   const [selectedService, setSelectedService] = useState<string>("")
   const [selectedServiceType, setSelectedServiceType] = useState<string>("")
+  const [selectedLocation, setSelectedLocation] = useState<"studio" | "online" | "">("")
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
   const [selectedTime, setSelectedTime] = useState<string>("")
   const [selectedLevel, setSelectedLevel] = useState<string>("")
@@ -320,15 +321,16 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const resetForm = () => {
     setSelectedService("");
     setSelectedServiceType("");
+    setSelectedLocation("");
     setSelectedDate(undefined);
     setSelectedTime("");
     setSelectedLevel("");
-      setFormData({
-        name: "",
-        email: "",
-        phone: "",
-        message: "",
-        termsAccepted: false
+    setFormData({
+      name: "",
+      email: "",
+      phone: "",
+      message: "",
+      termsAccepted: false
     });
     setCurrentStep("1");
   };
@@ -357,6 +359,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       case "2":
         return selectedDate !== undefined;
       case "3":
+        if (selectedService === "vocal-coaching" && !selectedLocation) {
+          return false;
+        }
         return selectedTime !== "";
       case "4":
         return formData.name && formData.email && formData.phone && formData.termsAccepted && selectedLevel !== "";
@@ -437,7 +442,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           exit={{ opacity: 0, x: -20 }}
                           className="flex flex-col items-center justify-center w-full"
                         >
-                          <div className="w-full max-w-[350px] mx-auto flex justify-center">
+                          <div className="flex justify-center w-full">
                             <Calendar
                               mode="single"
                               selected={selectedDate}
@@ -446,7 +451,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                 date < new Date() || date > addMonths(new Date(), 2)
                               }
                               initialFocus
-                              className="rounded-lg border border-[#C8A97E]/20 bg-black/20"
+                              className="rounded-lg border border-[#C8A97E]/20 bg-black/20 mx-auto"
                             />
                           </div>
                         </motion.div>
@@ -457,8 +462,38 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: -20 }}
-                          className="flex flex-col items-center justify-center w-full py-4"
+                          className="flex flex-col items-center justify-center w-full py-4 space-y-6"
                         >
+                          {selectedService === "vocal-coaching" && (
+                            <div className="w-full space-y-2">
+                              <label className="text-sm text-gray-400">Unterrichtsort</label>
+                              <div className="flex gap-3">
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedLocation("studio")}
+                                  className={`flex-1 p-3 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
+                                    selectedLocation === "studio"
+                                      ? "bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]"
+                                      : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
+                                  }`}
+                                >
+                                  Im Studio
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => setSelectedLocation("online")}
+                                  className={`flex-1 p-3 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
+                                    selectedLocation === "online"
+                                      ? "bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]"
+                                      : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
+                                  }`}
+                                >
+                                  Online
+                                </button>
+                              </div>
+                            </div>
+                          )}
+                          
                           <TimeGrid
                             times={timeSlots}
                             selectedTime={selectedTime}
@@ -547,13 +582,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                     })
                                   }
                                   required
-                                  className="appearance-none w-4 h-4 rounded border border-[#C8A97E]/30 bg-white/5 checked:bg-[#C8A97E] checked:border-[#C8A97E] transition-all duration-200 cursor-pointer"
+                                  className="appearance-none w-3.5 h-3.5 rounded border border-[#C8A97E]/30 bg-white/5 checked:bg-[#C8A97E] checked:border-[#C8A97E] transition-all duration-200 cursor-pointer"
                                 />
                                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-black transition-opacity opacity-0 peer-checked:opacity-100">
-                                  <Check className="w-3 h-3" />
+                                  <Check className="w-2.5 h-2.5" />
                                 </div>
                               </div>
-                              <label htmlFor="terms" className="text-sm text-gray-400">
+                              <label htmlFor="terms" className="text-xs text-gray-400">
                                 Ich akzeptiere die{" "}
                                 <button
                                   type="button"
