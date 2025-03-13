@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect } from "react"
+import { createContext, useContext, useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 
 // Add Google Translate type definitions
@@ -166,6 +166,28 @@ const translations = {
   }
 }
 
+// Helper functions for cookie management
+function setCookie(name: string, value: string, days: number) {
+  let expires = "";
+  if (days) {
+    const date = new Date();
+    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    expires = "; expires=" + date.toUTCString();
+  }
+  document.cookie = name + "=" + (value || "") + expires + "; path=/";
+}
+
+function getCookie(name: string) {
+  const nameEQ = name + "=";
+  const ca = document.cookie.split(';');
+  for (let i = 0; i < ca.length; i++) {
+    let c = ca[i];
+    while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
 const LanguageContext = createContext<{
   currentLang: string
   toggleLanguage: () => void
@@ -179,17 +201,36 @@ const LanguageContext = createContext<{
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [currentLang, setCurrentLang] = useState("de")
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const toggleAttempts = useRef(0);
+  const lastToggleTime = useRef(0);
 
   // Initialize language from localStorage if available
   useEffect(() => {
     if (typeof window !== 'undefined') {
+      // Check for Google Translate cookie first
+      const googtrans = getCookie('googtrans');
+      if (googtrans && googtrans.endsWith('/en')) {
+        setCurrentLang('en');
+        localStorage.setItem('preferredLanguage', 'en');
+        return;
+      }
+      
+      // Then check localStorage
       const savedLang = localStorage.getItem('preferredLanguage');
       if (savedLang && (savedLang === 'de' || savedLang === 'en')) {
         setCurrentLang(savedLang);
         
         // Also set Google Translate to the saved language on initial load
         if (savedLang === 'en' && window.doGTranslate) {
-          window.doGTranslate('de|en');
+          // Set the cookie directly
+          setCookie('googtrans', '/de/en', 1);
+          
+          // Then try the doGTranslate function
+          try {
+            window.doGTranslate('de|en');
+          } catch (error) {
+            console.error('Error setting initial language:', error);
+          }
         }
       }
     }
@@ -197,6 +238,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 
   const toggleLanguage = () => {
     if (isTransitioning) return; // Prevent multiple clicks during transition
+    
+    // Prevent rapid toggling
+    const now = Date.now();
+    if (now - lastToggleTime.current < 1000) {
+      return;
+    }
+    lastToggleTime.current = now;
     
     setIsTransitioning(true);
     
@@ -210,12 +258,26 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
         
         // Use Google Translate for the main content
         try {
+          // Set the cookie directly first
+          setCookie('googtrans', newLang === 'en' ? '/de/en' : '/de/de', 1);
+          
+          // Then try the doGTranslate function
           const langPair = newLang === 'en' ? 'de|en' : 'en|de';
           if (window.doGTranslate) {
             window.doGTranslate(langPair);
           }
+          
+          // Reset toggle attempts on successful toggle
+          toggleAttempts.current = 0;
         } catch (error) {
           console.error('Error toggling Google Translate:', error);
+          
+          // If we've tried a few times and it's not working, force reload
+          toggleAttempts.current += 1;
+          if (toggleAttempts.current >= 2) {
+            toggleAttempts.current = 0;
+            window.location.reload();
+          }
         }
       }
       
@@ -225,7 +287,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     // Allow transitions to complete before enabling toggle again
     setTimeout(() => {
       setIsTransitioning(false);
-    }, 800);
+    }, 1000);
   }
 
   return (

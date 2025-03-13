@@ -33,11 +33,33 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`dark-theme-black ${playfair.variable}`}>
+    <html lang="de" className={`dark-theme-black ${playfair.variable}`}>
       <head>
         {/* Google Translate Integration - Hidden but functional */}
         <Script id="gtranslate" strategy="afterInteractive">
           {`
+            // Set default language to German
+            function setCookie(name, value, days) {
+              var expires = "";
+              if (days) {
+                var date = new Date();
+                date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+                expires = "; expires=" + date.toUTCString();
+              }
+              document.cookie = name + "=" + (value || "") + expires + "; path=/";
+            }
+            
+            function getCookie(name) {
+              var nameEQ = name + "=";
+              var ca = document.cookie.split(';');
+              for(var i=0; i < ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+              }
+              return null;
+            }
+            
             function googleTranslateElementInit() {
               new google.translate.TranslateElement({
                 pageLanguage: 'de',
@@ -72,6 +94,19 @@ export default function RootLayout({
                   }
                 \`;
                 document.head.appendChild(style);
+                
+                // Check if we need to initialize with English
+                const savedLang = localStorage.getItem('preferredLanguage');
+                if (savedLang === 'en') {
+                  // Set the Google Translate cookie directly
+                  setCookie('googtrans', '/de/en', 1);
+                  
+                  // Force reload once to apply the translation
+                  if (!sessionStorage.getItem('initialTranslationDone')) {
+                    sessionStorage.setItem('initialTranslationDone', 'true');
+                    location.reload();
+                  }
+                }
               }, 1000);
             }
             
@@ -80,6 +115,9 @@ export default function RootLayout({
               if (lang_pair.value) lang_pair = lang_pair.value;
               if (lang_pair == '') return;
               var lang = lang_pair.split('|')[1];
+              
+              // Set the Google Translate cookie directly
+              setCookie('googtrans', '/de/' + lang, 1);
               
               // Try to use the Google Translate select element
               var teCombo = document.querySelector('.goog-te-combo');
@@ -92,6 +130,11 @@ export default function RootLayout({
                 } else {
                   teCombo.fireEvent('onchange');
                 }
+              }
+              
+              // Force a reload if needed for stubborn translations
+              if (getCookie('googtrans') !== '/de/' + lang) {
+                location.reload();
               }
             }
             
