@@ -35,10 +35,13 @@ export default function RootLayout({
   return (
     <html lang="de" className={`dark-theme-black ${playfair.variable}`}>
       <head>
-        {/* Simple Google Translate Integration */}
+        {/* Google Translate Integration */}
         <Script id="gtranslate" strategy="afterInteractive">
           {`
-            // Simple Google Translate initialization
+            // Flag to track if translation has been initialized
+            window.translationInitialized = false;
+            
+            // Google Translate initialization
             function googleTranslateElementInit() {
               new google.translate.TranslateElement({
                 pageLanguage: 'de',
@@ -73,20 +76,57 @@ export default function RootLayout({
                   }
                 \`;
                 document.head.appendChild(style);
+                
+                // Force reset to German if needed
+                const savedLang = localStorage.getItem('preferredLanguage');
+                if (!savedLang || savedLang === 'de') {
+                  resetToGerman();
+                }
+                
+                window.translationInitialized = true;
               }, 1000);
             }
             
-            // Simple global function to trigger translation
+            // Function to reset to German
+            function resetToGerman() {
+              const iframe = document.querySelector('.goog-te-menu-frame');
+              if (iframe) {
+                const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const germanLink = innerDoc.querySelector('a[href*="LANG=de"]');
+                if (germanLink) {
+                  germanLink.click();
+                }
+              }
+              
+              // Also try direct method
+              const selectElement = document.querySelector('.goog-te-combo');
+              if (selectElement) {
+                selectElement.value = 'de';
+                const event = new Event('change');
+                selectElement.dispatchEvent(event);
+              }
+            }
+            
+            // Improved global function to trigger translation
             window.translateTo = function(lang) {
               if (lang !== 'de' && lang !== 'en') return;
               
-              // Get the Google Translate select element
+              // Wait for translation to be initialized
+              if (!window.translationInitialized) {
+                setTimeout(() => window.translateTo(lang), 500);
+                return;
+              }
+              
+              // Special handling for German to ensure it works properly
+              if (lang === 'de') {
+                resetToGerman();
+                return;
+              }
+              
+              // For English, use the standard approach
               const selectElement = document.querySelector('.goog-te-combo');
               if (selectElement) {
-                // Set the value to the target language
                 selectElement.value = lang;
-                
-                // Trigger the change event
                 const event = new Event('change');
                 selectElement.dispatchEvent(event);
               }

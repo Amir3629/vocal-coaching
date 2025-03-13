@@ -7,6 +7,7 @@ import { motion } from "framer-motion"
 declare global {
   interface Window {
     translateTo: (lang: string) => void;
+    translationInitialized: boolean;
   }
 }
 
@@ -202,25 +203,47 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [currentLang, setCurrentLang] = useState("de")
   const [isTransitioning, setIsTransitioning] = useState(false)
   const lastToggleTime = useRef(0)
+  const toggleAttempts = useRef(0)
 
   // Initialize language from localStorage if available
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const savedLang = localStorage.getItem('preferredLanguage');
-      if (savedLang && (savedLang === 'de' || savedLang === 'en')) {
+      
+      // Always default to German if no preference is saved
+      if (!savedLang) {
+        localStorage.setItem('preferredLanguage', 'de');
+        setCurrentLang('de');
+        return;
+      }
+      
+      // Only accept valid languages
+      if (savedLang === 'de' || savedLang === 'en') {
         setCurrentLang(savedLang);
         
-        // Apply the saved language on initial load
-        if (savedLang === 'en' && window.translateTo) {
-          try {
-            // Small delay to ensure Google Translate is initialized
-            setTimeout(() => {
-              window.translateTo('en');
-            }, 1500);
-          } catch (error) {
-            console.error('Error setting initial language:', error);
-          }
+        // Apply the saved language on initial load with retry mechanism
+        if (savedLang === 'en') {
+          const applyTranslation = () => {
+            if (window.translateTo) {
+              try {
+                window.translateTo('en');
+              } catch (error) {
+                console.error('Error setting initial language:', error);
+              }
+            } else if (toggleAttempts.current < 5) {
+              // Retry a few times with increasing delay
+              toggleAttempts.current++;
+              setTimeout(applyTranslation, 1000 * toggleAttempts.current);
+            }
+          };
+          
+          // Start with a delay to ensure Google Translate is initialized
+          setTimeout(applyTranslation, 2000);
         }
+      } else {
+        // Invalid language saved, reset to German
+        localStorage.setItem('preferredLanguage', 'de');
+        setCurrentLang('de');
       }
     }
   }, []);
@@ -230,12 +253,13 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     
     // Prevent rapid toggling
     const now = Date.now();
-    if (now - lastToggleTime.current < 1000) {
+    if (now - lastToggleTime.current < 1500) {
       return;
     }
     lastToggleTime.current = now;
     
     setIsTransitioning(true);
+    toggleAttempts.current = 0;
     
     // Toggle the language state
     setCurrentLang((prev) => {
@@ -245,19 +269,30 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       if (typeof window !== 'undefined') {
         localStorage.setItem('preferredLanguage', newLang);
         
-        // Use the simplified translation function
-        try {
-          if (window.translateTo) {
-            window.translateTo(newLang);
+        // Use the translation function with retry mechanism
+        const applyTranslation = () => {
+          try {
+            if (window.translateTo) {
+              window.translateTo(newLang);
+              return true;
+            }
+          } catch (error) {
+            console.error('Error toggling language:', error);
           }
-        } catch (error) {
-          console.error('Error toggling language:', error);
           
-          // If translation fails, try reloading the page
-          if (newLang !== prev) {
+          // Retry logic
+          if (toggleAttempts.current < 3) {
+            toggleAttempts.current++;
+            setTimeout(applyTranslation, 500);
+          } else {
+            // Last resort: reload the page
             window.location.reload();
           }
-        }
+          
+          return false;
+        };
+        
+        applyTranslation();
       }
       
       return newLang;
@@ -266,7 +301,7 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     // Allow transitions to complete before enabling toggle again
     setTimeout(() => {
       setIsTransitioning(false);
-    }, 1000);
+    }, 1500);
   }
 
   return (
