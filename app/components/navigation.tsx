@@ -6,24 +6,26 @@ import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
 import { useLanguage, LanguageSwitcher } from "./language-switcher"
+import { useTranslation } from 'react-i18next'
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
   const [isScrolled, setIsScrolled] = useState(false)
   const pathname = usePathname()
   const router = useRouter()
-  const { currentLang, toggleLanguage, t } = useLanguage()
+  const { currentLang } = useLanguage()
+  const { t } = useTranslation()
 
   const logoPath = process.env.NODE_ENV === 'production'
     ? "/vocal-coaching/images/logo/ml-logo.PNG"
     : "/vocal-coaching/images/logo/ml-logo.PNG"
 
   const links = [
-    { href: "/#services", label: t.nav.services },
-    { href: "/#about", label: t.nav.about },
-    { href: "/#references", label: t.nav.references },
-    { href: "/#testimonials", label: t.nav.testimonials },
-    { href: "/#contact", label: t.nav.contact },
+    { href: "/#services", label: t('nav.services') },
+    { href: "/#about", label: t('nav.about') },
+    { href: "/#references", label: t('nav.references') },
+    { href: "/#testimonials", label: t('nav.testimonials') },
+    { href: "/#contact", label: t('nav.contact') },
   ]
 
   useEffect(() => {

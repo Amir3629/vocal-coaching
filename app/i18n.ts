@@ -5,38 +5,38 @@ import { initReactI18next } from 'react-i18next';
 import Backend from 'i18next-http-backend';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
+// Import translations directly
+import translationEN from '../public/locales/en/common.json';
+import translationDE from '../public/locales/de/common.json';
+
+const resources = {
+  en: {
+    common: translationEN
+  },
+  de: {
+    common: translationDE
+  }
+};
+
 if (!i18n.isInitialized) {
   i18n
-    // Load translations from the /public/locales folder
-    .use(Backend)
-    // Detect user language
     .use(LanguageDetector)
-    // Pass the i18n instance to react-i18next
     .use(initReactI18next)
-    // Initialize i18next
     .init({
+      resources,
       fallbackLng: 'de',
-      debug: process.env.NODE_ENV === 'development',
+      defaultNS: 'common',
+      ns: ['common'],
       
       interpolation: {
-        escapeValue: false, // React already escapes values
+        escapeValue: false,
       },
       
-      // Backend configuration
-      backend: {
-        loadPath: '/vocal-coaching/locales/{{lng}}/{{ns}}.json',
-      },
-      
-      // Language detection options
       detection: {
         order: ['localStorage', 'navigator'],
         lookupLocalStorage: 'preferredLanguage',
         caches: ['localStorage'],
       },
-      
-      // Default namespace
-      defaultNS: 'common',
-      ns: ['common'],
       
       react: {
         useSuspense: false,

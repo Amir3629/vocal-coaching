@@ -164,7 +164,6 @@ const translations = {
 type LanguageContextType = {
   currentLang: string
   toggleLanguage: () => void
-  t: typeof translations.de | typeof translations.en
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
@@ -175,8 +174,10 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const { i18n } = useTranslation()
 
   useEffect(() => {
-    const lang = getCurrentLanguage()
+    const savedLang = localStorage.getItem('preferredLanguage')
+    const lang = savedLang || getCurrentLanguage()
     setCurrentLang(lang)
+    changeLanguage(lang)
   }, [])
 
   const toggleLanguage = () => {
@@ -192,14 +193,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  const value = {
-    currentLang,
-    toggleLanguage,
-    t: translations[currentLang as keyof typeof translations]
-  }
-
   return (
-    <LanguageContext.Provider value={value}>
+    <LanguageContext.Provider value={{ currentLang, toggleLanguage }}>
       {children}
     </LanguageContext.Provider>
   )
