@@ -2,288 +2,159 @@ import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
 
-// Import all translations
-const translations = {
-  en: {
-    translation: {
-      nav: {
-        home: "Home",
-        services: "Services",
-        about: "About",
-        references: "References",
-        testimonials: "Testimonials",
-        contact: "Contact"
-      },
-      hero: {
-        title: "Mel Jazz",
-        subtitle: "Professional Vocal Coaching in Berlin",
-        cta: "Discover Services"
-      },
-      services: {
-        title: "Services",
-        singing: {
-          title: "Singing",
-          subtitle: "Vocal Training for Everyone",
-          description: "Professional voice training for bands, musicians, and ambitious singers - tailored to your artistic development.",
-          features: [
-            "Basic Techniques",
-            "Voice Formation",
-            "Breathing Technique",
-            "Song Interpretation"
-          ],
-          details: {
-            includes: [
-              "Voice Analysis",
-              "Basic Training",
-              "Song Selection",
-              "Practice Material"
-            ],
-            suitable: [
-              "Bands",
-              "Musicians",
-              "Beginners",
-              "Advanced"
-            ],
-            duration: "45-60 minutes",
-            location: "Studio Berlin / Online"
-          }
-        },
-        coaching: {
-          title: "Vocal Coaching",
-          subtitle: "Professional Coaching",
-          description: "CVT-based voice training for professionals - develop your unique voice and performance at the highest level.",
-          features: [
-            "CVT Technique",
-            "Performance",
-            "Repertoire",
-            "Style Development"
-          ],
-          details: {
-            includes: [
-              "CVT Voice Analysis",
-              "Technical Training",
-              "Repertoire Building",
-              "Performance Preparation"
-            ],
-            suitable: [
-              "Professionals",
-              "Semi-Professionals",
-              "Advanced"
-            ],
-            duration: "60-90 minutes",
-            location: "Studio Berlin / Online"
-          }
-        },
-        workshop: {
-          title: "Workshop",
-          subtitle: "Individual & Intensive",
-          description: "Tailored intensive workshops for a profound experience in your vocal development.",
-          features: [
-            "Ensemble Work",
-            "Harmony Theory",
-            "Improvisation",
-            "Performance Practice"
-          ],
-          details: {
-            includes: [
-              "Intensive Training",
-              "Theory & Practice",
-              "Individual Feedback",
-              "Performance Preparation"
-            ],
-            suitable: [
-              "Individuals",
-              "Small Groups",
-              "Bands"
-            ],
-            duration: "From 3 hours (€600)",
-            location: "By Arrangement"
-          }
-        },
-        choir: {
-          title: "Choir Next Door",
-          subtitle: "Singing Together",
-          description: "Discover the joy of singing together in our dynamic neighborhood choir - open to all levels.",
-          features: [
-            "Multi-Voice",
-            "Harmony",
-            "Rhythm",
-            "Community"
-          ],
-          details: {
-            includes: [
-              "Voice Training",
-              "Choral Singing",
-              "Performances",
-              "Events"
-            ],
-            suitable: [
-              "All Levels",
-              "Neighbors",
-              "Music Enthusiasts"
-            ],
-            duration: "90-120 minutes",
-            location: "Studio Berlin"
-          }
-        }
-      },
-      references: {
-        title: "References & Collaborations"
-      },
-      testimonials: {
-        title: "What People Say",
-        subtitle: "Testimonials from students and collaborators"
-      },
-      contact: {
-        title: "Get in Touch",
-        subtitle: "Book your session or ask any questions",
-        form: {
-          name: "Your Name",
-          email: "Your Email",
-          message: "Your Message",
-          submit: "Send Message"
-        }
-      }
-    }
-  },
+const resources = {
   de: {
     translation: {
       nav: {
         home: "Start",
-        services: "Leistungen",
+        services: "Unterricht",
         about: "Über mich",
-        references: "Referenzen",
-        testimonials: "Bewertungen",
-        contact: "Kontakt"
+        references: "Referenzen & Kooperationen",
+        testimonials: "Erfahrungen",
+        contact: "Kontakt",
       },
       hero: {
-        title: "Mel Jazz",
+        title: "Entdecke deine Stimme",
         subtitle: "Professionelles Vocal Coaching in Berlin",
-        cta: "Leistungen entdecken"
+        cta: "Jetzt buchen"
+      },
+      music: {
+        title: "Meine Musik"
+      },
+      video: {
+        title: "Einblicke"
       },
       services: {
-        title: "Leistungen",
+        title: "Angebote",
         singing: {
-          title: "Singen",
-          subtitle: "Gesangsunterricht für alle",
-          description: "Professionelles Stimmtraining für Bands, Musiker und ambitionierte Sänger - maßgeschneidert für Ihre künstlerische Entwicklung.",
+          title: "Gesangsunterricht",
+          description: "Individueller Unterricht für alle Level",
           features: [
-            "Grundtechniken",
             "Stimmbildung",
             "Atemtechnik",
-            "Liedinterpretation"
+            "Interpretation",
+            "Bühnenpräsenz"
           ],
           details: {
             includes: [
               "Stimmanalyse",
-              "Grundlagentraining",
-              "Liedauswahl",
-              "Übungsmaterial"
+              "Individueller Trainingsplan",
+              "Aufnahmen",
+              "Übe-Material"
             ],
             suitable: [
-              "Bands",
-              "Musiker",
               "Anfänger",
-              "Fortgeschrittene"
-            ],
-            duration: "45-60 Minuten",
-            location: "Studio Berlin / Online"
-          }
-        },
-        coaching: {
-          title: "Vocal Coaching",
-          subtitle: "Professionelles Coaching",
-          description: "CVT-basiertes Stimmtraining für Profis - entwickeln Sie Ihre einzigartige Stimme und Performance auf höchstem Niveau.",
-          features: [
-            "CVT Technik",
-            "Performance",
-            "Repertoire",
-            "Stilentwicklung"
-          ],
-          details: {
-            includes: [
-              "CVT Stimmanalyse",
-              "Techniktraining",
-              "Repertoireaufbau",
-              "Auftrittsvorbereitung"
-            ],
-            suitable: [
+              "Fortgeschrittene",
               "Profis",
-              "Semi-Profis",
-              "Fortgeschrittene"
+              "Alle Genres"
             ],
-            duration: "60-90 Minuten",
-            location: "Studio Berlin / Online"
-          }
-        },
-        workshop: {
-          title: "Workshop",
-          subtitle: "Individuell & Intensiv",
-          description: "Maßgeschneiderte Intensiv-Workshops für ein tiefgreifendes Erlebnis Ihrer stimmlichen Entwicklung.",
-          features: [
-            "Ensemble-Arbeit",
-            "Harmonielehre",
-            "Improvisation",
-            "Auftritts­praxis"
-          ],
-          details: {
-            includes: [
-              "Intensivtraining",
-              "Theorie & Praxis",
-              "Individuelles Feedback",
-              "Auftrittsvorbereitung"
-            ],
-            suitable: [
-              "Einzelpersonen",
-              "Kleine Gruppen",
-              "Bands"
-            ],
-            duration: "Ab 3 Stunden (600€)",
-            location: "Nach Vereinbarung"
-          }
-        },
-        choir: {
-          title: "Chor Next Door",
-          subtitle: "Gemeinsam Singen",
-          description: "Entdecken Sie die Freude am gemeinsamen Singen in unserem dynamischen Nachbarschaftschor - für alle Levels offen.",
-          features: [
-            "Mehrstimmigkeit",
-            "Harmonie",
-            "Rhythmus",
-            "Gemeinschaft"
-          ],
-          details: {
-            includes: [
-              "Stimmbildung",
-              "Chorgesang",
-              "Auftritte",
-              "Events"
-            ],
-            suitable: [
-              "Alle Level",
-              "Nachbarn",
-              "Musikbegeisterte"
-            ],
-            duration: "90-120 Minuten",
-            location: "Studio Berlin"
+            duration: "60-90 min",
+            location: "Online & Studio Berlin"
           }
         }
+      },
+      about: {
+        title: "Über mich",
+        intro: "Professionelle Sängerin & Vocal Coach",
+        expanded: "Mit jahrelanger Erfahrung im Gesangsunterricht...",
+        projects: {
+          title: "Aktuelle Projekte",
+          description: "Entdecken Sie meine aktuellen musikalischen Projekte"
+        },
+        more: "Mehr erfahren",
+        less: "Weniger anzeigen"
       },
       references: {
         title: "Referenzen & Kooperationen"
       },
       testimonials: {
-        title: "Was andere sagen",
-        subtitle: "Bewertungen von Schülern und Partnern"
+        title: "Erfahrungen"
       },
       contact: {
         title: "Kontakt",
-        subtitle: "Buchen Sie Ihre Stunde oder stellen Sie Fragen",
         form: {
-          name: "Ihr Name",
-          email: "Ihre E-Mail",
-          message: "Ihre Nachricht",
-          submit: "Nachricht senden"
+          name: "Name",
+          email: "E-Mail",
+          message: "Nachricht",
+          send: "Senden"
+        }
+      }
+    }
+  },
+  en: {
+    translation: {
+      nav: {
+        home: "Home",
+        services: "Lessons",
+        about: "About",
+        references: "References & Collaborations",
+        testimonials: "Testimonials",
+        contact: "Contact",
+      },
+      hero: {
+        title: "Discover Your Voice",
+        subtitle: "Professional Vocal Coaching in Berlin",
+        cta: "Book Now"
+      },
+      music: {
+        title: "My Music"
+      },
+      video: {
+        title: "Insights"
+      },
+      services: {
+        title: "Services",
+        singing: {
+          title: "Singing Lessons",
+          description: "Individual lessons for all levels",
+          features: [
+            "Voice Training",
+            "Breathing Technique",
+            "Interpretation",
+            "Stage Presence"
+          ],
+          details: {
+            includes: [
+              "Voice Analysis",
+              "Individual Training Plan",
+              "Recordings",
+              "Practice Material"
+            ],
+            suitable: [
+              "Beginners",
+              "Advanced",
+              "Professionals",
+              "All Genres"
+            ],
+            duration: "60-90 min",
+            location: "Online & Studio Berlin"
+          }
+        }
+      },
+      about: {
+        title: "About Me",
+        intro: "Professional Singer & Vocal Coach",
+        expanded: "With years of experience in vocal training...",
+        projects: {
+          title: "Current Projects",
+          description: "Discover my current musical projects"
+        },
+        more: "Learn More",
+        less: "Show Less"
+      },
+      references: {
+        title: "References & Collaborations"
+      },
+      testimonials: {
+        title: "Testimonials"
+      },
+      contact: {
+        title: "Contact",
+        form: {
+          name: "Name",
+          email: "Email",
+          message: "Message",
+          send: "Send"
         }
       }
     }
@@ -294,7 +165,8 @@ i18n
   .use(LanguageDetector)
   .use(initReactI18next)
   .init({
-    resources: translations,
+    resources,
+    lng: 'de',
     fallbackLng: 'de',
     debug: process.env.NODE_ENV === 'development',
     interpolation: {
