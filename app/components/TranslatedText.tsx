@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useLanguage } from '@/lib/LanguageContext';
+import { useLanguage } from './language-switcher';
 
 interface TranslatedTextProps {
   text: string;
@@ -24,22 +24,15 @@ export default function TranslatedText({
   className = '', 
   html = false 
 }: TranslatedTextProps) {
-  const { language, translate, translateHtmlContent } = useLanguage();
+  const { currentLang } = useLanguage();
   const [translatedText, setTranslatedText] = useState(text);
   const [isTransitioning, setIsTransitioning] = useState(false);
 
   useEffect(() => {
-    const translateContent = async () => {
-      setIsTransitioning(true);
-      const translated = html 
-        ? await translateHtmlContent(text)
-        : await translate(text);
-      setTranslatedText(translated);
-      setIsTransitioning(false);
-    };
-
-    translateContent();
-  }, [text, language, translate, translateHtmlContent, html]);
+    // This component now just displays the text without translation
+    // The translation is handled by the language-switcher context
+    setTranslatedText(text);
+  }, [text, currentLang]);
 
   const combinedClassName = `${className} ${isTransitioning ? 'opacity-50' : ''}`;
 
