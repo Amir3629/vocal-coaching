@@ -53,7 +53,6 @@
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "^2.30.0",
-    "deepl-node": "^1.17.3",
     "embla-carousel-react": "8.5.1",
     "framer-motion": "^12.4.7",
     "googleapis": "^146.0.0",
