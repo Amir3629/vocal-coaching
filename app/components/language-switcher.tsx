@@ -1,7 +1,7 @@
 "use client"
 
 import { createContext, useContext, useState, useEffect, useRef } from "react"
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 
 // Add Google Translate type definitions
 declare global {
@@ -182,117 +182,78 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [isTransitioning, setIsTransitioning] = useState(false)
   const lastToggleTime = useRef(0)
   const toggleAttempts = useRef(0)
+  const maxRetries = 10
 
   // Initialize language from localStorage if available
   useEffect(() => {
     if (typeof window !== 'undefined') {
-      const savedLang = localStorage.getItem('preferredLanguage');
+      const savedLang = localStorage.getItem('preferredLanguage') || 'de';
+      setCurrentLang(savedLang);
       
-      // Always default to German if no preference is saved
-      if (!savedLang) {
-        localStorage.setItem('preferredLanguage', 'de');
-        setCurrentLang('de');
-        return;
-      }
-      
-      // Only accept valid languages
-      if (savedLang === 'de' || savedLang === 'en') {
-        setCurrentLang(savedLang);
-        
-        // Apply the saved language on initial load with retry mechanism
-        if (savedLang === 'en') {
-          const applyTranslation = () => {
-            if (window.translateTo) {
-              try {
-                window.translateTo('en');
-              } catch (error) {
-                console.error('Error setting initial language:', error);
-              }
-            } else if (toggleAttempts.current < 5) {
-              // Retry a few times with increasing delay
-              toggleAttempts.current++;
-              setTimeout(applyTranslation, 1000 * toggleAttempts.current);
-            }
-          };
-          
-          // Start with a delay to ensure Google Translate is initialized
-          setTimeout(applyTranslation, 2000);
+      // Apply the saved language on initial load
+      const applyInitialLanguage = () => {
+        if (!window.translationInitialized) {
+          if (toggleAttempts.current < maxRetries) {
+            toggleAttempts.current++;
+            setTimeout(applyInitialLanguage, 1000);
+            return;
+          }
         }
-      } else {
-        // Invalid language saved, reset to German
-        localStorage.setItem('preferredLanguage', 'de');
-        setCurrentLang('de');
-      }
+        
+        try {
+          if (window.translateTo) {
+            window.translateTo(savedLang);
+          }
+        } catch (error) {
+          console.error('Error applying initial language:', error);
+        }
+      };
+      
+      // Start with a delay to ensure Google Translate is initialized
+      setTimeout(applyInitialLanguage, 2000);
     }
   }, []);
 
   const toggleLanguage = () => {
-    if (isTransitioning) return; // Prevent multiple clicks during transition
+    if (isTransitioning) return;
     
-    // Prevent rapid toggling
     const now = Date.now();
-    if (now - lastToggleTime.current < 1500) {
-      return;
-    }
+    if (now - lastToggleTime.current < 2000) return;
     lastToggleTime.current = now;
     
     setIsTransitioning(true);
-    toggleAttempts.current = 0;
+    const newLang = currentLang === "de" ? "en" : "de";
     
-    // Toggle the language state
-    setCurrentLang((prev) => {
-      const newLang = prev === "de" ? "en" : "de";
-      
-      // Save to localStorage for persistence
-      if (typeof window !== 'undefined') {
-        localStorage.setItem('preferredLanguage', newLang);
-        
-        // Use the translation function with retry mechanism
-        const applyTranslation = () => {
-          try {
-            if (window.translateTo) {
-              window.translateTo(newLang);
-              return true;
-            }
-          } catch (error) {
-            console.error('Error toggling language:', error);
-          }
-          
-          // Retry logic
-          if (toggleAttempts.current < 3) {
-            toggleAttempts.current++;
-            setTimeout(applyTranslation, 500);
-          } else {
-            // Last resort: reload the page
-            window.location.reload();
-          }
-          
-          return false;
-        };
-        
-        applyTranslation();
+    const applyTranslation = () => {
+      if (!window.translationInitialized) {
+        if (toggleAttempts.current < maxRetries) {
+          toggleAttempts.current++;
+          setTimeout(applyTranslation, 1000);
+          return;
+        }
       }
       
-      return newLang;
-    });
+      try {
+        if (window.translateTo) {
+          window.translateTo(newLang);
+          localStorage.setItem('preferredLanguage', newLang);
+          setCurrentLang(newLang);
+        }
+      } catch (error) {
+        console.error('Error toggling language:', error);
+      } finally {
+        setTimeout(() => setIsTransitioning(false), 1000);
+      }
+    };
     
-    // Allow transitions to complete before enabling toggle again
-    setTimeout(() => {
-      setIsTransitioning(false);
-    }, 1500);
-  }
+    applyTranslation();
+  };
 
   return (
-    <LanguageContext.Provider
-      value={{
-        currentLang,
-        toggleLanguage,
-        t: translations[currentLang as keyof typeof translations],
-      }}
-    >
+    <LanguageContext.Provider value={{ currentLang, toggleLanguage, t: translations[currentLang as keyof typeof translations] }}>
       {children}
     </LanguageContext.Provider>
-  )
+  );
 }
 
 export function useLanguage() {
@@ -303,25 +264,33 @@ export function useLanguage() {
   return context
 }
 
-export default function LanguageSwitcher() {
+export function LanguageSwitcher() {
   const { currentLang, toggleLanguage } = useLanguage()
   const [isHovered, setIsHovered] = useState(false)
-
+  
   return (
-    <button
+    <motion.button
+      onHoverStart={() => setIsHovered(true)}
+      onHoverEnd={() => setIsHovered(false)}
       onClick={toggleLanguage}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      className="relative flex items-center justify-center w-10 h-10 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 hover:border-[#C8A97E]/50 transition-colors"
-      aria-label={`Switch to ${currentLang === "de" ? "English" : "German"}`}
+      className="relative flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
     >
-      <motion.div
-        initial={{ opacity: 1 }}
-        animate={{ opacity: isHovered ? 0.8 : 1 }}
-        className="text-sm font-medium"
-      >
-        {currentLang === "de" ? "EN" : "DE"}
-      </motion.div>
-    </button>
+      <span className="text-sm font-medium text-white">
+        {currentLang.toUpperCase()}
+      </span>
+      
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 10 }}
+            className="absolute left-0 right-0 -bottom-8 text-xs text-white/70 whitespace-nowrap"
+          >
+            {currentLang === "de" ? "Switch to English" : "Zu Deutsch wechseln"}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.button>
   )
 } 

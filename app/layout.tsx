@@ -41,6 +41,23 @@ export default function RootLayout({
             // Flag to track if translation has been initialized
             window.translationInitialized = false;
             
+            // Function to reset to German
+            function resetToGerman() {
+              const selectElement = document.querySelector('.goog-te-combo');
+              if (selectElement) {
+                selectElement.value = 'de';
+                selectElement.dispatchEvent(new Event('change'));
+              }
+              
+              // Also try iframe method as backup
+              const iframe = document.querySelector('.goog-te-menu-frame');
+              if (iframe) {
+                const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
+                const germanLink = innerDoc.querySelector('a[href*="LANG=de"]');
+                if (germanLink) germanLink.click();
+              }
+            }
+            
             // Google Translate initialization
             function googleTranslateElementInit() {
               new google.translate.TranslateElement({
@@ -50,12 +67,11 @@ export default function RootLayout({
                 layout: google.translate.TranslateElement.InlineLayout.SIMPLE
               }, 'google_translate_element');
               
-              // Hide Google's default widget
-              setTimeout(() => {
+              // Hide Google's default widget and apply fixes
+              const initializeTranslation = () => {
+                // Hide the default widget
                 const translateBar = document.querySelector('.skiptranslate');
-                if (translateBar) {
-                  translateBar.style.display = 'none';
-                }
+                if (translateBar) translateBar.style.display = 'none';
                 
                 // Add custom CSS to hide Google Translate elements
                 const style = document.createElement('style');
@@ -63,72 +79,72 @@ export default function RootLayout({
                   body {
                     top: 0 !important;
                   }
-                  .goog-te-banner-frame, .skiptranslate {
+                  .goog-te-banner-frame, 
+                  .skiptranslate,
+                  .goog-te-gadget-icon,
+                  .goog-te-gadget-simple,
+                  .VIpgJd-ZVi9od-l4eHX-hSRGPd, 
+                  .VIpgJd-ZVi9od-ORHb-OEVmcd {
                     display: none !important;
                     visibility: hidden !important;
                   }
                   .goog-te-gadget {
                     height: 0 !important;
                     overflow: hidden !important;
+                    position: absolute !important;
                   }
-                  .VIpgJd-ZVi9od-l4eHX-hSRGPd, .VIpgJd-ZVi9od-ORHb-OEVmcd {
+                  #goog-gt-tt, 
+                  .goog-te-balloon-frame {
                     display: none !important;
+                  }
+                  .goog-text-highlight {
+                    background: none !important;
+                    box-shadow: none !important;
                   }
                 \`;
                 document.head.appendChild(style);
                 
-                // Force reset to German if needed
-                const savedLang = localStorage.getItem('preferredLanguage');
-                if (!savedLang || savedLang === 'de') {
-                  resetToGerman();
-                }
-                
+                // Mark as initialized
                 window.translationInitialized = true;
-              }, 1000);
-            }
-            
-            // Function to reset to German
-            function resetToGerman() {
-              const iframe = document.querySelector('.goog-te-menu-frame');
-              if (iframe) {
-                const innerDoc = iframe.contentDocument || iframe.contentWindow.document;
-                const germanLink = innerDoc.querySelector('a[href*="LANG=de"]');
-                if (germanLink) {
-                  germanLink.click();
+                
+                // Apply saved language preference
+                const savedLang = localStorage.getItem('preferredLanguage');
+                if (savedLang) {
+                  setTimeout(() => window.translateTo(savedLang), 500);
+                }
+              };
+              
+              // Initialize with retry mechanism
+              let attempts = 0;
+              const maxAttempts = 10;
+              
+              function tryInitialize() {
+                if (document.querySelector('.goog-te-combo')) {
+                  initializeTranslation();
+                } else if (attempts < maxAttempts) {
+                  attempts++;
+                  setTimeout(tryInitialize, 500);
                 }
               }
               
-              // Also try direct method
-              const selectElement = document.querySelector('.goog-te-combo');
-              if (selectElement) {
-                selectElement.value = 'de';
-                const event = new Event('change');
-                selectElement.dispatchEvent(event);
-              }
+              setTimeout(tryInitialize, 1000);
             }
             
-            // Improved global function to trigger translation
+            // Global function to trigger translation
             window.translateTo = function(lang) {
               if (lang !== 'de' && lang !== 'en') return;
               
-              // Wait for translation to be initialized
-              if (!window.translationInitialized) {
-                setTimeout(() => window.translateTo(lang), 500);
-                return;
-              }
-              
-              // Special handling for German to ensure it works properly
+              // Special handling for German
               if (lang === 'de') {
                 resetToGerman();
                 return;
               }
               
-              // For English, use the standard approach
+              // For English translation
               const selectElement = document.querySelector('.goog-te-combo');
               if (selectElement) {
                 selectElement.value = lang;
-                const event = new Event('change');
-                selectElement.dispatchEvent(event);
+                selectElement.dispatchEvent(new Event('change'));
               }
             };
           `}
@@ -141,7 +157,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`}>
         <LanguageProvider>
           {/* Hidden Google Translate Element */}
-          <div id="google_translate_element" style={{ display: 'none' }}></div>
+          <div id="google_translate_element" style={{ display: 'none', position: 'absolute', top: '-9999px', left: '-9999px' }}></div>
           
           {children}
           <Footer />
