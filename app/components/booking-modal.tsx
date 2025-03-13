@@ -45,19 +45,19 @@ interface ServiceType {
 const services: Service[] = [
   {
     id: "singen",
-    title: "Gesangsperformance",
+    title: "Professionelle Gesangsperformance ✨",
     duration: "Nach Vereinbarung",
-    description: "Professionelle Gesangsdarbietung für Events, Feiern und besondere Anlässe",
+    description: "Hochwertige Gesangsdarbietung für Ihre Events, Feiern und besonderen Anlässe. Als eine der gefragtesten Sängerinnen Berlins bringe ich Ihre Veranstaltung auf ein neues Niveau.",
     types: [
       {
         id: "solo",
         title: "Solo-Performance",
-        description: "Individuelle Gesangsdarbietung"
+        description: "Ausdrucksstarke Gesangsdarbietung"
       },
       {
         id: "band",
         title: "Mit Band",
-        description: "Performance mit Klavierbegleitung, Gitarre und weiteren Instrumenten"
+        description: "Performance mit Piano, Gitarre, Bass und Percussion"
       },
       {
         id: "custom",
@@ -68,9 +68,9 @@ const services: Service[] = [
   },
   {
     id: "vocal-coaching",
-    title: "Vocal Coaching",
+    title: "Vocal Coaching 🎤",
     duration: "60 min",
-    description: "Professionelles Stimmtraining nach der Complete Vocal Technique (CVT) - einer wissenschaftlich fundierten Methode für alle Gesangsstile",
+    description: "Professionelles Stimmtraining nach der Complete Vocal Technique (CVT) - einer wissenschaftlich fundierten Methode für alle Gesangsstile. Als eine von nur drei zertifizierten CVT-Trainerinnen in Berlin biete ich Ihnen Zugang zu dieser revolutionären Technik.",
     types: [
       {
         id: "private",
@@ -91,9 +91,9 @@ const services: Service[] = [
   },
   {
     id: "workshop",
-    title: "Workshop",
+    title: "Workshop 👥",
     duration: "3 Stunden",
-    description: "Intensives Gruppentraining für Gesangstechniken und Performance"
+    description: "Intensives Gruppentraining für Gesangstechniken und Performance. Erweitern Sie Ihr stimmliches Potenzial in einer inspirierenden Gruppenatmosphäre."
   }
 ];
 
@@ -165,7 +165,11 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {service.types.map((type) => (
               <div key={type.id} className="flex items-center gap-2 text-sm text-gray-200">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                <motion.div 
+                  className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]"
+                  whileHover={{ x: [0, 3, 0], scale: [1, 1.5, 1] }}
+                  transition={{ duration: 1, ease: "easeInOut" }}
+                />
                 <span className="drop-shadow-md">{type.title}</span>
               </div>
             ))}
@@ -173,11 +177,29 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
         </div>
       )}
 
-      {/* Service Icon */}
-      <div className="absolute top-4 left-4 text-[#C8A97E] opacity-50 group-hover:opacity-100">
-        {service.id === "singen" && <Music className="w-6 h-6" />}
-        {service.id === "vocal-coaching" && <Mic className="w-6 h-6" />}
-        {service.id === "workshop" && <Users className="w-6 h-6" />}
+      {/* Service Icon with Animation */}
+      <div className="absolute top-4 right-4 text-[#C8A97E] opacity-50 group-hover:opacity-100">
+        {service.id === "singen" && (
+          <motion.div
+            whileHover={{ rotate: [0, 10, -10, 0], transition: { duration: 1.5, ease: "easeInOut" } }}
+          >
+            <Music className="w-6 h-6" />
+          </motion.div>
+        )}
+        {service.id === "vocal-coaching" && (
+          <motion.div
+            whileHover={{ y: [0, -5, 0], transition: { duration: 1.5, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" } }}
+          >
+            <Mic className="w-6 h-6" />
+          </motion.div>
+        )}
+        {service.id === "workshop" && (
+          <motion.div
+            whileHover={{ scale: [1, 1.2, 1], transition: { duration: 1.5, ease: "easeInOut" } }}
+          >
+            <Users className="w-6 h-6" />
+          </motion.div>
+        )}
       </div>
     </div>
   </motion.div>
@@ -458,7 +480,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                       : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
                                   }`}
                                 >
-                                  Im Studio
+                                  <span className="flex items-center justify-center gap-2">
+                                    <span>🏢</span> Im Studio
+                                  </span>
                                 </button>
                                 <button
                                   type="button"
@@ -469,7 +493,9 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                       : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
                                   }`}
                                 >
-                                  Online
+                                  <span className="flex items-center justify-center gap-2">
+                                    <span>💻</span> Online
+                                  </span>
                                 </button>
                               </div>
                             </div>
