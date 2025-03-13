@@ -10,6 +10,11 @@ const nextConfig = {
         hostname: 'img.youtube.com',
         pathname: '/vi/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'i3.ytimg.com',
+        pathname: '/vi/**',
+      }
     ],
   },
   basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
