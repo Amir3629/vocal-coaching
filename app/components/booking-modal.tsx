@@ -527,9 +527,16 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
   
   return (
     <motion.div
+      initial={{ scale: 1 }}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
-      className={`relative p-4 rounded-lg cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] overflow-hidden ${
+      transition={{
+        type: "spring",
+        stiffness: 200,
+        damping: 20,
+        mass: 1
+      }}
+      className={`relative p-4 rounded-lg cursor-pointer overflow-hidden ${
         isSelected
           ? "bg-[#C8A97E]/20 border-[#C8A97E] shadow-[0_0_15px_rgba(200,169,126,0.3)]"
           : "bg-black/40 border-white/10 hover:bg-black/60"
@@ -538,8 +545,7 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       style={{ 
-        minHeight: '320px',
-        transition: 'transform 0.7s cubic-bezier(0.34, 1.56, 0.64, 1), background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease'
+        transition: 'background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease'
       }}
     >
       {isSelected && (
@@ -574,26 +580,28 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
         ))}
       </div>
       
-      <motion.div 
-        className="mt-4 space-y-3 overflow-hidden"
-        initial={{ opacity: 0, height: 0 }}
-        animate={{ 
-          opacity: isHovered ? 1 : 0,
-          height: isHovered ? 'auto' : 0
-        }}
-        transition={{ 
-          duration: 0.7,
-          ease: [0.34, 1.56, 0.64, 1]
-        }}
-      >
-        <div className="pt-4 border-t border-white/10">
-          <p className="text-sm text-white/70 italic">
-            {isSelected ? 
-              (currentLang === "de" ? "Ausgewählt" : "Selected") : 
-              (currentLang === "de" ? "Klicken um auszuwählen" : "Click to select")}
-          </p>
-        </div>
-      </motion.div>
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div 
+            className="mt-4 space-y-3 overflow-hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ 
+              duration: 0.5,
+              ease: [0.34, 1.56, 0.64, 1]
+            }}
+          >
+            <div className="pt-4 border-t border-white/10">
+              <p className="text-sm text-white/70 italic">
+                {isSelected ? 
+                  (currentLang === "de" ? "Ausgewählt" : "Selected") : 
+                  (currentLang === "de" ? "Klicken um auszuwählen" : "Click to select")}
+              </p>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </motion.div>
   )
 } 
