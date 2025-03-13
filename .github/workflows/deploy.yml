@@ -4,67 +4,30 @@ name: Deploy to GitHub Pages
 
 on:
   push:
-    branches: [main]
-
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-# Allow only one concurrent deployment
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
-
-env:
-  BUILD_PATH: "." # default value when not using subfolders
-  NEXT_PUBLIC_BASE_PATH: /vocal-coaching
+    branches:
+      - main
 
 jobs:
-  build:
-    name: Build
+  build-and-deploy:
     runs-on: ubuntu-latest
-    environment: github-pages
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
 
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
-          node-version: "20"
-          cache: 'npm'
+          node-version: '18'
 
-      - name: Install dependencies
+      - name: Install Dependencies
         run: npm ci
 
-      - name: Copy images to production directory
-        run: |
-          mkdir -p public/vocal-coaching/images
-          cp -r public/images/* public/vocal-coaching/images/
-
-      - name: Build project
+      - name: Build
         run: npm run build
 
-      - name: Create .nojekyll file
-        run: touch out/.nojekyll
-
-      - name: Upload artifact
-        uses: actions/upload-pages-artifact@v3
-        with:
-          path: ./out
-
-  deploy:
-    name: Deploy to GitHub Pages
-    environment:
-      name: github-pages
-      url: ${{ steps.deployment.outputs.page_url }}
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
       - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4 
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: out 
