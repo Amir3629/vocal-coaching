@@ -45,7 +45,7 @@ interface ServiceType {
 const services: Service[] = [
   {
     id: "singen",
-    title: "Professionelle Gesangsperformance ✨",
+    title: "Professionelle Gesangsperformance",
     duration: "Nach Vereinbarung",
     description: "Hochwertige Gesangsdarbietung für Ihre Events, Feiern und besonderen Anlässe. Als eine der gefragtesten Sängerinnen Berlins bringe ich Ihre Veranstaltung auf ein neues Niveau.",
     types: [
@@ -68,7 +68,7 @@ const services: Service[] = [
   },
   {
     id: "vocal-coaching",
-    title: "Vocal Coaching 🎤",
+    title: "Vocal Coaching",
     duration: "60 min",
     description: "Professionelles Stimmtraining nach der Complete Vocal Technique (CVT) - einer wissenschaftlich fundierten Methode für alle Gesangsstile. Als eine von nur drei zertifizierten CVT-Trainerinnen in Berlin biete ich Ihnen Zugang zu dieser revolutionären Technik.",
     types: [
@@ -91,7 +91,7 @@ const services: Service[] = [
   },
   {
     id: "workshop",
-    title: "Workshop 👥",
+    title: "Workshop",
     duration: "3 Stunden",
     description: "Intensives Gruppentraining für Gesangstechniken und Performance. Erweitern Sie Ihr stimmliches Potenzial in einer inspirierenden Gruppenatmosphäre."
   }
@@ -165,11 +165,7 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {service.types.map((type) => (
               <div key={type.id} className="flex items-center gap-2 text-sm text-gray-200">
-                <motion.div 
-                  className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]"
-                  whileHover={{ x: [0, 3, 0], scale: [1, 1.5, 1] }}
-                  transition={{ duration: 1, ease: "easeInOut" }}
-                />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
                 <span className="drop-shadow-md">{type.title}</span>
               </div>
             ))}
@@ -178,24 +174,27 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
       )}
 
       {/* Service Icon with Animation */}
-      <div className="absolute top-4 right-4 text-[#C8A97E] opacity-50 group-hover:opacity-100">
+      <div className="absolute top-4 left-4 text-[#C8A97E] opacity-50 group-hover:opacity-100">
         {service.id === "singen" && (
           <motion.div
-            whileHover={{ rotate: [0, 10, -10, 0], transition: { duration: 1.5, ease: "easeInOut" } }}
+            whileHover={{ rotate: [0, 10, -10, 0] }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
           >
             <Music className="w-6 h-6" />
           </motion.div>
         )}
         {service.id === "vocal-coaching" && (
           <motion.div
-            whileHover={{ y: [0, -5, 0], transition: { duration: 1.5, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" } }}
+            whileHover={{ y: [0, -5, 0] }}
+            transition={{ duration: 1.5, ease: "easeInOut", repeat: Infinity, repeatType: "reverse" }}
           >
             <Mic className="w-6 h-6" />
           </motion.div>
         )}
         {service.id === "workshop" && (
           <motion.div
-            whileHover={{ scale: [1, 1.2, 1], transition: { duration: 1.5, ease: "easeInOut" } }}
+            whileHover={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 1.5, ease: "easeInOut" }}
           >
             <Users className="w-6 h-6" />
           </motion.div>
