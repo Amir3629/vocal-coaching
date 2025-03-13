@@ -144,11 +144,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
-            <TranslatedText 
-              text="Mel jazz" 
-              tag="span"
-              className="text-4xl font-bold"
-            />
+            <TranslatedText text="Mel jazz" />
           </motion.h1>
           <motion.p 
             className="text-xl md:text-2xl mb-8 text-white/90 font-light"
@@ -156,11 +152,7 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.1 }}
           >
-            <TranslatedText 
-              text="Vocal Coaching in Berlin" 
-              tag="span"
-              className="text-xl"
-            />
+            <TranslatedText text="Vocal Coaching in Berlin" />
           </motion.p>
           <motion.div 
             className="flex flex-col sm:flex-row gap-4 justify-center"
@@ -178,7 +170,7 @@ export default function Home() {
                 }
               }}
             >
-              Jetzt Buchen
+              <TranslatedText text="Jetzt Buchen" />
             </Button>
           </motion.div>
         </motion.div>
@@ -194,7 +186,9 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="section-heading mb-4">Meine Musik</h2>
+            <h2 className="section-heading mb-4">
+              <TranslatedText text="Meine Musik" />
+            </h2>
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
           <EnhancedMusicPlayer />
@@ -211,7 +205,9 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="section-heading mb-4">Video Preview</h2>
+            <h2 className="section-heading mb-4">
+              <TranslatedText text="Video Preview" />
+            </h2>
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
           <VideoPreview />
@@ -235,122 +231,124 @@ export default function Home() {
 
         <div className="container mx-auto px-4 relative z-10">
           <div className="text-center mb-16">
-            <h2 className="section-heading mb-4">Vocal Excellence</h2>
+            <h2 className="section-heading mb-4">
+              <TranslatedText text="Vocal Excellence" />
+            </h2>
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
             <ServiceCard
-              title="Singen"
-              subtitle="Gesangsunterricht für alle"
-              description="Professionelles Stimmtraining für Bands, Musiker und ambitionierte Sänger - maßgeschneidert für Ihre künstlerische Entwicklung."
+              title={<TranslatedText text="Singen" />}
+              subtitle={<TranslatedText text="Gesangsunterricht für alle" />}
+              description={<TranslatedText text="Professionelles Stimmtraining für Bands, Musiker und ambitionierte Sänger - maßgeschneidert für Ihre künstlerische Entwicklung." />}
               icon={<Music className="w-6 h-6" />}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/singing.jpg" : "/images/services/singing.jpg"}
               features={[
-                "Grundtechniken",
-                "Stimmbildung",
-                "Atemtechnik",
-                "Liedinterpretation"
+                <TranslatedText text="Grundtechniken" />,
+                <TranslatedText text="Stimmbildung" />,
+                <TranslatedText text="Atemtechnik" />,
+                <TranslatedText text="Liedinterpretation" />
               ]}
               details={{
                 includes: [
-                  "Stimmanalyse",
-                  "Grundlagentraining",
-                  "Liedauswahl",
-                  "Übungsmaterial"
+                  <TranslatedText text="Stimmanalyse" />,
+                  <TranslatedText text="Grundlagentraining" />,
+                  <TranslatedText text="Liedauswahl" />,
+                  <TranslatedText text="Übungsmaterial" />
                 ],
                 suitable: [
-                  "Bands",
-                  "Musiker",
-                  "Anfänger",
-                  "Fortgeschrittene"
+                  <TranslatedText text="Bands" />,
+                  <TranslatedText text="Musiker" />,
+                  <TranslatedText text="Anfänger" />,
+                  <TranslatedText text="Fortgeschrittene" />
                 ],
-                duration: "45-60 Minuten",
-                location: "Studio Berlin / Online"
+                duration: <TranslatedText text="45-60 Minuten" />,
+                location: <TranslatedText text="Studio Berlin / Online" />
               }}
             />
             <ServiceCard
-              title="Vocal Coaching"
-              subtitle="Professionelles Coaching"
-              description="CVT-basiertes Stimmtraining für Profis - entwickeln Sie Ihre einzigartige Stimme und Performance auf höchstem Niveau."
+              title={<TranslatedText text="Vocal Coaching" />}
+              subtitle={<TranslatedText text="Professionelles Coaching" />}
+              description={<TranslatedText text="CVT-basiertes Stimmtraining für Profis - entwickeln Sie Ihre einzigartige Stimme und Performance auf höchstem Niveau." />}
               icon={<Mic className="w-6 h-6" />}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/coaching.jpg" : "/images/services/coaching.jpg"}
               features={[
-                "CVT Technik",
-                "Performance",
-                "Repertoire",
-                "Stilentwicklung"
+                <TranslatedText text="CVT Technik" />,
+                <TranslatedText text="Performance" />,
+                <TranslatedText text="Repertoire" />,
+                <TranslatedText text="Stilentwicklung" />
               ]}
               details={{
                 includes: [
-                  "CVT Stimmanalyse",
-                  "Techniktraining",
-                  "Repertoireaufbau",
-                  "Auftrittsvorbereitung"
+                  <TranslatedText text="CVT Stimmanalyse" />,
+                  <TranslatedText text="Techniktraining" />,
+                  <TranslatedText text="Repertoireaufbau" />,
+                  <TranslatedText text="Auftrittsvorbereitung" />
                 ],
                 suitable: [
-                  "Profis",
-                  "Semi-Profis",
-                  "Fortgeschrittene"
+                  <TranslatedText text="Profis" />,
+                  <TranslatedText text="Semi-Profis" />,
+                  <TranslatedText text="Fortgeschrittene" />
                 ],
-                duration: "60-90 Minuten",
-                location: "Studio Berlin / Online"
+                duration: <TranslatedText text="60-90 Minuten" />,
+                location: <TranslatedText text="Studio Berlin / Online" />
               }}
             />
             <ServiceCard
-              title="Workshop"
-              subtitle="Individuell & Intensiv"
-              description="Maßgeschneiderte Intensiv-Workshops für ein tiefgreifendes Erlebnis Ihrer stimmlichen Entwicklung."
+              title={<TranslatedText text="Workshop" />}
+              subtitle={<TranslatedText text="Individuell & Intensiv" />}
+              description={<TranslatedText text="Maßgeschneiderte Intensiv-Workshops für ein tiefgreifendes Erlebnis Ihrer stimmlichen Entwicklung." />}
               icon={<Theater className="w-6 h-6" />}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/workshop.jpg" : "/images/services/workshop.jpg"}
               features={[
-                "Ensemble-Arbeit",
-                "Harmonielehre",
-                "Improvisation",
-                "Auftritts­praxis"
+                <TranslatedText text="Ensemble-Arbeit" />,
+                <TranslatedText text="Harmonielehre" />,
+                <TranslatedText text="Improvisation" />,
+                <TranslatedText text="Auftritts­praxis" />
               ]}
               details={{
                 includes: [
-                  "Intensivtraining",
-                  "Theorie & Praxis",
-                  "Individuelles Feedback",
-                  "Auftrittsvorbereitung"
+                  <TranslatedText text="Intensivtraining" />,
+                  <TranslatedText text="Theorie & Praxis" />,
+                  <TranslatedText text="Individuelles Feedback" />,
+                  <TranslatedText text="Auftrittsvorbereitung" />
                 ],
                 suitable: [
-                  "Einzelpersonen",
-                  "Kleine Gruppen",
-                  "Bands"
+                  <TranslatedText text="Einzelpersonen" />,
+                  <TranslatedText text="Kleine Gruppen" />,
+                  <TranslatedText text="Bands" />
                 ],
-                duration: "⏱️ Ab 3 Stunden (600€)",
-                location: "Nach Vereinbarung"
+                duration: <TranslatedText text="⏱️ Ab 3 Stunden (600€)" />,
+                location: <TranslatedText text="Nach Vereinbarung" />
               }}
             />
             <ServiceCard
-              title="Chor Next Door"
-              subtitle="Gemeinsam Singen"
-              description="Entdecken Sie die Freude am gemeinsamen Singen in unserem dynamischen Nachbarschaftschor - für alle Levels offen."
+              title={<TranslatedText text="Chor Next Door" />}
+              subtitle={<TranslatedText text="Gemeinsam Singen" />}
+              description={<TranslatedText text="Entdecken Sie die Freude am gemeinsamen Singen in unserem dynamischen Nachbarschaftschor - für alle Levels offen." />}
               icon={<Users2 className="w-6 h-6" />}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/chor.jpg" : "/images/services/chor.jpg"}
               features={[
-                "Mehrstimmigkeit",
-                "Harmonie",
-                "Rhythmus",
-                "Gemeinschaft"
+                <TranslatedText text="Mehrstimmigkeit" />,
+                <TranslatedText text="Harmonie" />,
+                <TranslatedText text="Rhythmus" />,
+                <TranslatedText text="Gemeinschaft" />
               ]}
               details={{
                 includes: [
-                  "Stimmbildung",
-                  "Chorgesang",
-                  "Auftritte",
-                  "Events"
+                  <TranslatedText text="Stimmbildung" />,
+                  <TranslatedText text="Chorgesang" />,
+                  <TranslatedText text="Auftritte" />,
+                  <TranslatedText text="Events" />
                 ],
                 suitable: [
-                  "Alle Level",
-                  "Nachbarn",
-                  "Musikbegeisterte"
+                  <TranslatedText text="Alle Level" />,
+                  <TranslatedText text="Nachbarn" />,
+                  <TranslatedText text="Musikbegeisterte" />
                 ],
-                duration: "90-120 Minuten",
-                location: "Studio Berlin"
+                duration: <TranslatedText text="90-120 Minuten" />,
+                location: <TranslatedText text="Studio Berlin" />
               }}
               link="https://chornextdoor.de"
             />
@@ -368,7 +366,7 @@ export default function Home() {
               className="bg-[#C8A97E] hover:bg-[#B89A6F] text-black rounded-full px-8"
               onClick={() => setIsBookingModalOpen(true)}
             >
-              Jetzt Buchen
+              <TranslatedText text="Jetzt Buchen" />
             </Button>
           </motion.div>
         </div>
