@@ -87,7 +87,7 @@
     background: var(--background);
     color: var(--foreground);
     overflow-x: hidden;
-    cursor: url('/images/music-cursor.png'), auto;
+    cursor: url('/vocal-coaching/images/music-cursor.png'), auto;
   }
 }
 
@@ -504,5 +504,9 @@
   .group:active .preserve-3d {
     transform: rotateY(180deg);
   }
+}
+
+.cursor-music {
+  cursor: url('/vocal-coaching/images/music-cursor.png'), auto;
 }
 

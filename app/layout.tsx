@@ -22,6 +22,9 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   title: "Mel jazz - Vocal Coaching in Berlin",
   description: "Professional vocal coaching and performance in Berlin",
+  icons: {
+    icon: process.env.NODE_ENV === 'production' ? '/vocal-coaching/favicon.ico' : '/favicon.ico',
+  },
 }
 
 export default function RootLayout({
