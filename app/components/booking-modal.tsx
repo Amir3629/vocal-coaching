@@ -172,18 +172,27 @@ const TimeGrid = ({ times, selectedTime, onTimeSelect }: {
   selectedTime: string | null,
   onTimeSelect: (time: string) => void 
 }) => (
-  <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 max-h-[300px] overflow-y-auto p-1">
+  <div className="flex flex-wrap justify-center gap-2 max-w-[500px] mx-auto">
     {times.map((time) => (
       <button
         key={time}
         onClick={() => onTimeSelect(time)}
-        className={`px-4 py-2 rounded-lg text-sm font-medium transition-all duration-200 ${
+        className={`relative w-[70px] h-[70px] rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
           selectedTime === time
-            ? "bg-[#C8A97E] text-black"
-            : "bg-white/5 text-white hover:bg-white/10"
+            ? "bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]"
+            : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
         }`}
       >
-        {time}
+        <div className="absolute inset-0 flex items-center justify-center">
+          {time}
+        </div>
+        {selectedTime === time && (
+          <motion.div
+            layoutId="timeSelection"
+            className="absolute inset-0 rounded-xl bg-[#C8A97E] -z-10"
+            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
+          />
+        )}
       </button>
     ))}
   </div>
@@ -390,7 +399,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           exit={{ opacity: 0, x: -20 }}
                           className="flex flex-col items-center justify-center w-full"
                         >
-                          <div className="w-full max-w-[350px] mx-auto">
+                          <div className="w-full max-w-[350px] mx-auto flex justify-center">
                             <Calendar
                               mode="single"
                               selected={selectedDate}
@@ -410,7 +419,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           initial={{ opacity: 0, x: 20 }}
                           animate={{ opacity: 1, x: 0 }}
                           exit={{ opacity: 0, x: -20 }}
-                          className="space-y-4"
+                          className="flex flex-col items-center justify-center w-full py-4"
                         >
                           <TimeGrid
                             times={timeSlots}
@@ -486,7 +495,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2">
                               <div className="relative">
                                 <input
                                   type="checkbox"
@@ -500,10 +509,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                     })
                                   }
                                   required
-                                  className="appearance-none w-5 h-5 rounded border border-[#C8A97E]/30 bg-white/5 checked:bg-[#C8A97E] checked:border-[#C8A97E] transition-all duration-200 cursor-pointer"
+                                  className="appearance-none w-4 h-4 rounded border border-[#C8A97E]/30 bg-white/5 checked:bg-[#C8A97E] checked:border-[#C8A97E] transition-all duration-200 cursor-pointer"
                                 />
                                 <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-black transition-opacity opacity-0 peer-checked:opacity-100">
-                                  <Check className="w-3.5 h-3.5" />
+                                  <Check className="w-3 h-3" />
                                 </div>
                               </div>
                               <label htmlFor="terms" className="text-sm text-gray-400">
@@ -574,17 +583,30 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         />
 
         {/* Legal Document Modals */}
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           {showLegalModal === "agb" && (
-            <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
-              <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
+            <motion.div 
+              className="fixed inset-0 z-[200]" 
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <motion.div 
+                className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+                initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                animate={{ opacity: 1, backdropFilter: "blur(8px)" }}
+                exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              />
               <div className="fixed inset-0 overflow-y-auto">
                 <div className="flex min-h-full items-center justify-center p-4">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                     className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
                   >
                     <div className="p-6">
@@ -601,19 +623,32 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   </motion.div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
           {showLegalModal === "datenschutz" && (
-            <div className="fixed inset-0 z-[200]" onClick={(e) => e.stopPropagation()}>
-              <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" />
+            <motion.div 
+              className="fixed inset-0 z-[200]" 
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
+              <motion.div 
+                className="fixed inset-0 bg-black/80 backdrop-blur-sm"
+                initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                animate={{ opacity: 1, backdropFilter: "blur(8px)" }}
+                exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+              />
               <div className="fixed inset-0 overflow-y-auto">
                 <div className="flex min-h-full items-center justify-center p-4">
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 20 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                     className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
                   >
                     <div className="p-6">
@@ -630,7 +665,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   </motion.div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
         </AnimatePresence>
 
