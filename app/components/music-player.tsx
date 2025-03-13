@@ -161,7 +161,7 @@ export default function MusicPlayer() {
           const message = `{"event":"command","func":"loadVideoById","args":"${songs[nextIndex].youtubeId}"}`;
           videoRef.current.contentWindow?.postMessage(message, '*');
         }
-      }, 500);
+      }, 800);
     }, 500);
   };
 
@@ -187,7 +187,7 @@ export default function MusicPlayer() {
           const message = `{"event":"command","func":"loadVideoById","args":"${songs[prevIndex].youtubeId}"}`;
           videoRef.current.contentWindow?.postMessage(message, '*');
         }
-      }, 500);
+      }, 800);
     }, 500);
   };
 
@@ -219,7 +219,7 @@ export default function MusicPlayer() {
   return (
     <div className="max-w-5xl mx-auto relative py-10">
       <div className="flex items-center justify-center">
-        <AnimatePresence>
+        <AnimatePresence mode="wait">
           <div className="relative flex items-center justify-center">
             {/* Previous song disc (peeking from behind) */}
             {currentSongIndex > 0 && (
@@ -227,10 +227,11 @@ export default function MusicPlayer() {
                 className="absolute w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
                 style={{ 
                   left: "-80px", 
-                  opacity: 0.5,
-                  filter: "blur(2px)"
+                  opacity: 0.4,
+                  filter: "blur(4px)"
                 }}
-                whileHover={{ left: "-60px", opacity: 0.7 }}
+                whileHover={{ left: "-60px", opacity: 0.6, filter: "blur(3px)" }}
+                transition={{ duration: 0.5 }}
               >
                 <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
                   <Image
@@ -249,10 +250,11 @@ export default function MusicPlayer() {
                 className="absolute w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
                 style={{ 
                   right: "-80px", 
-                  opacity: 0.5,
-                  filter: "blur(2px)"
+                  opacity: 0.4,
+                  filter: "blur(4px)"
                 }}
-                whileHover={{ right: "-60px", opacity: 0.7 }}
+                whileHover={{ right: "-60px", opacity: 0.6, filter: "blur(3px)" }}
+                transition={{ duration: 0.5 }}
               >
                 <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
                   <Image
@@ -268,10 +270,15 @@ export default function MusicPlayer() {
             {/* Current song disc */}
             <motion.div
               key={currentSongIndex}
-              initial={{ opacity: isTransitioning ? 0 : 1, scale: isTransitioning ? 0.9 : 1 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              transition={{ duration: 0.5 }}
+              initial={{ opacity: 0, scale: 0.8, x: isTransitioning ? (dragStartX > 0 ? 100 : -100) : 0 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.8, x: dragStartX > 0 ? -100 : 100 }}
+              transition={{ 
+                type: "spring", 
+                stiffness: 100, 
+                damping: 15,
+                duration: 0.8
+              }}
               className="relative z-10"
               onMouseDown={handleDragStart}
               onMouseMove={handleDragMove}
@@ -285,26 +292,26 @@ export default function MusicPlayer() {
                 initial={{ rotate: 0 }}
               >
                 {/* Vinyl grooves - adjusted colors */}
-                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/5" style={{ margin: '10%' }} />
-                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/5" style={{ margin: '20%' }} />
-                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/5" style={{ margin: '30%' }} />
-                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/5" style={{ margin: '40%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '10%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '20%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '30%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '40%' }} />
                 
-                {/* Center label */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-[#C8A97E] flex items-center justify-center z-10">
+                {/* Center label - darker gold color */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-gradient-to-br from-[#A88A60] to-[#8A6D40] flex items-center justify-center z-10 shadow-inner">
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={togglePlay}
                     className="w-16 h-16 flex items-center justify-center rounded-full bg-black"
                   >
-                    {isPlaying ? <Pause size={32} className="text-[#C8A97E]" /> : <Play size={32} className="text-[#C8A97E] ml-1" />}
+                    {isPlaying ? <Pause size={32} className="text-[#A88A60]" /> : <Play size={32} className="text-[#A88A60] ml-1" />}
                   </motion.button>
                 </div>
 
                 {/* Video thumbnail as background */}
                 <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
-                  <div className="absolute inset-0 bg-black/30 z-[1]" /> {/* Darkening overlay */}
+                  <div className="absolute inset-0 bg-black/40 z-[1]" /> {/* Darkening overlay */}
                   <Image
                     src={`https://img.youtube.com/vi/${currentSong.youtubeId}/maxresdefault.jpg`}
                     alt={currentSong.title}
