@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from './language-switcher';
 
@@ -82,22 +82,58 @@ export default function TranslatedText({
   const [translatedText, setTranslatedText] = useState(text);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [key, setKey] = useState(Date.now());
+  const prevLangRef = useRef(currentLang);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Clear any existing timeouts when component unmounts
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
+    // Only trigger transition if language actually changed
+    if (prevLangRef.current !== currentLang) {
+      if (translations) {
+        setIsTransitioning(true);
+        
+        // Clear any existing timeout
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+        
+        // Generate a new key to force re-render of animation components
+        setKey(Date.now());
+        
+        // Set the translated text based on current language
+        const newText = currentLang === 'de' ? translations.de : translations.en;
+        setTranslatedText(newText);
+        
+        // Set a timeout to end the transition state
+        timeoutRef.current = setTimeout(() => {
+          setIsTransitioning(false);
+        }, letterAnimation ? 800 : 500);
+        
+        // Update the previous language ref
+        prevLangRef.current = currentLang;
+      } else {
+        setTranslatedText(text);
+      }
+    }
+  }, [text, currentLang, translations, letterAnimation]);
+
+  // Force update when translations prop changes
+  useEffect(() => {
     if (translations) {
-      setIsTransitioning(true);
       const newText = currentLang === 'de' ? translations.de : translations.en;
-      
-      setKey(Date.now());
       setTranslatedText(newText);
-      
-      setTimeout(() => {
-        setIsTransitioning(false);
-      }, letterAnimation ? 500 : 300);
     } else {
       setTranslatedText(text);
     }
-  }, [text, currentLang, translations, letterAnimation]);
+  }, [translations, text, currentLang]);
 
   const combinedClassName = `${className} ${isTransitioning ? 'opacity-90' : ''}`;
 

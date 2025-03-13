@@ -3,25 +3,6 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 
-// Add Google Translate type definitions
-declare global {
-  interface Window {
-    google: {
-      translate: {
-        TranslateElement: {
-          InlineLayout: {
-            SIMPLE: number;
-            HORIZONTAL: number;
-            VERTICAL: number;
-          };
-          new (options: any, element: string): any;
-        };
-      };
-    };
-    doGTranslate: (lang_pair: string) => void;
-  }
-}
-
 // Keep the translations for components that don't get translated by Google Translate
 const translations = {
   de: {
@@ -190,55 +171,39 @@ const LanguageContext = createContext<{
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [currentLang, setCurrentLang] = useState("de")
-  const [isTranslating, setIsTranslating] = useState(false)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+
+  // Initialize language from localStorage if available
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const savedLang = localStorage.getItem('preferredLanguage');
+      if (savedLang && (savedLang === 'de' || savedLang === 'en')) {
+        setCurrentLang(savedLang);
+      }
+    }
+  }, []);
 
   const toggleLanguage = () => {
-    setIsTranslating(true);
+    if (isTransitioning) return; // Prevent multiple clicks during transition
+    
+    setIsTransitioning(true);
     
     // Toggle the language state
     setCurrentLang((prev) => {
       const newLang = prev === "de" ? "en" : "de";
       
-      // Use direct GTranslate function if available
+      // Save to localStorage for persistence
       if (typeof window !== 'undefined') {
-        try {
-          // This is a simpler approach that works with GTranslate
-          const langPair = newLang === 'en' ? 'de|en' : 'en|de';
-          
-          // Try to find and click the Google Translate select
-          const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-          if (selectElement) {
-            selectElement.value = newLang === 'en' ? 'en' : 'de';
-            selectElement.dispatchEvent(new Event('change'));
-          } else if (window.doGTranslate) {
-            // If the direct function is available
-            window.doGTranslate(langPair);
-          } else {
-            // Fallback: try to find the iframe and click the appropriate link
-            const iframe = document.querySelector('.goog-te-menu-frame') as HTMLIFrameElement;
-            if (iframe && iframe.contentDocument) {
-              const links = iframe.contentDocument.querySelectorAll('a.goog-te-menu2-item');
-              links.forEach((link: Element) => {
-                const typedLink = link as HTMLAnchorElement;
-                const langText = typedLink.textContent || '';
-                if ((newLang === 'en' && langText.includes('English')) || 
-                    (newLang === 'de' && langText.includes('German'))) {
-                  typedLink.click();
-                }
-              });
-            }
-          }
-        } catch (error) {
-          console.error('Error toggling language:', error);
-        }
+        localStorage.setItem('preferredLanguage', newLang);
       }
       
       return newLang;
     });
     
+    // Allow transitions to complete before enabling toggle again
     setTimeout(() => {
-      setIsTranslating(false);
-    }, 1000);
+      setIsTransitioning(false);
+    }, 800);
   }
 
   return (
@@ -255,44 +220,32 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 }
 
 export function useLanguage() {
-  return useContext(LanguageContext)
+  const context = useContext(LanguageContext)
+  if (context === undefined) {
+    throw new Error("useLanguage must be used within a LanguageProvider")
+  }
+  return context
 }
 
 export default function LanguageSwitcher() {
   const { currentLang, toggleLanguage } = useLanguage()
-  const [isLoading, setIsLoading] = useState(false)
-
-  const handleToggle = () => {
-    setIsLoading(true);
-    toggleLanguage();
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  };
+  const [isHovered, setIsHovered] = useState(false)
 
   return (
-    <motion.button
-      onClick={handleToggle}
-      className="relative px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
-      whileHover={{ scale: 1.05 }}
-      whileTap={{ scale: 0.95 }}
-      disabled={isLoading}
+    <button
+      onClick={toggleLanguage}
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+      className="relative flex items-center justify-center w-10 h-10 rounded-full bg-black/20 backdrop-blur-sm border border-white/10 hover:border-[#C8A97E]/50 transition-colors"
+      aria-label={`Switch to ${currentLang === "de" ? "English" : "German"}`}
     >
-      <div className="flex items-center space-x-2">
-        <span className={`text-sm font-medium ${currentLang === "de" ? "text-[#C8A97E]" : "text-white/60"}`}>
-          DE
-        </span>
-        <span className="text-white/30">|</span>
-        <span className={`text-sm font-medium ${currentLang === "en" ? "text-[#C8A97E]" : "text-white/60"}`}>
-          EN
-        </span>
-      </div>
-      
-      {isLoading && (
-        <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
-          <div className="w-4 h-4 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
-        </div>
-      )}
-    </motion.button>
+      <motion.div
+        initial={{ opacity: 1 }}
+        animate={{ opacity: isHovered ? 0.8 : 1 }}
+        className="text-sm font-medium"
+      >
+        {currentLang === "de" ? "EN" : "DE"}
+      </motion.div>
+    </button>
   )
 } 
