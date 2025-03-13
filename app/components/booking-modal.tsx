@@ -174,6 +174,7 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
                   ? "Vocal Coaching" 
                   : "Workshop"
             }}
+            letterAnimation={true}
           />
           <TranslatedText
             text={service.duration}
@@ -475,6 +476,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           de: "Buchung",
                           en: "Booking"
                         }}
+                        letterAnimation={true}
                       />
                     </h3>
                     <button
@@ -547,6 +549,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                     de: "Unterrichtsort",
                                     en: "Location"
                                   }}
+                                  letterAnimation={true}
                                 />
                               </label>
                               <div className="flex gap-3">
@@ -656,6 +659,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                     de: "Erfahrungsniveau",
                                     en: "Experience Level"
                                   }}
+                                  letterAnimation={true}
                                 />
                               </label>
                               <div className="flex gap-3">
@@ -765,6 +769,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                               de: "Zurück",
                               en: "Back"
                             }}
+                            letterAnimation={true}
                           />
                         </button>
                       )}
@@ -784,6 +789,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             de: currentStep === "4" ? "Buchen" : "Weiter",
                             en: currentStep === "4" ? "Book" : "Next"
                           }}
+                          letterAnimation={true}
                         />
                       </button>
                     </div>

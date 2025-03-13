@@ -13,13 +13,61 @@ interface TranslatedTextProps {
     de: string;
     en: string;
   };
+  letterAnimation?: boolean;
 }
 
+// Letter animation variants
+const letterVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.03,
+      duration: 0.3,
+      ease: [0.2, 0.65, 0.3, 0.9],
+    },
+  }),
+  exit: (i: number) => ({
+    opacity: 0,
+    y: -10,
+    transition: {
+      delay: i * 0.01,
+      duration: 0.2,
+    },
+  }),
+};
+
+// Container animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.03,
+      delayChildren: 0.1,
+      duration: 0.5,
+    },
+  },
+  exit: {
+    opacity: 0,
+    transition: {
+      staggerChildren: 0.01,
+      staggerDirection: -1,
+      duration: 0.3,
+    },
+  },
+};
+
+// Standard motion props for non-letter animations
 const motionProps = {
-  initial: { y: 10, opacity: 0 },
+  initial: { y: 5, opacity: 0 },
   animate: { y: 0, opacity: 1 },
-  exit: { y: -10, opacity: 0 },
-  transition: { duration: 0.3 },
+  exit: { y: -5, opacity: 0 },
+  transition: { 
+    duration: 0.4,
+    ease: [0.2, 0.65, 0.3, 0.9],
+  },
 };
 
 export default function TranslatedText({ 
@@ -27,82 +75,137 @@ export default function TranslatedText({
   as = 'div', 
   className = '', 
   html = false,
-  translations
+  translations,
+  letterAnimation = false
 }: TranslatedTextProps) {
   const { currentLang } = useLanguage();
   const [translatedText, setTranslatedText] = useState(text);
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [key, setKey] = useState(Date.now());
 
   useEffect(() => {
-    // If translations are provided, use them
     if (translations) {
       setIsTransitioning(true);
       const newText = currentLang === 'de' ? translations.de : translations.en;
+      
+      setKey(Date.now());
       setTranslatedText(newText);
+      
       setTimeout(() => {
         setIsTransitioning(false);
-      }, 300);
+      }, letterAnimation ? 500 : 300);
     } else {
-      // Otherwise just use the original text
       setTranslatedText(text);
     }
-  }, [text, currentLang, translations]);
+  }, [text, currentLang, translations, letterAnimation]);
 
-  const combinedClassName = `${className} ${isTransitioning ? 'opacity-50' : ''}`;
+  const combinedClassName = `${className} ${isTransitioning ? 'opacity-90' : ''}`;
 
-  // Add data-notranslate attribute to prevent Google Translate from translating already translated content
   const commonProps = {
-    key: translatedText,
-    ...motionProps,
-    // Only add notranslate when we're providing manual translations
+    key: `${key}-${translatedText}`,
     ...(translations 
       ? { 'data-notranslate': 'true', className: `${combinedClassName} notranslate` } 
       : { className: combinedClassName }),
   };
 
-  // Render the appropriate motion component based on the 'as' prop
+  const LetterAnimation = ({ text }: { text: string }) => {
+    return (
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="visible"
+        exit="exit"
+        className="inline-flex flex-wrap"
+        style={{ overflow: 'hidden' }}
+      >
+        {Array.from(text).map((letter, index) => (
+          <motion.span
+            key={`letter-${index}-${key}`}
+            variants={letterVariants}
+            custom={index}
+            style={{ 
+              display: 'inline-block',
+              whiteSpace: letter === ' ' ? 'pre' : 'normal',
+              position: 'relative'
+            }}
+          >
+            {letter}
+          </motion.span>
+        ))}
+      </motion.div>
+    );
+  };
+
   const renderComponent = () => {
-    // Handle HTML content vs text content
+    if (letterAnimation && !html) {
+      if (as === 'div') {
+        return <div {...commonProps}><LetterAnimation text={translatedText} /></div>;
+      } else if (as === 'span') {
+        return <span {...commonProps}><LetterAnimation text={translatedText} /></span>;
+      } else if (as === 'p') {
+        return <p {...commonProps}><LetterAnimation text={translatedText} /></p>;
+      } else if (as === 'h1') {
+        return <h1 {...commonProps}><LetterAnimation text={translatedText} /></h1>;
+      } else if (as === 'h2') {
+        return <h2 {...commonProps}><LetterAnimation text={translatedText} /></h2>;
+      } else if (as === 'h3') {
+        return <h3 {...commonProps}><LetterAnimation text={translatedText} /></h3>;
+      } else if (as === 'h4') {
+        return <h4 {...commonProps}><LetterAnimation text={translatedText} /></h4>;
+      } else if (as === 'h5') {
+        return <h5 {...commonProps}><LetterAnimation text={translatedText} /></h5>;
+      } else if (as === 'h6') {
+        return <h6 {...commonProps}><LetterAnimation text={translatedText} /></h6>;
+      } else {
+        return <div {...commonProps}><LetterAnimation text={translatedText} /></div>;
+      }
+    }
+    
+    const standardProps = {
+      ...commonProps,
+      ...motionProps
+    };
+    
     if (as === 'div') {
       return html 
-        ? <motion.div {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.div {...commonProps}>{translatedText}</motion.div>;
+        ? <motion.div {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.div {...standardProps}>{translatedText}</motion.div>;
     } else if (as === 'span') {
       return html 
-        ? <motion.span {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.span {...commonProps}>{translatedText}</motion.span>;
+        ? <motion.span {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.span {...standardProps}>{translatedText}</motion.span>;
     } else if (as === 'p') {
       return html 
-        ? <motion.p {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.p {...commonProps}>{translatedText}</motion.p>;
+        ? <motion.p {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.p {...standardProps}>{translatedText}</motion.p>;
     } else if (as === 'h1') {
       return html 
-        ? <motion.h1 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.h1 {...commonProps}>{translatedText}</motion.h1>;
+        ? <motion.h1 {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h1 {...standardProps}>{translatedText}</motion.h1>;
     } else if (as === 'h2') {
       return html 
-        ? <motion.h2 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.h2 {...commonProps}>{translatedText}</motion.h2>;
+        ? <motion.h2 {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h2 {...standardProps}>{translatedText}</motion.h2>;
     } else if (as === 'h3') {
       return html 
-        ? <motion.h3 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.h3 {...commonProps}>{translatedText}</motion.h3>;
+        ? <motion.h3 {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h3 {...standardProps}>{translatedText}</motion.h3>;
     } else if (as === 'h4') {
       return html 
-        ? <motion.h4 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.h4 {...commonProps}>{translatedText}</motion.h4>;
+        ? <motion.h4 {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h4 {...standardProps}>{translatedText}</motion.h4>;
     } else if (as === 'h5') {
       return html 
-        ? <motion.h5 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.h5 {...commonProps}>{translatedText}</motion.h5>;
+        ? <motion.h5 {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h5 {...standardProps}>{translatedText}</motion.h5>;
     } else if (as === 'h6') {
       return html 
-        ? <motion.h6 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.h6 {...commonProps}>{translatedText}</motion.h6>;
+        ? <motion.h6 {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h6 {...standardProps}>{translatedText}</motion.h6>;
     } else {
       return html 
-        ? <motion.div {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
-        : <motion.div {...commonProps}>{translatedText}</motion.div>;
+        ? <motion.div {...standardProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.div {...standardProps}>{translatedText}</motion.div>;
     }
   };
 
