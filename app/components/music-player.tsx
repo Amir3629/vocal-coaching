@@ -224,19 +224,19 @@ export default function MusicPlayer() {
             {/* Previous song disc (peeking from behind) */}
             {currentSongIndex > 0 && (
               <motion.div
-                className="absolute rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
+                className="absolute rounded-full bg-black border-8 border-[#C8A97E]/40 z-0"
                 style={{ 
                   width: "320px",
                   height: "320px",
                   left: "-60px", 
                   opacity: 0.4,
-                  filter: "blur(4px)",
+                  filter: "blur(2px)",
                   transform: "translateY(10px)"
                 }}
                 whileHover={{ 
                   left: "-50px", 
                   opacity: 0.6, 
-                  filter: "blur(3px)",
+                  filter: "blur(1px)",
                   scale: 1.05
                 }}
                 transition={{ duration: 0.5 }}
@@ -255,19 +255,19 @@ export default function MusicPlayer() {
             {/* Next song disc (peeking from behind) */}
             {currentSongIndex < songs.length - 1 && (
               <motion.div
-                className="absolute rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
+                className="absolute rounded-full bg-black border-8 border-[#C8A97E]/40 z-0"
                 style={{ 
                   width: "320px",
                   height: "320px",
                   right: "-60px", 
                   opacity: 0.4,
-                  filter: "blur(4px)",
+                  filter: "blur(2px)",
                   transform: "translateY(10px)"
                 }}
                 whileHover={{ 
                   right: "-50px", 
                   opacity: 0.6, 
-                  filter: "blur(3px)",
+                  filter: "blur(1px)",
                   scale: 1.05
                 }}
                 transition={{ duration: 0.5 }}
@@ -303,7 +303,7 @@ export default function MusicPlayer() {
             >
               {/* Vinyl disc background */}
               <motion.div 
-                className="w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/20 relative cursor-grab active:cursor-grabbing"
+                className="w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/60 relative cursor-grab active:cursor-grabbing"
                 animate={discControls}
                 initial={{ rotate: 0 }}
               >
@@ -313,15 +313,15 @@ export default function MusicPlayer() {
                 <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '30%' }} />
                 <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '40%' }} />
                 
-                {/* Center label - darker gold color */}
-                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-gradient-to-br from-[#A88A60] to-[#8A6D40] flex items-center justify-center z-10 shadow-inner">
+                {/* Center label - more subtle gold color */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-gradient-to-br from-[#8A6D40] to-[#6D5430] flex items-center justify-center z-10 shadow-inner">
                   <motion.button
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
                     onClick={togglePlay}
                     className="w-16 h-16 flex items-center justify-center rounded-full bg-black"
                   >
-                    {isPlaying ? <Pause size={32} className="text-[#A88A60]" /> : <Play size={32} className="text-[#A88A60] ml-1" />}
+                    {isPlaying ? <Pause size={32} className="text-[#8A6D40]" /> : <Play size={32} className="text-[#8A6D40] ml-1" />}
                   </motion.button>
                 </div>
 
