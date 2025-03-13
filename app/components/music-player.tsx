@@ -1,9 +1,9 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Play, Pause } from 'lucide-react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
 interface Song {
   title: string;
@@ -63,8 +63,11 @@ export default function MusicPlayer() {
   const [progress, setProgress] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
   const [playerReady, setPlayerReady] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
   const videoRef = useRef<HTMLIFrameElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const discControls = useAnimation();
 
   const currentSong = songs[currentSongIndex];
 
@@ -107,16 +110,22 @@ export default function MusicPlayer() {
     };
   }, []);
 
-  // Spinning animation
+  // Spinning animation with slow start
   useEffect(() => {
-    let interval: NodeJS.Timeout;
     if (isPlaying) {
-      interval = setInterval(() => {
-        setProgress((prev) => (prev + 0.1) % 100);
-      }, 100);
+      discControls.start({
+        rotate: 360,
+        transition: {
+          duration: 20, // Much slower rotation (20 seconds per rotation)
+          ease: "linear",
+          repeat: Infinity,
+          repeatType: "loop"
+        }
+      });
+    } else {
+      discControls.stop();
     }
-    return () => clearInterval(interval);
-  }, [isPlaying]);
+  }, [isPlaying, discControls]);
 
   const togglePlay = () => {
     if (!playerReady) return;
@@ -131,7 +140,7 @@ export default function MusicPlayer() {
   };
 
   const playNextSong = () => {
-    if (!playerReady) return;
+    if (!playerReady || isTransitioning) return;
     
     setIsTransitioning(true);
     setIsPlaying(false);
@@ -157,7 +166,7 @@ export default function MusicPlayer() {
   };
 
   const playPreviousSong = () => {
-    if (!playerReady) return;
+    if (!playerReady || isTransitioning) return;
     
     setIsTransitioning(true);
     setIsPlaying(false);
@@ -182,86 +191,142 @@ export default function MusicPlayer() {
     }, 500);
   };
 
+  // Drag handlers for disc navigation
+  const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    setIsDragging(true);
+    setDragStartX(e.clientX);
+  };
+
+  const handleDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isDragging) return;
+    
+    const dragDistance = e.clientX - dragStartX;
+    
+    // If dragged far enough, change song
+    if (dragDistance > 100) {
+      setIsDragging(false);
+      playPreviousSong();
+    } else if (dragDistance < -100) {
+      setIsDragging(false);
+      playNextSong();
+    }
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+  };
+
   return (
-    <div className="max-w-5xl mx-auto relative">
+    <div className="max-w-5xl mx-auto relative py-10">
       <div className="flex items-center justify-center">
         <AnimatePresence>
-          <motion.div
-            key={currentSongIndex}
-            initial={{ opacity: isTransitioning ? 0 : 1, scale: isTransitioning ? 0.9 : 1 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.5 }}
-            className="relative"
-          >
-            {/* Vinyl disc background */}
-            <motion.div 
-              className="w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/20 relative"
-              animate={{ 
-                rotate: isPlaying ? 360 : 0 
-              }}
-              transition={{ 
-                duration: 8,
-                repeat: Infinity,
-                ease: "linear"
-              }}
-            >
-              {/* Vinyl grooves */}
-              <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '10%' }} />
-              <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '20%' }} />
-              <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '30%' }} />
-              <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/10" style={{ margin: '40%' }} />
-              
-              {/* Center label */}
-              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-[#C8A97E] flex items-center justify-center z-10">
-                <motion.button
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={togglePlay}
-                  className="w-16 h-16 flex items-center justify-center rounded-full bg-black"
-                >
-                  {isPlaying ? <Pause size={32} className="text-[#C8A97E]" /> : <Play size={32} className="text-[#C8A97E] ml-1" />}
-                </motion.button>
-              </div>
+          <div className="relative flex items-center justify-center">
+            {/* Previous song disc (peeking from behind) */}
+            {currentSongIndex > 0 && (
+              <motion.div
+                className="absolute w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
+                style={{ 
+                  left: "-80px", 
+                  opacity: 0.5,
+                  filter: "blur(2px)"
+                }}
+                whileHover={{ left: "-60px", opacity: 0.7 }}
+              >
+                <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
+                  <Image
+                    src={`https://img.youtube.com/vi/${songs[currentSongIndex === 0 ? songs.length - 1 : currentSongIndex - 1].youtubeId}/maxresdefault.jpg`}
+                    alt="Previous song"
+                    fill
+                    className="object-cover grayscale"
+                  />
+                </div>
+              </motion.div>
+            )}
 
-              {/* Video thumbnail as background */}
-              <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
-                <div className="absolute inset-0 bg-black/30 z-[1]" /> {/* Darkening overlay */}
-                <Image
-                  src={`https://img.youtube.com/vi/${currentSong.youtubeId}/maxresdefault.jpg`}
-                  alt={currentSong.title}
-                  fill
-                  className="object-cover grayscale" /* Black and white filter */
-                />
+            {/* Next song disc (peeking from behind) */}
+            {currentSongIndex < songs.length - 1 && (
+              <motion.div
+                className="absolute w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
+                style={{ 
+                  right: "-80px", 
+                  opacity: 0.5,
+                  filter: "blur(2px)"
+                }}
+                whileHover={{ right: "-60px", opacity: 0.7 }}
+              >
+                <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
+                  <Image
+                    src={`https://img.youtube.com/vi/${songs[currentSongIndex === songs.length - 1 ? 0 : currentSongIndex + 1].youtubeId}/maxresdefault.jpg`}
+                    alt="Next song"
+                    fill
+                    className="object-cover grayscale"
+                  />
+                </div>
+              </motion.div>
+            )}
+
+            {/* Current song disc */}
+            <motion.div
+              key={currentSongIndex}
+              initial={{ opacity: isTransitioning ? 0 : 1, scale: isTransitioning ? 0.9 : 1 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              transition={{ duration: 0.5 }}
+              className="relative z-10"
+              onMouseDown={handleDragStart}
+              onMouseMove={handleDragMove}
+              onMouseUp={handleDragEnd}
+              onMouseLeave={handleDragEnd}
+            >
+              {/* Vinyl disc background */}
+              <motion.div 
+                className="w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/20 relative cursor-grab active:cursor-grabbing"
+                animate={discControls}
+                initial={{ rotate: 0 }}
+              >
+                {/* Vinyl grooves - adjusted colors */}
+                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/5" style={{ margin: '10%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/5" style={{ margin: '20%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/5" style={{ margin: '30%' }} />
+                <div className="absolute inset-0 rounded-full border-4 border-[#C8A97E]/5" style={{ margin: '40%' }} />
+                
+                {/* Center label */}
+                <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[120px] h-[120px] rounded-full bg-[#C8A97E] flex items-center justify-center z-10">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={togglePlay}
+                    className="w-16 h-16 flex items-center justify-center rounded-full bg-black"
+                  >
+                    {isPlaying ? <Pause size={32} className="text-[#C8A97E]" /> : <Play size={32} className="text-[#C8A97E] ml-1" />}
+                  </motion.button>
+                </div>
+
+                {/* Video thumbnail as background */}
+                <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
+                  <div className="absolute inset-0 bg-black/30 z-[1]" /> {/* Darkening overlay */}
+                  <Image
+                    src={`https://img.youtube.com/vi/${currentSong.youtubeId}/maxresdefault.jpg`}
+                    alt={currentSong.title}
+                    fill
+                    className="object-cover grayscale" /* Black and white filter */
+                  />
+                </div>
+              </motion.div>
+
+              {/* Song info */}
+              <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
+                <h3 className="text-[#C8A97E] font-medium text-xl mb-1">{currentSong.title}</h3>
+                <p className="text-gray-400 text-sm">{currentSong.artist}</p>
               </div>
             </motion.div>
-
-            {/* Navigation arrows - smaller and more subtle */}
-            <motion.button
-              whileHover={{ scale: 1.1, opacity: 1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={playPreviousSong}
-              className="absolute left-[-30px] top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full border border-[#C8A97E] text-[#C8A97E] bg-black/70 opacity-70"
-            >
-              <ChevronLeft size={16} />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.1, opacity: 1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={playNextSong}
-              className="absolute right-[-30px] top-1/2 transform -translate-y-1/2 w-8 h-8 flex items-center justify-center rounded-full border border-[#C8A97E] text-[#C8A97E] bg-black/70 opacity-70"
-            >
-              <ChevronRight size={16} />
-            </motion.button>
-
-            {/* Song info */}
-            <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
-              <h3 className="text-[#C8A97E] font-medium text-xl mb-1">{currentSong.title}</h3>
-              <p className="text-gray-400 text-sm">{currentSong.artist}</p>
-            </div>
-          </motion.div>
+          </div>
         </AnimatePresence>
+      </div>
+
+      {/* Swipe instruction */}
+      <div className="text-center mt-20 text-gray-400 text-sm">
+        <p>Drag the disc left or right to change songs</p>
       </div>
 
       {/* YouTube iframe for audio */}
