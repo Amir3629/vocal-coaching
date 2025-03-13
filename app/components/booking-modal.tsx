@@ -7,6 +7,7 @@ import { format } from "date-fns"
 import { de } from "date-fns/locale"
 import { Calendar as CalendarComponent } from "../components/ui/calendar"
 import { useLanguage } from "./language-switcher"
+import { useTranslation } from 'react-i18next'
 import { cn } from "../../lib/utils"
 
 interface BookingModalProps {
@@ -40,7 +41,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     termsAccepted: false
   })
   const [isClosing, setIsClosing] = useState(false)
-  const { currentLang, t } = useLanguage()
+  const { currentLang } = useLanguage()
+  const { t } = useTranslation()
   
   // Reset form when modal opens
   useEffect(() => {
