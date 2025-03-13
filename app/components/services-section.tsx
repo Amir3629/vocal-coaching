@@ -60,8 +60,8 @@ export default function ServicesSection() {
   // Get features as an array safely
   const getFeatures = (key: string): string[] => {
     try {
-      const features = t(`services.${key}.features`, { returnObjects: true });
-      return Array.isArray(features) ? features : [];
+      const features = t(`services.${key}.features`, { returnObjects: true }) as unknown[];
+      return Array.isArray(features) ? features.map(f => String(f)) : [];
     } catch {
       return [];
     }
