@@ -224,13 +224,21 @@ export default function MusicPlayer() {
             {/* Previous song disc (peeking from behind) */}
             {currentSongIndex > 0 && (
               <motion.div
-                className="absolute w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
+                className="absolute rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
                 style={{ 
-                  left: "-80px", 
+                  width: "320px",
+                  height: "320px",
+                  left: "-60px", 
                   opacity: 0.4,
-                  filter: "blur(4px)"
+                  filter: "blur(4px)",
+                  transform: "translateY(10px)"
                 }}
-                whileHover={{ left: "-60px", opacity: 0.6, filter: "blur(3px)" }}
+                whileHover={{ 
+                  left: "-50px", 
+                  opacity: 0.6, 
+                  filter: "blur(3px)",
+                  scale: 1.05
+                }}
                 transition={{ duration: 0.5 }}
               >
                 <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
@@ -247,13 +255,21 @@ export default function MusicPlayer() {
             {/* Next song disc (peeking from behind) */}
             {currentSongIndex < songs.length - 1 && (
               <motion.div
-                className="absolute w-[400px] h-[400px] rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
+                className="absolute rounded-full bg-black border-8 border-[#C8A97E]/20 z-0"
                 style={{ 
-                  right: "-80px", 
+                  width: "320px",
+                  height: "320px",
+                  right: "-60px", 
                   opacity: 0.4,
-                  filter: "blur(4px)"
+                  filter: "blur(4px)",
+                  transform: "translateY(10px)"
                 }}
-                whileHover={{ right: "-60px", opacity: 0.6, filter: "blur(3px)" }}
+                whileHover={{ 
+                  right: "-50px", 
+                  opacity: 0.6, 
+                  filter: "blur(3px)",
+                  scale: 1.05
+                }}
                 transition={{ duration: 0.5 }}
               >
                 <div className="absolute inset-0 rounded-full overflow-hidden opacity-70">
