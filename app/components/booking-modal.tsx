@@ -468,16 +468,16 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             {/* Skill Level Selection */}
                             <div className="space-y-2">
                               <label className="text-sm text-gray-400">Erfahrungsniveau</label>
-                              <div className="grid grid-cols-3 gap-3">
+                              <div className="flex gap-3">
                                 {skillLevels.map((level) => (
                                   <button
                                     key={level.id}
                                     type="button"
                                     onClick={() => handleLevelSelect(level.id)}
-                                    className={`p-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                    className={`flex-1 p-3 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
                                       selectedLevel === level.id
-                                        ? "bg-[#C8A97E] text-black"
-                                        : "bg-white/5 text-white hover:bg-white/10 border border-white/10"
+                                        ? "bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]"
+                                        : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
                                     }`}
                                   >
                                     {level.title}
@@ -486,21 +486,26 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                               </div>
                             </div>
 
-                            <div className="flex items-center gap-2">
-                              <input
-                                type="checkbox"
-                                name="termsAccepted"
-                                id="terms"
-                                checked={formData.termsAccepted}
-                                onChange={(e) =>
-                                  setFormData({
-                                    ...formData,
-                                    termsAccepted: e.target.checked,
-                                  })
-                                }
-                                required
-                                className="w-4 h-4 rounded border-white/10 bg-white/5 text-[#C8A97E] focus:ring-[#C8A97E] focus:ring-offset-0"
-                              />
+                            <div className="flex items-center gap-3">
+                              <div className="relative">
+                                <input
+                                  type="checkbox"
+                                  name="termsAccepted"
+                                  id="terms"
+                                  checked={formData.termsAccepted}
+                                  onChange={(e) =>
+                                    setFormData({
+                                      ...formData,
+                                      termsAccepted: e.target.checked,
+                                    })
+                                  }
+                                  required
+                                  className="appearance-none w-5 h-5 rounded border border-[#C8A97E]/30 bg-white/5 checked:bg-[#C8A97E] checked:border-[#C8A97E] transition-all duration-200 cursor-pointer"
+                                />
+                                <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-black transition-opacity opacity-0 peer-checked:opacity-100">
+                                  <Check className="w-3.5 h-3.5" />
+                                </div>
+                              </div>
                               <label htmlFor="terms" className="text-sm text-gray-400">
                                 Ich akzeptiere die{" "}
                                 <button
@@ -583,7 +588,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                     className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
                   >
                     <div className="p-6">
-                      <h2 className="text-xl font-medium text-[#C8A97E] mb-4">AGB</h2>
                       <div className="prose prose-invert max-w-none">
                         <LegalContent type="agb" />
                       </div>
@@ -613,7 +617,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                     className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
                   >
                     <div className="p-6">
-                      <h2 className="text-xl font-medium text-[#C8A97E] mb-4">Datenschutzerklärung</h2>
                       <div className="prose prose-invert max-w-none">
                         <LegalContent type="datenschutz" />
                       </div>
