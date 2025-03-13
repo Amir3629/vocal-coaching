@@ -14,25 +14,25 @@ interface Song {
 
 const songs: Song[] = [
   {
-    title: "Jazz Performance",
+    title: "Jazz Piano Performance",
     artist: "Melvo Coaching",
     youtubeId: "hFdMHvB6-Jk",
     description: "Live at the Jazz Studio"
   },
   {
-    title: "Vocal Workshop",
+    title: "Vocal Techniques",
     artist: "Melvo Coaching",
     youtubeId: "ZvWZr6TNh9Y",
     description: "Advanced vocal techniques demonstration"
   },
   {
-    title: "Jazz Session",
+    title: "Jazz Improvisation",
     artist: "Melvo Coaching",
     youtubeId: "r58-5DBfMpY",
     description: "Piano and vocal improvisation"
   },
   {
-    title: "Vocal Jazz",
+    title: "Vocal Jazz Session",
     artist: "Melvo Coaching",
     youtubeId: "0zARqh3xwnw",
     description: "Original compositions"
@@ -44,13 +44,13 @@ const songs: Song[] = [
     description: "Jazz ensemble performance"
   },
   {
-    title: "Vocal Techniques",
+    title: "Vocal Workshop",
     artist: "Melvo Coaching",
     youtubeId: "GidIMbCmtyk",
     description: "Advanced vocal techniques"
   },
   {
-    title: "Jazz Improvisation",
+    title: "Piano Jazz",
     artist: "Melvo Coaching",
     youtubeId: "QgZKO_f5FlM",
     description: "Jazz improvisation session"
@@ -223,19 +223,19 @@ export default function MusicPlayer() {
         <AnimatePresence mode="wait">
           <div className="relative flex items-center justify-center">
             {/* Previous song disc (peeking from behind) */}
-            {showIndicators && currentSongIndex > 0 && (
+            {showIndicators && (
               <motion.div
                 className="absolute rounded-full bg-black z-0"
                 style={{ 
                   width: "320px",
                   height: "320px",
-                  left: "-60px", 
+                  left: "-30px", 
                   opacity: 0.4,
                   filter: "blur(2px)",
                   transform: "translateY(10px)"
                 }}
                 whileHover={{ 
-                  left: "-50px", 
+                  left: "-40px", 
                   opacity: 0.6, 
                   filter: "blur(1px)",
                   scale: 1.05
@@ -254,19 +254,19 @@ export default function MusicPlayer() {
             )}
 
             {/* Next song disc (peeking from behind) */}
-            {showIndicators && currentSongIndex < songs.length - 1 && (
+            {showIndicators && (
               <motion.div
                 className="absolute rounded-full bg-black z-0"
                 style={{ 
                   width: "320px",
                   height: "320px",
-                  right: "-60px", 
+                  right: "-30px", 
                   opacity: 0.4,
                   filter: "blur(2px)",
                   transform: "translateY(10px)"
                 }}
                 whileHover={{ 
-                  right: "-50px", 
+                  right: "-40px", 
                   opacity: 0.6, 
                   filter: "blur(1px)",
                   scale: 1.05
@@ -334,6 +334,7 @@ export default function MusicPlayer() {
                     alt={currentSong.title}
                     fill
                     className="object-cover grayscale" /* Black and white filter */
+                    unoptimized={true} /* Ensure image loads properly */
                   />
                 </div>
               </motion.div>
@@ -348,29 +349,8 @@ export default function MusicPlayer() {
         </AnimatePresence>
       </div>
 
-      {/* Song navigation indicators */}
-      <div className="flex justify-center mt-20 gap-2">
-        {songs.map((_, index) => (
-          <div 
-            key={index}
-            className={`w-2 h-2 rounded-full cursor-pointer transition-all duration-300 ${
-              index === currentSongIndex ? 'bg-[#C8A97E] w-4' : 'bg-gray-600'
-            }`}
-            onClick={() => {
-              if (index !== currentSongIndex) {
-                setCurrentSongIndex(index);
-                if (videoRef.current) {
-                  const message = `{"event":"command","func":"loadVideoById","args":"${songs[index].youtubeId}"}`;
-                  videoRef.current.contentWindow?.postMessage(message, '*');
-                }
-              }
-            }}
-          />
-        ))}
-      </div>
-
       {/* Swipe instruction */}
-      <div className="text-center mt-4 text-gray-400 text-sm">
+      <div className="text-center mt-20 text-gray-400 text-sm">
         <p>Drag the disc left or right to change songs</p>
       </div>
 
