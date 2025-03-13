@@ -421,7 +421,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           className="flex flex-col items-center justify-center w-full"
                         >
                           <div className="flex items-center justify-center w-full">
-                            <div className="mx-auto">
+                            <div className="w-full max-w-[350px] flex justify-center">
                               <Calendar
                                 mode="single"
                                 selected={selectedDate}
@@ -430,7 +430,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                   date < new Date() || date > addMonths(new Date(), 2)
                                 }
                                 initialFocus
-                                className="rounded-lg border border-[#C8A97E]/20 bg-black/20"
+                                className="rounded-lg border border-[#C8A97E]/20 bg-black/20 w-full"
                                 locale={de}
                               />
                             </div>
