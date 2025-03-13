@@ -2,16 +2,10 @@
 
 import { createContext, useContext, useState, useEffect, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
+import { useTranslation } from 'react-i18next'
+import { changeLanguage, getCurrentLanguage } from '../i18n'
 
-// Add Google Translate type definitions
-declare global {
-  interface Window {
-    translateTo: (lang: string) => void;
-    translationInitialized: boolean;
-  }
-}
-
-// Keep the translations for components that don't get translated by Google Translate
+// Keep the translations for components that don't get translated by i18next
 const translations = {
   de: {
     nav: {
@@ -180,80 +174,37 @@ const LanguageContext = createContext<{
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [currentLang, setCurrentLang] = useState("de")
   const [isTransitioning, setIsTransitioning] = useState(false)
-  const lastToggleTime = useRef(0)
-  const toggleAttempts = useRef(0)
-  const maxRetries = 10
+  const { i18n } = useTranslation()
 
-  // Initialize language from localStorage if available
+  // Initialize language from i18next
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedLang = localStorage.getItem('preferredLanguage') || 'de';
-      setCurrentLang(savedLang);
-      
-      // Apply the saved language on initial load
-      const applyInitialLanguage = () => {
-        if (!window.translationInitialized) {
-          if (toggleAttempts.current < maxRetries) {
-            toggleAttempts.current++;
-            setTimeout(applyInitialLanguage, 1000);
-            return;
-          }
-        }
-        
-        try {
-          if (window.translateTo) {
-            window.translateTo(savedLang);
-          }
-        } catch (error) {
-          console.error('Error applying initial language:', error);
-        }
-      };
-      
-      // Start with a delay to ensure Google Translate is initialized
-      setTimeout(applyInitialLanguage, 2000);
-    }
-  }, []);
+    const lang = getCurrentLanguage()
+    setCurrentLang(lang)
+  }, [])
 
   const toggleLanguage = () => {
     if (isTransitioning) return;
     
-    const now = Date.now();
-    if (now - lastToggleTime.current < 2000) return;
-    lastToggleTime.current = now;
+    setIsTransitioning(true)
+    const newLang = currentLang === "de" ? "en" : "de"
     
-    setIsTransitioning(true);
-    const newLang = currentLang === "de" ? "en" : "de";
-    
-    const applyTranslation = () => {
-      if (!window.translationInitialized) {
-        if (toggleAttempts.current < maxRetries) {
-          toggleAttempts.current++;
-          setTimeout(applyTranslation, 1000);
-          return;
-        }
-      }
-      
-      try {
-        if (window.translateTo) {
-          window.translateTo(newLang);
-          localStorage.setItem('preferredLanguage', newLang);
-          setCurrentLang(newLang);
-        }
-      } catch (error) {
-        console.error('Error toggling language:', error);
-      } finally {
-        setTimeout(() => setIsTransitioning(false), 1000);
-      }
-    };
-    
-    applyTranslation();
-  };
+    // Change language using i18next
+    changeLanguage(newLang).then(() => {
+      setCurrentLang(newLang)
+      localStorage.setItem('preferredLanguage', newLang)
+      setTimeout(() => setIsTransitioning(false), 500)
+    })
+  }
 
   return (
-    <LanguageContext.Provider value={{ currentLang, toggleLanguage, t: translations[currentLang as keyof typeof translations] }}>
+    <LanguageContext.Provider value={{ 
+      currentLang, 
+      toggleLanguage, 
+      t: translations[currentLang as keyof typeof translations] 
+    }}>
       {children}
     </LanguageContext.Provider>
-  );
+  )
 }
 
 export function useLanguage() {
@@ -267,6 +218,7 @@ export function useLanguage() {
 export function LanguageSwitcher() {
   const { currentLang, toggleLanguage } = useLanguage()
   const [isHovered, setIsHovered] = useState(false)
+  const { t } = useTranslation()
   
   return (
     <motion.button
@@ -287,7 +239,7 @@ export function LanguageSwitcher() {
             exit={{ opacity: 0, y: 10 }}
             className="absolute left-0 right-0 -bottom-8 text-xs text-white/70 whitespace-nowrap"
           >
-            {currentLang === "de" ? "Switch to English" : "Zu Deutsch wechseln"}
+            {t('language.switchTo')}
           </motion.div>
         )}
       </AnimatePresence>
