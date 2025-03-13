@@ -56,6 +56,50 @@ export default function Navigation() {
     }
   }
 
+  // Direct language toggle function
+  const handleLanguageToggle = () => {
+    const newLang = currentLang === "de" ? "en" : "de";
+    const langPair = newLang === 'en' ? 'de|en' : 'en|de';
+    
+    // Try different methods to trigger the translation
+    if (typeof window !== 'undefined') {
+      try {
+        // Method 1: Use the global doGTranslate function if available
+        if (window.doGTranslate) {
+          window.doGTranslate(langPair);
+        } 
+        // Method 2: Try to find and use the Google Translate select element
+        else {
+          const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+          if (selectElement) {
+            selectElement.value = newLang;
+            selectElement.dispatchEvent(new Event('change'));
+          }
+          // Method 3: Try to find the iframe and click the appropriate link
+          else {
+            const iframe = document.querySelector('.goog-te-menu-frame') as HTMLIFrameElement;
+            if (iframe && iframe.contentDocument) {
+              const links = iframe.contentDocument.querySelectorAll('a.goog-te-menu2-item');
+              links.forEach((link: Element) => {
+                const typedLink = link as HTMLAnchorElement;
+                const langText = typedLink.textContent || '';
+                if ((newLang === 'en' && langText.includes('English')) || 
+                    (newLang === 'de' && langText.includes('German'))) {
+                  typedLink.click();
+                }
+              });
+            }
+          }
+        }
+        
+        // Also call the context toggle to update the UI
+        toggleLanguage();
+      } catch (error) {
+        console.error('Error toggling language:', error);
+      }
+    }
+  };
+
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
       isScrolled ? "bg-black/95 backdrop-blur-md h-16 shadow-lg" : "bg-transparent h-20"
@@ -110,10 +154,18 @@ export default function Navigation() {
             {/* Language Switcher */}
             <div className="flex items-center pl-4 border-l border-white/10">
               <button
-                onClick={toggleLanguage}
-                className="text-sm font-medium text-white/80 hover:text-white transition-colors px-2 py-1"
+                onClick={handleLanguageToggle}
+                className="relative px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
               >
-                {currentLang === "de" ? "EN" : "DE"}
+                <div className="flex items-center space-x-2">
+                  <span className={`text-sm font-medium ${currentLang === "de" ? "text-[#C8A97E]" : "text-white/60"}`}>
+                    DE
+                  </span>
+                  <span className="text-white/30">|</span>
+                  <span className={`text-sm font-medium ${currentLang === "en" ? "text-[#C8A97E]" : "text-white/60"}`}>
+                    EN
+                  </span>
+                </div>
               </button>
             </div>
           </div>
@@ -188,10 +240,18 @@ export default function Navigation() {
                 {/* Mobile Language Switcher */}
                 <div className="pt-4 border-t border-white/10">
                   <button
-                    onClick={toggleLanguage}
-                    className="text-sm font-medium text-white/80 hover:text-white transition-colors"
+                    onClick={handleLanguageToggle}
+                    className="relative px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
                   >
-                    {currentLang === "de" ? "EN" : "DE"}
+                    <div className="flex items-center space-x-2">
+                      <span className={`text-sm font-medium ${currentLang === "de" ? "text-[#C8A97E]" : "text-white/60"}`}>
+                        DE
+                      </span>
+                      <span className="text-white/30">|</span>
+                      <span className={`text-sm font-medium ${currentLang === "en" ? "text-[#C8A97E]" : "text-white/60"}`}>
+                        EN
+                      </span>
+                    </div>
                   </button>
                 </div>
               </div>
