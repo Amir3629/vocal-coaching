@@ -18,6 +18,7 @@ import LegalContent from "./legal-content"
 import CustomAlert from "./custom-alert"
 import { Calendar } from "@/app/components/ui/calendar"
 import TranslatedText from './TranslatedText'
+import { useLanguage } from './language-switcher'
 
 interface BookingModalProps {
   isOpen: boolean
@@ -99,9 +100,27 @@ const services: Service[] = [
 ];
 
 const skillLevels = [
-  { id: "beginner", title: "Einsteiger", description: "Erste Schritte in der Musik" },
-  { id: "intermediate", title: "Erfahren", description: "Grundlagen sind vorhanden" },
-  { id: "advanced", title: "Professionell", description: "Fortgeschrittene Techniken" }
+  { 
+    id: "beginner", 
+    title: "Einsteiger", 
+    titleEn: "Beginner",
+    description: "Erste Schritte in der Musik",
+    descriptionEn: "First steps in music" 
+  },
+  { 
+    id: "intermediate", 
+    title: "Erfahren", 
+    titleEn: "Intermediate",
+    description: "Grundlagen sind vorhanden",
+    descriptionEn: "Basic knowledge exists" 
+  },
+  { 
+    id: "advanced", 
+    title: "Professionell", 
+    titleEn: "Professional",
+    description: "Fortgeschrittene Techniken",
+    descriptionEn: "Advanced techniques" 
+  }
 ];
 
 const timeSlots = [
@@ -271,15 +290,19 @@ const disabledDays = {
 }
 
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
+  const [selectedService, setSelectedService] = useState("")
+  const [selectedServiceType, setSelectedServiceType] = useState("")
+  const [selectedDate, setSelectedDate] = useState<Date>()
+  const [selectedTime, setSelectedTime] = useState("")
+  const [selectedLocation, setSelectedLocation] = useState<string>("")
+  const [selectedLevel, setSelectedLevel] = useState("")
   const [currentStep, setCurrentStep] = useState<Step>("1")
-  const [selectedService, setSelectedService] = useState<string>("")
-  const [selectedServiceType, setSelectedServiceType] = useState<string>("")
-  const [selectedLocation, setSelectedLocation] = useState<"studio" | "online" | "">("")
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(undefined)
-  const [selectedTime, setSelectedTime] = useState<string>("")
-  const [selectedLevel, setSelectedLevel] = useState<string>("")
-  const [currentDate, setCurrentDate] = useState<Date>(new Date())
+  const [showSuccess, setShowSuccess] = useState(false)
   const [showLegalModal, setShowLegalModal] = useState<"agb" | "datenschutz" | null>(null)
+  const [errors, setErrors] = useState<{ [key: string]: string }>({})
+  const [date, setDate] = useState<Date>()
+  const [isClosing, setIsClosing] = useState(false)
+  const { currentLang } = useLanguage()
   const [formData, setFormData] = useState<FormData>({
     name: "",
     email: "",
@@ -287,10 +310,6 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     message: "",
     termsAccepted: false
   })
-  const [errors, setErrors] = useState<Record<string, string>>({})
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [date, setDate] = useState<Date>()
-  const [isClosing, setIsClosing] = useState(false)
 
   const handleSmoothClose = () => {
     setIsClosing(true)
@@ -521,7 +540,15 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                         >
                           {selectedService === "vocal-coaching" && (
                             <div className="w-full space-y-2">
-                              <label className="text-sm text-gray-400">Unterrichtsort</label>
+                              <label className="text-sm text-gray-400">
+                                <TranslatedText
+                                  text="Unterrichtsort"
+                                  translations={{
+                                    de: "Unterrichtsort",
+                                    en: "Location"
+                                  }}
+                                />
+                              </label>
                               <div className="flex gap-3">
                                 <button
                                   type="button"
@@ -533,7 +560,14 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                   }`}
                                 >
                                   <span className="flex items-center justify-center gap-2">
-                                    <span>🏢</span> Im Studio
+                                    <span>🏢</span> 
+                                    <TranslatedText
+                                      text="Im Studio"
+                                      translations={{
+                                        de: "Im Studio",
+                                        en: "In Studio"
+                                      }}
+                                    />
                                   </span>
                                 </button>
                                 <button
@@ -546,7 +580,14 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                   }`}
                                 >
                                   <span className="flex items-center justify-center gap-2">
-                                    <span>💻</span> Online
+                                    <span>💻</span> 
+                                    <TranslatedText
+                                      text="Online"
+                                      translations={{
+                                        de: "Online",
+                                        en: "Online"
+                                      }}
+                                    />
                                   </span>
                                 </button>
                               </div>
@@ -572,7 +613,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             <input
                               type="text"
                               name="name"
-                              placeholder="Name"
+                              placeholder={currentLang === "de" ? "Name" : "Name"}
                               aria-label="Name"
                               value={formData.name}
                               onChange={handleInputChange}
@@ -591,7 +632,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             <input
                               type="tel"
                               name="phone"
-                              placeholder="Telefon"
+                              placeholder={currentLang === "de" ? "Telefon" : "Phone"}
                               value={formData.phone}
                               onChange={handleInputChange}
                               required
@@ -599,7 +640,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             />
                             <textarea
                               name="message"
-                              placeholder="Nachricht (optional)"
+                              placeholder={currentLang === "de" ? "Nachricht (optional)" : "Message (optional)"}
                               value={formData.message}
                               onChange={handleInputChange}
                               rows={3}
@@ -608,7 +649,15 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             
                             {/* Skill Level Selection */}
                             <div className="space-y-2">
-                              <label className="text-sm text-gray-400">Erfahrungsniveau</label>
+                              <label className="text-sm text-gray-400">
+                                <TranslatedText
+                                  text="Erfahrungsniveau"
+                                  translations={{
+                                    de: "Erfahrungsniveau",
+                                    en: "Experience Level"
+                                  }}
+                                />
+                              </label>
                               <div className="flex gap-3">
                                 {skillLevels.map((level) => (
                                   <button
@@ -621,7 +670,13 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                         : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
                                     }`}
                                   >
-                                    {level.title}
+                                    <TranslatedText
+                                      text={level.title}
+                                      translations={{
+                                        de: level.title,
+                                        en: level.titleEn
+                                      }}
+                                    />
                                   </button>
                                 ))}
                               </div>
@@ -648,21 +703,45 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                 </div>
                               </div>
                               <label htmlFor="terms" className="text-xs text-gray-400">
-                                Ich akzeptiere die{" "}
+                                <TranslatedText
+                                  text="Ich akzeptiere die"
+                                  translations={{
+                                    de: "Ich akzeptiere die",
+                                    en: "I accept the"
+                                  }}
+                                />{" "}
                                 <button
                                   type="button"
                                   onClick={() => setShowLegalModal("agb")}
                                   className="text-[#C8A97E] hover:text-[#B69A6E] underline"
                                 >
-                                  AGB
+                                  <TranslatedText
+                                    text="AGB"
+                                    translations={{
+                                      de: "AGB",
+                                      en: "Terms & Conditions"
+                                    }}
+                                  />
                                 </button>{" "}
-                                und{" "}
+                                <TranslatedText
+                                  text="und"
+                                  translations={{
+                                    de: "und",
+                                    en: "and"
+                                  }}
+                                />{" "}
                                 <button
                                   type="button"
                                   onClick={() => setShowLegalModal("datenschutz")}
                                   className="text-[#C8A97E] hover:text-[#B69A6E] underline"
                                 >
-                                  Datenschutzerklärung
+                                  <TranslatedText
+                                    text="Datenschutzerklärung"
+                                    translations={{
+                                      de: "Datenschutzerklärung",
+                                      en: "Privacy Policy"
+                                    }}
+                                  />
                                 </button>
                               </label>
                             </div>
@@ -722,8 +801,11 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             setShowSuccess(false)
             onClose()
           }}
-          title="Buchung erfolgreich!"
-          message="Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigung per Email."
+          title={currentLang === "de" ? "Buchung erfolgreich!" : "Booking Successful!"}
+          message={currentLang === "de" 
+            ? "Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigung per Email."
+            : "Thank you for your booking. You will receive a confirmation email shortly."
+          }
         />
 
         {/* Legal Document Modals */}
