@@ -1,8 +1,27 @@
 "use client"
 
-import { createContext, useContext, useState } from "react"
+import { createContext, useContext, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 
+// Add Google Translate type definitions
+declare global {
+  interface Window {
+    google: {
+      translate: {
+        TranslateElement: {
+          InlineLayout: {
+            SIMPLE: number;
+            HORIZONTAL: number;
+            VERTICAL: number;
+          };
+          new (options: any, element: string): any;
+        };
+      };
+    };
+  }
+}
+
+// Keep the translations for components that don't get translated by Google Translate
 const translations = {
   de: {
     nav: {
@@ -170,10 +189,97 @@ const LanguageContext = createContext<{
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [currentLang, setCurrentLang] = useState("de")
+  const [isTranslating, setIsTranslating] = useState(false)
+
+  // Function to toggle Google Translate
+  const toggleGoogleTranslate = () => {
+    if (typeof window !== 'undefined') {
+      const iframe = document.querySelector('.goog-te-menu-frame') as HTMLIFrameElement;
+      
+      if (iframe) {
+        // If iframe exists, find the document inside it
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        
+        if (iframeDoc) {
+          // Find the language links inside the iframe
+          const links = iframeDoc.querySelectorAll('a.goog-te-menu2-item');
+          
+          // Click the appropriate language link
+          links.forEach((link) => {
+            const typedLink = link as HTMLAnchorElement;
+            const langSpan = typedLink.querySelector('span.text');
+            if (langSpan) {
+              const langText = langSpan.textContent || '';
+              if ((currentLang === 'de' && langText.includes('English')) || 
+                  (currentLang === 'en' && langText.includes('German'))) {
+                typedLink.click();
+              }
+            }
+          });
+        }
+      } else {
+        // If iframe doesn't exist yet, use the select element
+        const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+        if (select) {
+          select.value = currentLang === 'de' ? 'en' : 'de';
+          select.dispatchEvent(new Event('change'));
+        }
+      }
+    }
+  };
 
   const toggleLanguage = () => {
-    setCurrentLang((prev) => (prev === "de" ? "en" : "de"))
+    setIsTranslating(true);
+    
+    // Toggle the language state
+    setCurrentLang((prev) => {
+      const newLang = prev === "de" ? "en" : "de";
+      
+      // Use Google Translate API to translate the page
+      if (typeof window !== 'undefined' && window.google && window.google.translate) {
+        try {
+          toggleGoogleTranslate();
+        } catch (error) {
+          console.error('Error toggling Google Translate:', error);
+        }
+      }
+      
+      return newLang;
+    });
+    
+    setTimeout(() => {
+      setIsTranslating(false);
+    }, 1000);
   }
+
+  // Initialize Google Translate
+  useEffect(() => {
+    // This will run once after the component mounts
+    const initGoogleTranslate = () => {
+      if (typeof window !== 'undefined' && window.google && window.google.translate) {
+        // Google Translate is loaded
+        console.log('Google Translate is loaded');
+      }
+    };
+
+    // Check if Google Translate is already loaded
+    if (typeof window !== 'undefined' && window.google && window.google.translate) {
+      initGoogleTranslate();
+    } else {
+      // If not loaded yet, wait for it
+      const checkGoogleTranslate = setInterval(() => {
+        if (typeof window !== 'undefined' && window.google && window.google.translate) {
+          clearInterval(checkGoogleTranslate);
+          initGoogleTranslate();
+        }
+      }, 100);
+      
+      // Clear interval after 10 seconds to prevent memory leaks
+      setTimeout(() => {
+        clearInterval(checkGoogleTranslate);
+      }, 10000);
+    }
+  }, []);
 
   return (
     <LanguageContext.Provider
@@ -194,13 +300,23 @@ export function useLanguage() {
 
 export default function LanguageSwitcher() {
   const { currentLang, toggleLanguage } = useLanguage()
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleToggle = () => {
+    setIsLoading(true);
+    toggleLanguage();
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 1000);
+  };
 
   return (
     <motion.button
-      onClick={toggleLanguage}
+      onClick={handleToggle}
       className="relative px-3 py-1 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
+      disabled={isLoading}
     >
       <div className="flex items-center space-x-2">
         <span className={`text-sm font-medium ${currentLang === "de" ? "text-[#C8A97E]" : "text-white/60"}`}>
@@ -211,6 +327,12 @@ export default function LanguageSwitcher() {
           EN
         </span>
       </div>
+      
+      {isLoading && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full">
+          <div className="w-4 h-4 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
+        </div>
+      )}
     </motion.button>
   )
 } 
