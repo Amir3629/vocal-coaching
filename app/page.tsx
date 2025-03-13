@@ -20,6 +20,7 @@ import BookingModal from "@/app/components/booking-modal"
 import Collaborations from "@/app/components/collaborations"
 import ServiceCard from "@/app/components/service-card"
 import ServicesSection from "./components/services-section"
+import TranslatedText from "@/components/translated-text"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -143,7 +144,11 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.8 }}
           >
-            Mel jazz
+            <TranslatedText 
+              text="Mel jazz" 
+              tag="span"
+              className="text-4xl font-bold"
+            />
           </motion.h1>
           <motion.p 
             className="text-xl md:text-2xl mb-8 text-white/90 font-light"
@@ -151,7 +156,11 @@ export default function Home() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 1.1 }}
           >
-            Vocal Coaching in Berlin
+            <TranslatedText 
+              text="Vocal Coaching in Berlin" 
+              tag="span"
+              className="text-xl"
+            />
           </motion.p>
           <motion.div 
             className="flex flex-col sm:flex-row gap-4 justify-center"

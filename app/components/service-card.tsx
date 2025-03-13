@@ -3,6 +3,8 @@
 import { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
+import { Check } from "lucide-react"
+import TranslatedText from "./translated-text"
 
 interface ServiceCardProps {
   title: string
@@ -90,12 +92,18 @@ export default function ServiceCard({
             </motion.div>
           )}
           <div>
-            <h3 className="text-xl font-medium text-white">{title}</h3>
-            <p className="text-sm text-[#C8A97E]/90 mt-1">{subtitle}</p>
+            <h3 className="text-xl font-medium text-white">
+              <TranslatedText text={title} />
+            </h3>
+            <p className="text-sm text-[#C8A97E]/90 mt-1">
+              <TranslatedText text={subtitle} />
+            </p>
           </div>
         </div>
 
-        <p className="text-sm text-gray-300 mb-6">{description}</p>
+        <p className="text-sm text-gray-300 mb-6">
+          <TranslatedText text={description} />
+        </p>
 
         <ul className="space-y-2 mb-6">
           {features.map((feature, index) => (
@@ -118,7 +126,7 @@ export default function ServiceCard({
                   ease: "easeInOut"
                 }}
               />
-              <span className="text-sm">{feature}</span>
+              <TranslatedText text={feature} />
             </motion.li>
           ))}
         </ul>
@@ -153,7 +161,8 @@ export default function ServiceCard({
                   >
                     ✨
                   </motion.span>
-                  {" "}Enthält
+                  {" "}
+                  <TranslatedText text="Enthält" />
                 </h4>
                 <ul className="grid grid-cols-2 gap-2">
                   {details.includes.map((item, index) => (
@@ -164,7 +173,10 @@ export default function ServiceCard({
                       transition={{ delay: 0.1 + index * 0.05 }}
                       className="text-white/70 text-sm"
                     >
-                      • {item}
+                      <div className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-[#C8A97E]" />
+                        <TranslatedText text={item} />
+                      </div>
                     </motion.li>
                   ))}
                 </ul>
@@ -188,7 +200,8 @@ export default function ServiceCard({
                   >
                     👥
                   </motion.span>
-                  {" "}Geeignet für
+                  {" "}
+                  <TranslatedText text="Geeignet für" />
                 </h4>
                 <ul className="grid grid-cols-2 gap-2">
                   {details.suitable.map((item, index) => (
@@ -199,7 +212,10 @@ export default function ServiceCard({
                       transition={{ delay: 0.2 + index * 0.05 }}
                       className="text-white/70 text-sm"
                     >
-                      • {item}
+                      <div className="flex items-center gap-2">
+                        <Check className="w-4 h-4 text-[#C8A97E]" />
+                        <TranslatedText text={item} />
+                      </div>
                     </motion.li>
                   ))}
                 </ul>
@@ -223,7 +239,8 @@ export default function ServiceCard({
                     >
                       ⏱️
                     </motion.span>
-                    {" "}Dauer
+                    {" "}
+                    <TranslatedText text="Dauer" />
                   </p>
                   <p className="text-white/90 text-sm">{details.duration}</p>
                 </div>
@@ -245,7 +262,8 @@ export default function ServiceCard({
                     >
                       📍
                     </motion.span>
-                    {" "}Ort
+                    {" "}
+                    <TranslatedText text="Ort" />
                   </p>
                   <p className="text-white/90 text-sm">{details.location}</p>
                 </div>
@@ -255,7 +273,7 @@ export default function ServiceCard({
             {link && isHovered && (
               <div className="mt-2 text-center">
                 <span className="text-[#C8A97E] text-sm hover:text-[#D4B88F] transition-colors">
-                  Für mehr erfahren →
+                  <TranslatedText text="Mehr erfahren →" />
                 </span>
               </div>
             )}
