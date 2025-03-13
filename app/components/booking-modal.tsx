@@ -260,6 +260,15 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showSuccess, setShowSuccess] = useState(false)
   const [date, setDate] = useState<Date>()
+  const [isClosing, setIsClosing] = useState(false)
+
+  const handleSmoothClose = () => {
+    setIsClosing(true)
+    setTimeout(() => {
+      onClose()
+      setIsClosing(false)
+    }, 500) // 500ms smooth exit animation
+  }
 
   const handleServiceSelect = (serviceId: string) => {
     setSelectedService(serviceId);
@@ -311,7 +320,11 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         setShowSuccess(false)
         // After success message fades out, close the modal smoothly
         setTimeout(() => {
-          onClose()
+          setIsClosing(true)
+          setTimeout(() => {
+            onClose()
+            setIsClosing(false)
+          }, 500)
         }, 500) // Additional delay for smooth transition
       }, 3000)
       return () => clearTimeout(successTimeout)
@@ -392,22 +405,23 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
+                transition={{ duration: 0.5 }}
                 className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60]"
-                onClick={onClose}
+                onClick={handleSmoothClose}
               />
               <div className="fixed inset-0 flex items-center justify-center z-[61] overflow-y-auto p-4">
                 <motion.div
                   initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  animate={{ opacity: isClosing ? 0 : 1, scale: isClosing ? 0.95 : 1, y: isClosing ? 20 : 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  transition={{ duration: 0.2 }}
+                  transition={{ duration: 0.5, ease: "easeInOut" }}
                   className="w-[90%] max-w-[500px] max-h-[85vh] bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
                 >
                   {/* Header */}
                   <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
                     <h3 id="booking-modal-title" className="text-lg font-medium text-white">Buchung</h3>
                     <button
-                      onClick={onClose}
+                      onClick={handleSmoothClose}
                       className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
                     >
                       <X className="w-5 h-5 text-white/70 hover:text-white transition-colors" />
