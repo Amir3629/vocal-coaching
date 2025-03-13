@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import { useLanguage } from "./language-switcher"
 import LanguageSwitcher from "./language-switcher"
 import { useTranslation } from 'react-i18next'
+import '../../lib/i18n'
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
@@ -15,7 +16,20 @@ export default function Navigation() {
   const pathname = usePathname()
   const router = useRouter()
   const { currentLang } = useLanguage()
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
+
+  // Force re-render when language changes
+  useEffect(() => {
+    const handleLanguageChange = () => {
+      // Force re-render
+      setIsOpen(isOpen)
+    }
+
+    window.addEventListener('languageChanged', handleLanguageChange)
+    return () => {
+      window.removeEventListener('languageChanged', handleLanguageChange)
+    }
+  }, [isOpen])
 
   const logoPath = process.env.NODE_ENV === 'production'
     ? "/vocal-coaching/images/logo/ml-logo.PNG"
@@ -124,7 +138,7 @@ export default function Navigation() {
           <button
             onClick={toggleMenu}
             className="md:hidden text-white focus:outline-none"
-            aria-label="Toggle menu"
+            aria-label={t('nav.toggleMenu')}
           >
             <svg
               className="w-6 h-6"
