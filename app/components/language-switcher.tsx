@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext, useState, useEffect, useRef } from "react"
+import React, { createContext, useContext, useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTranslation } from 'react-i18next'
 import { changeLanguage, getCurrentLanguage } from '../i18n'
@@ -161,22 +161,19 @@ const translations = {
   }
 }
 
-const LanguageContext = createContext<{
+type LanguageContextType = {
   currentLang: string
   toggleLanguage: () => void
   t: typeof translations.de | typeof translations.en
-}>({
-  currentLang: "de",
-  toggleLanguage: () => {},
-  t: translations.de,
-})
+}
+
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [currentLang, setCurrentLang] = useState("de")
+  const [currentLang, setCurrentLang] = useState<string>("de")
   const [isTransitioning, setIsTransitioning] = useState(false)
   const { i18n } = useTranslation()
 
-  // Initialize language from i18next
   useEffect(() => {
     const lang = getCurrentLanguage()
     setCurrentLang(lang)
@@ -188,7 +185,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     setIsTransitioning(true)
     const newLang = currentLang === "de" ? "en" : "de"
     
-    // Change language using i18next
     changeLanguage(newLang).then(() => {
       setCurrentLang(newLang)
       localStorage.setItem('preferredLanguage', newLang)
@@ -196,12 +192,14 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
+  const value = {
+    currentLang,
+    toggleLanguage,
+    t: translations[currentLang as keyof typeof translations]
+  }
+
   return (
-    <LanguageContext.Provider value={{ 
-      currentLang, 
-      toggleLanguage, 
-      t: translations[currentLang as keyof typeof translations] 
-    }}>
+    <LanguageContext.Provider value={value}>
       {children}
     </LanguageContext.Provider>
   )
@@ -247,5 +245,4 @@ export function LanguageSwitcher() {
   )
 }
 
-// Add default export for backward compatibility
 export default LanguageSwitcher; 
