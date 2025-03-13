@@ -2,908 +2,565 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { format, addMonths, subMonths, isSameDay, isBefore, startOfToday, startOfMonth, endOfMonth, eachDayOfInterval, isEqual } from "date-fns"
+import { X, Calendar, Clock, MapPin, Music, Mic, Users, ChevronLeft, ChevronRight, Check } from "lucide-react"
+import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { ChevronLeft, ChevronRight, X, Check, Music, Mic, Users } from "lucide-react"
-import { z } from "zod"
-import { Dialog } from "@/app/components/ui/dialog"
-import { Button } from "./ui/button"
-import { Label } from "./ui/label"
-import { RadioGroup, RadioGroupItem } from "./ui/radio-group"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { useLanguage } from "./language-switcher"
 import { cn } from "@/lib/utils"
-import SuccessMessage from "./success-message"
-import LegalDocumentModal from "./legal-document-modal"
-import LegalContent from "./legal-content"
-import CustomAlert from "./custom-alert"
-import { Calendar } from "@/app/components/ui/calendar"
-import TranslatedText from './TranslatedText'
-import { useLanguage } from './language-switcher'
 
 interface BookingModalProps {
   isOpen: boolean
   onClose: () => void
 }
 
-interface TimeSlot {
-  time: string
-  available: boolean
-}
-
-interface Service {
-  id: string;
-  title: string;
-  duration: string;
-  description: string;
-  types?: ServiceType[];
-}
-
-interface ServiceType {
-  id: string;
-  title: string;
-  description: string;
-}
-
-const services: Service[] = [
-  {
-    id: "singen",
-    title: "Professionelle Gesangsperformance",
-    duration: "Nach Vereinbarung",
-    description: "Hochwertige Gesangsdarbietung für Ihre Events, Feiern und besonderen Anlässe. Als eine der gefragtesten Sängerinnen Berlins bringe ich Ihre Veranstaltung auf ein neues Niveau.",
-    types: [
-      {
-        id: "solo",
-        title: "Solo-Performance",
-        description: "Ausdrucksstarke Gesangsdarbietung"
-      },
-      {
-        id: "band",
-        title: "Mit Band",
-        description: "Performance mit Piano, Gitarre, Bass und Percussion"
-      },
-      {
-        id: "custom",
-        title: "Maßgeschneidert",
-        description: "Individuell angepasste Performance"
-      }
-    ]
-  },
-  {
-    id: "vocal-coaching",
-    title: "Vocal Coaching",
-    duration: "60 min",
-    description: "Professionelles Stimmtraining nach der Complete Vocal Technique (CVT) - einer wissenschaftlich fundierten Methode für alle Gesangsstile. Als eine von nur drei zertifizierten CVT-Trainerinnen in Berlin biete ich Ihnen Zugang zu dieser revolutionären Technik.",
-    types: [
-      {
-        id: "private",
-        title: "Einzelunterricht",
-        description: "Individuelles Training"
-      },
-      {
-        id: "online",
-        title: "Online Coaching",
-        description: "Flexibel von zu Hause"
-      },
-      {
-        id: "group",
-        title: "Gruppenunterricht",
-        description: "Lernen in der Gruppe"
-      }
-    ]
-  },
-  {
-    id: "workshop",
-    title: "Workshop",
-    duration: "3 Stunden",
-    description: "Intensives Gruppentraining für Gesangstechniken und Performance. Erweitern Sie Ihr stimmliches Potenzial in einer inspirierenden Gruppenatmosphäre."
-  }
-];
-
-const skillLevels = [
-  { 
-    id: "beginner", 
-    title: "Einsteiger", 
-    titleEn: "Beginner",
-    description: "Erste Schritte in der Musik",
-    descriptionEn: "First steps in music" 
-  },
-  { 
-    id: "intermediate", 
-    title: "Erfahren", 
-    titleEn: "Intermediate",
-    description: "Grundlagen sind vorhanden",
-    descriptionEn: "Basic knowledge exists" 
-  },
-  { 
-    id: "advanced", 
-    title: "Professionell", 
-    titleEn: "Professional",
-    description: "Fortgeschrittene Techniken",
-    descriptionEn: "Advanced techniques" 
-  }
-];
-
-const timeSlots = [
-  "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", 
-  "16:00", "17:00", "18:00", "19:00", "20:00", "21:00"
-]
-
-type Step = "1" | "2" | "3" | "4"
+type Service = "singing" | "coaching" | "performance"
 
 interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  termsAccepted: boolean;
-}
-
-const ServiceOption = ({ service, isSelected, onSelect }: { 
-  service: Service, 
-  isSelected: boolean, 
-  onSelect: () => void 
-}) => (
-  <div
-    onClick={onSelect}
-    className={`relative w-full p-6 rounded-xl transition-colors duration-300 cursor-pointer overflow-hidden ${
-      isSelected 
-        ? 'bg-gradient-to-br from-[#C8A97E]/20 to-[#C8A97E]/5 border-2 border-[#C8A97E] shadow-[0_0_20px_rgba(200,169,126,0.2)]' 
-        : 'bg-black/20 hover:bg-[#C8A97E]/5 border-2 border-white/10 hover:border-[#C8A97E]/50'
-    }`}
-  >
-    {/* Background Image with Blur Effect */}
-    <div 
-      className="absolute inset-0 bg-cover bg-center transition-opacity duration-700 filter blur-sm opacity-30 hover:opacity-40"
-      style={{ 
-        backgroundImage: `url(/images/${service.id}-bg.jpg)`
-      }}
-    />
-
-    <div className="relative flex flex-col h-full z-10">
-      <div className="flex items-start justify-between mb-4">
-        <div>
-          <TranslatedText
-            as="h3"
-            text={service.title}
-            className="text-xl font-medium text-white mb-1 drop-shadow-lg"
-            translations={{
-              de: service.title,
-              en: service.id === "singen" 
-                ? "Professional Singing Performance" 
-                : service.id === "vocal-coaching" 
-                  ? "Vocal Coaching" 
-                  : "Workshop"
-            }}
-            letterAnimation={true}
-          />
-          <TranslatedText
-            text={service.duration}
-            className="text-[#C8A97E] drop-shadow-md"
-            translations={{
-              de: service.duration,
-              en: service.id === "singen" 
-                ? "By arrangement" 
-                : service.id === "vocal-coaching" 
-                  ? "60 min" 
-                  : "3 hours"
-            }}
-          />
-        </div>
-        {isSelected && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="w-6 h-6 rounded-full bg-[#C8A97E] flex items-center justify-center"
-          >
-            <Check className="w-4 h-4 text-black" />
-          </motion.div>
-        )}
-      </div>
-      <TranslatedText
-        text={service.description}
-        className="text-gray-100 text-sm font-medium drop-shadow-lg"
-        translations={{
-          de: service.description,
-          en: service.id === "singen" 
-            ? "High-quality vocal performance for your events, celebrations, and special occasions. As one of Berlin's most sought-after singers, I'll elevate your event to a new level." 
-            : service.id === "vocal-coaching" 
-              ? "Professional voice training using the Complete Vocal Technique (CVT) - a scientifically based method for all singing styles. As one of only three certified CVT trainers in Berlin, I offer you access to this revolutionary technique." 
-              : "Intensive group training for vocal techniques and performance. Expand your vocal potential in an inspiring group atmosphere."
-        }}
-      />
-      {service.types && (
-        <div className="mt-4 pt-4 border-t border-white/20">
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-            {service.types.map((type) => (
-              <div key={type.id} className="flex items-center gap-2 text-sm text-gray-200">
-                <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                <TranslatedText
-                  text={type.title}
-                  className="drop-shadow-md"
-                  translations={{
-                    de: type.title,
-                    en: type.id === "solo" 
-                      ? "Solo Performance" 
-                      : type.id === "band" 
-                        ? "With Band" 
-                        : type.id === "custom" 
-                          ? "Customized" 
-                          : type.id === "private" 
-                            ? "Private Lessons" 
-                            : type.id === "online" 
-                              ? "Online Coaching" 
-                              : "Group Lessons"
-                  }}
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      {/* Service Icon with Animation */}
-      <motion.div 
-        className="absolute top-4 left-4 text-[#C8A97E] opacity-50 hover:opacity-100 transition-opacity"
-        whileHover={{ scale: 1.1 }}
-        transition={{ type: "spring", stiffness: 400, damping: 10 }}
-      >
-        {service.id === "singen" && <Music className="w-6 h-6" />}
-        {service.id === "vocal-coaching" && <Mic className="w-6 h-6" />}
-        {service.id === "workshop" && <Users className="w-6 h-6" />}
-      </motion.div>
-    </div>
-  </div>
-)
-
-const TimeGrid = ({ times, selectedTime, onTimeSelect }: { 
-  times: string[], 
-  selectedTime: string | null,
-  onTimeSelect: (time: string) => void 
-}) => (
-  <div className="flex flex-wrap justify-center gap-2 max-w-[500px] mx-auto">
-    {times.map((time) => (
-      <button
-        key={time}
-        onClick={() => onTimeSelect(time)}
-        className={`relative w-[70px] h-[70px] rounded-xl text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
-          selectedTime === time
-            ? "bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]"
-            : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
-        }`}
-      >
-        <div className="absolute inset-0 flex items-center justify-center">
-          {time}
-        </div>
-        {selectedTime === time && (
-          <motion.div
-            layoutId="timeSelection"
-            className="absolute inset-0 rounded-xl bg-[#C8A97E] -z-10"
-            transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
-          />
-        )}
-      </button>
-    ))}
-  </div>
-)
-
-const disabledDays = {
-  before: new Date(new Date().setHours(new Date().getHours() + 12)), // Disable dates less than 12 hours from now
+  service: Service | null
+  date: Date | null
+  name: string
+  email: string
+  phone: string
+  message: string
+  experienceLevel: "beginner" | "intermediate" | "professional" | null
+  termsAccepted: boolean
 }
 
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
-  const [selectedService, setSelectedService] = useState("")
-  const [selectedServiceType, setSelectedServiceType] = useState("")
-  const [selectedDate, setSelectedDate] = useState<Date>()
-  const [selectedTime, setSelectedTime] = useState("")
-  const [selectedLocation, setSelectedLocation] = useState<string>("")
-  const [selectedLevel, setSelectedLevel] = useState("")
-  const [currentStep, setCurrentStep] = useState<Step>("1")
-  const [showSuccess, setShowSuccess] = useState(false)
-  const [showLegalModal, setShowLegalModal] = useState<"agb" | "datenschutz" | null>(null)
-  const [errors, setErrors] = useState<{ [key: string]: string }>({})
-  const [date, setDate] = useState<Date>()
-  const [isClosing, setIsClosing] = useState(false)
-  const { currentLang } = useLanguage()
+  const [step, setStep] = useState(1)
   const [formData, setFormData] = useState<FormData>({
+    service: null,
+    date: null,
     name: "",
     email: "",
     phone: "",
     message: "",
+    experienceLevel: null,
     termsAccepted: false
   })
-
+  const [isClosing, setIsClosing] = useState(false)
+  const { currentLang, t } = useLanguage()
+  
+  // Reset form when modal opens
+  useEffect(() => {
+    if (isOpen) {
+      setStep(1)
+      setFormData({
+        service: null,
+        date: null,
+        name: "",
+        email: "",
+        phone: "",
+        message: "",
+        experienceLevel: null,
+        termsAccepted: false
+      })
+      setIsClosing(false)
+    }
+  }, [isOpen])
+  
+  const handleServiceSelect = (service: Service) => {
+    setFormData(prev => ({ ...prev, service }))
+    setStep(2)
+  }
+  
+  const handleDateSelect = (date: Date | null) => {
+    setFormData(prev => ({ ...prev, date }))
+  }
+  
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target
+    setFormData(prev => ({ ...prev, [name]: value }))
+  }
+  
+  const handleExperienceLevelSelect = (level: "beginner" | "intermediate" | "professional") => {
+    setFormData(prev => ({ ...prev, experienceLevel: level }))
+  }
+  
+  const handleTermsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData(prev => ({ ...prev, termsAccepted: e.target.checked }))
+  }
+  
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Here you would typically send the form data to your backend
+    console.log("Form submitted:", formData)
+    // For now, just close the modal
+    handleSmoothClose()
+  }
+  
+  const handleBack = () => {
+    if (step > 1) {
+      setStep(step - 1)
+    }
+  }
+  
+  const handleNext = () => {
+    if (step < 3) {
+      setStep(step + 1)
+    }
+  }
+  
   const handleSmoothClose = () => {
     setIsClosing(true)
     setTimeout(() => {
       onClose()
-      setIsClosing(false)
-    }, 500) // 500ms smooth exit animation
+    }, 500)
   }
-
-  const handleServiceSelect = (serviceId: string) => {
-    setSelectedService(serviceId);
-    if (serviceId === "workshop") {
-      setCurrentStep("2");
-    } else if (services.find(s => s.id === serviceId)?.types) {
-      setCurrentStep("2");
-    } else {
-      setCurrentStep("3");
-    }
-  };
-
-  const handleServiceTypeSelect = (typeId: string) => {
-    setSelectedServiceType(typeId);
-    setCurrentStep("3");
-  };
-
-  const handleDateSelect = (date: Date | undefined) => {
-    if (date) {
-      setSelectedDate(date)
-      if (selectedService === "workshop") {
-        setCurrentStep("4")
-      } else {
-        setCurrentStep("3")
-      }
-    }
-  };
-
-  const handleTimeSelect = (time: string) => {
-    setSelectedTime(time);
-    setCurrentStep("4");
-  };
-
-  const handleLevelSelect = (levelId: string) => {
-    setSelectedLevel(levelId);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formData.termsAccepted) {
-      setErrors({ termsAccepted: "You must accept the terms and conditions." });
-      return;
-    }
-    setShowSuccess(true);
-    
-    // Close success message after 3 seconds with smooth animation
-    setTimeout(() => {
-      const successTimeout = setTimeout(() => {
-        setShowSuccess(false)
-        // After success message fades out, close the modal smoothly
-        setTimeout(() => {
-          setIsClosing(true)
-          setTimeout(() => {
-            onClose()
-            setIsClosing(false)
-          }, 500)
-        }, 500) // Additional delay for smooth transition
-      }, 3000)
-      return () => clearTimeout(successTimeout)
-    }, 0)
+  
+  if (!isOpen) return null
+  
+  const modalVariants = {
+    hidden: { opacity: 0, scale: 0.95, y: 20 },
+    visible: { opacity: 1, scale: 1, y: 0 },
+    exit: { opacity: 0, scale: 0.95, y: 20 }
   }
-
-  const resetForm = () => {
-    setSelectedService("");
-    setSelectedServiceType("");
-    setSelectedLocation("");
-    setSelectedDate(undefined);
-    setSelectedTime("");
-    setSelectedLevel("");
-    setFormData({
-      name: "",
-      email: "",
-      phone: "",
-      message: "",
-      termsAccepted: false
-    });
-    setCurrentStep("1");
-  };
-
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const target = e.target;
-    const { name, value } = target;
-    
-    if (target instanceof HTMLInputElement && target.type === 'checkbox') {
-      setFormData(prev => ({
-        ...prev,
-        [name]: target.checked
-      }));
-    } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
-    }
-  };
-
-  const canProceedToNextStep = () => {
-    switch (currentStep) {
-      case "1":
-        return selectedService !== "";
-      case "2":
-        return selectedDate !== undefined;
-      case "3":
-        if (selectedService === "vocal-coaching" && !selectedLocation) {
-          return false;
-        }
-        return selectedTime !== "";
-      case "4":
-        return formData.name && formData.email && formData.phone && formData.termsAccepted && selectedLevel !== "";
-      default:
-        return false;
-    }
-  };
-
-  const handleNext = () => {
-    if (currentStep === "1") setCurrentStep("2")
-    else if (currentStep === "2") setCurrentStep("3")
-    else if (currentStep === "3") setCurrentStep("4")
+  
+  const backdropVariants = {
+    hidden: { opacity: 0 },
+    visible: { opacity: 1 },
+    exit: { opacity: 0 }
   }
-
-  const handleBack = () => {
-    if (currentStep === "2") setCurrentStep("1")
-    else if (currentStep === "3") setCurrentStep("2")
-    else if (currentStep === "4") setCurrentStep("3")
+  
+  const stepVariants = {
+    hidden: { opacity: 0, x: 50 },
+    visible: { opacity: 1, x: 0 },
+    exit: { opacity: 0, x: -50 }
   }
-
+  
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <div role="dialog" aria-labelledby="booking-modal-title" aria-describedby="booking-modal-description">
-        <AnimatePresence>
-          {isOpen && (
-            <>
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[60]"
-                onClick={handleSmoothClose}
-              />
-              <div className="fixed inset-0 flex items-center justify-center z-[61] overflow-y-auto p-4">
+    <AnimatePresence>
+      <motion.div
+        className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center"
+        initial="hidden"
+        animate={isClosing ? "exit" : "visible"}
+        exit="exit"
+        variants={backdropVariants}
+        transition={{ duration: 0.5 }}
+        onClick={handleSmoothClose}
+      >
+        <motion.div
+          className="relative bg-black/80 backdrop-blur-md border border-white/10 rounded-xl w-full max-w-2xl max-h-[90vh] overflow-hidden shadow-2xl"
+          initial="hidden"
+          animate={isClosing ? "exit" : "visible"}
+          exit="exit"
+          variants={modalVariants}
+          transition={{ 
+            type: "spring", 
+            stiffness: 300, 
+            damping: 30,
+            duration: 0.5 
+          }}
+          onClick={e => e.stopPropagation()}
+        >
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b border-white/10">
+            <h2 className="text-xl font-medium text-white">
+              {currentLang === "de" ? "Buchung" : "Booking"}
+            </h2>
+            <button
+              onClick={handleSmoothClose}
+              className="text-white/70 hover:text-white transition-colors p-1 rounded-full hover:bg-white/10"
+              aria-label="Close"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+          
+          {/* Progress indicator */}
+          <div className="px-4 pt-4">
+            <div className="flex items-center justify-between mb-6">
+              <div className="flex items-center space-x-2">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 1 ? 'bg-[#C8A97E] text-black' : 'bg-white/10 text-white/70'}`}>
+                  1
+                </div>
+                <span className={`text-sm ${step >= 1 ? 'text-white' : 'text-white/50'}`}>
+                  {currentLang === "de" ? "Dienst" : "Service"}
+                </span>
+              </div>
+              <div className={`flex-1 h-0.5 mx-2 ${step >= 2 ? 'bg-[#C8A97E]' : 'bg-white/10'}`}></div>
+              <div className="flex items-center space-x-2">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 2 ? 'bg-[#C8A97E] text-black' : 'bg-white/10 text-white/70'}`}>
+                  2
+                </div>
+                <span className={`text-sm ${step >= 2 ? 'text-white' : 'text-white/50'}`}>
+                  {currentLang === "de" ? "Datum" : "Date"}
+                </span>
+              </div>
+              <div className={`flex-1 h-0.5 mx-2 ${step >= 3 ? 'bg-[#C8A97E]' : 'bg-white/10'}`}></div>
+              <div className="flex items-center space-x-2">
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center ${step >= 3 ? 'bg-[#C8A97E] text-black' : 'bg-white/10 text-white/70'}`}>
+                  3
+                </div>
+                <span className={`text-sm ${step >= 3 ? 'text-white' : 'text-white/50'}`}>
+                  {currentLang === "de" ? "Details" : "Details"}
+                </span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Content */}
+          <div className="p-4 overflow-y-auto max-h-[calc(90vh-140px)]">
+            <AnimatePresence mode="wait">
+              {step === 1 && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                  animate={{ opacity: isClosing ? 0 : 1, scale: isClosing ? 0.95 : 1, y: isClosing ? 20 : 0 }}
-                  exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                  transition={{ duration: 0.5, ease: "easeInOut" }}
-                  className="w-[90%] max-w-[500px] max-h-[85vh] bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
+                  key="step1"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={stepVariants}
+                  transition={{ duration: 0.4 }}
+                  className="space-y-4"
                 >
-                  {/* Header */}
-                  <div className="flex items-center justify-between p-4 border-b border-[#C8A97E]/20">
-                    <h3 id="booking-modal-title" className="text-lg font-medium text-white">
-                      <TranslatedText
-                        text="Buchung"
-                        translations={{
-                          de: "Buchung",
-                          en: "Booking"
-                        }}
-                        letterAnimation={true}
-                      />
-                    </h3>
-                    <button
-                      onClick={handleSmoothClose}
-                      className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
-                    >
-                      <X className="w-5 h-5 text-white/70 hover:text-white transition-colors" />
-                    </button>
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-4 overflow-y-auto max-h-[calc(85vh-8rem)] custom-scrollbar">
-                    <div className="space-y-4">
-                      {currentStep === "1" && (
-                        <motion.div
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -20 }}
-                          className="space-y-4"
-                        >
-                          {services.map((service) => (
-                            <ServiceOption
-                              key={service.id}
-                              service={service}
-                              isSelected={selectedService === service.id}
-                              onSelect={() => handleServiceSelect(service.id)}
-                            />
-                          ))}
-                        </motion.div>
-                      )}
-
-                      {currentStep === "2" && (
-                        <motion.div
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -20 }}
-                          className="flex flex-col items-center justify-center w-full"
-                        >
-                          <div className="flex items-center justify-center w-full">
-                            <div className="w-full max-w-[350px] flex justify-center">
-                              <Calendar
-                                mode="single"
-                                selected={selectedDate}
-                                onSelect={handleDateSelect}
-                                disabled={(date) =>
-                                  date < new Date() || date > addMonths(new Date(), 2)
-                                }
-                                initialFocus
-                                className="rounded-lg border border-[#C8A97E]/20 bg-black/20 w-full"
-                                locale={de}
-                              />
-                            </div>
-                          </div>
-                        </motion.div>
-                      )}
-
-                      {currentStep === "3" && (
-                        <motion.div
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -20 }}
-                          className="flex flex-col items-center justify-center w-full py-4 space-y-6"
-                        >
-                          {selectedService === "vocal-coaching" && (
-                            <div className="w-full space-y-2">
-                              <label className="text-sm text-gray-400">
-                                <TranslatedText
-                                  text="Unterrichtsort"
-                                  translations={{
-                                    de: "Unterrichtsort",
-                                    en: "Location"
-                                  }}
-                                  letterAnimation={true}
-                                />
-                              </label>
-                              <div className="flex gap-3">
-                                <button
-                                  type="button"
-                                  onClick={() => setSelectedLocation("studio")}
-                                  className={`flex-1 p-3 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
-                                    selectedLocation === "studio"
-                                      ? "bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]"
-                                      : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
-                                  }`}
-                                >
-                                  <span className="flex items-center justify-center gap-2">
-                                    <span>🏢</span> 
-                                    <TranslatedText
-                                      text="Im Studio"
-                                      translations={{
-                                        de: "Im Studio",
-                                        en: "In Studio"
-                                      }}
-                                    />
-                                  </span>
-                                </button>
-                                <button
-                                  type="button"
-                                  onClick={() => setSelectedLocation("online")}
-                                  className={`flex-1 p-3 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
-                                    selectedLocation === "online"
-                                      ? "bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]"
-                                      : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
-                                  }`}
-                                >
-                                  <span className="flex items-center justify-center gap-2">
-                                    <span>💻</span> 
-                                    <TranslatedText
-                                      text="Online"
-                                      translations={{
-                                        de: "Online",
-                                        en: "Online"
-                                      }}
-                                    />
-                                  </span>
-                                </button>
-                              </div>
-                            </div>
-                          )}
-                          
-                          <TimeGrid
-                            times={timeSlots}
-                            selectedTime={selectedTime}
-                            onTimeSelect={handleTimeSelect}
-                          />
-                        </motion.div>
-                      )}
-
-                      {currentStep === "4" && (
-                        <motion.div
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -20 }}
-                          className="space-y-4"
-                        >
-                          <form onSubmit={handleSubmit} className="space-y-4" aria-describedby="booking-form-description">
-                            <input
-                              type="text"
-                              name="name"
-                              placeholder={currentLang === "de" ? "Name" : "Name"}
-                              aria-label="Name"
-                              value={formData.name}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
-                            />
-                            <input
-                              type="email"
-                              name="email"
-                              placeholder="Email"
-                              value={formData.email}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
-                            />
-                            <input
-                              type="tel"
-                              name="phone"
-                              placeholder={currentLang === "de" ? "Telefon" : "Phone"}
-                              value={formData.phone}
-                              onChange={handleInputChange}
-                              required
-                              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
-                            />
-                            <textarea
-                              name="message"
-                              placeholder={currentLang === "de" ? "Nachricht (optional)" : "Message (optional)"}
-                              value={formData.message}
-                              onChange={handleInputChange}
-                              rows={3}
-                              className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
-                            />
-                            
-                            {/* Skill Level Selection */}
-                            <div className="space-y-2">
-                              <label className="text-sm text-gray-400">
-                                <TranslatedText
-                                  text="Erfahrungsniveau"
-                                  translations={{
-                                    de: "Erfahrungsniveau",
-                                    en: "Experience Level"
-                                  }}
-                                  letterAnimation={true}
-                                />
-                              </label>
-                              <div className="flex gap-3">
-                                {skillLevels.map((level) => (
-                                  <button
-                                    key={level.id}
-                                    type="button"
-                                    onClick={() => handleLevelSelect(level.id)}
-                                    className={`flex-1 p-3 rounded-lg text-sm font-medium transition-all duration-300 transform hover:scale-105 ${
-                                      selectedLevel === level.id
-                                        ? "bg-[#C8A97E] text-black shadow-[0_0_20px_rgba(200,169,126,0.3)]"
-                                        : "bg-white/5 text-white hover:bg-[#C8A97E]/10 border border-[#C8A97E]/20"
-                                    }`}
-                                  >
-                                    <TranslatedText
-                                      text={level.title}
-                                      translations={{
-                                        de: level.title,
-                                        en: level.titleEn
-                                      }}
-                                    />
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-
-                            <div className="flex items-center gap-2">
-                              <div className="relative">
-                                <input
-                                  type="checkbox"
-                                  name="termsAccepted"
-                                  id="terms"
-                                  checked={formData.termsAccepted}
-                                  onChange={(e) =>
-                                    setFormData({
-                                      ...formData,
-                                      termsAccepted: e.target.checked,
-                                    })
-                                  }
-                                  required
-                                  className="appearance-none w-3.5 h-3.5 rounded border border-[#C8A97E]/30 bg-white/5 checked:bg-[#C8A97E] checked:border-[#C8A97E] transition-all duration-200 cursor-pointer"
-                                />
-                                <div className="pointer-events-none absolute inset-0 flex items-center justify-center text-black transition-opacity opacity-0 peer-checked:opacity-100">
-                                  <Check className="w-2.5 h-2.5" />
-                                </div>
-                              </div>
-                              <label htmlFor="terms" className="text-xs text-gray-400">
-                                <TranslatedText
-                                  text="Ich akzeptiere die"
-                                  translations={{
-                                    de: "Ich akzeptiere die",
-                                    en: "I accept the"
-                                  }}
-                                />{" "}
-                                <button
-                                  type="button"
-                                  onClick={() => setShowLegalModal("agb")}
-                                  className="text-[#C8A97E] hover:text-[#B69A6E] underline"
-                                >
-                                  <TranslatedText
-                                    text="AGB"
-                                    translations={{
-                                      de: "AGB",
-                                      en: "Terms & Conditions"
-                                    }}
-                                  />
-                                </button>{" "}
-                                <TranslatedText
-                                  text="und"
-                                  translations={{
-                                    de: "und",
-                                    en: "and"
-                                  }}
-                                />{" "}
-                                <button
-                                  type="button"
-                                  onClick={() => setShowLegalModal("datenschutz")}
-                                  className="text-[#C8A97E] hover:text-[#B69A6E] underline"
-                                >
-                                  <TranslatedText
-                                    text="Datenschutzerklärung"
-                                    translations={{
-                                      de: "Datenschutzerklärung",
-                                      en: "Privacy Policy"
-                                    }}
-                                  />
-                                </button>
-                              </label>
-                            </div>
-                          </form>
-                        </motion.div>
-                      )}
-                    </div>
-                  </div>
-
-                  {/* Footer Navigation */}
-                  <div className="p-4 border-t border-[#C8A97E]/20">
-                    <div className="flex justify-between gap-4">
-                      {currentStep !== "1" && (
-                        <button
-                          onClick={handleBack}
-                          className="px-6 py-2 rounded-lg border border-[#C8A97E]/30 text-[#C8A97E] hover:bg-[#C8A97E]/10 transition-colors"
-                        >
-                          <TranslatedText
-                            text="Zurück"
-                            translations={{
-                              de: "Zurück",
-                              en: "Back"
-                            }}
-                            letterAnimation={true}
-                          />
-                        </button>
-                      )}
-                      <button
-                        onClick={currentStep === "4" ? handleSubmit : handleNext}
-                        disabled={!canProceedToNextStep()}
-                        aria-label={currentStep === "4" ? "Submit Booking" : "Next Step"}
-                        className={`px-6 py-2 rounded-lg transition-colors ${
-                          canProceedToNextStep()
-                            ? "bg-[#C8A97E] text-black hover:bg-[#B69A6E]"
-                            : "bg-[#C8A97E]/50 text-black/50 cursor-not-allowed"
-                        } ${currentStep === "1" ? "ml-auto" : ""}`}
-                      >
-                        <TranslatedText
-                          text={currentStep === "4" ? "Buchen" : "Weiter"}
-                          translations={{
-                            de: currentStep === "4" ? "Buchen" : "Weiter",
-                            en: currentStep === "4" ? "Book" : "Next"
-                          }}
-                          letterAnimation={true}
-                        />
-                      </button>
-                    </div>
+                  <div className="grid gap-4 md:grid-cols-1">
+                    <ServiceCard
+                      title={currentLang === "de" ? "Gesangsunterricht" : "Singing Lessons"}
+                      subtitle={currentLang === "de" ? "60 min" : "60 min"}
+                      description={
+                        currentLang === "de"
+                          ? "Individueller Gesangsunterricht für alle Niveaus. Verbessere deine Technik, erweitere deinen Stimmumfang und entwickle deinen eigenen Stil."
+                          : "Individual singing lessons for all levels. Improve your technique, expand your vocal range, and develop your own style."
+                      }
+                      icon={<Mic className="w-6 h-6" />}
+                      features={
+                        currentLang === "de"
+                          ? ["Stimmbildung", "Atemtechnik", "Interpretation", "Bühnenpräsenz"]
+                          : ["Voice Training", "Breathing Technique", "Interpretation", "Stage Presence"]
+                      }
+                      onClick={() => handleServiceSelect("singing")}
+                      isSelected={formData.service === "singing"}
+                    />
+                    
+                    <ServiceCard
+                      title={currentLang === "de" ? "Vocal Coaching" : "Vocal Coaching"}
+                      subtitle={currentLang === "de" ? "60 min" : "60 min"}
+                      description={
+                        currentLang === "de"
+                          ? "Professionelles Vocal Coaching mit der Complete Vocal Technique (CVT). Wissenschaftlich fundierte Methode für alle Gesangsstile."
+                          : "Professional voice training using the Complete Vocal Technique (CVT). A scientifically based method for all singing styles."
+                      }
+                      icon={<Mic className="w-6 h-6" />}
+                      features={
+                        currentLang === "de"
+                          ? ["Private Lessons", "Online Coaching", "Group Lessons"]
+                          : ["Private Lessons", "Online Coaching", "Group Lessons"]
+                      }
+                      onClick={() => handleServiceSelect("coaching")}
+                      isSelected={formData.service === "coaching"}
+                    />
+                    
+                    <ServiceCard
+                      title={currentLang === "de" ? "Professional Singing Performance" : "Professional Singing Performance"}
+                      subtitle={currentLang === "de" ? "Nach Vereinbarung" : "By arrangement"}
+                      description={
+                        currentLang === "de"
+                          ? "Hochwertige Gesangsdarbietung für Ihre Veranstaltungen, Feiern und besonderen Anlässe. Als eine der gefragtesten Sängerinnen Berlins werde ich Ihre Veranstaltung auf ein neues Niveau heben."
+                          : "High-quality vocal performance for your events, celebrations, and special occasions. As one of Berlin's most sought-after singers, I'll elevate your event to a new level."
+                      }
+                      icon={<Music className="w-6 h-6" />}
+                      features={
+                        currentLang === "de"
+                          ? ["Solo Performance", "With Band", "Customized"]
+                          : ["Solo Performance", "With Band", "Customized"]
+                      }
+                      onClick={() => handleServiceSelect("performance")}
+                      isSelected={formData.service === "performance"}
+                    />
                   </div>
                 </motion.div>
-              </div>
-            </>
-          )}
-        </AnimatePresence>
-
-        {/* Success Message */}
-        <SuccessMessage
-          isOpen={showSuccess}
-          onClose={() => {
-            setShowSuccess(false)
-            onClose()
-          }}
-          title={currentLang === "de" ? "Buchung erfolgreich!" : "Booking Successful!"}
-          message={currentLang === "de" 
-            ? "Vielen Dank für Ihre Buchung. Sie erhalten in Kürze eine Bestätigung per Email."
-            : "Thank you for your booking. You will receive a confirmation email shortly."
-          }
-        />
-
-        {/* Legal Document Modals */}
-        <AnimatePresence mode="wait">
-          {showLegalModal === "agb" && (
-            <motion.div 
-              className="fixed inset-0 z-[200]" 
-              onClick={(e) => e.stopPropagation()}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <motion.div 
-                className="fixed inset-0 bg-black/80 backdrop-blur-sm"
-                initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                animate={{ opacity: 1, backdropFilter: "blur(8px)" }}
-                exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              />
-              <div className="fixed inset-0 overflow-y-auto">
-                <div className="flex min-h-full items-center justify-center p-4">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
-                  >
-                    <div className="p-6">
-                      <div className="prose prose-invert max-w-none">
-                        <LegalContent type="agb" />
+              )}
+              
+              {step === 2 && (
+                <motion.div
+                  key="step2"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={stepVariants}
+                  transition={{ duration: 0.4 }}
+                  className="space-y-6"
+                >
+                  <div className="bg-black/40 rounded-lg p-4 border border-white/10">
+                    <h3 className="text-lg font-medium text-white mb-4">
+                      {currentLang === "de" ? "Wählen Sie ein Datum" : "Select a Date"}
+                    </h3>
+                    <div className="flex justify-center">
+                      <CalendarComponent
+                        mode="single"
+                        selected={formData.date || undefined}
+                        onSelect={handleDateSelect}
+                        className="rounded-md border-white/10 bg-black/30"
+                        classNames={{
+                          day_selected: "bg-[#C8A97E] text-black hover:bg-[#C8A97E] hover:text-black focus:bg-[#C8A97E] focus:text-black",
+                          day_today: "bg-white/10 text-white",
+                          day_outside: "text-white/30",
+                          day: "hover:bg-white/10 focus:bg-white/10",
+                          head_cell: "text-white/70 font-normal",
+                          nav_button: "hover:bg-white/10 p-1 rounded-full",
+                          nav_button_previous: "absolute left-1",
+                          nav_button_next: "absolute right-1",
+                          caption: "flex justify-center py-2 relative items-center",
+                          caption_label: "text-sm font-medium text-white",
+                          cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-white/5 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
+                          root: "bg-transparent text-white"
+                        }}
+                        locale={currentLang === "de" ? de : undefined}
+                      />
+                    </div>
+                    
+                    {formData.date && (
+                      <div className="mt-4 p-3 bg-white/5 rounded-md border border-white/10">
+                        <p className="text-white text-center">
+                          {currentLang === "de" ? "Ausgewähltes Datum:" : "Selected date:"}{" "}
+                          <span className="font-medium text-[#C8A97E]">
+                            {format(formData.date, "PPP", { locale: currentLang === "de" ? de : undefined })}
+                          </span>
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+              
+              {step === 3 && (
+                <motion.div
+                  key="step3"
+                  initial="hidden"
+                  animate="visible"
+                  exit="exit"
+                  variants={stepVariants}
+                  transition={{ duration: 0.4 }}
+                  className="space-y-4"
+                >
+                  <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="space-y-4">
+                      <div className="relative">
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleInputChange}
+                          placeholder={currentLang === "de" ? "Name" : "Name"}
+                          className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50 focus:border-[#C8A97E] transition-all"
+                          required
+                        />
+                      </div>
+                      
+                      <div className="relative">
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          placeholder={currentLang === "de" ? "E-Mail" : "E-mail"}
+                          className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50 focus:border-[#C8A97E] transition-all"
+                          required
+                        />
+                      </div>
+                      
+                      <div className="relative">
+                        <input
+                          type="tel"
+                          name="phone"
+                          value={formData.phone}
+                          onChange={handleInputChange}
+                          placeholder={currentLang === "de" ? "Telefon" : "Phone"}
+                          className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50 focus:border-[#C8A97E] transition-all"
+                        />
+                      </div>
+                      
+                      <div className="relative">
+                        <textarea
+                          name="message"
+                          value={formData.message}
+                          onChange={handleInputChange}
+                          placeholder={currentLang === "de" ? "Nachricht (optional)" : "Message (optional)"}
+                          className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50 focus:border-[#C8A97E] transition-all min-h-[100px] resize-none"
+                        />
                       </div>
                     </div>
-                    <button
-                      onClick={() => setShowLegalModal(null)}
-                      className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-
-          {showLegalModal === "datenschutz" && (
-            <motion.div 
-              className="fixed inset-0 z-[200]" 
-              onClick={(e) => e.stopPropagation()}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
-            >
-              <motion.div 
-                className="fixed inset-0 bg-black/80 backdrop-blur-sm"
-                initial={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                animate={{ opacity: 1, backdropFilter: "blur(8px)" }}
-                exit={{ opacity: 0, backdropFilter: "blur(0px)" }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
-              />
-              <div className="fixed inset-0 overflow-y-auto">
-                <div className="flex min-h-full items-center justify-center p-4">
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                    className="relative w-full max-w-2xl bg-[#0A0A0A] rounded-xl border border-[#C8A97E]/20 shadow-2xl overflow-hidden"
-                  >
-                    <div className="p-6">
-                      <div className="prose prose-invert max-w-none">
-                        <LegalContent type="datenschutz" />
+                    
+                    <div className="space-y-2">
+                      <h3 className="text-white font-medium">
+                        {currentLang === "de" ? "Erfahrungslevel" : "Experience Level"}
+                      </h3>
+                      <div className="grid grid-cols-3 gap-3">
+                        <button
+                          type="button"
+                          onClick={() => handleExperienceLevelSelect("beginner")}
+                          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                            formData.experienceLevel === "beginner"
+                              ? "bg-[#C8A97E] text-black"
+                              : "bg-black/40 text-white border border-white/10 hover:bg-white/10"
+                          }`}
+                        >
+                          {formData.experienceLevel === "beginner" && (
+                            <Check className="w-4 h-4 inline-block mr-1" />
+                          )}
+                          {currentLang === "de" ? "Anfänger" : "Beginner"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleExperienceLevelSelect("intermediate")}
+                          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                            formData.experienceLevel === "intermediate"
+                              ? "bg-[#C8A97E] text-black"
+                              : "bg-black/40 text-white border border-white/10 hover:bg-white/10"
+                          }`}
+                        >
+                          {formData.experienceLevel === "intermediate" && (
+                            <Check className="w-4 h-4 inline-block mr-1" />
+                          )}
+                          {currentLang === "de" ? "Fortgeschritten" : "Intermediate"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleExperienceLevelSelect("professional")}
+                          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                            formData.experienceLevel === "professional"
+                              ? "bg-[#C8A97E] text-black"
+                              : "bg-black/40 text-white border border-white/10 hover:bg-white/10"
+                          }`}
+                        >
+                          {formData.experienceLevel === "professional" && (
+                            <Check className="w-4 h-4 inline-block mr-1" />
+                          )}
+                          {currentLang === "de" ? "Profi" : "Professional"}
+                        </button>
                       </div>
                     </div>
-                    <button
-                      onClick={() => setShowLegalModal(null)}
-                      className="absolute top-4 right-4 p-2 text-white/70 hover:text-white transition-colors"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  </motion.div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                    
+                    <div className="flex items-start mt-4">
+                      <div className="flex items-center h-5">
+                        <input
+                          id="terms"
+                          name="terms"
+                          type="checkbox"
+                          checked={formData.termsAccepted}
+                          onChange={handleTermsChange}
+                          className="w-5 h-5 bg-black/40 border border-white/20 rounded text-[#C8A97E] focus:ring-[#C8A97E] focus:ring-offset-0 focus:ring-offset-transparent"
+                          required
+                        />
+                      </div>
+                      <div className="ml-3 text-sm">
+                        <label htmlFor="terms" className="text-white/70">
+                          {currentLang === "de" ? "Ich akzeptiere die " : "I accept the "}
+                          <a href="#" className="text-[#C8A97E] hover:underline">
+                            {currentLang === "de" ? "Allgemeinen Geschäftsbedingungen" : "Terms & Conditions"}
+                          </a>
+                          {currentLang === "de" ? " und " : " and "}
+                          <a href="#" className="text-[#C8A97E] hover:underline">
+                            {currentLang === "de" ? "Datenschutzrichtlinie" : "Privacy Policy"}
+                          </a>
+                        </label>
+                      </div>
+                    </div>
+                    
+                    <div className="pt-4">
+                      <button
+                        type="submit"
+                        className="w-full py-3 px-4 bg-[#C8A97E] hover:bg-[#D4B88F] text-black font-medium rounded-md transition-colors focus:outline-none focus:ring-2 focus:ring-[#C8A97E] focus:ring-offset-2 focus:ring-offset-black"
+                      >
+                        {currentLang === "de" ? "Buchen" : "Book"}
+                      </button>
+                    </div>
+                  </form>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+          
+          {/* Footer */}
+          <div className="p-4 border-t border-white/10 flex justify-between">
+            {step > 1 ? (
+              <button
+                onClick={handleBack}
+                className="px-4 py-2 flex items-center gap-2 text-white bg-black/40 hover:bg-white/10 rounded-md transition-colors border border-white/10"
+              >
+                <ChevronLeft className="w-4 h-4" />
+                {currentLang === "de" ? "Zurück" : "Back"}
+              </button>
+            ) : (
+              <div></div>
+            )}
+            
+            {step < 3 ? (
+              <button
+                onClick={handleNext}
+                disabled={step === 1 && !formData.service || step === 2 && !formData.date}
+                className={`px-4 py-2 flex items-center gap-2 rounded-md transition-colors ${
+                  (step === 1 && !formData.service) || (step === 2 && !formData.date)
+                    ? "bg-white/5 text-white/30 cursor-not-allowed"
+                    : "bg-[#C8A97E] hover:bg-[#D4B88F] text-black"
+                }`}
+              >
+                {currentLang === "de" ? "Weiter" : "Next"}
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            ) : (
+              <div></div>
+            )}
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  )
+}
 
-        {/* Error Messages */}
-        {errors.termsAccepted && <p className="text-red-500 text-sm">{errors.termsAccepted}</p>}
+interface ServiceCardProps {
+  title: string
+  subtitle: string
+  description: string
+  icon: React.ReactNode
+  features: string[]
+  onClick: () => void
+  isSelected: boolean
+}
+
+function ServiceCard({ title, subtitle, description, icon, features, onClick, isSelected }: ServiceCardProps) {
+  return (
+    <motion.div
+      whileHover={{ scale: 1.02 }}
+      whileTap={{ scale: 0.98 }}
+      className={`relative p-4 rounded-lg cursor-pointer transition-all duration-300 overflow-hidden ${
+        isSelected
+          ? "bg-[#C8A97E]/20 border-[#C8A97E] shadow-[0_0_15px_rgba(200,169,126,0.3)]"
+          : "bg-black/40 border-white/10 hover:bg-black/60"
+      } border`}
+      onClick={onClick}
+    >
+      {isSelected && (
+        <motion.div
+          className="absolute top-2 right-2 bg-[#C8A97E] text-black p-1 rounded-full"
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 500, damping: 15 }}
+        >
+          <Check className="w-4 h-4" />
+        </motion.div>
+      )}
+      
+      <div className="flex items-start gap-3 mb-3">
+        <div className={`p-2 rounded-full ${isSelected ? "bg-[#C8A97E] text-black" : "bg-white/10 text-[#C8A97E]"}`}>
+          {icon}
+        </div>
+        <div>
+          <h3 className="text-lg font-medium text-white">{title}</h3>
+          <p className="text-sm text-[#C8A97E]">{subtitle}</p>
+        </div>
       </div>
-    </Dialog>
+      
+      <p className="text-sm text-white/80 mb-4">{description}</p>
+      
+      <div className="space-y-2">
+        {features.map((feature, index) => (
+          <div key={index} className="flex items-center gap-2">
+            <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+            <span className="text-sm text-white/70">{feature}</span>
+          </div>
+        ))}
+      </div>
+    </motion.div>
   )
 } 
