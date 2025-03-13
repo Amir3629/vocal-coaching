@@ -4,6 +4,7 @@ import { motion } from "framer-motion"
 import Image from "next/image"
 import { useState } from "react"
 import { useLanguage } from "./language-switcher"
+import { useTranslation } from 'react-i18next'
 
 const collaborations = [
   // First Row
@@ -51,7 +52,8 @@ const collaborations = [
 ]
 
 export default function Collaborations() {
-  const { t } = useLanguage()
+  const { currentLang } = useLanguage()
+  const { t } = useTranslation()
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   const firstRow = collaborations.slice(0, 4)
@@ -61,15 +63,15 @@ export default function Collaborations() {
     <section id="references" className="py-20 bg-[#040202]">
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
-        <motion.h2
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
             className="section-heading mb-4"
-        >
-          {t.references.title}
-        </motion.h2>
+          >
+            {t('references.title')}
+          </motion.h2>
           <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
         </div>
 
