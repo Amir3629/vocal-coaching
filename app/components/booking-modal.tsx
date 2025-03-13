@@ -312,7 +312,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       case "3":
         return selectedTime !== "";
       case "4":
-        return formData.name && formData.email && formData.phone && formData.termsAccepted;
+        return formData.name && formData.email && formData.phone && formData.termsAccepted && selectedLevel !== "";
       default:
         return false;
     }
@@ -464,7 +464,29 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                               rows={3}
                               className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
                             />
-                            <div className="flex items-start gap-2">
+                            
+                            {/* Skill Level Selection */}
+                            <div className="space-y-2">
+                              <label className="text-sm text-gray-400">Erfahrungsniveau</label>
+                              <div className="grid grid-cols-3 gap-3">
+                                {skillLevels.map((level) => (
+                                  <button
+                                    key={level.id}
+                                    type="button"
+                                    onClick={() => handleLevelSelect(level.id)}
+                                    className={`p-3 rounded-lg text-sm font-medium transition-all duration-200 ${
+                                      selectedLevel === level.id
+                                        ? "bg-[#C8A97E] text-black"
+                                        : "bg-white/5 text-white hover:bg-white/10 border border-white/10"
+                                    }`}
+                                  >
+                                    {level.title}
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2">
                               <input
                                 type="checkbox"
                                 name="termsAccepted"
@@ -477,7 +499,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                                   })
                                 }
                                 required
-                                className="mt-1"
+                                className="w-4 h-4 rounded border-white/10 bg-white/5 text-[#C8A97E] focus:ring-[#C8A97E] focus:ring-offset-0"
                               />
                               <label htmlFor="terms" className="text-sm text-gray-400">
                                 Ich akzeptiere die{" "}
