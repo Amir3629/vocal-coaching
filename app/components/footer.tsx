@@ -4,10 +4,12 @@ import { createElement } from "react"
 import { useState } from "react"
 import { motion } from "framer-motion"
 import Link from "next/link"
+import { MapPin, Mail, Phone, Clock, Instagram, Facebook, Youtube } from "lucide-react"
 import LegalDocumentModal from "./legal-document-modal"
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import { X } from "lucide-react"
+import TranslatedText from "./translated-text"
 
 // Dynamically import legal document contents
 const DatenschutzContent = dynamic(
@@ -113,92 +115,141 @@ export default function Footer() {
   ];
 
   return (
-    <footer className="bg-black border-t border-white/10">
-      <div className="container mx-auto px-4 py-8">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {/* Left Column - Brand & Social Links */}
-            <div className="flex flex-col space-y-4">
-              <h3 className="text-xl text-white">Mel jazz</h3>
-              <div className="flex gap-6">
-                {socialLinks.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-[#C8A97E] hover:text-[#B69A6E] transition-colors"
-                  >
-                    <span className="sr-only">{item.name}</span>
-                    {typeof item.icon === 'function' ? (
-                      item.icon({})
-                    ) : (
-                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-                        <path fillRule="evenodd" d={item.icon} clipRule="evenodd" />
-                      </svg>
-                    )}
-                  </Link>
-                ))}
-              </div>
-            </div>
+    <footer className="bg-[#040202] text-white py-16">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Contact Info */}
+          <div>
+            <h3 className="text-[#C8A97E] font-medium text-lg mb-6">
+              <TranslatedText text="Kontakt" />
+            </h3>
+            <ul className="space-y-4">
+              <li className="flex items-center gap-3">
+                <MapPin className="w-5 h-5 text-[#C8A97E]" />
+                <span>
+                  <TranslatedText text="Prenzlauer Berg, Berlin" />
+                </span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail className="w-5 h-5 text-[#C8A97E]" />
+                <a href="mailto:info@melvocalcoaching.de" className="hover:text-[#C8A97E] transition-colors">
+                  info@melvocalcoaching.de
+                </a>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone className="w-5 h-5 text-[#C8A97E]" />
+                <a href="tel:+491234567890" className="hover:text-[#C8A97E] transition-colors">
+                  +49 123 456 7890
+                </a>
+              </li>
+            </ul>
+          </div>
 
-            {/* Middle Column - Subtitle and Copyright */}
-            <div className="flex flex-col items-center justify-start space-y-4">
-              <p className="text-gray-400">Vocal Coaching in Berlin</p>
-              <div className="text-sm text-gray-400 text-center">
-                © 2025 Mel jazz.<br />
-                Alle Rechte vorbehalten.
-              </div>
-            </div>
+          {/* Opening Hours */}
+          <div>
+            <h3 className="text-[#C8A97E] font-medium text-lg mb-6">
+              <TranslatedText text="Öffnungszeiten" />
+            </h3>
+            <ul className="space-y-4">
+              <li className="flex items-center gap-3">
+                <Clock className="w-5 h-5 text-[#C8A97E]" />
+                <div>
+                  <p><TranslatedText text="Mo-Fr: 10:00 - 20:00" /></p>
+                  <p><TranslatedText text="Sa: Nach Vereinbarung" /></p>
+                  <p><TranslatedText text="So: Geschlossen" /></p>
+                </div>
+              </li>
+            </ul>
+          </div>
 
-            {/* Right Column - Legal Links & Image */}
-            <div className="flex flex-col justify-start items-end w-full">
-              <div className="flex items-center justify-end gap-6 mb-4 w-full">
-                {legalDocs.map((doc) => (
-                  <button
-                    key={doc.title}
-                    onClick={() => setSelectedDoc(doc.title)}
-                    className="text-gray-400 hover:text-[#C8A97E] transition-colors text-sm"
-                  >
-                    {doc.title}
-                  </button>
-                ))}
-              </div>
-              <div className="w-48 h-24 relative flex justify-end">
-                <Image
-                  src={process.env.NODE_ENV === 'production' ? '/vocal-coaching/images/footer/footer.png' : '/images/footer/footer.png'}
-                  alt="Footer decoration"
-                  width={192}
-                  height={96}
-                  className="object-contain filter brightness-0 invert transform -translate-x-4 translate-y-2"
-                  priority
-                />
-              </div>
+          {/* Quick Links */}
+          <div>
+            <h3 className="text-[#C8A97E] font-medium text-lg mb-6">
+              <TranslatedText text="Links" />
+            </h3>
+            <ul className="space-y-2">
+              <li>
+                <Link href="/datenschutz" className="hover:text-[#C8A97E] transition-colors">
+                  <TranslatedText text="Datenschutz" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/impressum" className="hover:text-[#C8A97E] transition-colors">
+                  <TranslatedText text="Impressum" />
+                </Link>
+              </li>
+              <li>
+                <Link href="/agb" className="hover:text-[#C8A97E] transition-colors">
+                  <TranslatedText text="AGB" />
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Social Media */}
+          <div>
+            <h3 className="text-[#C8A97E] font-medium text-lg mb-6">
+              <TranslatedText text="Social Media" />
+            </h3>
+            <div className="flex gap-4">
+              <a
+                href="https://instagram.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                aria-label="Instagram"
+              >
+                <Instagram className="w-5 h-5" />
+              </a>
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                aria-label="Facebook"
+              >
+                <Facebook className="w-5 h-5" />
+              </a>
+              <a
+                href="https://youtube.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-2 bg-white/5 hover:bg-white/10 rounded-lg transition-colors"
+                aria-label="YouTube"
+              >
+                <Youtube className="w-5 h-5" />
+              </a>
             </div>
           </div>
         </div>
 
-        {/* Legal Document Modal */}
-        {selectedDoc && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center">
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={handleCloseModal} />
-            <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[90%] max-w-2xl max-h-[85vh] overflow-hidden z-[101]">
-              <div className="flex items-center justify-end p-4 border-b border-[#C8A97E]/20">
-                <button
-                  onClick={handleCloseModal}
-                  className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <X className="w-5 h-5 text-white/70 hover:text-white transition-colors" />
-                </button>
-              </div>
-              <div className="p-6 overflow-y-auto max-h-[calc(85vh-80px)] custom-scrollbar">
-          {selectedDoc && legalDocs.find(doc => doc.title === selectedDoc)?.component && 
-            createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
-              </div>
+        <div className="mt-12 pt-8 border-t border-white/10 text-center text-sm text-gray-400">
+          <p>
+            <TranslatedText text="© 2024 Mel Vocal Coaching. Alle Rechte vorbehalten." />
+          </p>
+        </div>
+      </div>
+
+      {/* Legal Document Modal */}
+      {selectedDoc && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center">
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={handleCloseModal} />
+          <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[90%] max-w-2xl max-h-[85vh] overflow-hidden z-[101]">
+            <div className="flex items-center justify-end p-4 border-b border-[#C8A97E]/20">
+              <button
+                onClick={handleCloseModal}
+                className="p-1.5 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <X className="w-5 h-5 text-white/70 hover:text-white transition-colors" />
+              </button>
+            </div>
+            <div className="p-6 overflow-y-auto max-h-[calc(85vh-80px)] custom-scrollbar">
+              {selectedDoc && legalDocs.find(doc => doc.title === selectedDoc)?.component && 
+                createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
             </div>
           </div>
-        )}
-      </div>
+        </div>
+      )}
     </footer>
   )
 }

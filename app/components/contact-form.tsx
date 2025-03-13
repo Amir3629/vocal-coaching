@@ -5,6 +5,8 @@ import { motion } from "framer-motion"
 import { MapPin, Clock, Mail, Send } from "lucide-react"
 import Image from "next/image"
 import SuccessMessage from "./success-message"
+import { Button } from "@/app/components/ui/button"
+import TranslatedText from "./translated-text"
 
 export default function ContactForm() {
   const [formData, setFormData] = useState({
@@ -56,7 +58,9 @@ export default function ContactForm() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="section-heading mb-4">Kontakt</h2>
+            <h2 className="section-heading mb-4">
+              <TranslatedText text="Kontakt" />
+            </h2>
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
 
@@ -107,9 +111,13 @@ export default function ContactForm() {
               <div>
                 <form onSubmit={handleSubmit} className="space-y-4">
                   <div>
+                    <label htmlFor="name" className="block text-[#C8A97E] mb-2">
+                      <TranslatedText text="Name" />
+                    </label>
                     <input
                       type="text"
-                      placeholder="Name"
+                      id="name"
+                      name="name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
@@ -117,9 +125,13 @@ export default function ContactForm() {
                     />
                   </div>
                   <div>
+                    <label htmlFor="email" className="block text-[#C8A97E] mb-2">
+                      <TranslatedText text="E-Mail" />
+                    </label>
                     <input
                       type="email"
-                      placeholder="Email"
+                      id="email"
+                      name="email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
@@ -127,8 +139,12 @@ export default function ContactForm() {
                     />
                   </div>
                   <div>
+                    <label htmlFor="message" className="block text-[#C8A97E] mb-2">
+                      <TranslatedText text="Nachricht" />
+                    </label>
                     <textarea
-                      placeholder="Ihre Nachricht"
+                      id="message"
+                      name="message"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                       required
@@ -143,7 +159,7 @@ export default function ContactForm() {
                     whileTap={{ scale: 0.98 }}
                   >
                     <Send className="w-4 h-4" />
-                    Nachricht senden
+                    <TranslatedText text="Nachricht senden" />
                   </motion.button>
                 </form>
               </div>
