@@ -165,18 +165,7 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {service.types.map((type) => (
               <div key={type.id} className="flex items-center gap-2 text-sm text-gray-200">
-                <motion.div 
-                  className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]"
-                  animate={{ 
-                    x: isSelected ? [0, 4, 0] : 0,
-                    scale: isSelected ? [1, 1.2, 1] : 1
-                  }}
-                  transition={{ 
-                    duration: 2,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                />
+                <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
                 <span className="drop-shadow-md">{type.title}</span>
               </div>
             ))}
@@ -184,23 +173,12 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
         </div>
       )}
 
-      {/* Service Icon with Animation */}
-      <motion.div
-        className="absolute top-4 left-4 text-[#C8A97E] opacity-50 group-hover:opacity-100"
-        animate={{ 
-          y: isSelected ? [0, -8, 0] : 0,
-          rotate: isSelected ? [0, -5, 5, 0] : 0
-        }}
-        transition={{ 
-          duration: 3,
-          repeat: Infinity,
-          ease: "easeInOut"
-        }}
-      >
+      {/* Service Icon */}
+      <div className="absolute top-4 left-4 text-[#C8A97E] opacity-50 group-hover:opacity-100">
         {service.id === "singen" && <Music className="w-6 h-6" />}
         {service.id === "vocal-coaching" && <Mic className="w-6 h-6" />}
         {service.id === "workshop" && <Users className="w-6 h-6" />}
-      </motion.div>
+      </div>
     </div>
   </motion.div>
 )
@@ -442,17 +420,20 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           exit={{ opacity: 0, x: -20 }}
                           className="flex flex-col items-center justify-center w-full"
                         >
-                          <div className="flex justify-center w-full">
-                            <Calendar
-                              mode="single"
-                              selected={selectedDate}
-                              onSelect={handleDateSelect}
-                              disabled={(date) =>
-                                date < new Date() || date > addMonths(new Date(), 2)
-                              }
-                              initialFocus
-                              className="rounded-lg border border-[#C8A97E]/20 bg-black/20 mx-auto"
-                            />
+                          <div className="flex items-center justify-center w-full">
+                            <div className="mx-auto">
+                              <Calendar
+                                mode="single"
+                                selected={selectedDate}
+                                onSelect={handleDateSelect}
+                                disabled={(date) =>
+                                  date < new Date() || date > addMonths(new Date(), 2)
+                                }
+                                initialFocus
+                                className="rounded-lg border border-[#C8A97E]/20 bg-black/20"
+                                locale={de}
+                              />
+                            </div>
                           </div>
                         </motion.div>
                       )}
