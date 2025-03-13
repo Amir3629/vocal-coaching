@@ -3,11 +3,7 @@ import "./globals.css"
 import "./styles/responsive.css"
 import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
-import CookieConsent from "./components/cookie-consent"
-import Footer from "./components/footer"
-import { LanguageProvider } from "./components/language-switcher"
-import Script from "next/script"
-import './i18n' // Import i18n configuration
+import RootClient from "./components/root-client"
 
 const inter = Inter({ subsets: ["latin"] })
 const playfair = Playfair_Display({
@@ -34,17 +30,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="de" className={`dark-theme-black ${playfair.variable}`}>
-      <head>
-        {/* No Google Translate script needed anymore */}
-      </head>
-      <body className={`${inter.className} antialiased`}>
-        <LanguageProvider>
-          {children}
-          <Footer />
-          <CookieConsent />
-        </LanguageProvider>
-      </body>
-    </html>
+    <RootClient className={`dark-theme-black ${playfair.variable} ${inter.className} antialiased`}>
+      {children}
+    </RootClient>
   )
 } 

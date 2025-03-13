@@ -70,7 +70,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
   const handleDateSelect = (date: Date | null) => {
     setFormData(prev => ({ ...prev, date }))
   }
-  
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
@@ -97,7 +97,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       setStep(step - 1)
     }
   }
-  
+
   const handleNext = () => {
     if (step < 3) {
       setStep(step + 1)
@@ -130,10 +130,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
     visible: { opacity: 1, x: 0 },
     exit: { opacity: 0, x: -50 }
   }
-  
+
   return (
     <AnimatePresence>
-      <motion.div
+          <motion.div
         className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center"
         initial="hidden"
         animate={isClosing ? "exit" : "visible"}
@@ -168,7 +168,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             >
               <X className="w-5 h-5" />
             </button>
-          </div>
+        </div>
           
           {/* Progress indicator */}
           <div className="px-4 pt-4">
@@ -201,12 +201,12 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
               </div>
             </div>
           </div>
-          
-          {/* Content */}
+
+        {/* Content */}
           <div className="p-4 overflow-y-auto max-h-[calc(90vh-140px)]">
             <AnimatePresence mode="wait">
               {step === 1 && (
-                <motion.div
+          <motion.div
                   key="step1"
                   initial="hidden"
                   animate="visible"
@@ -272,10 +272,10 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       isSelected={formData.service === "performance"}
                       currentLang={currentLang}
                     />
-                  </div>
+                </div>
                 </motion.div>
-              )}
-              
+            )}
+
               {step === 2 && (
                 <motion.div
                   key="step2"
@@ -327,7 +327,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   </div>
                 </motion.div>
               )}
-              
+
               {step === 3 && (
                 <motion.div
                   key="step3"
@@ -341,45 +341,45 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                   <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="space-y-4">
                       <div className="relative">
-                        <input
-                          type="text"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleInputChange}
+                  <input
+                    type="text"
+                      name="name"
+                    value={formData.name}
+                      onChange={handleInputChange}
                           placeholder={currentLang === "de" ? "Name" : "Name"}
                           className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50 focus:border-[#C8A97E] transition-all"
-                          required
-                        />
+                      required
+                    />
                       </div>
                       
                       <div className="relative">
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
+                  <input
+                    type="email"
+                      name="email"
+                    value={formData.email}
+                      onChange={handleInputChange}
                           placeholder={currentLang === "de" ? "E-Mail" : "E-mail"}
                           className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50 focus:border-[#C8A97E] transition-all"
-                          required
-                        />
+                      required
+                    />
                       </div>
                       
                       <div className="relative">
-                        <input
-                          type="tel"
-                          name="phone"
-                          value={formData.phone}
-                          onChange={handleInputChange}
+                  <input
+                    type="tel"
+                      name="phone"
+                    value={formData.phone}
+                      onChange={handleInputChange}
                           placeholder={currentLang === "de" ? "Telefon" : "Phone"}
                           className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50 focus:border-[#C8A97E] transition-all"
-                        />
+                    />
                       </div>
                       
                       <div className="relative">
-                        <textarea
-                          name="message"
-                          value={formData.message}
-                          onChange={handleInputChange}
+                  <textarea
+                      name="message"
+                    value={formData.message}
+                      onChange={handleInputChange}
                           placeholder={currentLang === "de" ? "Nachricht (optional)" : "Message (optional)"}
                           className="w-full px-4 py-3 bg-black/40 border border-white/10 rounded-md text-white placeholder-white/50 focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50 focus:border-[#C8A97E] transition-all min-h-[100px] resize-none"
                         />
@@ -405,8 +405,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           )}
                           {currentLang === "de" ? "Anfänger" : "Beginner"}
                         </button>
-                        <button
-                          type="button"
+                    <button
+                      type="button"
                           onClick={() => handleExperienceLevelSelect("intermediate")}
                           className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                             formData.experienceLevel === "intermediate"
@@ -419,8 +419,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           )}
                           {currentLang === "de" ? "Fortgeschritten" : "Intermediate"}
                         </button>
-                        <button
-                          type="button"
+                    <button
+                      type="button"
                           onClick={() => handleExperienceLevelSelect("professional")}
                           className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
                             formData.experienceLevel === "professional"
@@ -432,7 +432,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                             <Check className="w-4 h-4 inline-block mr-1" />
                           )}
                           {currentLang === "de" ? "Profi" : "Professional"}
-                        </button>
+                    </button>
                       </div>
                     </div>
                     
@@ -458,7 +458,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                           <a href="#" className="text-[#C8A97E] hover:underline">
                             {currentLang === "de" ? "Datenschutzrichtlinie" : "Privacy Policy"}
                           </a>
-                        </label>
+                  </label>
                       </div>
                     </div>
                     
@@ -469,26 +469,26 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       >
                         {currentLang === "de" ? "Buchen" : "Book"}
                       </button>
-                    </div>
-                  </form>
+                </div>
+              </form>
                 </motion.div>
-              )}
+            )}
             </AnimatePresence>
           </div>
-          
+
           {/* Footer */}
           <div className="p-4 border-t border-white/10 flex justify-between">
             {step > 1 ? (
-              <button
-                onClick={handleBack}
+                <button
+                  onClick={handleBack}
                 className="px-4 py-2 flex items-center gap-2 text-white bg-black/40 hover:bg-white/10 rounded-md transition-colors border border-white/10"
-              >
+                >
                 <ChevronLeft className="w-4 h-4" />
                 {currentLang === "de" ? "Zurück" : "Back"}
-              </button>
+                </button>
             ) : (
               <div></div>
-            )}
+              )}
             
             {step < 3 ? (
               <button
@@ -506,7 +506,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             ) : (
               <div></div>
             )}
-          </div>
+        </div>
         </motion.div>
       </motion.div>
     </AnimatePresence>
@@ -528,7 +528,7 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
   const [isHovered, setIsHovered] = useState(false)
   
   return (
-    <motion.div
+                  <motion.div
       initial={{ scale: 1 }}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
@@ -560,7 +560,7 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
           transition={{ type: "spring", stiffness: 500, damping: 15 }}
         >
           <Check className="w-4 h-4" />
-        </motion.div>
+                  </motion.div>
       )}
       
       <div className="flex items-start gap-3 mb-3">
@@ -570,8 +570,8 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
         <div>
           <h3 className="text-lg font-medium text-white">{title}</h3>
           <p className="text-sm text-[#C8A97E]">{subtitle}</p>
-        </div>
-      </div>
+                      </div>
+                    </div>
       
       <p className="text-sm text-white/80 mb-4">{description}</p>
       
@@ -580,9 +580,9 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
           <div key={index} className="flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
             <span className="text-sm text-white/70">{feature}</span>
-          </div>
+                </div>
         ))}
-      </div>
+              </div>
       
       <AnimatePresence mode="sync">
         {isHovered && (
@@ -630,8 +630,8 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
               </p>
             </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+          )}
+        </AnimatePresence>
     </motion.div>
   )
 } 

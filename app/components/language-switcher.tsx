@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { useTranslation } from 'react-i18next'
-import { changeLanguage, getCurrentLanguage } from '../i18n'
+import '../../lib/i18n'
 
 // Keep the translations for components that don't get translated by i18next
 const translations = {
@@ -161,7 +161,7 @@ const translations = {
   }
 }
 
-type LanguageContextType = {
+export type LanguageContextType = {
   currentLang: string
   toggleLanguage: () => void
 }
@@ -169,28 +169,21 @@ type LanguageContextType = {
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined)
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [currentLang, setCurrentLang] = useState<string>("de")
-  const [isTransitioning, setIsTransitioning] = useState(false)
   const { i18n } = useTranslation()
+  const [currentLang, setCurrentLang] = useState(i18n.language || 'de')
 
   useEffect(() => {
-    const savedLang = localStorage.getItem('preferredLanguage')
-    const lang = savedLang || getCurrentLanguage()
-    setCurrentLang(lang)
-    changeLanguage(lang)
-  }, [])
+    const savedLang = localStorage.getItem('language') || 'de'
+    setCurrentLang(savedLang)
+    i18n.changeLanguage(savedLang)
+  }, [i18n])
 
   const toggleLanguage = () => {
-    if (isTransitioning) return;
-    
-    setIsTransitioning(true)
-    const newLang = currentLang === "de" ? "en" : "de"
-    
-    changeLanguage(newLang).then(() => {
-      setCurrentLang(newLang)
-      localStorage.setItem('preferredLanguage', newLang)
-      setTimeout(() => setIsTransitioning(false), 500)
-    })
+    const newLang = currentLang === 'de' ? 'en' : 'de'
+    setCurrentLang(newLang)
+    i18n.changeLanguage(newLang)
+    localStorage.setItem('language', newLang)
+    document.documentElement.lang = newLang
   }
 
   return (
@@ -203,41 +196,21 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
 export function useLanguage() {
   const context = useContext(LanguageContext)
   if (context === undefined) {
-    throw new Error("useLanguage must be used within a LanguageProvider")
+    throw new Error('useLanguage must be used within a LanguageProvider')
   }
   return context
 }
 
-export function LanguageSwitcher() {
+export default function LanguageSwitcher() {
   const { currentLang, toggleLanguage } = useLanguage()
-  const [isHovered, setIsHovered] = useState(false)
-  const { t } = useTranslation()
-  
-  return (
-    <motion.button
-      onHoverStart={() => setIsHovered(true)}
-      onHoverEnd={() => setIsHovered(false)}
-      onClick={toggleLanguage}
-      className="relative flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/5 hover:bg-white/10 transition-colors"
-    >
-      <span className="text-sm font-medium text-white">
-        {currentLang.toUpperCase()}
-      </span>
-      
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="absolute left-0 right-0 -bottom-8 text-xs text-white/70 whitespace-nowrap"
-          >
-            {t('language.switchTo')}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </motion.button>
-  )
-}
 
-export default LanguageSwitcher; 
+  return (
+    <button
+      onClick={toggleLanguage}
+      className="text-white hover:text-[#C8A97E] transition-colors"
+      aria-label="Toggle language"
+    >
+      {currentLang.toUpperCase()}
+    </button>
+  )
+} 
