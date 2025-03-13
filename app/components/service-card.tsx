@@ -3,6 +3,7 @@
 import { useState } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
+import { Check } from "lucide-react"
 
 interface ServiceCardProps {
   title: string
@@ -53,6 +54,7 @@ export default function ServiceCard({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       onClick={handleClick}
+      style={{ height: isHovered ? 'auto' : '320px' }}
     >
       {image && (
         <div className="absolute inset-0">
@@ -77,13 +79,13 @@ export default function ServiceCard({
             <motion.div
               className="text-[#C8A97E]"
               animate={{ 
-                scale: isHovered ? 1.2 : 1,
-                rotate: isHovered ? [0, -10, 5, 0] : 0
+                scale: isHovered ? 1.1 : 1,
+                rotate: isHovered ? [0, -5, 5, 0] : 0
               }}
               transition={{ 
-                duration: 0.5,
-                scale: { type: 'spring', stiffness: 200 },
-                rotate: { duration: 0.6, ease: 'easeInOut' }
+                duration: 1.2,
+                scale: { type: 'spring', stiffness: 100 },
+                rotate: { duration: 1.5, ease: 'easeInOut' }
               }}
             >
               {icon}
@@ -106,18 +108,7 @@ export default function ServiceCard({
               transition={{ delay: delay + index * 0.1 }}
               className="flex items-center gap-2 text-white/90"
             >
-              <motion.span 
-                className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]"
-                animate={{ 
-                  x: isHovered ? [0, 4, 0] : 0,
-                  scale: isHovered ? [1, 1.2, 1] : 1
-                }}
-                transition={{ 
-                  duration: 2,
-                  repeat: Infinity,
-                  ease: "easeInOut"
-                }}
-              />
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
               <span className="text-sm">{feature}</span>
             </motion.li>
           ))}
@@ -139,20 +130,9 @@ export default function ServiceCard({
             {details.includes && (
               <div>
                 <h4 className="text-[#C8A97E] text-sm font-medium mb-2">
-                  <motion.span
-                    animate={{ 
-                      y: isHovered ? [0, -5, 0] : 0,
-                      rotate: isHovered ? [0, -5, 5, 0] : 0
-                    }}
-                    transition={{ 
-                      duration: 3,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                    className="inline-block"
-                  >
-                    ✨
-                  </motion.span>
+                  <span className="inline-flex items-center justify-center w-4 h-4 mr-1">
+                    <Check className="w-3.5 h-3.5" />
+                  </span>
                   {" "}Enthält
                 </h4>
                 <ul className="grid grid-cols-2 gap-2">
@@ -174,20 +154,9 @@ export default function ServiceCard({
             {details.suitable && (
               <div>
                 <h4 className="text-[#C8A97E] text-sm font-medium mb-2">
-                  <motion.span
-                    animate={{ 
-                      y: isHovered ? [0, -5, 0] : 0,
-                      scale: isHovered ? [1, 1.1, 1] : 1
-                    }}
-                    transition={{ 
-                      duration: 2.5,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    }}
-                    className="inline-block"
-                  >
+                  <span className="inline-block">
                     👥
-                  </motion.span>
+                  </span>
                   {" "}Geeignet für
                 </h4>
                 <ul className="grid grid-cols-2 gap-2">
@@ -210,19 +179,9 @@ export default function ServiceCard({
               {details.duration && (
                 <div>
                   <p className="text-[#C8A97E] text-xs mb-1">
-                    <motion.span
-                      animate={{ 
-                        rotate: isHovered ? [0, 360] : 0
-                      }}
-                      transition={{ 
-                        duration: 8,
-                        repeat: Infinity,
-                        ease: "linear"
-                      }}
-                      className="inline-block"
-                    >
+                    <span className="inline-block">
                       ⏱️
-                    </motion.span>
+                    </span>
                     {" "}Dauer
                   </p>
                   <p className="text-white/90 text-sm">{details.duration}</p>
@@ -231,34 +190,15 @@ export default function ServiceCard({
               {details.location && (
                 <div>
                   <p className="text-[#C8A97E] text-xs mb-1">
-                    <motion.span
-                      animate={{ 
-                        y: isHovered ? [0, -3, 0] : 0,
-                        scale: isHovered ? [1, 1.2, 1] : 1
-                      }}
-                      transition={{ 
-                        duration: 2,
-                        repeat: Infinity,
-                        ease: "easeInOut"
-                      }}
-                      className="inline-block"
-                    >
+                    <span className="inline-block">
                       📍
-                    </motion.span>
+                    </span>
                     {" "}Ort
                   </p>
                   <p className="text-white/90 text-sm">{details.location}</p>
                 </div>
               )}
             </div>
-
-            {link && isHovered && (
-              <div className="mt-2 text-center">
-                <span className="text-[#C8A97E] text-sm hover:text-[#D4B88F] transition-colors">
-                  Für mehr erfahren →
-                </span>
-              </div>
-            )}
           </motion.div>
         )}
       </div>
