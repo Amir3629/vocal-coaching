@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import Image from 'next/image';
+import { Play, Pause, SkipBack, SkipForward, Volume2 } from 'lucide-react';
 
 interface MusicTrack {
   id: string;
@@ -78,7 +79,25 @@ export default function MusicSection() {
   const [isPlaying, setIsPlaying] = useState(false);
 
   const handleTrackSelect = (track: MusicTrack) => {
-    setCurrentTrack(track);
+    if (currentTrack.id === track.id) {
+      setIsPlaying(!isPlaying);
+    } else {
+      setCurrentTrack(track);
+      setIsPlaying(true);
+    }
+  };
+
+  const handleNext = () => {
+    const currentIndex = tracks.findIndex(track => track.id === currentTrack.id);
+    const nextIndex = (currentIndex + 1) % tracks.length;
+    setCurrentTrack(tracks[nextIndex]);
+    setIsPlaying(true);
+  };
+
+  const handlePrevious = () => {
+    const currentIndex = tracks.findIndex(track => track.id === currentTrack.id);
+    const previousIndex = (currentIndex - 1 + tracks.length) % tracks.length;
+    setCurrentTrack(tracks[previousIndex]);
     setIsPlaying(true);
   };
 
@@ -90,20 +109,57 @@ export default function MusicSection() {
         </h2>
         
         {/* Main Player */}
-        <div className="bg-zinc-900 rounded-xl p-6 mb-12 shadow-2xl max-w-5xl mx-auto">
+        <div className="bg-zinc-900/80 backdrop-blur-lg rounded-xl p-6 mb-12 shadow-2xl max-w-5xl mx-auto hover:bg-zinc-900/90 transition-all duration-300">
           <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
             <iframe
               src={`https://www.youtube.com/embed/${currentTrack.youtubeId}?autoplay=${isPlaying ? 1 : 0}&rel=0`}
               title={currentTrack.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
-              className="absolute top-0 left-0 w-full h-full rounded-lg"
+              className="absolute top-0 left-0 w-full h-full rounded-lg shadow-lg"
             />
           </div>
-          <div className="flex items-center justify-between mt-6">
-            <div>
-              <h3 className="text-2xl font-semibold text-white mb-2">{currentTrack.title}</h3>
-              <p className="text-gold text-lg">{currentTrack.artist}</p>
+          
+          {/* Player Controls */}
+          <div className="mt-6 flex flex-col gap-4">
+            <div className="flex items-center justify-between">
+              <div>
+                <h3 className="text-2xl font-semibold text-white mb-2">{currentTrack.title}</h3>
+                <p className="text-gold text-lg">{currentTrack.artist}</p>
+              </div>
+              <div className="flex items-center gap-4">
+                <button 
+                  onClick={handlePrevious}
+                  className="p-3 rounded-full hover:bg-zinc-800 transition-colors text-white"
+                  aria-label="Previous track"
+                >
+                  <SkipBack className="w-6 h-6" />
+                </button>
+                <button 
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  className="p-4 rounded-full bg-gold hover:bg-[#B69A6E] transition-colors"
+                  aria-label={isPlaying ? "Pause" : "Play"}
+                >
+                  {isPlaying ? (
+                    <Pause className="w-6 h-6 text-black" />
+                  ) : (
+                    <Play className="w-6 h-6 text-black" />
+                  )}
+                </button>
+                <button 
+                  onClick={handleNext}
+                  className="p-3 rounded-full hover:bg-zinc-800 transition-colors text-white"
+                  aria-label="Next track"
+                >
+                  <SkipForward className="w-6 h-6" />
+                </button>
+                <button 
+                  className="p-3 rounded-full hover:bg-zinc-800 transition-colors text-white"
+                  aria-label="Volume"
+                >
+                  <Volume2 className="w-6 h-6" />
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -114,24 +170,29 @@ export default function MusicSection() {
             <div
               key={track.id}
               onClick={() => handleTrackSelect(track)}
-              className={`bg-zinc-900 rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl ${
-                currentTrack.id === track.id ? 'ring-2 ring-gold scale-[1.02]' : ''
+              className={`group bg-zinc-900/80 backdrop-blur-lg rounded-lg overflow-hidden cursor-pointer transition-all duration-300 hover:scale-105 hover:shadow-xl hover:bg-zinc-900/90 ${
+                currentTrack.id === track.id ? 'ring-2 ring-gold scale-[1.02] shadow-lg' : ''
               }`}
             >
-              <div className="aspect-video relative">
+              <div className="aspect-video relative overflow-hidden">
                 <Image
                   src={track.thumbnail}
                   alt={track.title}
                   width={480}
                   height={360}
-                  unoptimized
-                  className="rounded-t-lg object-cover w-full h-full"
+                  className="rounded-t-lg object-cover w-full h-full transform group-hover:scale-110 transition-transform duration-500"
                 />
-                {currentTrack.id === track.id && (
-                  <div className="absolute inset-0 bg-gold bg-opacity-20 flex items-center justify-center backdrop-blur-sm">
-                    <span className="text-white text-lg font-medium px-4 py-2 rounded-full bg-black/50">Now Playing</span>
-                  </div>
-                )}
+                <div className={`absolute inset-0 flex items-center justify-center transition-all duration-300 ${
+                  currentTrack.id === track.id 
+                    ? 'bg-black/40 backdrop-blur-sm' 
+                    : 'bg-black/0 group-hover:bg-black/30'
+                }`}>
+                  {currentTrack.id === track.id && (
+                    <span className="text-white text-lg font-medium px-4 py-2 rounded-full bg-gold/90 shadow-lg transform -translate-y-2">
+                      {isPlaying ? 'Now Playing' : 'Paused'}
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="p-4">
                 <h4 className="text-white font-medium text-lg truncate mb-1">{track.title}</h4>
