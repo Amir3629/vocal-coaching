@@ -35,29 +35,37 @@ export default function RootLayout({
   return (
     <html lang="en" className={`dark-theme-black ${playfair.variable}`}>
       <head>
-        <Script id="google-translate" strategy="afterInteractive">
+        {/* GTranslate: a simpler approach */}
+        <Script id="gtranslate" strategy="beforeInteractive">
           {`
             function googleTranslateElementInit() {
               new google.translate.TranslateElement({
                 pageLanguage: 'de',
                 includedLanguages: 'en,de',
-                layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-                autoDisplay: false
+                autoDisplay: false,
+                layout: google.translate.TranslateElement.InlineLayout.SIMPLE
               }, 'google_translate_element');
-              
-              // Hide Google's default widget
-              const translateBar = document.querySelector('.skiptranslate');
-              if (translateBar) {
-                translateBar.style.display = 'none';
+            }
+            
+            function doGTranslate(lang_pair) {
+              if (lang_pair.value) lang_pair = lang_pair.value;
+              if (lang_pair == '') return;
+              var lang = lang_pair.split('|')[1];
+              var teCombo = document.querySelector('.goog-te-combo');
+              if (teCombo) {
+                teCombo.value = lang;
+                if (document.createEvent) {
+                  var event = document.createEvent('HTMLEvents');
+                  event.initEvent('change', true, true);
+                  teCombo.dispatchEvent(event);
+                } else {
+                  teCombo.fireEvent('onchange');
+                }
               }
-              
-              // Remove Google translate iframe
-              const iframe = document.querySelector('.goog-te-menu-frame');
-              if (iframe) {
-                iframe.style.display = 'none';
-              }
-              
-              // Add custom CSS to hide Google Translate elements
+            }
+            
+            // Add custom CSS to hide Google Translate elements
+            document.addEventListener('DOMContentLoaded', function() {
               const style = document.createElement('style');
               style.textContent = \`
                 body {
@@ -67,42 +75,39 @@ export default function RootLayout({
                   display: none !important;
                   visibility: hidden !important;
                 }
-                .notranslate {
-                  display: inline-block !important;
+                .goog-te-gadget {
+                  height: 0 !important;
+                  overflow: hidden !important;
+                }
+                .VIpgJd-ZVi9od-l4eHX-hSRGPd, .VIpgJd-ZVi9od-ORHb-OEVmcd {
+                  display: none !important;
                 }
               \`;
               document.head.appendChild(style);
-            }
-            
-            // Observer to ensure Google Translate doesn't modify our layout
-            document.addEventListener('DOMContentLoaded', function() {
-              // Create an observer instance
-              const observer = new MutationObserver(function(mutations) {
-                // If Google adds its top bar, remove it
-                if (document.body.style.top === '40px') {
-                  document.body.style.top = '0px';
+              
+              // Create an observer to remove Google Translate's top bar
+              const observer = new MutationObserver(function() {
+                if (document.body.style.top) {
+                  document.body.style.top = '';
                 }
-                
-                // Make sure notranslate elements stay untranslated
-                document.querySelectorAll('[data-notranslate="true"]').forEach(el => {
-                  if (!el.classList.contains('notranslate')) {
-                    el.classList.add('notranslate');
-                  }
-                });
+                const banner = document.querySelector('.goog-te-banner-frame');
+                if (banner) {
+                  banner.style.display = 'none';
+                }
               });
               
-              // Start observing the document body
               observer.observe(document.body, { 
-                attributes: true,
+                attributes: true, 
                 childList: true,
-                subtree: true
+                subtree: true,
+                attributeFilter: ['style']
               });
             });
           `}
         </Script>
         <Script 
           src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" 
-          strategy="afterInteractive"
+          strategy="beforeInteractive"
         />
       </head>
       <body className={`${inter.className} antialiased`}>

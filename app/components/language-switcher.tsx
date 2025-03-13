@@ -18,6 +18,7 @@ declare global {
         };
       };
     };
+    doGTranslate: (lang_pair: string) => void;
   }
 }
 
@@ -191,43 +192,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [currentLang, setCurrentLang] = useState("de")
   const [isTranslating, setIsTranslating] = useState(false)
 
-  // Function to toggle Google Translate
-  const toggleGoogleTranslate = () => {
-    if (typeof window !== 'undefined') {
-      const iframe = document.querySelector('.goog-te-menu-frame') as HTMLIFrameElement;
-      
-      if (iframe) {
-        // If iframe exists, find the document inside it
-        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
-        
-        if (iframeDoc) {
-          // Find the language links inside the iframe
-          const links = iframeDoc.querySelectorAll('a.goog-te-menu2-item');
-          
-          // Click the appropriate language link
-          links.forEach((link) => {
-            const typedLink = link as HTMLAnchorElement;
-            const langSpan = typedLink.querySelector('span.text');
-            if (langSpan) {
-              const langText = langSpan.textContent || '';
-              if ((currentLang === 'de' && langText.includes('English')) || 
-                  (currentLang === 'en' && langText.includes('German'))) {
-                typedLink.click();
-              }
-            }
-          });
-        }
-      } else {
-        // If iframe doesn't exist yet, use the select element
-        const select = document.querySelector('.goog-te-combo') as HTMLSelectElement;
-        if (select) {
-          select.value = currentLang === 'de' ? 'en' : 'de';
-          select.dispatchEvent(new Event('change'));
-        }
-      }
-    }
-  };
-
   const toggleLanguage = () => {
     setIsTranslating(true);
     
@@ -235,12 +199,37 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     setCurrentLang((prev) => {
       const newLang = prev === "de" ? "en" : "de";
       
-      // Use Google Translate API to translate the page
-      if (typeof window !== 'undefined' && window.google && window.google.translate) {
+      // Use direct GTranslate function if available
+      if (typeof window !== 'undefined') {
         try {
-          toggleGoogleTranslate();
+          // This is a simpler approach that works with GTranslate
+          const langPair = newLang === 'en' ? 'de|en' : 'en|de';
+          
+          // Try to find and click the Google Translate select
+          const selectElement = document.querySelector('.goog-te-combo') as HTMLSelectElement;
+          if (selectElement) {
+            selectElement.value = newLang === 'en' ? 'en' : 'de';
+            selectElement.dispatchEvent(new Event('change'));
+          } else if (window.doGTranslate) {
+            // If the direct function is available
+            window.doGTranslate(langPair);
+          } else {
+            // Fallback: try to find the iframe and click the appropriate link
+            const iframe = document.querySelector('.goog-te-menu-frame') as HTMLIFrameElement;
+            if (iframe && iframe.contentDocument) {
+              const links = iframe.contentDocument.querySelectorAll('a.goog-te-menu2-item');
+              links.forEach((link: Element) => {
+                const typedLink = link as HTMLAnchorElement;
+                const langText = typedLink.textContent || '';
+                if ((newLang === 'en' && langText.includes('English')) || 
+                    (newLang === 'de' && langText.includes('German'))) {
+                  typedLink.click();
+                }
+              });
+            }
+          }
         } catch (error) {
-          console.error('Error toggling Google Translate:', error);
+          console.error('Error toggling language:', error);
         }
       }
       
@@ -251,35 +240,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       setIsTranslating(false);
     }, 1000);
   }
-
-  // Initialize Google Translate
-  useEffect(() => {
-    // This will run once after the component mounts
-    const initGoogleTranslate = () => {
-      if (typeof window !== 'undefined' && window.google && window.google.translate) {
-        // Google Translate is loaded
-        console.log('Google Translate is loaded');
-      }
-    };
-
-    // Check if Google Translate is already loaded
-    if (typeof window !== 'undefined' && window.google && window.google.translate) {
-      initGoogleTranslate();
-    } else {
-      // If not loaded yet, wait for it
-      const checkGoogleTranslate = setInterval(() => {
-        if (typeof window !== 'undefined' && window.google && window.google.translate) {
-          clearInterval(checkGoogleTranslate);
-          initGoogleTranslate();
-        }
-      }, 100);
-      
-      // Clear interval after 10 seconds to prevent memory leaks
-      setTimeout(() => {
-        clearInterval(checkGoogleTranslate);
-      }, 10000);
-    }
-  }, []);
 
   return (
     <LanguageContext.Provider
