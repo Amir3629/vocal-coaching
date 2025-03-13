@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react"
 import { useLanguage } from "./language-switcher"
+import { useTranslation } from 'react-i18next'
+import Link from "next/link"
 
 export default function TestNav() {
   const [isScrolled, setIsScrolled] = useState(false)
@@ -11,8 +13,10 @@ export default function TestNav() {
   const context = useLanguage() // Raw usage
   console.log("Raw context:", context)
 
-  const { currentLang, toggleLanguage, t } = useLanguage() // Correct destructuring
-  console.log("Destructured values:", { currentLang, toggleLanguage, t })
+  const { currentLang, toggleLanguage } = useLanguage() // Correct destructuring
+  console.log("Destructured values:", { currentLang, toggleLanguage })
+
+  const { t } = useTranslation()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,21 +33,21 @@ export default function TestNav() {
     }`}>
       <div className="container mx-auto px-4 py-4">
         <div className="flex items-center justify-between">
-          <a href="/" className="text-white font-medium text-xl">
-            Logo
-          </a>
+          <Link href="/" className="text-white font-medium text-xl">
+            Mel jazz
+          </Link>
 
           <div className="hidden md:flex items-center space-x-8">
             {/* Using t directly from useLanguage */}
-            <a href="#home" className="text-white hover:text-[#C8A97E]">
-              {t.nav.home}
-            </a>
-            <a href="#services" className="text-white hover:text-[#C8A97E]">
-              {t.nav.services}
-            </a>
-            <a href="#about" className="text-white hover:text-[#C8A97E]">
-              {t.nav.about}
-            </a>
+            <Link href="/" className="text-white hover:text-[#C8A97E] transition-colors">
+              {t('nav.home')}
+            </Link>
+            <Link href="/#services" className="text-white hover:text-[#C8A97E] transition-colors">
+              {t('nav.services')}
+            </Link>
+            <Link href="/#about" className="text-white hover:text-[#C8A97E] transition-colors">
+              {t('nav.about')}
+            </Link>
           </div>
 
           <button
