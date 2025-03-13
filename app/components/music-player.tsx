@@ -5,6 +5,14 @@ import { Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// Add TypeScript interface for window with YouTube API
+declare global {
+  interface Window {
+    onYouTubeIframeAPIReady: (() => void) | undefined;
+    YT: any;
+  }
+}
+
 interface Song {
   title: string;
   artist: string;
@@ -68,22 +76,14 @@ export default function MusicPlayer() {
 
   const currentSong = songs[currentSongIndex];
 
-  // YouTube API integration
+  // Simplified YouTube API integration
   useEffect(() => {
-    // Create YouTube API script
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
-
-    // Initialize YouTube player when API is ready
-    window.onYouTubeIframeAPIReady = () => {
+    // Set player ready after a short delay
+    const timer = setTimeout(() => {
       setPlayerReady(true);
-    };
-
-    return () => {
-      window.onYouTubeIframeAPIReady = null;
-    };
+    }, 1000);
+    
+    return () => clearTimeout(timer);
   }, []);
 
   // Handle YouTube player messages
