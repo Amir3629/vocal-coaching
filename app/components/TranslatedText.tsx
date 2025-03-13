@@ -1,8 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, HTMLMotionProps } from 'framer-motion';
 import { useLanguage } from '@/lib/LanguageContext';
+
+type MotionComponent = typeof motion.div;
 
 interface TranslatedTextProps {
   text: string;
@@ -11,7 +13,14 @@ interface TranslatedTextProps {
   html?: boolean;
 }
 
-export default function TranslatedText({ text, as = 'span', className = '', html = false }: TranslatedTextProps) {
+const motionProps = {
+  initial: { y: 10, opacity: 0 },
+  animate: { y: 0, opacity: 1 },
+  exit: { y: -10, opacity: 0 },
+  transition: { duration: 0.3 },
+};
+
+export default function TranslatedText({ text, as = 'div', className = '', html = false }: TranslatedTextProps) {
   const { language, translate, translateHtmlContent } = useLanguage();
   const [translatedText, setTranslatedText] = useState(text);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -29,24 +38,16 @@ export default function TranslatedText({ text, as = 'span', className = '', html
     translateContent();
   }, [text, language, translate, translateHtmlContent, html]);
 
-  const Component = motion[as as keyof typeof motion];
+  const MotionTag = motion[as] as MotionComponent;
 
   return (
     <AnimatePresence mode="wait">
-      <Component
+      <MotionTag
         key={translatedText}
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        exit={{ y: -10, opacity: 0 }}
-        transition={{ duration: 0.3 }}
+        {...motionProps}
         className={`${className} ${isTransitioning ? 'opacity-50' : ''}`}
-      >
-        {html ? (
-          <div dangerouslySetInnerHTML={{ __html: translatedText }} />
-        ) : (
-          translatedText
-        )}
-      </Component>
+        {...(html ? { dangerouslySetInnerHTML: { __html: translatedText } } : { children: translatedText })}
+      />
     </AnimatePresence>
   );
 } 
