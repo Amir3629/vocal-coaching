@@ -4,7 +4,7 @@ import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { format, addMonths, subMonths, isSameDay, isBefore, startOfToday, startOfMonth, endOfMonth, eachDayOfInterval, isEqual } from "date-fns"
 import { de } from "date-fns/locale"
-import { ChevronLeft, ChevronRight, X, Check } from "lucide-react"
+import { ChevronLeft, ChevronRight, X, Check, Music, Mic, Users } from "lucide-react"
 import { z } from "zod"
 import { Dialog } from "@/app/components/ui/dialog"
 import { Button } from "./ui/button"
@@ -125,7 +125,7 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
 }) => (
   <motion.div
     onClick={onSelect}
-    className={`relative w-full p-6 rounded-xl transition-all duration-300 cursor-pointer ${
+    className={`group relative w-full p-6 rounded-xl transition-all duration-300 cursor-pointer overflow-hidden ${
       isSelected 
         ? 'bg-gradient-to-br from-[#C8A97E]/20 to-[#C8A97E]/5 border-2 border-[#C8A97E] shadow-[0_0_20px_rgba(200,169,126,0.2)]' 
         : 'bg-black/20 hover:bg-[#C8A97E]/5 border-2 border-white/10 hover:border-[#C8A97E]/50'
@@ -134,11 +134,20 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
     whileTap={{ scale: 0.98 }}
     transition={{ type: "spring", stiffness: 400, damping: 25 }}
   >
-    <div className="flex flex-col h-full">
+    {/* Background Image with Blur Effect */}
+    <div 
+      className="absolute inset-0 bg-cover bg-center transition-all duration-700 filter blur-sm group-hover:blur-none opacity-30 group-hover:opacity-40"
+      style={{ 
+        backgroundImage: `url(/images/${service.id}-bg.jpg)`,
+        transform: isSelected ? 'scale(1.1)' : 'scale(1)'
+      }}
+    />
+
+    <div className="relative flex flex-col h-full z-10">
       <div className="flex items-start justify-between mb-4">
         <div>
-          <h3 className="text-xl font-medium text-white mb-1">{service.title}</h3>
-          <p className="text-[#C8A97E]">{service.duration}</p>
+          <h3 className="text-xl font-medium text-white mb-1 drop-shadow-lg">{service.title}</h3>
+          <p className="text-[#C8A97E] drop-shadow-md">{service.duration}</p>
         </div>
         {isSelected && (
           <motion.div
@@ -150,19 +159,48 @@ const ServiceOption = ({ service, isSelected, onSelect }: {
           </motion.div>
         )}
       </div>
-      <p className="text-gray-300 text-sm">{service.description}</p>
+      <p className="text-gray-100 text-sm font-medium drop-shadow-lg">{service.description}</p>
       {service.types && (
-        <div className="mt-4 pt-4 border-t border-white/10">
+        <div className="mt-4 pt-4 border-t border-white/20">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
             {service.types.map((type) => (
-              <div key={type.id} className="flex items-center gap-2 text-sm text-gray-400">
-                <div className="w-1 h-1 rounded-full bg-[#C8A97E]" />
-                <span>{type.title}</span>
+              <div key={type.id} className="flex items-center gap-2 text-sm text-gray-200">
+                <motion.div 
+                  className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]"
+                  animate={{ 
+                    x: isSelected ? [0, 4, 0] : 0,
+                    scale: isSelected ? [1, 1.2, 1] : 1
+                  }}
+                  transition={{ 
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                />
+                <span className="drop-shadow-md">{type.title}</span>
               </div>
             ))}
           </div>
         </div>
       )}
+
+      {/* Service Icon with Animation */}
+      <motion.div
+        className="absolute top-4 left-4 text-[#C8A97E] opacity-50 group-hover:opacity-100"
+        animate={{ 
+          y: isSelected ? [0, -8, 0] : 0,
+          rotate: isSelected ? [0, -5, 5, 0] : 0
+        }}
+        transition={{ 
+          duration: 3,
+          repeat: Infinity,
+          ease: "easeInOut"
+        }}
+      >
+        {service.id === "singen" && <Music className="w-6 h-6" />}
+        {service.id === "vocal-coaching" && <Mic className="w-6 h-6" />}
+        {service.id === "workshop" && <Users className="w-6 h-6" />}
+      </motion.div>
     </div>
   </motion.div>
 )
