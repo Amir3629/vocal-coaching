@@ -20,6 +20,7 @@ import BookingModal from "@/app/components/booking-modal"
 import Collaborations from "@/app/components/collaborations"
 import ServiceCard from "@/app/components/service-card"
 import ServicesSection from "./components/services-section"
+import MusicPlayer from "@/app/components/music-player"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -186,6 +187,7 @@ export default function Home() {
             transition={{ duration: 0.8 }}
           >
             <h2 className="section-heading mb-4">Meine Musik</h2>
+            <MusicPlayer />
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
           </motion.div>
           <EnhancedMusicPlayer />
