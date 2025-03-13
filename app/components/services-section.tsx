@@ -136,9 +136,10 @@ export default function ServicesSection() {
   const { t } = useTranslation()
 
   // Get features as an array safely
-  const getFeatures = (): string[] => {
+  const getFeatures = () => {
     const features = t('services.singing.features', { returnObjects: true });
-    return Array.isArray(features) ? features : [];
+    // Ensure we return a string array
+    return Array.isArray(features) ? features.map(f => String(f)) : [];
   };
 
   return (
@@ -172,7 +173,7 @@ export default function ServicesSection() {
               {t('services.singing.description')}
             </p>
             <ul className="space-y-3">
-              {getFeatures().map((feature: string, index: number) => (
+              {getFeatures().map((feature, index) => (
                 <li key={index} className="flex items-center gap-2 text-white/60">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
                   {feature}
