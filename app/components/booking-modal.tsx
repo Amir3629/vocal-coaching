@@ -5,9 +5,9 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X, Calendar, Clock, MapPin, Music, Mic, Users, ChevronLeft, ChevronRight, Check } from "lucide-react"
 import { format } from "date-fns"
 import { de } from "date-fns/locale"
-import { Calendar as CalendarComponent } from "@/components/ui/calendar"
+import { Calendar as CalendarComponent } from "../components/ui/calendar"
 import { useLanguage } from "./language-switcher"
-import { cn } from "@/lib/utils"
+import { cn } from "../../lib/utils"
 
 interface BookingModalProps {
   isOpen: boolean
@@ -289,7 +289,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                       <CalendarComponent
                         mode="single"
                         selected={formData.date || undefined}
-                        onSelect={handleDateSelect}
+                        onSelect={(date) => handleDateSelect(date || null)}
                         className="rounded-md border-white/10 bg-black/30"
                         classNames={{
                           day_selected: "bg-[#C8A97E] text-black hover:bg-[#C8A97E] hover:text-black focus:bg-[#C8A97E] focus:text-black",
