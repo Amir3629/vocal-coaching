@@ -17,49 +17,49 @@ const tracks: MusicTrack[] = [
     id: '1',
     title: 'Jazz Performance',
     artist: 'Live at B-Flat Jazz Club Berlin',
-    thumbnail: '/images/music/jazz-performance.jpg',
+    thumbnail: `https://img.youtube.com/vi/hFdMHvB6-Jk/maxresdefault.jpg`,
     youtubeUrl: 'https://www.youtube.com/watch?v=hFdMHvB6-Jk'
   },
   {
     id: '2',
     title: 'Vocal Workshop',
     artist: 'Complete Vocal Technique Demonstration',
-    thumbnail: '/images/music/vocal-workshop.jpg',
+    thumbnail: `https://img.youtube.com/vi/ZvWZr6TNh9Y/maxresdefault.jpg`,
     youtubeUrl: 'https://www.youtube.com/watch?v=ZvWZr6TNh9Y'
   },
   {
     id: '3',
     title: 'Jazz Standards',
     artist: 'Live Performance Highlights',
-    thumbnail: '/images/music/jazz-standards.jpg',
+    thumbnail: `https://img.youtube.com/vi/r58-5DBfMpY/maxresdefault.jpg`,
     youtubeUrl: 'https://www.youtube.com/watch?v=r58-5DBfMpY'
   },
   {
     id: '4',
     title: 'Vocal Jazz',
     artist: 'Studio Session',
-    thumbnail: '/images/music/vocal-jazz.jpg',
+    thumbnail: `https://img.youtube.com/vi/0zARqh3xwnw/maxresdefault.jpg`,
     youtubeUrl: 'https://www.youtube.com/watch?v=0zARqh3xwnw'
   },
   {
     id: '5',
     title: 'Jazz Ensemble',
     artist: 'Live at Jazz Club',
-    thumbnail: '/images/music/jazz-ensemble.jpg',
+    thumbnail: `https://img.youtube.com/vi/AWsarzdZ1u8/maxresdefault.jpg`,
     youtubeUrl: 'https://www.youtube.com/watch?v=AWsarzdZ1u8'
   },
   {
     id: '6',
     title: 'Vocal Performance',
     artist: 'Special Concert',
-    thumbnail: '/images/music/vocal-performance.jpg',
+    thumbnail: `https://img.youtube.com/vi/GidIMbCmtyk/maxresdefault.jpg`,
     youtubeUrl: 'https://www.youtube.com/watch?v=GidIMbCmtyk'
   },
   {
     id: '7',
     title: 'Jazz Collaboration',
     artist: 'Featured Performance',
-    thumbnail: '/images/music/jazz-collab.jpg',
+    thumbnail: `https://img.youtube.com/vi/QgZKO_f5FlM/maxresdefault.jpg`,
     youtubeUrl: 'https://www.youtube.com/watch?v=QgZKO_f5FlM'
   }
 ];
@@ -118,9 +118,10 @@ export default function MusicSection() {
                 <Image
                   src={track.thumbnail}
                   alt={track.title}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-t-lg"
+                  width={640}
+                  height={360}
+                  unoptimized
+                  className="rounded-t-lg object-cover w-full h-full"
                 />
                 {currentTrack.id === track.id && (
                   <div className="absolute inset-0 bg-gold bg-opacity-20 flex items-center justify-center">
