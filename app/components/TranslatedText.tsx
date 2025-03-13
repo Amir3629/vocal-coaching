@@ -1,14 +1,12 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { motion, AnimatePresence, HTMLMotionProps } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useLanguage } from '@/lib/LanguageContext';
-
-type MotionComponent = typeof motion.div;
 
 interface TranslatedTextProps {
   text: string;
-  as?: keyof JSX.IntrinsicElements;
+  as?: 'div' | 'span' | 'p' | 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6';
   className?: string;
   html?: boolean;
 }
@@ -20,7 +18,12 @@ const motionProps = {
   transition: { duration: 0.3 },
 };
 
-export default function TranslatedText({ text, as = 'div', className = '', html = false }: TranslatedTextProps) {
+export default function TranslatedText({ 
+  text, 
+  as = 'div', 
+  className = '', 
+  html = false 
+}: TranslatedTextProps) {
   const { language, translate, translateHtmlContent } = useLanguage();
   const [translatedText, setTranslatedText] = useState(text);
   const [isTransitioning, setIsTransitioning] = useState(false);
@@ -38,16 +41,63 @@ export default function TranslatedText({ text, as = 'div', className = '', html 
     translateContent();
   }, [text, language, translate, translateHtmlContent, html]);
 
-  const MotionTag = motion[as] as MotionComponent;
+  const combinedClassName = `${className} ${isTransitioning ? 'opacity-50' : ''}`;
+
+  // Render the appropriate motion component based on the 'as' prop
+  const renderComponent = () => {
+    const commonProps = {
+      key: translatedText,
+      ...motionProps,
+      className: combinedClassName,
+    };
+
+    // Handle HTML content vs text content
+    if (as === 'div') {
+      return html 
+        ? <motion.div {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.div {...commonProps}>{translatedText}</motion.div>;
+    } else if (as === 'span') {
+      return html 
+        ? <motion.span {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.span {...commonProps}>{translatedText}</motion.span>;
+    } else if (as === 'p') {
+      return html 
+        ? <motion.p {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.p {...commonProps}>{translatedText}</motion.p>;
+    } else if (as === 'h1') {
+      return html 
+        ? <motion.h1 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h1 {...commonProps}>{translatedText}</motion.h1>;
+    } else if (as === 'h2') {
+      return html 
+        ? <motion.h2 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h2 {...commonProps}>{translatedText}</motion.h2>;
+    } else if (as === 'h3') {
+      return html 
+        ? <motion.h3 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h3 {...commonProps}>{translatedText}</motion.h3>;
+    } else if (as === 'h4') {
+      return html 
+        ? <motion.h4 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h4 {...commonProps}>{translatedText}</motion.h4>;
+    } else if (as === 'h5') {
+      return html 
+        ? <motion.h5 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h5 {...commonProps}>{translatedText}</motion.h5>;
+    } else if (as === 'h6') {
+      return html 
+        ? <motion.h6 {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.h6 {...commonProps}>{translatedText}</motion.h6>;
+    } else {
+      return html 
+        ? <motion.div {...commonProps} dangerouslySetInnerHTML={{ __html: translatedText }} />
+        : <motion.div {...commonProps}>{translatedText}</motion.div>;
+    }
+  };
 
   return (
     <AnimatePresence mode="wait">
-      <MotionTag
-        key={translatedText}
-        {...motionProps}
-        className={`${className} ${isTransitioning ? 'opacity-50' : ''}`}
-        {...(html ? { dangerouslySetInnerHTML: { __html: translatedText } } : { children: translatedText })}
-      />
+      {renderComponent()}
     </AnimatePresence>
   );
 } 
