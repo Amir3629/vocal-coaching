@@ -536,7 +536,7 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
         damping: 20,
         mass: 1
       }}
-      className={`relative p-4 rounded-lg cursor-pointer overflow-hidden ${
+      className={`relative p-4 rounded-lg cursor-pointer overflow-hidden transition-all duration-500 ${
         isSelected
           ? "bg-[#C8A97E]/20 border-[#C8A97E] shadow-[0_0_15px_rgba(200,169,126,0.3)]"
           : "bg-black/40 border-white/10 hover:bg-black/60"
@@ -546,7 +546,7 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
       onMouseLeave={() => setIsHovered(false)}
       style={{ 
         minHeight: isHovered ? '420px' : '320px',
-        transition: 'all 0.5s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease, min-height 0.5s cubic-bezier(0.4, 0, 0.2, 1)',
+        transition: 'all 500ms cubic-bezier(0.4, 0, 0.2, 1)',
         willChange: 'transform, min-height, background-color'
       }}
     >
@@ -562,7 +562,7 @@ function ServiceCard({ title, subtitle, description, icon, features, onClick, is
       )}
       
       <div className="flex items-start gap-3 mb-3">
-        <div className={`p-2 rounded-full ${isSelected ? "bg-[#C8A97E] text-black" : "bg-white/10 text-[#C8A97E]"}`}>
+        <div className={`p-2 rounded-full transition-colors duration-300 ${isSelected ? "bg-[#C8A97E] text-black" : "bg-white/10 text-[#C8A97E]"}`}>
           {icon}
         </div>
         <div>

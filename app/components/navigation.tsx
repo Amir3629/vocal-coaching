@@ -5,8 +5,7 @@ import Link from "next/link"
 import Image from "next/image"
 import { usePathname, useRouter } from "next/navigation"
 import { motion, AnimatePresence } from "framer-motion"
-import { useLanguage } from "./language-switcher"
-import LanguageSwitcher from "./language-switcher"
+import { useLanguage, LanguageSwitcher } from "./language-switcher"
 
 export default function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
