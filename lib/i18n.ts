@@ -1,6 +1,7 @@
 import i18n from 'i18next'
 import { initReactI18next } from 'react-i18next'
 import LanguageDetector from 'i18next-browser-languagedetector'
+import type { InitOptions } from 'i18next'
 
 const resources = {
   de: {
@@ -161,18 +162,12 @@ const resources = {
   }
 }
 
-// Initialize i18next
-const i18nInstance = i18n
-  .use(LanguageDetector)
-  .use(initReactI18next)
-
-// Initialize with debug mode in development
-i18nInstance.init({
+const i18nConfig: InitOptions = {
   resources,
-  lng: 'de', // default language
+  lng: 'de',
   fallbackLng: 'de',
   supportedLngs: ['de', 'en'],
-  debug: true, // Enable debug
+  debug: true,
   interpolation: {
     escapeValue: false,
   },
@@ -181,29 +176,31 @@ i18nInstance.init({
     lookupQuerystring: 'lng',
     lookupLocalStorage: 'language',
     caches: ['localStorage'],
-    excludeCacheFor: ['cimode'],
   },
   react: {
     useSuspense: false,
-    bindI18n: 'languageChanged loaded',
-    bindStore: 'added removed',
-    nsMode: 'default'
   },
-})
+}
+
+// Initialize i18next
+i18n
+  .use(LanguageDetector)
+  .use(initReactI18next)
+  .init(i18nConfig)
 
 // Log the current language and loaded resources in development
 if (process.env.NODE_ENV === 'development') {
-  i18nInstance.on('initialized', (options) => {
+  i18n.on('initialized', (options) => {
     console.log('i18next initialized:', options)
   })
 
-  i18nInstance.on('languageChanged', (lng) => {
+  i18n.on('languageChanged', (lng) => {
     console.log('Language changed to:', lng)
   })
 
-  i18nInstance.on('loaded', (loaded) => {
+  i18n.on('loaded', (loaded) => {
     console.log('i18next loaded:', loaded)
   })
 }
 
-export default i18nInstance
+export default i18n
