@@ -4,6 +4,7 @@ import { Music, Mic, Users2, Theater } from "lucide-react"
 import ServiceCard from "./service-card"
 import { motion } from "framer-motion"
 import { useLanguage } from "./language-switcher"
+import { useTranslation } from 'react-i18next'
 
 const services = [
   {
@@ -131,36 +132,64 @@ const services = [
 ]
 
 export default function ServicesSection() {
-  const { t } = useLanguage()
+  const { currentLang } = useLanguage()
+  const { t } = useTranslation()
 
   return (
     <section id="services" className="py-20 bg-[#040202]">
       <div className="container mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.8 }}
-          className="text-center mb-16"
-        >
-          <h2 className="section-heading mb-4">Vocal Excellence</h2>
+        <div className="text-center mb-16">
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="section-heading mb-4"
+          >
+            {t('services.title')}
+          </motion.h2>
           <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
-        </motion.div>
+        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-          {services.map((service, index) => (
-            <ServiceCard
-              key={service.title}
-              title={service.title}
-              subtitle={service.subtitle}
-              description={service.description}
-              icon={<service.icon className="w-6 h-6" />}
-              features={service.features}
-              details={service.details}
-              image={service.image}
-              delay={index * 0.2}
-            />
-          ))}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-white/10"
+          >
+            <h3 className="text-xl font-medium text-white mb-4">
+              {t('services.singing.title')}
+            </h3>
+            <p className="text-white/70 mb-6">
+              {t('services.singing.description')}
+            </p>
+            <ul className="space-y-3">
+              {t('services.singing.features', { returnObjects: true }).map((feature: string, index: number) => (
+                <li key={index} className="flex items-center gap-2 text-white/60">
+                  <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
+                  {feature}
+                </li>
+              ))}
+            </ul>
+          </motion.div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+            {services.map((service, index) => (
+              <ServiceCard
+                key={service.title}
+                title={service.title}
+                subtitle={service.subtitle}
+                description={service.description}
+                icon={<service.icon className="w-6 h-6" />}
+                features={service.features}
+                details={service.details}
+                image={service.image}
+                delay={index * 0.2}
+              />
+            ))}
+          </div>
         </div>
       </div>
     </section>

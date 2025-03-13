@@ -2,9 +2,11 @@
 
 import { motion } from "framer-motion"
 import { useLanguage } from "./language-switcher"
+import { useTranslation } from 'react-i18next'
 
 export default function Hero() {
-  const { t } = useLanguage()
+  const { currentLang } = useLanguage()
+  const { t } = useTranslation()
 
   return (
     <section className="relative min-h-screen flex items-center justify-center text-white overflow-hidden">
@@ -37,7 +39,7 @@ export default function Hero() {
             className="mb-8"
           >
             <h1 className="font-playfair text-7xl md:text-8xl lg:text-9xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-[#C8A97E] to-[#E5D5B7] tracking-wider">
-              Mel jazz
+              {t('hero.title')}
             </h1>
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80 mt-4"></div>
           </motion.div>
@@ -47,15 +49,15 @@ export default function Hero() {
             transition={{ duration: 0.8, delay: 0.4 }}
             className="text-2xl md:text-3xl mb-8 text-gray-300 font-light tracking-wide"
           >
-            {t.hero.subtitle}
+            {t('hero.subtitle')}
           </motion.h2>
           <motion.a
-            href="#contact"
+            href="#services"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             className="inline-block bg-[#C8A97E] text-black px-8 py-3 rounded-full font-medium text-lg transition-colors hover:bg-[#D4B88F]"
           >
-            {t.hero.cta}
+            {t('hero.cta')}
           </motion.a>
         </motion.div>
       </div>
