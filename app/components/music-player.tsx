@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from 'lucide-react';
+import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,29 +17,29 @@ const songs: Song[] = [
   {
     title: "Jazz Performance",
     artist: "Melvo Coaching",
-    cover: "/images/thumbnails/jazz-performance.jpg",
-    audio: "/audio/jazz-performance.mp3",
+    cover: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/thumbnails/jazz-performance.jpg" : "/images/thumbnails/jazz-performance.jpg",
+    audio: process.env.NODE_ENV === 'production' ? "/vocal-coaching/audio/jazz-performance.mp3" : "/audio/jazz-performance.mp3",
     description: "Live at the Jazz Studio"
   },
   {
     title: "Vocal Workshop",
     artist: "Melvo Coaching",
-    cover: "/images/thumbnails/vocal-workshop.jpg",
-    audio: "/audio/vocal-workshop.mp3",
+    cover: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/thumbnails/vocal-workshop.jpg" : "/images/thumbnails/vocal-workshop.jpg",
+    audio: process.env.NODE_ENV === 'production' ? "/vocal-coaching/audio/vocal-workshop.mp3" : "/audio/vocal-workshop.mp3",
     description: "Advanced vocal techniques demonstration"
   },
   {
     title: "Jazz Session",
     artist: "Melvo Coaching",
-    cover: "/images/thumbnails/jazz-session.jpg",
-    audio: "/audio/jazz-session.mp3",
+    cover: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/thumbnails/jazz-session.jpg" : "/images/thumbnails/jazz-session.jpg",
+    audio: process.env.NODE_ENV === 'production' ? "/vocal-coaching/audio/jazz-session.mp3" : "/audio/jazz-session.mp3",
     description: "Piano and vocal improvisation"
   },
   {
     title: "Vocal Jazz",
     artist: "Melvo Coaching",
-    cover: "/images/thumbnails/vocal-jazz.jpg",
-    audio: "/audio/vocal-jazz.mp3",
+    cover: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/thumbnails/vocal-jazz.jpg" : "/images/thumbnails/vocal-jazz.jpg",
+    audio: process.env.NODE_ENV === 'production' ? "/vocal-coaching/audio/vocal-jazz.mp3" : "/audio/vocal-jazz.mp3",
     description: "Original compositions"
   }
 ];
@@ -124,10 +124,10 @@ export default function MusicPlayer() {
     <motion.div 
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="bg-[#0A0A0A] border border-[#C8A97E]/20 rounded-lg p-4 mb-8"
+      className="bg-[#0A0A0A] border border-[#C8A97E]/20 rounded-lg p-6 mb-12"
     >
-      <div className="flex items-center gap-4">
-        <div className="w-12 h-12 relative rounded-md overflow-hidden">
+      <div className="flex items-center gap-6">
+        <div className="w-20 h-20 relative rounded-full overflow-hidden border-2 border-[#C8A97E]">
           <Image
             src={currentSong.cover}
             alt={currentSong.title}
@@ -136,7 +136,7 @@ export default function MusicPlayer() {
           />
         </div>
         <div className="flex-1">
-          <h3 className="text-[#C8A97E] font-medium">{currentSong.title}</h3>
+          <h3 className="text-[#C8A97E] font-medium text-lg">{currentSong.title}</h3>
           <p className="text-gray-400 text-sm">{currentSong.artist}</p>
         </div>
         <div className="flex items-center gap-4">
@@ -144,13 +144,13 @@ export default function MusicPlayer() {
             whileHover={{ scale: 1.1 }}
             whileTap={{ scale: 0.95 }}
             onClick={togglePlay}
-            className="w-10 h-10 flex items-center justify-center bg-[#C8A97E] rounded-full"
+            className="w-12 h-12 flex items-center justify-center bg-[#C8A97E] rounded-full"
           >
-            {isPlaying ? <Pause size={20} /> : <Play size={20} />}
+            {isPlaying ? <Pause size={24} /> : <Play size={24} />}
           </motion.button>
         </div>
       </div>
-      <div className="mt-4 space-y-2">
+      <div className="mt-6 space-y-2">
         <div 
           ref={progressBarRef}
           className="h-1 bg-gray-700 rounded-full cursor-pointer"
@@ -171,51 +171,77 @@ export default function MusicPlayer() {
     </motion.div>
   );
 
-  // Thumbnail grid for other songs
-  const ThumbnailGrid = () => (
-    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-      {songs.map((song, index) => (
-        <motion.div
-          key={song.title}
-          className={`relative rounded-lg overflow-hidden cursor-pointer ${
-            index === currentSongIndex ? 'ring-2 ring-[#C8A97E]' : ''
-          }`}
-          whileHover={{ scale: 1.05 }}
-          onClick={() => {
-            setCurrentSongIndex(index);
-            setIsPlaying(true);
-          }}
-        >
-          <div className="relative aspect-video">
-            <Image
-              src={song.cover}
-              alt={song.title}
-              fill
-              className="object-cover"
-            />
-            {index === currentSongIndex && isPlaying && (
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                <motion.div
-                  animate={{ scale: [1, 1.2, 1] }}
-                  transition={{ repeat: Infinity, duration: 1.5 }}
-                >
-                  <Pause className="text-white" size={24} />
-                </motion.div>
+  // Carousel for other songs
+  const SongCarousel = () => (
+    <div className="relative">
+      <div className="flex justify-center items-center gap-8 mb-8">
+        {songs.map((song, index) => {
+          const isActive = index === currentSongIndex;
+          const position = index - currentSongIndex;
+          
+          return (
+            <motion.div
+              key={song.title}
+              className={`relative cursor-pointer transition-all duration-300`}
+              style={{
+                transform: `translateX(${position * 120}px) scale(${isActive ? 1 : 0.8})`,
+                zIndex: isActive ? 10 : 0,
+                opacity: Math.abs(position) > 2 ? 0 : 1
+              }}
+              onClick={() => {
+                setCurrentSongIndex(index);
+                setIsPlaying(true);
+              }}
+            >
+              <div className={`w-24 h-24 relative rounded-full overflow-hidden border-2 ${
+                isActive ? 'border-[#C8A97E]' : 'border-gray-700'
+              }`}>
+                <Image
+                  src={song.cover}
+                  alt={song.title}
+                  fill
+                  className="object-cover"
+                />
+                {isActive && isPlaying && (
+                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                    <motion.div
+                      animate={{ scale: [1, 1.2, 1] }}
+                      transition={{ repeat: Infinity, duration: 1.5 }}
+                    >
+                      <Pause className="text-white" size={24} />
+                    </motion.div>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div className="absolute bottom-0 left-0 right-0 bg-black/70 p-2">
-            <p className="text-sm text-white truncate">{song.title}</p>
-          </div>
-        </motion.div>
-      ))}
+            </motion.div>
+          );
+        })}
+      </div>
+      <div className="flex justify-center gap-4">
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={playPreviousSong}
+          className="w-10 h-10 flex items-center justify-center rounded-full border border-[#C8A97E] text-[#C8A97E]"
+        >
+          <ChevronLeft size={20} />
+        </motion.button>
+        <motion.button
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          onClick={playNextSong}
+          className="w-10 h-10 flex items-center justify-center rounded-full border border-[#C8A97E] text-[#C8A97E]"
+        >
+          <ChevronRight size={20} />
+        </motion.button>
+      </div>
     </div>
   );
 
   return (
     <div className="max-w-5xl mx-auto">
       <MainPlayer />
-      <ThumbnailGrid />
+      <SongCarousel />
       <audio
         ref={audioRef}
         src={currentSong.audio}
