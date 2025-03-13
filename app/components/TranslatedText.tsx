@@ -50,14 +50,18 @@ export default function TranslatedText({
 
   const combinedClassName = `${className} ${isTransitioning ? 'opacity-50' : ''}`;
 
+  // Add data-notranslate attribute to prevent Google Translate from translating already translated content
+  const commonProps = {
+    key: translatedText,
+    ...motionProps,
+    // Only add notranslate when we're providing manual translations
+    ...(translations 
+      ? { 'data-notranslate': 'true', className: `${combinedClassName} notranslate` } 
+      : { className: combinedClassName }),
+  };
+
   // Render the appropriate motion component based on the 'as' prop
   const renderComponent = () => {
-    const commonProps = {
-      key: translatedText,
-      ...motionProps,
-      className: combinedClassName,
-    };
-
     // Handle HTML content vs text content
     if (as === 'div') {
       return html 
