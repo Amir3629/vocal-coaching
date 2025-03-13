@@ -6,140 +6,85 @@ import { motion } from "framer-motion"
 import { useLanguage } from "./language-switcher"
 import { useTranslation } from 'react-i18next'
 
-const services = [
-  {
-    title: "Singen",
-    subtitle: "Gesangsunterricht für alle",
-    description: "Professionelles Stimmtraining für Bands, Musiker und ambitionierte Sänger - maßgeschneidert für Ihre künstlerische Entwicklung.",
-    icon: Music,
-    features: [
-      "Grundtechniken",
-      "Stimmbildung",
-      "Atemtechnik",
-      "Liedinterpretation"
-    ],
-    details: {
-      includes: [
-        "Stimmanalyse",
-        "Grundlagentraining",
-        "Liedauswahl",
-        "Übungsmaterial"
-      ],
-      suitable: [
-        "Bands",
-        "Musiker",
-        "Anfänger",
-        "Fortgeschrittene"
-      ],
-      duration: "45-60 Minuten",
-      location: "Studio Berlin / Online"
-    },
-    image: process.env.NODE_ENV === 'production' 
-      ? "/vocal-coaching/images/services/singing.jpg" 
-      : "/images/services/singing.jpg"
-  },
-  {
-    title: "Vocal Coaching",
-    subtitle: "Professionelles Coaching",
-    description: "CVT-basiertes Stimmtraining für Profis - entwickeln Sie Ihre einzigartige Stimme und Performance auf höchstem Niveau.",
-    icon: Mic,
-    features: [
-      "CVT Technik",
-      "Performance",
-      "Repertoire",
-      "Stilentwicklung"
-    ],
-    details: {
-      includes: [
-        "CVT Stimmanalyse",
-        "Techniktraining",
-        "Repertoireaufbau",
-        "Auftrittsvorbereitung"
-      ],
-      suitable: [
-        "Profis",
-        "Semi-Profis",
-        "Fortgeschrittene"
-      ],
-      duration: "60-90 Minuten",
-      location: "Studio Berlin / Online"
-    },
-    image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/services/coaching.jpg"
-      : "/images/services/coaching.jpg"
-  },
-  {
-    title: "Workshop",
-    subtitle: "Individuell & Intensiv",
-    description: "Maßgeschneiderte Intensiv-Workshops für ein tiefgreifendes Erlebnis Ihrer stimmlichen Entwicklung.",
-    icon: Theater,
-    features: [
-      "Ensemble-Arbeit",
-      "Harmonielehre",
-      "Improvisation",
-      "Auftritts­praxis"
-    ],
-    details: {
-      includes: [
-        "Intensivtraining",
-        "Theorie & Praxis",
-        "Individuelles Feedback",
-        "Auftrittsvorbereitung"
-      ],
-      suitable: [
-        "Einzelpersonen",
-        "Kleine Gruppen",
-        "Bands"
-      ],
-      duration: "Ab 3 Stunden (600€)",
-      location: "Nach Vereinbarung"
-    },
-    image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/services/workshop.jpg"
-      : "/images/services/workshop.jpg"
-  },
-  {
-    title: "Chor Next Door",
-    subtitle: "Gemeinsam Singen",
-    description: "Entdecken Sie die Freude am gemeinsamen Singen in unserem dynamischen Nachbarschaftschor - für alle Levels offen.",
-    icon: Users2,
-    features: [
-      "Mehrstimmigkeit",
-      "Harmonie",
-      "Rhythmus",
-      "Gemeinschaft"
-    ],
-    details: {
-      includes: [
-        "Stimmbildung",
-        "Chorgesang",
-        "Auftritte",
-        "Events"
-      ],
-      suitable: [
-        "Alle Level",
-        "Nachbarn",
-        "Musikbegeisterte"
-      ],
-      duration: "90-120 Minuten",
-      location: "Studio Berlin"
-    },
-    link: "https://chornextdoor.de",
-    image: process.env.NODE_ENV === 'production'
-      ? "/vocal-coaching/images/services/chor.jpg"
-      : "/images/services/chor.jpg"
-  }
-]
+interface ServiceDetails {
+  includes: string[];
+  suitable: string[];
+  duration: string;
+  location: string;
+}
+
+interface ServiceTranslation {
+  title: string;
+  subtitle: string;
+  description: string;
+  features: string[];
+  details: ServiceDetails;
+}
 
 export default function ServicesSection() {
   const { currentLang } = useLanguage()
   const { t } = useTranslation()
 
+  const services = [
+    {
+      key: 'singing',
+      icon: Music,
+      image: process.env.NODE_ENV === 'production' 
+        ? "/vocal-coaching/images/services/singing.jpg" 
+        : "/images/services/singing.jpg"
+    },
+    {
+      key: 'coaching',
+      icon: Mic,
+      image: process.env.NODE_ENV === 'production'
+        ? "/vocal-coaching/images/services/coaching.jpg"
+        : "/images/services/coaching.jpg"
+    },
+    {
+      key: 'workshop',
+      icon: Theater,
+      image: process.env.NODE_ENV === 'production'
+        ? "/vocal-coaching/images/services/workshop.jpg"
+        : "/images/services/workshop.jpg"
+    },
+    {
+      key: 'choir',
+      icon: Users2,
+      link: "https://chornextdoor.de",
+      image: process.env.NODE_ENV === 'production'
+        ? "/vocal-coaching/images/services/chor.jpg"
+        : "/images/services/chor.jpg"
+    }
+  ]
+
   // Get features as an array safely
-  const getFeatures = () => {
-    const features = t('services.singing.features', { returnObjects: true });
-    // Ensure we return a string array
-    return Array.isArray(features) ? features.map(f => String(f)) : [];
+  const getFeatures = (key: string): string[] => {
+    try {
+      const features = t(`services.${key}.features`, { returnObjects: true });
+      return Array.isArray(features) ? features : [];
+    } catch {
+      return [];
+    }
+  };
+
+  // Get details as an object safely
+  const getDetails = (key: string): ServiceDetails => {
+    try {
+      const translatedDetails = t(`services.${key}.details`, { returnObjects: true }) as Record<string, unknown>;
+      return {
+        includes: Array.isArray(translatedDetails?.includes) ? translatedDetails.includes : [],
+        suitable: Array.isArray(translatedDetails?.suitable) ? translatedDetails.suitable : [],
+        duration: typeof translatedDetails?.duration === 'string' ? translatedDetails.duration : '',
+        location: typeof translatedDetails?.location === 'string' ? translatedDetails.location : ''
+      };
+    } catch {
+      return {
+        includes: [],
+        suitable: [],
+        duration: '',
+        location: ''
+      };
+    }
   };
 
   return (
@@ -173,7 +118,7 @@ export default function ServicesSection() {
               {t('services.singing.description')}
             </p>
             <ul className="space-y-3">
-              {getFeatures().map((feature, index) => (
+              {getFeatures('singing').map((feature, index) => (
                 <li key={index} className="flex items-center gap-2 text-white/60">
                   <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
                   {feature}
@@ -183,19 +128,23 @@ export default function ServicesSection() {
           </motion.div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {services.map((service, index) => (
-              <ServiceCard
-                key={service.title}
-                title={service.title}
-                subtitle={service.subtitle}
-                description={service.description}
-                icon={<service.icon className="w-6 h-6" />}
-                features={service.features}
-                details={service.details}
-                image={service.image}
-                delay={index * 0.2}
-              />
-            ))}
+            {services.map((service, index) => {
+              const details = getDetails(service.key);
+              return (
+                <ServiceCard
+                  key={service.key}
+                  title={t(`services.${service.key}.title`)}
+                  subtitle={t(`services.${service.key}.subtitle`)}
+                  description={t(`services.${service.key}.description`)}
+                  icon={<service.icon className="w-6 h-6" />}
+                  features={getFeatures(service.key)}
+                  details={details}
+                  image={service.image}
+                  delay={index * 0.2}
+                  link={service.link}
+                />
+              );
+            })}
           </div>
         </div>
       </div>
