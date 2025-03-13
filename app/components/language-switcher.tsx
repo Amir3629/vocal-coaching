@@ -3,6 +3,13 @@
 import { createContext, useContext, useState, useEffect } from "react"
 import { motion } from "framer-motion"
 
+// Add Google Translate type definitions
+declare global {
+  interface Window {
+    doGTranslate: (lang_pair: string) => void;
+  }
+}
+
 // Keep the translations for components that don't get translated by Google Translate
 const translations = {
   de: {
@@ -179,6 +186,11 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       const savedLang = localStorage.getItem('preferredLanguage');
       if (savedLang && (savedLang === 'de' || savedLang === 'en')) {
         setCurrentLang(savedLang);
+        
+        // Also set Google Translate to the saved language on initial load
+        if (savedLang === 'en' && window.doGTranslate) {
+          window.doGTranslate('de|en');
+        }
       }
     }
   }, []);
@@ -195,6 +207,16 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       // Save to localStorage for persistence
       if (typeof window !== 'undefined') {
         localStorage.setItem('preferredLanguage', newLang);
+        
+        // Use Google Translate for the main content
+        try {
+          const langPair = newLang === 'en' ? 'de|en' : 'en|de';
+          if (window.doGTranslate) {
+            window.doGTranslate(langPair);
+          }
+        } catch (error) {
+          console.error('Error toggling Google Translate:', error);
+        }
       }
       
       return newLang;
