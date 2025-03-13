@@ -5,14 +5,6 @@ import { Play, Pause, ChevronLeft, ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Add TypeScript interface for window with YouTube API
-declare global {
-  interface Window {
-    onYouTubeIframeAPIReady: (() => void) | undefined;
-    YT: any;
-  }
-}
-
 interface Song {
   title: string;
   artist: string;
@@ -76,9 +68,8 @@ export default function MusicPlayer() {
 
   const currentSong = songs[currentSongIndex];
 
-  // Simplified YouTube API integration
+  // Set player ready after a short delay
   useEffect(() => {
-    // Set player ready after a short delay
     const timer = setTimeout(() => {
       setPlayerReady(true);
     }, 1000);
@@ -157,7 +148,8 @@ export default function MusicPlayer() {
         setIsTransitioning(false);
         if (videoRef.current) {
           // Load and play the new video
-          const message = '{"event":"command","func":"loadVideoById","args":"' + songs[currentSongIndex === songs.length - 1 ? 0 : currentSongIndex + 1].youtubeId + '"}';
+          const nextIndex = currentSongIndex === songs.length - 1 ? 0 : currentSongIndex + 1;
+          const message = `{"event":"command","func":"loadVideoById","args":"${songs[nextIndex].youtubeId}"}`;
           videoRef.current.contentWindow?.postMessage(message, '*');
         }
       }, 500);
@@ -182,7 +174,8 @@ export default function MusicPlayer() {
         setIsTransitioning(false);
         if (videoRef.current) {
           // Load and play the new video
-          const message = '{"event":"command","func":"loadVideoById","args":"' + songs[currentSongIndex === 0 ? songs.length - 1 : currentSongIndex - 1].youtubeId + '"}';
+          const prevIndex = currentSongIndex === 0 ? songs.length - 1 : currentSongIndex - 1;
+          const message = `{"event":"command","func":"loadVideoById","args":"${songs[prevIndex].youtubeId}"}`;
           videoRef.current.contentWindow?.postMessage(message, '*');
         }
       }, 500);
