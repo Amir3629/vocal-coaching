@@ -1,7 +1,7 @@
 "use client"
 
 import React, { useState, useRef, useEffect } from 'react';
-import { Play, Pause } from 'lucide-react';
+import { Play, Pause, Music } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
 
@@ -68,9 +68,11 @@ export default function MusicPlayer() {
   const [dragOffset, setDragOffset] = useState(0);
   const [showTutorial, setShowTutorial] = useState(false);
   const [showNotification, setShowNotification] = useState(false);
-  const [showHoverNotification, setShowHoverNotification] = useState(false);
+  const [showMiniPlayer, setShowMiniPlayer] = useState(false);
+  const [miniPlayerTimeout, setMiniPlayerTimeout] = useState<NodeJS.Timeout | null>(null);
   const videoRef = useRef<HTMLIFrameElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
   const discControls = useAnimation();
   const tutorialControls = useAnimation();
   const notificationControls = useAnimation();
@@ -89,6 +91,52 @@ export default function MusicPlayer() {
     
     return () => clearTimeout(timer);
   }, []);
+
+  // Show/hide mini player based on scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      if (!playerRef.current) return;
+      
+      const playerRect = playerRef.current.getBoundingClientRect();
+      const isPlayerVisible = 
+        playerRect.top < window.innerHeight && 
+        playerRect.bottom > 0;
+      
+      if (!isPlayerVisible && isPlaying) {
+        // Player is not visible and music is playing, show mini player
+        setShowMiniPlayer(true);
+      } else {
+        // Player is visible or music is not playing, hide mini player
+        setShowMiniPlayer(false);
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isPlaying]);
+
+  // Auto-hide mini player when music is paused
+  useEffect(() => {
+    if (!isPlaying && showMiniPlayer) {
+      // Clear any existing timeout
+      if (miniPlayerTimeout) {
+        clearTimeout(miniPlayerTimeout);
+      }
+      
+      // Set a new timeout to hide the mini player after 3 seconds
+      const timeout = setTimeout(() => {
+        setShowMiniPlayer(false);
+      }, 3000);
+      
+      setMiniPlayerTimeout(timeout);
+    }
+    
+    return () => {
+      if (miniPlayerTimeout) {
+        clearTimeout(miniPlayerTimeout);
+      }
+    };
+  }, [isPlaying, showMiniPlayer]);
 
   // Show tutorial animation on first load
   useEffect(() => {
@@ -325,7 +373,7 @@ export default function MusicPlayer() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto relative py-10">
+    <div className="max-w-5xl mx-auto relative py-10" ref={playerRef}>
       <div className="relative mx-auto" style={{ maxWidth: "500px" }}>
         <div className="flex items-center justify-center">
           <div className="relative flex items-center justify-center overflow-visible">
@@ -500,6 +548,58 @@ export default function MusicPlayer() {
         className="w-0 h-0 absolute"
         allow="autoplay"
       />
+
+      {/* Floating Mini Player */}
+      <AnimatePresence>
+        {showMiniPlayer && (
+          <motion.div 
+            initial={{ opacity: 0, y: 20, scale: 0.8 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 20, scale: 0.8 }}
+            transition={{ type: "spring", damping: 20 }}
+            className="fixed bottom-6 right-6 z-50"
+          >
+            <motion.div 
+              className="bg-black/80 backdrop-blur-md rounded-full p-3 flex items-center gap-3 border border-[#C8A97E]/30 shadow-lg"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+            >
+              {/* Mini disc */}
+              <motion.div 
+                className="w-12 h-12 rounded-full overflow-hidden relative"
+                animate={{ rotate: isPlaying ? 360 : 0 }}
+                transition={{ duration: 20, ease: "linear", repeat: Infinity, repeatType: "loop" }}
+              >
+                <Image
+                  src={`https://img.youtube.com/vi/${currentSong.youtubeId}/maxresdefault.jpg`}
+                  alt={currentSong.title}
+                  fill
+                  className="object-cover"
+                  unoptimized={true}
+                />
+                <div className="absolute inset-0 bg-black/30" />
+                <div className="absolute inset-0 rounded-full border-2 border-[#C8A97E]/40" />
+              </motion.div>
+              
+              {/* Song info */}
+              <div className="text-white max-w-[120px]">
+                <p className="text-sm font-medium truncate text-[#C8A97E]">{currentSong.title}</p>
+                <p className="text-xs text-white/70 truncate">{currentSong.artist}</p>
+              </div>
+              
+              {/* Play/Pause button */}
+              <motion.button
+                onClick={togglePlay}
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.9 }}
+                className="w-10 h-10 flex items-center justify-center rounded-full bg-[#C8A97E]/20 text-[#C8A97E]"
+              >
+                {isPlaying ? <Pause size={18} /> : <Play size={18} className="ml-1" />}
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 } 
