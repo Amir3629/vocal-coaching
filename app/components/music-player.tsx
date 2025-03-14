@@ -288,22 +288,24 @@ export default function MusicPlayer() {
     }, 500);
   };
 
-  // Drag handlers for disc navigation with real-time movement
+  // Optimize drag handlers for smoother performance
   const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
     setIsDragging(true);
     setDragStartX(e.clientX);
     setDragOffset(0);
+    setIsTransitioning(false); // Reset transitioning state on new drag
   };
 
-  // Make drag more sensitive
+  // Make drag more sensitive but smoother
   const handleDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     
-    const dragDistance = (e.clientX - dragStartX) * 1.5; // Increased sensitivity
+    // Use a more moderate sensitivity multiplier to reduce jumpiness
+    const dragDistance = (e.clientX - dragStartX) * 1.2;
     setDragOffset(dragDistance);
     
-    // If dragged far enough, prepare for transition but don't change song yet
-    if (Math.abs(dragDistance) > 50) { // Reduced threshold for easier navigation
+    // Only set transitioning if we're past the threshold
+    if (Math.abs(dragDistance) > 40) {
       setIsTransitioning(true);
     }
   };
@@ -324,12 +326,12 @@ export default function MusicPlayer() {
     });
   };
 
-  // Calculate which disc to show based on drag position with increased sensitivity
+  // Calculate which disc to show based on drag position with smoother transitions
   const getVisibleDiscIndex = () => {
     if (!isDragging) return currentSongIndex;
     
-    // Calculate how many discs to shift based on drag distance
-    const dragThreshold = 50; // Reduced threshold for easier navigation
+    // Reduced threshold for easier navigation but not too sensitive
+    const dragThreshold = 40;
     
     // Calculate normalized drag offset (how many discs to shift)
     const dragRatio = dragOffset / dragThreshold;
@@ -353,10 +355,10 @@ export default function MusicPlayer() {
     return currentSongIndex;
   };
 
-  // Handle drag end with circular navigation
+  // Handle drag end with smoother transitions
   const handleDragEnd = () => {
     if (isDragging) {
-      if (Math.abs(dragOffset) > 50) { // Reduced threshold for easier navigation
+      if (Math.abs(dragOffset) > 40) {
         // Get the new index based on drag
         const newIndex = getVisibleDiscIndex();
         setCurrentSongIndex(newIndex);
@@ -372,6 +374,10 @@ export default function MusicPlayer() {
       setDragOffset(0);
     }
     setIsDragging(false);
+    // Allow a short delay before resetting transitioning state
+    setTimeout(() => {
+      setIsTransitioning(false);
+    }, 300);
   };
 
   return (
@@ -383,13 +389,17 @@ export default function MusicPlayer() {
             {isDragging && dragOffset > 0 && (
               <motion.div
                 className="absolute z-0 left-0"
-                initial={{ x: "-95%" }}
+                initial={{ x: "-92%" }}
                 animate={{ 
-                  x: `-${95 - Math.min(dragOffset / 3, 20)}%`,
-                  opacity: Math.min(dragOffset / 150, 0.5),
-                  scale: 0.7
+                  x: `-${92 - Math.min(dragOffset / 4, 15)}%`,
+                  opacity: Math.min(dragOffset / 200, 0.5),
+                  scale: 0.75
                 }}
-                transition={{ type: "tween", duration: 0.1 }}
+                transition={{ 
+                  type: "tween", 
+                  duration: 0.05,
+                  ease: "easeOut"
+                }}
               >
                 <div className="w-[400px] h-[400px] rounded-full bg-black relative opacity-60 blur-[3px]">
                   <div className="absolute inset-0 rounded-full overflow-hidden">
@@ -410,13 +420,17 @@ export default function MusicPlayer() {
             {isDragging && dragOffset > 0 && (
               <motion.div
                 className="absolute z-1 left-0"
-                initial={{ x: "-85%" }}
+                initial={{ x: "-80%" }}
                 animate={{ 
-                  x: `-${85 - Math.min(dragOffset / 2, 30)}%`,
-                  opacity: Math.min(dragOffset / 100, 0.7),
+                  x: `-${80 - Math.min(dragOffset / 3, 25)}%`,
+                  opacity: Math.min(dragOffset / 150, 0.7),
                   scale: 0.85
                 }}
-                transition={{ type: "tween", duration: 0.1 }}
+                transition={{ 
+                  type: "tween", 
+                  duration: 0.05,
+                  ease: "easeOut"
+                }}
               >
                 <div className="w-[400px] h-[400px] rounded-full bg-black relative opacity-70 blur-[2px]">
                   <div className="absolute inset-0 rounded-full overflow-hidden">
@@ -437,13 +451,17 @@ export default function MusicPlayer() {
             {isDragging && dragOffset < 0 && (
               <motion.div
                 className="absolute z-1 right-0"
-                initial={{ x: "85%" }}
+                initial={{ x: "80%" }}
                 animate={{ 
-                  x: `${85 - Math.min(Math.abs(dragOffset) / 2, 30)}%`,
-                  opacity: Math.min(Math.abs(dragOffset) / 100, 0.7),
+                  x: `${80 - Math.min(Math.abs(dragOffset) / 3, 25)}%`,
+                  opacity: Math.min(Math.abs(dragOffset) / 150, 0.7),
                   scale: 0.85
                 }}
-                transition={{ type: "tween", duration: 0.1 }}
+                transition={{ 
+                  type: "tween", 
+                  duration: 0.05,
+                  ease: "easeOut"
+                }}
               >
                 <div className="w-[400px] h-[400px] rounded-full bg-black relative opacity-70 blur-[2px]">
                   <div className="absolute inset-0 rounded-full overflow-hidden">
@@ -464,13 +482,17 @@ export default function MusicPlayer() {
             {isDragging && dragOffset < 0 && (
               <motion.div
                 className="absolute z-0 right-0"
-                initial={{ x: "95%" }}
+                initial={{ x: "92%" }}
                 animate={{ 
-                  x: `${95 - Math.min(Math.abs(dragOffset) / 3, 20)}%`,
-                  opacity: Math.min(Math.abs(dragOffset) / 150, 0.5),
-                  scale: 0.7
+                  x: `${92 - Math.min(Math.abs(dragOffset) / 4, 15)}%`,
+                  opacity: Math.min(Math.abs(dragOffset) / 200, 0.5),
+                  scale: 0.75
                 }}
-                transition={{ type: "tween", duration: 0.1 }}
+                transition={{ 
+                  type: "tween", 
+                  duration: 0.05,
+                  ease: "easeOut"
+                }}
               >
                 <div className="w-[400px] h-[400px] rounded-full bg-black relative opacity-60 blur-[3px]">
                   <div className="absolute inset-0 rounded-full overflow-hidden">
@@ -495,10 +517,9 @@ export default function MusicPlayer() {
                 zIndex: 10
               }}
               transition={{ 
-                type: isDragging ? "tween" : "spring", 
-                stiffness: 100, 
-                damping: 15,
-                duration: isDragging ? 0.1 : 0.8
+                type: "tween", 
+                duration: isDragging ? 0.05 : 0.3,
+                ease: isDragging ? "linear" : "easeOut"
               }}
               className="relative z-10"
               onMouseDown={handleDragStart}
