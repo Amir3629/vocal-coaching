@@ -33,10 +33,21 @@ const ImpressumContent = dynamic(
 
 export default function Footer() {
   const [selectedDoc, setSelectedDoc] = useState<string | null>(null);
+  const [isClosing, setIsClosing] = useState(false);
+
+  const handleOpenModal = (docTitle: string) => {
+    setSelectedDoc(docTitle);
+    document.body.style.overflow = 'hidden';
+  };
 
   const handleCloseModal = () => {
-    setSelectedDoc(null);
-    document.body.style.overflow = 'unset';
+    setIsClosing(true);
+    // Delay the actual closing to allow for animation
+    setTimeout(() => {
+      setSelectedDoc(null);
+      setIsClosing(false);
+      document.body.style.overflow = 'unset';
+    }, 300); // Match this with the animation duration
   };
 
   const legalDocs = [
@@ -157,7 +168,7 @@ export default function Footer() {
                 {legalDocs.map((doc) => (
                   <button
                     key={doc.title}
-                    onClick={() => setSelectedDoc(doc.title)}
+                    onClick={() => handleOpenModal(doc.title)}
                     className="text-gray-400 hover:text-[#C8A97E] transition-colors text-sm"
                   >
                     {doc.title}
@@ -178,11 +189,26 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Legal Document Modal */}
+        {/* Legal Document Modal with Animations */}
         {selectedDoc && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center">
-            <div className="fixed inset-0 bg-black/80 backdrop-blur-sm" onClick={handleCloseModal} />
-            <div className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[90%] max-w-2xl max-h-[85vh] overflow-hidden z-[101]">
+            <motion.div 
+              className="fixed inset-0 bg-black/80 backdrop-blur-sm" 
+              onClick={handleCloseModal}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: isClosing ? 0 : 1 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            />
+            <motion.div 
+              className="relative bg-[#0A0A0A] rounded-xl border-2 border-[#C8A97E]/20 shadow-2xl w-[90%] max-w-2xl max-h-[85vh] overflow-hidden z-[101]"
+              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              animate={{ 
+                opacity: isClosing ? 0 : 1, 
+                y: isClosing ? 20 : 0, 
+                scale: isClosing ? 0.95 : 1 
+              }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+            >
               <div className="flex items-center justify-end p-4 border-b border-[#C8A97E]/20">
                 <button
                   onClick={handleCloseModal}
@@ -192,10 +218,10 @@ export default function Footer() {
                 </button>
               </div>
               <div className="p-6 overflow-y-auto max-h-[calc(85vh-80px)] custom-scrollbar">
-          {selectedDoc && legalDocs.find(doc => doc.title === selectedDoc)?.component && 
-            createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
+                {selectedDoc && legalDocs.find(doc => doc.title === selectedDoc)?.component && 
+                  createElement(legalDocs.find(doc => doc.title === selectedDoc)?.component!)}
               </div>
-            </div>
+            </motion.div>
           </div>
         )}
       </div>
