@@ -90,8 +90,8 @@ export default function MusicPlayer() {
     // Calculate which disc should be active based on drag
     let newActiveIndex = currentSongIndex;
     if (isDragging) {
-      // Each 100px of drag = 1 disc change
-      const discShift = Math.round(dragOffset / 100);
+      // Increase sensitivity: Each 80px of drag = 1 disc change (was 100px)
+      const discShift = Math.round(dragOffset / 80);
       newActiveIndex = (currentSongIndex - discShift) % totalSongs;
       // Handle negative indices
       if (newActiveIndex < 0) newActiveIndex = totalSongs + newActiveIndex;
@@ -353,14 +353,16 @@ export default function MusicPlayer() {
   const getDiscScale = (position: number) => {
     const absPosition = Math.abs(position);
     // Center disc is full size, others get progressively smaller
-    return Math.max(0.5, 1 - (absPosition / 600) * 0.5);
+    // Improved scale curve for more dramatic effect
+    return Math.max(0.4, 1 - (absPosition / 500) * 0.6);
   };
 
   // Calculate disc opacity based on its position from center
   const getDiscOpacity = (position: number) => {
     const absPosition = Math.abs(position);
     // Center disc is fully opaque, others get progressively more transparent
-    return Math.max(0.3, 1 - (absPosition / 400) * 0.7);
+    // Improved opacity curve for more dramatic effect
+    return Math.max(0.2, 1 - (absPosition / 300) * 0.8);
   };
 
   // Calculate disc z-index based on its position from center
@@ -423,13 +425,15 @@ export default function MusicPlayer() {
                     x: position,
                     scale,
                     opacity,
-                    filter: blur,
+                    filter: `blur(${blur}px)`,
                     zIndex
                   }}
                   transition={{ 
-                    type: "tween", 
-                    duration: isDragging ? 0.05 : 0.3,
-                    ease: isDragging ? "linear" : "easeOut"
+                    type: "spring", 
+                    stiffness: 300,
+                    damping: 30,
+                    mass: 1,
+                    duration: isDragging ? 0.1 : 0.4
                   }}
                   style={{ 
                     transformOrigin: 'center center',
@@ -438,11 +442,11 @@ export default function MusicPlayer() {
                 >
                   {/* Vinyl disc background */}
                   <motion.div 
-                    className="w-[400px] h-[400px] rounded-full bg-black relative"
+                    className={`w-[400px] h-[400px] rounded-full bg-black relative ${isActive ? 'ring-4 ring-[#C8A97E]/30 ring-offset-2 ring-offset-black/10' : ''}`}
                     animate={isActive && isPlaying ? discControls : {}}
                     initial={{ rotate: 0 }}
                     style={{
-                      boxShadow: isActive ? '0 10px 20px rgba(0, 0, 0, 0.6)' : 'none'
+                      boxShadow: isActive ? '0 10px 30px rgba(0, 0, 0, 0.6)' : 'none'
                     }}
                   >
                     {/* Vinyl grooves */}
