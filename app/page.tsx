@@ -387,6 +387,14 @@ export default function Home() {
         <Collaborations />
       </section>
 
+      {/* Expertise Cards Section - Moved after gallery */}
+      <section className="bg-black py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="section-heading text-center mb-12">Empowering & Aspirational</h2>
+          <ExpertiseCards />
+        </div>
+      </section>
+
       {/* Testimonials Section */}
       <section id="testimonials" className="relative w-full bg-[#040202] py-16">
         <div className="container mx-auto px-4">
@@ -397,14 +405,6 @@ export default function Home() {
       {/* Contact Section */}
       <section id="contact" className="relative py-20 bg-[#040202]">
         <ContactForm />
-      </section>
-
-      {/* Add the expertise cards section */}
-      <section className="bg-black py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="section-heading text-center mb-12">Expertise & Specialization</h2>
-          <ExpertiseCards />
-        </div>
       </section>
 
       <BookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
