@@ -235,87 +235,96 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
             <ServiceCard
               title="Singen"
-              subtitle="Professioneller Gesang für Events"
-              description="Buchen Sie mich als professionellen Sänger für Ihre Veranstaltung - von intimen Feiern bis zu großen Events. Solo oder mit meiner Band verfügbar."
+              subtitle="Event Performances"
+              description="Bereichern Sie Ihre Veranstaltung mit professionellem Gesang - von intimen Zusammenkünften bis hin zu großen Feiern. Verfügbar als Solo-Künstlerin oder mit vollständiger Band-Begleitung."
               icon={<Music className="w-6 h-6" />}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/singing.jpg" : "/images/services/singing.jpg"}
               features={[
-                "Live-Auftritte",
-                "Verschiedene Genres",
-                "Maßgeschneiderte Setlists",
-                "Professionelle Performance"
+                "Preisgekrönte Sängerin mit über 1000 Auftritten",
+                "Beherrschung verschiedener Genres (Jazz, Pop, Soul, Klassik)",
+                "Anpassbares Repertoire für Ihr Event",
+                "Perfekte zweisprachige Darbietungen (Englisch/Deutsch)",
+                "Dynamische Bühnenpräsenz mit über 20 Jahren Erfahrung"
               ]}
               details={{
                 includes: [
-                  "Soundcheck",
-                  "Professionelle Ausrüstung",
-                  "Flexible Setlänge",
-                  "Repertoire-Anpassung"
+                  "Umfassender Soundcheck & technische Vorbereitung",
+                  "Hochwertige professionelle Tonausrüstung",
+                  "Flexible Auftrittszeiten (1-4 Stunden)",
+                  "Vorgespräch für individuelle Planung",
+                  "Backup-Musiker auf Anfrage"
                 ],
                 suitable: [
-                  "Private Feiern",
-                  "Firmenfeste",
-                  "Hochzeiten",
-                  "Kulturveranstaltungen"
+                  "Hochzeiten & romantische Anlässe",
+                  "Firmengalas & Produkteinführungen",
+                  "Theaterproduktionen & kulturelle Events",
+                  "Private Feiern & exklusive Partys"
                 ],
-                duration: "Nach Vereinbarung (2-4 Stunden)",
-                location: "Berlin & Umgebung"
+                duration: "Angepasst an Ihren Zeitplan",
+                location: "Berlin/Brandenburg + nationale Tourneen"
               }}
             />
             <ServiceCard
               title="Vocal Coaching"
-              subtitle="Professionelles Coaching"
-              description="CVT-basiertes Stimmtraining für Profis - entwickeln Sie Ihre einzigartige Stimme und Performance auf höchstem Niveau."
+              subtitle="CVT Mastery"
+              description="Entdecken Sie Ihre authentische Stimme durch die revolutionäre Complete Vocal Technique® - die wissenschaftlich fundierte Methode, der Grammy-Gewinner und Broadway-Stars vertrauen. Als eine von nur 3 zertifizierten CVT-Lehrerinnen in Berlin biete ich exklusives Training."
               icon={<Mic className="w-6 h-6" />}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/coaching.jpg" : "/images/services/coaching.jpg"}
               features={[
-                "CVT Technik",
-                "Performance",
-                "Repertoire",
-                "Stilentwicklung"
+                "Zertifizierte Complete Vocal Technique® Lehrerin",
+                "Stimmumfang • Ausdauer • Stilvielfalt",
+                "Wissenschaftlich fundiertes Verletzungspräventionssystem",
+                "Integration von Performancepsychologie",
+                "Multi-Genre-Beherrschung (Pop/Jazz/Musical/Klassik)"
               ]}
               details={{
                 includes: [
-                  "CVT Stimmanalyse",
-                  "Techniktraining",
-                  "Repertoireaufbau",
-                  "Auftrittsvorbereitung"
+                  "CVT's 4 Vocal Modes & Effekte Beherrschung",
+                  "Bühnenpräsenz & Mikrofontechnik",
+                  "Vorbereitung auf Vorsingen/Aufnahmen",
+                  "Stimmgesundheit",
+                  "Persönliche Markenentwicklung"
                 ],
                 suitable: [
-                  "Profis",
-                  "Semi-Profis",
-                  "Fortgeschrittene"
+                  "Professionelle Sänger auf Erfolgskurs",
+                  "Fortgeschrittene Vokalisten für Tourneen/Alben",
+                  "Musical-Theater-Darsteller",
+                  "Gesangslehrer zur Methodenerweiterung"
                 ],
-                duration: "60-90 Minuten",
-                location: "Studio Berlin / Online"
+                duration: "60/90-Minuten Sessions • Paketrabatte verfügbar",
+                location: "Charlottenburg Studio • Zoom Pro Sessions"
               }}
             />
             <ServiceCard
               title="Workshop"
-              subtitle="Individuell & Intensiv"
-              description="Maßgeschneiderte Intensiv-Workshops für ein tiefgreifendes Erlebnis Ihrer stimmlichen Entwicklung."
+              subtitle="Group Mastery"
+              description="Transformieren Sie Gruppendynamiken durch wissenschaftlich fundiertes Stimmtraining - von Universitäts-Masterclasses bis hin zu Teambuilding-Maßnahmen. Als Berlins autorisierte Complete Vocal Technique® Spezialistin erstelle ich maßgeschneiderte Workshops."
               icon={<Theater className="w-6 h-6" />}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/workshop.jpg" : "/images/services/workshop.jpg"}
               features={[
-                "Ensemble-Arbeit",
-                "Harmonielehre",
-                "Improvisation",
-                "Auftritts­praxis"
+                "Nur 3. CVT-zertifizierte Lehrerin in Berlin",
+                "Akkreditierte Lehrmethoden auf Universitätsniveau",
+                "Teambuilding durch stimmliche Synchronisation",
+                "Multi-Gruppen-Expertise (Chöre/Ensembles/Unternehmen)",
+                "Performancepsychologie für kollektives Selbstvertrauen"
               ]}
               details={{
                 includes: [
-                  "Intensivtraining",
-                  "Theorie & Praxis",
-                  "Individuelles Feedback",
-                  "Auftrittsvorbereitung"
+                  "CVT Gruppen-Resonanz-Techniken",
+                  "Chor-Stimmverschmelzung & Texturkontrolle",
+                  "Stimm-Empowerment für Unternehmen",
+                  "Ensemble-Improvisationsrahmen",
+                  "Bühnenchemie-Entwicklung"
                 ],
                 suitable: [
-                  "Einzelpersonen",
-                  "Kleine Gruppen",
-                  "Bands"
+                  "Universitäts-Musikabteilungen",
+                  "Professionelle Chöre & Vokalgruppen",
+                  "Teambuilding-Retreats für Unternehmen",
+                  "Bands auf der Suche nach Harmonien",
+                  "Theater-Ensembles"
                 ],
-                duration: "⏱️ Ab 3 Stunden (600€)",
-                location: "Nach Vereinbarung"
+                duration: "3-Stunden-Intensiv (€600) • Ganztägige Masterclass",
+                location: "Ihr Standort • Mein Studio • Hybride Formate"
               }}
             />
             <ServiceCard
