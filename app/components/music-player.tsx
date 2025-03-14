@@ -92,14 +92,22 @@ export default function MusicPlayer() {
     if (isDragging) {
       // Increase sensitivity: Each 80px of drag = 1 disc change (was 100px)
       const discShift = Math.round(dragOffset / 80);
-      newActiveIndex = (currentSongIndex - discShift) % totalSongs;
-      // Handle negative indices
-      if (newActiveIndex < 0) newActiveIndex = totalSongs + newActiveIndex;
+      
+      // Allow continuous dragging in either direction
+      newActiveIndex = currentSongIndex - discShift;
+      
+      // Handle wrapping around in a continuous manner
+      // This ensures we can keep dragging in the same direction indefinitely
+      while (newActiveIndex < 0) {
+        newActiveIndex += totalSongs;
+      }
+      newActiveIndex = newActiveIndex % totalSongs;
     }
     
     setActiveDiscIndex(newActiveIndex);
     
     // Add visible discs (current + 2 on each side)
+    // Ensure we always have 5 discs visible for smooth continuous scrolling
     for (let i = -2; i <= 2; i++) {
       let index = (newActiveIndex + i) % totalSongs;
       if (index < 0) index = totalSongs + index;
@@ -324,19 +332,34 @@ export default function MusicPlayer() {
     
     const dragDistance = e.clientX - dragStartX;
     setDragOffset(dragDistance);
+    
+    // If drag distance exceeds a threshold, update the drag start position
+    // This allows for continuous dragging in the same direction
+    const dragThreshold = 500; // Adjust this value as needed
+    if (Math.abs(dragDistance) > dragThreshold) {
+      // Reset drag start position but maintain the direction of movement
+      setDragStartX(e.clientX - (dragDistance > 0 ? dragThreshold / 2 : -dragThreshold / 2));
+      setDragOffset(dragDistance > 0 ? dragThreshold / 2 : -dragThreshold / 2);
+    }
   };
 
   const handleDragEnd = () => {
     if (isDragging) {
       // Set the current song to the active disc
       setCurrentSongIndex(activeDiscIndex);
-      
+
+      // Add a smooth transition when releasing the drag
+      const targetDisc = document.querySelector(`[data-disc-index="${activeDiscIndex}"]`);
+      if (targetDisc) {
+        targetDisc.scrollIntoView({ behavior: 'smooth', inline: 'center' });
+      }
+
       // Load the new song
       if (videoRef.current) {
         const message = `{"event":"command","func":"loadVideoById","args":"${songs[activeDiscIndex].youtubeId}"}`;
         videoRef.current.contentWindow?.postMessage(message, '*');
       }
-      
+
       // Reset drag state
       setDragOffset(0);
     }
@@ -421,6 +444,7 @@ export default function MusicPlayer() {
                 <motion.div
                   key={`disc-${songIndex}`}
                   className="absolute"
+                  data-disc-index={songIndex}
                   animate={{ 
                     x: position,
                     scale,
