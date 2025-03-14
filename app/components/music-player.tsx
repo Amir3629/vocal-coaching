@@ -20,7 +20,7 @@ const songs: Song[] = [
     description: "Advanced vocal techniques"
   },
   {
-    title: "Jazz Piano Performance",
+    title: "Jazz Piano",
     artist: "Melvo Coaching",
     youtubeId: "hFdMHvB6-Jk",
     description: "Live at the Jazz Studio"
@@ -38,7 +38,7 @@ const songs: Song[] = [
     description: "Piano and vocal improvisation"
   },
   {
-    title: "Vocal Jazz Session",
+    title: "Vocal Jazz",
     artist: "Melvo Coaching",
     youtubeId: "0zARqh3xwnw",
     description: "Original compositions"
@@ -83,7 +83,8 @@ export default function MusicPlayer() {
   
   // Calculate all visible disc indices based on drag position
   useEffect(() => {
-    // Always show the current song and 2 discs on each side
+    // Always show the current song and 2 discs on each side when dragging
+    // Otherwise only show the current song
     const indices = [];
     const totalSongs = songs.length;
     
@@ -106,12 +107,17 @@ export default function MusicPlayer() {
     
     setActiveDiscIndex(newActiveIndex);
     
-    // Add visible discs (current + 2 on each side)
-    // Ensure we always have 5 discs visible for smooth continuous scrolling
-    for (let i = -2; i <= 2; i++) {
-      let index = (newActiveIndex + i) % totalSongs;
-      if (index < 0) index = totalSongs + index;
-      indices.push(index);
+    if (isDragging) {
+      // Add visible discs (current + 2 on each side) when dragging
+      // Ensure we always have 5 discs visible for smooth continuous scrolling
+      for (let i = -2; i <= 2; i++) {
+        let index = (newActiveIndex + i) % totalSongs;
+        if (index < 0) index = totalSongs + index;
+        indices.push(index);
+      }
+    } else {
+      // Only show the current disc when not dragging
+      indices.push(newActiveIndex);
     }
     
     setVisibleDiscs(indices);
@@ -467,7 +473,7 @@ export default function MusicPlayer() {
                   {/* Vinyl disc background */}
                   <motion.div 
                     className={`w-[400px] h-[400px] rounded-full bg-black relative ${isActive ? 'ring-4 ring-[#C8A97E]/30 ring-offset-2 ring-offset-black/10' : ''}`}
-                    animate={isActive && isPlaying ? discControls : {}}
+                    animate={isActive && isPlaying ? discControls : { rotate: 0 }}
                     initial={{ rotate: 0 }}
                     style={{
                       boxShadow: isActive ? '0 10px 30px rgba(0, 0, 0, 0.6)' : 'none'
@@ -509,8 +515,8 @@ export default function MusicPlayer() {
                   {/* Song info - only visible on active disc */}
                   {isActive && (
                     <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
-                      <h3 className="text-[#C8A97E] font-medium text-xl mb-1">{songs[songIndex].title}</h3>
-                      <p className="text-gray-400 text-sm">{songs[songIndex].artist}</p>
+                      <h3 className="text-[#C8A97E] font-medium text-xl mb-1 font-serif tracking-wide">{songs[songIndex].title}</h3>
+                      <p className="text-gray-400 text-sm italic">{songs[songIndex].artist}</p>
                     </div>
                   )}
                 </motion.div>
