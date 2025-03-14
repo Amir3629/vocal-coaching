@@ -4,9 +4,10 @@ import { useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { ChevronDown } from "lucide-react"
+import StatsSection from './stats-section'
 
 export default function AboutSection() {
-  const [isExpanded, setIsExpanded] = useState(false)
+  const [showMore, setShowMore] = useState(false)
   const [imageError, setImageError] = useState(false)
 
   const imagePath = process.env.NODE_ENV === 'production'
@@ -14,30 +15,32 @@ export default function AboutSection() {
     : "/images/about/profile.jpg"
 
   return (
-    <section className="py-20 bg-[#040202]">
-      <div className="container px-4 mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
-          <div className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none bg-[#0A0A0A] rounded-xl overflow-hidden">
-            <Image
-              src={imagePath}
-              alt="Melanie Wainwright"
-              fill
-              className="object-cover"
-              sizes="(max-width: 768px) 90vw, 45vw"
-              priority
-              onError={() => {
-                console.error('Error loading about image:', imagePath);
-                setImageError(true);
-              }}
-            />
-            {imageError && (
-              <div className="absolute inset-0 flex items-center justify-center bg-[#040202]/80 text-[#C8A97E]">
-                <p className="text-center px-4">Bild konnte nicht geladen werden</p>
-              </div>
-            )}
+    <section id="about" className="py-16 md:py-24 bg-black">
+      <div className="container mx-auto px-4">
+        <div className="flex flex-col md:flex-row items-center">
+          <div className="md:w-1/2 mb-8 md:mb-0">
+            <div className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none bg-[#0A0A0A] rounded-xl overflow-hidden">
+              <Image
+                src={imagePath}
+                alt="Melanie Wainwright"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 90vw, 45vw"
+                priority
+                onError={() => {
+                  console.error('Error loading about image:', imagePath);
+                  setImageError(true);
+                }}
+              />
+              {imageError && (
+                <div className="absolute inset-0 flex items-center justify-center bg-[#040202]/80 text-[#C8A97E]">
+                  <p className="text-center px-4">Bild konnte nicht geladen werden</p>
+                </div>
+              )}
+            </div>
           </div>
-
-          <div className="max-w-xl mx-auto lg:mx-0">
+          
+          <div className="md:w-1/2 md:pl-12">
             <h2 className="section-heading mb-6">Über Mich</h2>
             <div className="w-12 h-0.5 bg-[#C8A97E] mx-0 mb-6"></div>
             
@@ -47,39 +50,37 @@ export default function AboutSection() {
               </p>
               
               <AnimatePresence>
-                {isExpanded && (
+                {showMore && (
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
                     exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.5, ease: "easeInOut" }}
-                    className="space-y-6"
+                    transition={{ duration: 0.5 }}
+                    className="overflow-hidden"
                   >
-                    <p className="text-base sm:text-lg text-gray-300">
-                      Mein Weg führte mich an die Hochschule für Musik und Tanz Köln und das Complete Vocal Institute in Kopenhagen – Stationen, an denen ich nicht nur Jazzgesang, sondern die Philosophie des perfekten Moments studierte. Heute stehe ich auf internationalen Festivalbühnen (von Tokios Blue Note bis zum Montreux Jazz Festival), gebe Masterclasses für angehende Bandleader in Wiesbaden und leite einen Chor, der Präzision mit Seele vereint.
-                    </p>
-                    
-                    <div>
-                      <h3 className="text-xl font-semibold text-white mb-3">Diskografie & Aktuelle Projekte</h3>
+                    <div className="prose prose-lg text-gray-300 mb-6">
                       <p className="text-base sm:text-lg text-gray-300">
-                        Drei Alben, drei Kapitel einer künstlerischen Evolution: Von jazzigen Grooves bis zum Chanson-Projekt Berliner Silber 9½ Lieder – eine Hommage an Berlins glamouröse Nachtseite, produziert mit der Sorgfalt eines Couturiers. Das vierte Album? Ein opulentes Werk, das Standards in Samt und Seide hüllt und Eigenkompositionen präsentiert, die zwischen Sylvia Plath und Billie Holiday tanzen. Ob im intimsten Jazzkeller oder im Festsaal historischer Konzerthäuser – ich betrete jede Bühne mit dem Respekt, den die Musik verdient: „Jazz ist die höchste Form musikalischer Diplomatie – sie verhandelt zwischen Chaos und Perfektion."
+                        Mein Weg führte mich an die Hochschule für Musik und Tanz Köln und das Complete Vocal Institute in Kopenhagen – Stationen, an denen ich nicht nur Jazzgesang, sondern die Philosophie des perfekten Moments studierte. Heute stehe ich auf internationalen Festivalbühnen (von Tokios Blue Note bis zum Montreux Jazz Festival), gebe Masterclasses für angehende Bandleader in Wiesbaden und leite einen Chor, der Präzision mit Seele vereint.
                       </p>
+                      
+                      <div>
+                        <h3 className="text-xl font-semibold text-white mb-3">Diskografie & Aktuelle Projekte</h3>
+                        <p className="text-base sm:text-lg text-gray-300">
+                          Drei Alben, drei Kapitel einer künstlerischen Evolution: Von jazzigen Grooves bis zum Chanson-Projekt Berliner Silber 9½ Lieder – eine Hommage an Berlins glamouröse Nachtseite, produziert mit der Sorgfalt eines Couturiers. Das vierte Album? Ein opulentes Werk, das Standards in Samt und Seide hüllt und Eigenkompositionen präsentiert, die zwischen Sylvia Plath und Billie Holiday tanzen. Ob im intimsten Jazzkeller oder im Festsaal historischer Konzerthäuser – ich betrete jede Bühne mit dem Respekt, den die Musik verdient: „Jazz ist die höchste Form musikalischer Diplomatie – sie verhandelt zwischen Chaos und Perfektion."
+                        </p>
+                      </div>
                     </div>
+                    
+                    <StatsSection />
                   </motion.div>
                 )}
               </AnimatePresence>
 
               <button
-                onClick={() => setIsExpanded(!isExpanded)}
-                className="text-[#C8A97E] hover:text-[#B69A6E] text-sm font-medium inline-flex items-center gap-1 transition-colors duration-300"
+                onClick={() => setShowMore(!showMore)}
+                className="btn-primary mt-4"
               >
-                {isExpanded ? "Weniger anzeigen" : "Mehr erfahren"}
-                <motion.div
-                  animate={{ rotate: isExpanded ? 180 : 0 }}
-                  transition={{ duration: 0.3 }}
-                >
-                  <ChevronDown className="w-4 h-4" />
-                </motion.div>
+                {showMore ? "Weniger anzeigen" : "Mehr erfahren"}
               </button>
             </div>
           </div>

@@ -14,43 +14,43 @@ interface Song {
 
 const songs: Song[] = [
   {
-    title: "Vocal Coaching",
-    artist: "Melvo Coaching",
-    youtubeId: "Tn6s-AhCXjY",
-    description: "Vocal coaching session"
-  },
-  {
-    title: "Autumn Leaves",
-    artist: "Jazz Piano Session",
-    youtubeId: "r-Z8KuwI7Gc",
+    title: "Autumn Leaves - Jazz Piano",
+    artist: "Melvo Jazz",
+    youtubeId: "hFdMHvB6-Jk",
     description: "Jazz piano performance"
   },
   {
-    title: "Vocal Jazz",
-    artist: "Live Performance",
-    youtubeId: "PQgyW10bD7g",
+    title: "Vocal Jazz Improvisation",
+    artist: "Melvo Jazz",
+    youtubeId: "ZvWZr6TNh9Y",
     description: "Vocal techniques demonstration"
   },
   {
-    title: "Piano Improvisation",
-    artist: "Studio Session",
-    youtubeId: "cBkWhkAZ9ds",
+    title: "Jazz Standards Medley",
+    artist: "Melvo Jazz",
+    youtubeId: "r58-5DBfMpY",
     description: "Piano and vocal improvisation"
   },
   {
-    title: "Vocal Technique",
-    artist: "Coaching Session",
-    youtubeId: "xpVfcZ0ZcFM",
+    title: "Original Jazz Composition",
+    artist: "Melvo Jazz",
+    youtubeId: "0zARqh3xwnw",
     description: "Original jazz composition"
   },
   {
-    title: "Jazz Ensemble",
+    title: "Jazz Ensemble Performance",
     artist: "Melvo Jazz",
     youtubeId: "AWsarzdZ1u8",
     description: "Live jazz ensemble performance"
   },
   {
-    title: "Piano Solo",
+    title: "Vocal Coaching Session",
+    artist: "Melvo Jazz",
+    youtubeId: "GidIMbCmtyk",
+    description: "Vocal coaching demonstration"
+  },
+  {
+    title: "Piano Solo Improvisation",
     artist: "Melvo Jazz",
     youtubeId: "QgZKO_f5FlM",
     description: "Solo piano jazz improvisation"
@@ -113,8 +113,9 @@ export default function MusicPlayer() {
     // Calculate which disc should be active based on drag
     let newActiveIndex = currentSongIndex;
     if (isDragging) {
-      // Increase sensitivity but make it smoother: Each 120px of drag = 1 disc change
-      const discShift = dragOffset / 120; // Use floating point for smoother transitions
+      // Increase sensitivity but make it smoother: Each 200px of drag = 1 disc change
+      // Reduced sensitivity for smoother transitions with fast mouse movements
+      const discShift = dragOffset / 200; // Use floating point for smoother transitions
       
       // Allow continuous dragging in either direction
       newActiveIndex = currentSongIndex - discShift;
@@ -136,8 +137,8 @@ export default function MusicPlayer() {
     if (isDragging) {
       // Create a truly infinite carousel by adding discs in a way that allows
       // continuous scrolling in either direction
-      // We'll add 2 discs on each side of the active disc
-      for (let i = -2; i <= 2; i++) {
+      // We'll add 3 discs on each side of the active disc for smoother transitions
+      for (let i = -3; i <= 3; i++) {
         // Calculate the index with proper wrapping
         let index = (roundedActiveIndex + i) % totalSongs;
         if (index < 0) index = totalSongs + index;
@@ -147,14 +148,16 @@ export default function MusicPlayer() {
       // Add additional discs for seamless looping when approaching the edges
       // This ensures that when you reach the end of the list, the beginning discs
       // are already visible and vice versa
-      if (roundedActiveIndex <= 1) {
+      if (roundedActiveIndex <= 2) {
         // Near the beginning, add discs from the end
+        indices.push((totalSongs - 3) % totalSongs);
         indices.push((totalSongs - 2) % totalSongs);
         indices.push((totalSongs - 1) % totalSongs);
-      } else if (roundedActiveIndex >= totalSongs - 2) {
+      } else if (roundedActiveIndex >= totalSongs - 3) {
         // Near the end, add discs from the beginning
         indices.push(0);
         indices.push(1);
+        indices.push(2);
       }
     } else {
       // Only show the current disc when not dragging
@@ -388,15 +391,22 @@ export default function MusicPlayer() {
     e.stopPropagation();
     
     const dragDistance = e.clientX - dragStartX;
-    setDragOffset(dragDistance);
+    
+    // Apply a damping factor to reduce sensitivity with fast mouse movements
+    // This helps prevent lag and jumps when moving the mouse quickly
+    const dampingFactor = 0.7;
+    const dampedDragDistance = dragDistance * dampingFactor;
+    
+    setDragOffset(dampedDragDistance);
     
     // If drag distance exceeds a threshold, update the drag start position
     // This allows for continuous dragging in the same direction
-    const infiniteDragThreshold = 300; // Lower threshold for more responsive infinite scrolling
+    const infiniteDragThreshold = 200; // Lower threshold for more responsive infinite scrolling
     if (Math.abs(dragDistance) > infiniteDragThreshold) {
       // Reset drag start position but maintain the direction of movement
-      setDragStartX(e.clientX - (dragDistance > 0 ? infiniteDragThreshold / 3 : -infiniteDragThreshold / 3));
-      setDragOffset(dragDistance > 0 ? infiniteDragThreshold / 3 : -infiniteDragThreshold / 3);
+      // Use a smaller fraction to make transitions smoother
+      setDragStartX(e.clientX - (dragDistance > 0 ? infiniteDragThreshold / 5 : -infiniteDragThreshold / 5));
+      setDragOffset(dragDistance > 0 ? infiniteDragThreshold / 5 : -infiniteDragThreshold / 5);
     }
   };
 
@@ -440,8 +450,9 @@ export default function MusicPlayer() {
     // Use floating point math for smoother transitions
     const basePosition = distance * 200; // 200px spacing between discs
     
-    // Apply easing function for smoother movement
-    const easedDragOffset = dragOffset * (1 - Math.abs(dragOffset) / 2000);
+    // Apply stronger easing function for smoother movement with fast drags
+    // This reduces the impact of rapid mouse movements
+    const easedDragOffset = dragOffset * (1 - Math.abs(dragOffset) / 3000);
     
     return basePosition + easedDragOffset;
   };
