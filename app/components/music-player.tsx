@@ -134,19 +134,36 @@ export default function MusicPlayer() {
     setActiveDiscIndex(roundedActiveIndex);
     
     if (isDragging) {
-      // Add visible discs (current + 2 on each side) when dragging
-      // Ensure we always have 5 discs visible for smooth continuous scrolling
+      // Create a truly infinite carousel by adding discs in a way that allows
+      // continuous scrolling in either direction
+      // We'll add 2 discs on each side of the active disc
       for (let i = -2; i <= 2; i++) {
+        // Calculate the index with proper wrapping
         let index = (roundedActiveIndex + i) % totalSongs;
         if (index < 0) index = totalSongs + index;
         indices.push(index);
+      }
+      
+      // Add additional discs for seamless looping when approaching the edges
+      // This ensures that when you reach the end of the list, the beginning discs
+      // are already visible and vice versa
+      if (roundedActiveIndex <= 1) {
+        // Near the beginning, add discs from the end
+        indices.push((totalSongs - 2) % totalSongs);
+        indices.push((totalSongs - 1) % totalSongs);
+      } else if (roundedActiveIndex >= totalSongs - 2) {
+        // Near the end, add discs from the beginning
+        indices.push(0);
+        indices.push(1);
       }
     } else {
       // Only show the current disc when not dragging
       indices.push(roundedActiveIndex);
     }
     
-    setVisibleDiscs(indices);
+    // Remove any duplicate indices that might have been added
+    const uniqueIndices = Array.from(new Set(indices));
+    setVisibleDiscs(uniqueIndices);
   }, [currentSongIndex, dragOffset, isDragging, songs.length]);
 
   // Set player ready after a short delay
@@ -375,11 +392,11 @@ export default function MusicPlayer() {
     
     // If drag distance exceeds a threshold, update the drag start position
     // This allows for continuous dragging in the same direction
-    const dragThreshold = 500; // Adjust this value as needed
-    if (Math.abs(dragDistance) > dragThreshold) {
+    const infiniteDragThreshold = 300; // Lower threshold for more responsive infinite scrolling
+    if (Math.abs(dragDistance) > infiniteDragThreshold) {
       // Reset drag start position but maintain the direction of movement
-      setDragStartX(e.clientX - (dragDistance > 0 ? dragThreshold / 2 : -dragThreshold / 2));
-      setDragOffset(dragDistance > 0 ? dragThreshold / 2 : -dragThreshold / 2);
+      setDragStartX(e.clientX - (dragDistance > 0 ? infiniteDragThreshold / 3 : -infiniteDragThreshold / 3));
+      setDragOffset(dragDistance > 0 ? infiniteDragThreshold / 3 : -infiniteDragThreshold / 3);
     }
   };
 
@@ -406,8 +423,22 @@ export default function MusicPlayer() {
 
   // Calculate disc position based on its index and drag offset
   const getDiscPosition = (index: number) => {
+    const totalSongs = songs.length;
+    
+    // Calculate the shortest distance between the indices, considering the circular nature
+    let distance = index - activeDiscIndex;
+    
+    // Adjust for wrapping around the ends
+    if (Math.abs(distance) > totalSongs / 2) {
+      if (distance > 0) {
+        distance = distance - totalSongs;
+      } else {
+        distance = distance + totalSongs;
+      }
+    }
+    
     // Use floating point math for smoother transitions
-    const basePosition = (index - activeDiscIndex) * 200; // 200px spacing between discs
+    const basePosition = distance * 200; // 200px spacing between discs
     
     // Apply easing function for smoother movement
     const easedDragOffset = dragOffset * (1 - Math.abs(dragOffset) / 2000);
