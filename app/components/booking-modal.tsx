@@ -15,7 +15,7 @@ interface BookingModalProps {
   onClose: () => void
 }
 
-type Service = "singing" | "coaching" | "performance"
+type Service = "singing" | "coaching" | "performance" | "event_singing"
 
 interface FormData {
   service: Service | null
@@ -28,6 +28,8 @@ interface FormData {
   termsAccepted: boolean
   level?: string
   guests?: string
+  performanceType?: "solo" | "band" | null
+  duration?: string
 }
 
 export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
@@ -190,7 +192,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 description={
                   currentLang === "de"
                     ? "Professionelle Gesangsauftritte für Events und Veranstaltungen. Maßgeschneiderte Programme für Hochzeiten, Firmenfeiern und private Anlässe."
-                    : "Professional vocal performances for events and occasions. Customized programs for weddings, corporate events, and private celebrations."
+                    : "Professional singing performances for events. Customized programs for weddings, corporate events, and private celebrations."
                 }
                 icon={<Music className="w-6 h-6" />}
                 features={
@@ -198,8 +200,8 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                     ? ["Live-Auftritte", "Hochzeiten & Feiern", "Firmenevents", "Maßgeschneiderte Programme"]
                     : ["Live Performances", "Weddings & Celebrations", "Corporate Events", "Customized Programs"]
                 }
-                onClick={() => handleServiceSelect("singing")}
-                isSelected={formData.service === "singing"}
+                onClick={() => handleServiceSelect("event_singing")}
+                isSelected={formData.service === "event_singing"}
                 currentLang={currentLang}
               />
             </div>
@@ -215,7 +217,108 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
             transition={{ duration: 0.4 }}
             className="space-y-6"
           >
-            {formData.service === "singing" ? (
+            {formData.service === "event_singing" ? (
+              <>
+                <div className="space-y-4">
+                  <h3 className="text-lg font-medium text-white">
+                    {currentLang === "de" ? "Event Details" : "Event Details"}
+                  </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1">
+                        {currentLang === "de" ? "Event-Typ" : "Event Type"}
+                      </label>
+                      <select
+                        className="w-full bg-black/50 border border-white/20 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50"
+                        value={formData.level || ""}
+                        onChange={(e) => setFormData({ ...formData, level: e.target.value })}
+                      >
+                        <option value="">{currentLang === "de" ? "Bitte wählen" : "Please select"}</option>
+                        <option value="wedding">{currentLang === "de" ? "Hochzeit" : "Wedding"}</option>
+                        <option value="corporate">{currentLang === "de" ? "Firmenevent" : "Corporate Event"}</option>
+                        <option value="private">{currentLang === "de" ? "Private Feier" : "Private Celebration"}</option>
+                        <option value="cultural">{currentLang === "de" ? "Kulturveranstaltung" : "Cultural Event"}</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1">
+                        {currentLang === "de" ? "Anzahl der Gäste" : "Number of Guests"}
+                      </label>
+                      <select
+                        className="w-full bg-black/50 border border-white/20 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50"
+                        value={formData.guests || ""}
+                        onChange={(e) => setFormData({ ...formData, guests: e.target.value })}
+                      >
+                        <option value="">{currentLang === "de" ? "Bitte wählen" : "Please select"}</option>
+                        <option value="small">{currentLang === "de" ? "Klein (bis 50)" : "Small (up to 50)"}</option>
+                        <option value="medium">{currentLang === "de" ? "Mittel (50-100)" : "Medium (50-100)"}</option>
+                        <option value="large">{currentLang === "de" ? "Groß (100+)" : "Large (100+)"}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1">
+                        {currentLang === "de" ? "Performance-Typ" : "Performance Type"}
+                      </label>
+                      <div className="flex space-x-4">
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, performanceType: "solo" })}
+                          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                            formData.performanceType === "solo"
+                              ? "bg-[#C8A97E] text-black"
+                              : "bg-black/40 text-white border border-white/10 hover:bg-white/10"
+                          }`}
+                        >
+                          {currentLang === "de" ? "Solo" : "Solo"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => setFormData({ ...formData, performanceType: "band" })}
+                          className={`px-4 py-2 rounded-md text-sm font-medium transition-all ${
+                            formData.performanceType === "band"
+                              ? "bg-[#C8A97E] text-black"
+                              : "bg-black/40 text-white border border-white/10 hover:bg-white/10"
+                          }`}
+                        >
+                          {currentLang === "de" ? "Mit Band" : "With Band"}
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-300 mb-1">
+                        {currentLang === "de" ? "Gewünschte Dauer" : "Desired Duration"}
+                      </label>
+                      <select
+                        className="w-full bg-black/50 border border-white/20 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50"
+                        value={formData.duration || ""}
+                        onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                      >
+                        <option value="">{currentLang === "de" ? "Bitte wählen" : "Please select"}</option>
+                        <option value="1h">{currentLang === "de" ? "1 Stunde" : "1 Hour"}</option>
+                        <option value="2h">{currentLang === "de" ? "2 Stunden" : "2 Hours"}</option>
+                        <option value="3h">{currentLang === "de" ? "3 Stunden" : "3 Hours"}</option>
+                        <option value="4h">{currentLang === "de" ? "4+ Stunden" : "4+ Hours"}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-sm font-medium text-gray-300 mb-1">
+                      {currentLang === "de" ? "Besondere Wünsche" : "Special Requests"}
+                    </label>
+                    <textarea
+                      name="message"
+                      rows={4}
+                      className="w-full bg-black/50 border border-white/20 rounded-md px-3 py-2 text-white focus:outline-none focus:ring-2 focus:ring-[#C8A97E]/50"
+                      placeholder={currentLang === "de" ? "Musikwünsche, Besonderheiten, etc." : "Song requests, special requirements, etc."}
+                      value={formData.message}
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                </div>
+              </>
+            ) : formData.service === "singing" ? (
               <>
                 <div className="space-y-4">
                   <h3 className="text-lg font-medium text-white">
@@ -445,6 +548,35 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       default:
         return null
     }
+  }
+
+  // Validate form based on current step
+  const validateCurrentStep = () => {
+    if (step === 1) {
+      return !!formData.service
+    } else if (step === 2) {
+      return !!formData.date
+    } else if (step === 3) {
+      if (formData.service === "event_singing") {
+        return (
+          !!formData.name &&
+          !!formData.email &&
+          !!formData.phone &&
+          !!formData.level &&
+          !!formData.guests
+        )
+      } else {
+        return (
+          !!formData.name &&
+          !!formData.email &&
+          !!formData.phone &&
+          !!formData.experienceLevel
+        )
+      }
+    } else if (step === 4) {
+      return formData.termsAccepted
+    }
+    return false
   }
 
   return (

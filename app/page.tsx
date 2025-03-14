@@ -234,31 +234,31 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
             <ServiceCard
               title="Singen"
-              subtitle="Professioneller Gesangsunterricht"
-              description="Professionelles Stimmtraining für Sänger aller Levels - individuell angepasst für Ihre persönliche Entwicklung und künstlerischen Ziele."
+              subtitle="Professioneller Gesang für Events"
+              description="Buchen Sie mich als professionellen Sänger für Ihre Veranstaltung - von intimen Feiern bis zu großen Events. Solo oder mit meiner Band verfügbar."
               icon={<Music className="w-6 h-6" />}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/singing.jpg" : "/images/services/singing.jpg"}
               features={[
-                "Grundtechniken",
-                "Stimmbildung",
-                "Atemtechnik",
-                "Liedinterpretation"
+                "Live-Auftritte",
+                "Verschiedene Genres",
+                "Maßgeschneiderte Setlists",
+                "Professionelle Performance"
               ]}
               details={{
                 includes: [
-                  "Stimmanalyse",
-                  "Individuelles Training",
-                  "Repertoire-Entwicklung",
-                  "Aufnahme-Feedback"
+                  "Soundcheck",
+                  "Professionelle Ausrüstung",
+                  "Flexible Setlänge",
+                  "Repertoire-Anpassung"
                 ],
                 suitable: [
-                  "Solokünstler",
-                  "Hobby-Sänger",
-                  "Anfänger",
-                  "Fortgeschrittene"
+                  "Private Feiern",
+                  "Firmenfeste",
+                  "Hochzeiten",
+                  "Kulturveranstaltungen"
                 ],
-                duration: "45-60 Minuten",
-                location: "Studio Berlin / Online"
+                duration: "Nach Vereinbarung (2-4 Stunden)",
+                location: "Berlin & Umgebung"
               }}
             />
             <ServiceCard
