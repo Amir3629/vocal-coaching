@@ -21,7 +21,7 @@ import Collaborations from "@/app/components/collaborations"
 import ServiceCard from "@/app/components/service-card"
 import ServicesSection from "./components/services-section"
 import MusicPlayer from "@/app/components/music-player"
-import ExpertiseCards from './components/expertise-cards'
+import FlipCards from './components/flip-cards'
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -391,7 +391,7 @@ export default function Home() {
       <section className="bg-black py-16">
         <div className="container mx-auto px-4">
           <h2 className="section-heading text-center mb-12">Empowering & Aspirational</h2>
-          <ExpertiseCards />
+          <FlipCards />
         </div>
       </section>
 
