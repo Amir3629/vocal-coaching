@@ -14,46 +14,46 @@ interface Song {
 
 const songs: Song[] = [
   {
-    title: "Vocal Workshop",
+    title: "Vocal Coaching",
     artist: "Melvo Coaching",
-    youtubeId: "GidIMbCmtyk",
-    description: "Advanced vocal techniques"
+    youtubeId: "Tn6s-AhCXjY",
+    description: "Vocal coaching session"
   },
   {
-    title: "Jazz Piano",
-    artist: "Melvo Coaching",
-    youtubeId: "hFdMHvB6-Jk",
-    description: "Live at the Jazz Studio"
-  },
-  {
-    title: "Vocal Techniques",
-    artist: "Melvo Coaching",
-    youtubeId: "ZvWZr6TNh9Y",
-    description: "Advanced vocal techniques demonstration"
-  },
-  {
-    title: "Jazz Improvisation",
-    artist: "Melvo Coaching",
-    youtubeId: "r58-5DBfMpY",
-    description: "Piano and vocal improvisation"
+    title: "Autumn Leaves",
+    artist: "Jazz Piano Session",
+    youtubeId: "r-Z8KuwI7Gc",
+    description: "Jazz piano performance"
   },
   {
     title: "Vocal Jazz",
-    artist: "Melvo Coaching",
-    youtubeId: "0zARqh3xwnw",
-    description: "Original compositions"
+    artist: "Live Performance",
+    youtubeId: "PQgyW10bD7g",
+    description: "Vocal techniques demonstration"
+  },
+  {
+    title: "Piano Improvisation",
+    artist: "Studio Session",
+    youtubeId: "cBkWhkAZ9ds",
+    description: "Piano and vocal improvisation"
+  },
+  {
+    title: "Vocal Technique",
+    artist: "Coaching Session",
+    youtubeId: "xpVfcZ0ZcFM",
+    description: "Original jazz composition"
   },
   {
     title: "Jazz Ensemble",
-    artist: "Melvo Coaching",
+    artist: "Melvo Jazz",
     youtubeId: "AWsarzdZ1u8",
-    description: "Jazz ensemble performance"
+    description: "Live jazz ensemble performance"
   },
   {
-    title: "Piano Jazz",
-    artist: "Melvo Coaching",
+    title: "Piano Solo",
+    artist: "Melvo Jazz",
     youtubeId: "QgZKO_f5FlM",
-    description: "Jazz improvisation session"
+    description: "Solo piano jazz improvisation"
   }
 ];
 
@@ -81,6 +81,28 @@ export default function MusicPlayer() {
 
   const currentSong = songs[currentSongIndex];
   
+  // Prevent scrolling when dragging
+  useEffect(() => {
+    const preventScroll = (e: Event) => {
+      if (isDragging) {
+        e.preventDefault();
+        return false;
+      }
+      return true;
+    };
+
+    // Add event listeners to prevent scrolling during drag
+    if (isDragging) {
+      document.addEventListener('wheel', preventScroll, { passive: false });
+      document.addEventListener('touchmove', preventScroll, { passive: false });
+    }
+
+    return () => {
+      document.removeEventListener('wheel', preventScroll);
+      document.removeEventListener('touchmove', preventScroll);
+    };
+  }, [isDragging]);
+
   // Calculate all visible disc indices based on drag position
   useEffect(() => {
     // Always show the current song and 2 discs on each side when dragging
@@ -91,8 +113,8 @@ export default function MusicPlayer() {
     // Calculate which disc should be active based on drag
     let newActiveIndex = currentSongIndex;
     if (isDragging) {
-      // Increase sensitivity: Each 80px of drag = 1 disc change (was 100px)
-      const discShift = Math.round(dragOffset / 80);
+      // Increase sensitivity but make it smoother: Each 120px of drag = 1 disc change
+      const discShift = dragOffset / 120; // Use floating point for smoother transitions
       
       // Allow continuous dragging in either direction
       newActiveIndex = currentSongIndex - discShift;
@@ -102,22 +124,26 @@ export default function MusicPlayer() {
       while (newActiveIndex < 0) {
         newActiveIndex += totalSongs;
       }
-      newActiveIndex = newActiveIndex % totalSongs;
+      while (newActiveIndex >= totalSongs) {
+        newActiveIndex -= totalSongs;
+      }
     }
     
-    setActiveDiscIndex(newActiveIndex);
+    // Round to nearest integer for the active disc index
+    const roundedActiveIndex = Math.round(newActiveIndex) % totalSongs;
+    setActiveDiscIndex(roundedActiveIndex);
     
     if (isDragging) {
       // Add visible discs (current + 2 on each side) when dragging
       // Ensure we always have 5 discs visible for smooth continuous scrolling
       for (let i = -2; i <= 2; i++) {
-        let index = (newActiveIndex + i) % totalSongs;
+        let index = (roundedActiveIndex + i) % totalSongs;
         if (index < 0) index = totalSongs + index;
         indices.push(index);
       }
     } else {
       // Only show the current disc when not dragging
-      indices.push(newActiveIndex);
+      indices.push(roundedActiveIndex);
     }
     
     setVisibleDiscs(indices);
@@ -328,6 +354,10 @@ export default function MusicPlayer() {
 
   // Drag handlers for continuous carousel navigation
   const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Prevent default to avoid any browser behaviors
+    e.preventDefault();
+    e.stopPropagation();
+    
     setIsDragging(true);
     setDragStartX(e.clientX);
     setDragOffset(0);
@@ -335,6 +365,10 @@ export default function MusicPlayer() {
 
   const handleDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
+    
+    // Prevent default to avoid any scrolling behavior
+    e.preventDefault();
+    e.stopPropagation();
     
     const dragDistance = e.clientX - dragStartX;
     setDragOffset(dragDistance);
@@ -349,16 +383,14 @@ export default function MusicPlayer() {
     }
   };
 
-  const handleDragEnd = () => {
+  const handleDragEnd = (e: React.MouseEvent<HTMLDivElement>) => {
     if (isDragging) {
+      // Prevent default to avoid any scrolling behavior
+      e.preventDefault();
+      e.stopPropagation();
+      
       // Set the current song to the active disc
       setCurrentSongIndex(activeDiscIndex);
-
-      // Add a smooth transition when releasing the drag
-      const targetDisc = document.querySelector(`[data-disc-index="${activeDiscIndex}"]`);
-      if (targetDisc) {
-        targetDisc.scrollIntoView({ behavior: 'smooth', inline: 'center' });
-      }
 
       // Load the new song
       if (videoRef.current) {
@@ -366,7 +398,7 @@ export default function MusicPlayer() {
         videoRef.current.contentWindow?.postMessage(message, '*');
       }
 
-      // Reset drag state
+      // Reset drag state with a smooth transition
       setDragOffset(0);
     }
     setIsDragging(false);
@@ -374,8 +406,13 @@ export default function MusicPlayer() {
 
   // Calculate disc position based on its index and drag offset
   const getDiscPosition = (index: number) => {
+    // Use floating point math for smoother transitions
     const basePosition = (index - activeDiscIndex) * 200; // 200px spacing between discs
-    return basePosition + dragOffset;
+    
+    // Apply easing function for smoother movement
+    const easedDragOffset = dragOffset * (1 - Math.abs(dragOffset) / 2000);
+    
+    return basePosition + easedDragOffset;
   };
 
   // Calculate disc scale based on its position from center
@@ -435,7 +472,7 @@ export default function MusicPlayer() {
             onMouseUp={handleDragEnd}
             onMouseLeave={handleDragEnd}
             onMouseEnter={handleDiscHover}
-            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
           >
             {/* Carousel of discs */}
             {visibleDiscs.map((songIndex) => {
@@ -460,10 +497,10 @@ export default function MusicPlayer() {
                   }}
                   transition={{ 
                     type: "spring", 
-                    stiffness: 300,
-                    damping: 30,
+                    stiffness: 200, // Lower stiffness for smoother movement
+                    damping: 25,
                     mass: 1,
-                    duration: isDragging ? 0.1 : 0.4
+                    duration: isDragging ? 0.05 : 0.4 // Faster updates during dragging
                   }}
                   style={{ 
                     transformOrigin: 'center center',
@@ -514,9 +551,13 @@ export default function MusicPlayer() {
 
                   {/* Song info - only visible on active disc */}
                   {isActive && (
-                    <div className="absolute -bottom-16 left-1/2 transform -translate-x-1/2 text-center">
-                      <h3 className="text-[#C8A97E] font-medium text-xl mb-1 font-serif tracking-wide">{songs[songIndex].title}</h3>
-                      <p className="text-gray-400 text-sm italic">{songs[songIndex].artist}</p>
+                    <div className="absolute -bottom-24 left-1/2 transform -translate-x-1/2 w-64 text-center">
+                      <h3 className="font-serif text-xl font-medium mb-1 text-white drop-shadow-md">
+                        {songs[songIndex].title}
+                      </h3>
+                      <p className="text-gray-300 italic text-sm font-light tracking-wide">
+                        {songs[songIndex].artist}
+                      </p>
                     </div>
                   )}
                 </motion.div>
