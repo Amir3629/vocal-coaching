@@ -153,29 +153,29 @@ export const translations = {
     services: {
       title: "Angebote",
       singing: {
-        title: "Gesangsunterricht",
-        description: "Individueller Unterricht für alle Level",
+        title: "Professioneller Gesang",
+        description: "Gesangsauftritte für Events und Veranstaltungen",
         features: [
-          "Stimmbildung",
-          "Atemtechnik",
-          "Interpretation",
-          "Bühnenpräsenz"
+          "Live-Auftritte",
+          "Hochzeiten & Feiern",
+          "Firmenevents",
+          "Maßgeschneiderte Programme"
         ],
         details: {
           includes: [
-            "Stimmanalyse",
-            "Individueller Trainingsplan",
-            "Aufnahmen",
-            "Übe-Material"
+            "Professionelle Darbietung",
+            "Flexible Songauswahl",
+            "Technische Betreuung",
+            "Anpassung an Ihr Event"
           ],
           suitable: [
-            "Anfänger",
-            "Fortgeschrittene",
-            "Profis",
-            "Alle Genres"
+            "Hochzeiten",
+            "Firmenfeiern",
+            "Kulturelle Events",
+            "Private Veranstaltungen"
           ],
-          duration: "60-90 min",
-          location: "Online & Studio Berlin"
+          duration: "Nach Vereinbarung",
+          location: "Vor Ort oder online"
         }
       },
       coaching: {
@@ -343,29 +343,29 @@ export const translations = {
     services: {
       title: "Services",
       singing: {
-        title: "Singing Lessons",
-        description: "Individual lessons for all levels",
+        title: "Professional Singing",
+        description: "Vocal performances for events and occasions",
         features: [
-          "Voice Training",
-          "Breathing Technique",
-          "Interpretation",
-          "Stage Presence"
+          "Live Performances",
+          "Weddings & Celebrations",
+          "Corporate Events",
+          "Customized Programs"
         ],
         details: {
           includes: [
-            "Voice Analysis",
-            "Individual Training Plan",
-            "Recordings",
-            "Practice Material"
+            "Professional Performance",
+            "Flexible Song Selection",
+            "Technical Support",
+            "Adaptation to Your Event"
           ],
           suitable: [
-            "Beginners",
-            "Advanced",
-            "Professionals",
-            "All Genres"
+            "Weddings",
+            "Corporate Events",
+            "Cultural Events",
+            "Private Celebrations"
           ],
-          duration: "60-90 min",
-          location: "Online & Studio Berlin"
+          duration: "As arranged",
+          location: "On-site or online"
         }
       },
       coaching: {
