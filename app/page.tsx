@@ -21,6 +21,7 @@ import Collaborations from "@/app/components/collaborations"
 import ServiceCard from "@/app/components/service-card"
 import ServicesSection from "./components/services-section"
 import MusicPlayer from "@/app/components/music-player"
+import ExpertiseCards from './components/expertise-cards'
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -387,6 +388,14 @@ export default function Home() {
       {/* Contact Section */}
       <section id="contact" className="relative py-20 bg-[#040202]">
         <ContactForm />
+      </section>
+
+      {/* Add the expertise cards section */}
+      <section className="bg-black py-16">
+        <div className="container mx-auto px-4">
+          <h2 className="section-heading text-center mb-12">Expertise & Specialization</h2>
+          <ExpertiseCards />
+        </div>
       </section>
 
       <BookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
