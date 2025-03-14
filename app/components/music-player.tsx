@@ -72,6 +72,7 @@ export default function MusicPlayer() {
   const [miniPlayerTimeout, setMiniPlayerTimeout] = useState<NodeJS.Timeout | null>(null);
   const [visibleDiscs, setVisibleDiscs] = useState<number[]>([]);
   const [activeDiscIndex, setActiveDiscIndex] = useState(0);
+  const [isTransitioningDiscs, setIsTransitioningDiscs] = useState(false);
   const videoRef = useRef<HTMLIFrameElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
@@ -106,16 +107,16 @@ export default function MusicPlayer() {
   // Calculate all visible disc indices based on drag position
   useEffect(() => {
     // Always show the current song and 2 discs on each side when dragging
-    // Otherwise only show the current song
+    // Otherwise only show the current disc and one on each side for smooth transitions
     const indices = [];
     const totalSongs = songs.length;
     
     // Calculate which disc should be active based on drag
     let newActiveIndex = currentSongIndex;
     if (isDragging) {
-      // Increase sensitivity but make it smoother: Each 200px of drag = 1 disc change
-      // Reduced sensitivity for smoother transitions with fast mouse movements
-      const discShift = dragOffset / 200; // Use floating point for smoother transitions
+      // Increase sensitivity but make it smoother: Each 250px of drag = 1 disc change
+      // Further reduced sensitivity for smoother transitions with fast mouse movements
+      const discShift = dragOffset / 250; // Use floating point for smoother transitions
       
       // Allow continuous dragging in either direction
       newActiveIndex = currentSongIndex - discShift;
@@ -134,11 +135,11 @@ export default function MusicPlayer() {
     const roundedActiveIndex = Math.round(newActiveIndex) % totalSongs;
     setActiveDiscIndex(roundedActiveIndex);
     
-    if (isDragging) {
+    if (isDragging || isTransitioningDiscs) {
       // Create a truly infinite carousel by adding discs in a way that allows
       // continuous scrolling in either direction
-      // We'll add 3 discs on each side of the active disc for smoother transitions
-      for (let i = -3; i <= 3; i++) {
+      // We'll add 2 discs on each side of the active disc for smoother transitions
+      for (let i = -2; i <= 2; i++) {
         // Calculate the index with proper wrapping
         let index = (roundedActiveIndex + i) % totalSongs;
         if (index < 0) index = totalSongs + index;
@@ -148,26 +149,30 @@ export default function MusicPlayer() {
       // Add additional discs for seamless looping when approaching the edges
       // This ensures that when you reach the end of the list, the beginning discs
       // are already visible and vice versa
-      if (roundedActiveIndex <= 2) {
+      if (roundedActiveIndex <= 1) {
         // Near the beginning, add discs from the end
-        indices.push((totalSongs - 3) % totalSongs);
         indices.push((totalSongs - 2) % totalSongs);
         indices.push((totalSongs - 1) % totalSongs);
-      } else if (roundedActiveIndex >= totalSongs - 3) {
+      } else if (roundedActiveIndex >= totalSongs - 2) {
         // Near the end, add discs from the beginning
         indices.push(0);
         indices.push(1);
-        indices.push(2);
       }
     } else {
-      // Only show the current disc when not dragging
+      // When not dragging, show the current disc and one on each side for smooth transitions
       indices.push(roundedActiveIndex);
+      
+      // Add one disc on each side
+      const prevIndex = (roundedActiveIndex - 1 + totalSongs) % totalSongs;
+      const nextIndex = (roundedActiveIndex + 1) % totalSongs;
+      indices.push(prevIndex);
+      indices.push(nextIndex);
     }
     
     // Remove any duplicate indices that might have been added
     const uniqueIndices = Array.from(new Set(indices));
     setVisibleDiscs(uniqueIndices);
-  }, [currentSongIndex, dragOffset, isDragging, songs.length]);
+  }, [currentSongIndex, dragOffset, isDragging, isTransitioningDiscs, songs.length]);
 
   // Set player ready after a short delay
   useEffect(() => {
@@ -392,21 +397,21 @@ export default function MusicPlayer() {
     
     const dragDistance = e.clientX - dragStartX;
     
-    // Apply a damping factor to reduce sensitivity with fast mouse movements
+    // Apply a stronger damping factor to reduce sensitivity with fast mouse movements
     // This helps prevent lag and jumps when moving the mouse quickly
-    const dampingFactor = 0.7;
+    const dampingFactor = 0.5; // Reduced from 0.7 for even smoother movement
     const dampedDragDistance = dragDistance * dampingFactor;
     
     setDragOffset(dampedDragDistance);
     
     // If drag distance exceeds a threshold, update the drag start position
     // This allows for continuous dragging in the same direction
-    const infiniteDragThreshold = 200; // Lower threshold for more responsive infinite scrolling
+    const infiniteDragThreshold = 150; // Lower threshold for more responsive infinite scrolling
     if (Math.abs(dragDistance) > infiniteDragThreshold) {
       // Reset drag start position but maintain the direction of movement
       // Use a smaller fraction to make transitions smoother
-      setDragStartX(e.clientX - (dragDistance > 0 ? infiniteDragThreshold / 5 : -infiniteDragThreshold / 5));
-      setDragOffset(dragDistance > 0 ? infiniteDragThreshold / 5 : -infiniteDragThreshold / 5);
+      setDragStartX(e.clientX - (dragDistance > 0 ? infiniteDragThreshold / 8 : -infiniteDragThreshold / 8));
+      setDragOffset(dragDistance > 0 ? infiniteDragThreshold / 8 : -infiniteDragThreshold / 8);
     }
   };
 
@@ -418,6 +423,9 @@ export default function MusicPlayer() {
       
       // Set the current song to the active disc
       setCurrentSongIndex(activeDiscIndex);
+      
+      // Set transitioning state to true to keep discs visible during transition
+      setIsTransitioningDiscs(true);
 
       // Load the new song
       if (videoRef.current) {
@@ -427,6 +435,11 @@ export default function MusicPlayer() {
 
       // Reset drag state with a smooth transition
       setDragOffset(0);
+      
+      // After transition is complete, set transitioning to false
+      setTimeout(() => {
+        setIsTransitioningDiscs(false);
+      }, 600); // Match this with the transition duration in the motion.div
     }
     setIsDragging(false);
   };
@@ -448,11 +461,12 @@ export default function MusicPlayer() {
     }
     
     // Use floating point math for smoother transitions
-    const basePosition = distance * 200; // 200px spacing between discs
+    // Increase spacing between discs for more overlap
+    const basePosition = distance * 160; // Reduced from 200px for more overlap
     
     // Apply stronger easing function for smoother movement with fast drags
     // This reduces the impact of rapid mouse movements
-    const easedDragOffset = dragOffset * (1 - Math.abs(dragOffset) / 3000);
+    const easedDragOffset = dragOffset * (1 - Math.abs(dragOffset) / 4000);
     
     return basePosition + easedDragOffset;
   };
@@ -462,7 +476,7 @@ export default function MusicPlayer() {
     const absPosition = Math.abs(position);
     // Center disc is full size, others get progressively smaller
     // Improved scale curve for more dramatic effect
-    return Math.max(0.4, 1 - (absPosition / 500) * 0.6);
+    return Math.max(0.3, 1 - (absPosition / 400) * 0.7);
   };
 
   // Calculate disc opacity based on its position from center
@@ -470,7 +484,7 @@ export default function MusicPlayer() {
     const absPosition = Math.abs(position);
     // Center disc is fully opaque, others get progressively more transparent
     // Improved opacity curve for more dramatic effect
-    return Math.max(0.2, 1 - (absPosition / 300) * 0.8);
+    return Math.max(0.2, 1 - (absPosition / 250) * 0.8);
   };
 
   // Calculate disc z-index based on its position from center
@@ -525,13 +539,17 @@ export default function MusicPlayer() {
               const blur = getDiscBlur(position);
               const isActive = songIndex === activeDiscIndex;
               
+              // Calculate a left offset to create more overlap between discs
+              // Discs to the left will be shifted right, discs to the right will be shifted left
+              const overlapOffset = position < 0 ? 40 : (position > 0 ? -40 : 0);
+              
               return (
                 <motion.div
                   key={`disc-${songIndex}`}
                   className="absolute"
                   data-disc-index={songIndex}
                   animate={{ 
-                    x: position,
+                    x: position + overlapOffset, // Add overlap offset
                     scale,
                     opacity,
                     filter: `blur(${blur}px)`,
@@ -539,10 +557,10 @@ export default function MusicPlayer() {
                   }}
                   transition={{ 
                     type: "spring", 
-                    stiffness: 200, // Lower stiffness for smoother movement
-                    damping: 25,
+                    stiffness: 180, // Lower stiffness for smoother movement
+                    damping: 22,
                     mass: 1,
-                    duration: isDragging ? 0.05 : 0.4 // Faster updates during dragging
+                    duration: isDragging ? 0.05 : 0.6 // Longer duration when not dragging for smoother transitions
                   }}
                   style={{ 
                     transformOrigin: 'center center',
