@@ -234,8 +234,8 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8 max-w-7xl mx-auto">
             <ServiceCard
               title="Singen"
-              subtitle="Gesangsunterricht für alle"
-              description="Professionelles Stimmtraining für Bands, Musiker und ambitionierte Sänger - maßgeschneidert für Ihre künstlerische Entwicklung."
+              subtitle="Professioneller Gesangsunterricht"
+              description="Professionelles Stimmtraining für Sänger aller Levels - individuell angepasst für Ihre persönliche Entwicklung und künstlerischen Ziele."
               icon={<Music className="w-6 h-6" />}
               image={process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/services/singing.jpg" : "/images/services/singing.jpg"}
               features={[
@@ -247,13 +247,13 @@ export default function Home() {
               details={{
                 includes: [
                   "Stimmanalyse",
-                  "Grundlagentraining",
-                  "Liedauswahl",
-                  "Übungsmaterial"
+                  "Individuelles Training",
+                  "Repertoire-Entwicklung",
+                  "Aufnahme-Feedback"
                 ],
                 suitable: [
-                  "Bands",
-                  "Musiker",
+                  "Solokünstler",
+                  "Hobby-Sänger",
                   "Anfänger",
                   "Fortgeschrittene"
                 ],
