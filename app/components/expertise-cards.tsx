@@ -12,6 +12,63 @@ interface ExpertiseCardProps {
 }
 
 const ExpertiseCard: React.FC<ExpertiseCardProps> = ({ title, subtitle, description, icon, symbol }) => {
+  // Extract list items from description based on their markers
+  const getListItems = () => {
+    const items = [];
+    
+    // Process items with ✅ marker
+    const checkItems = description.split('✅').slice(1);
+    for (let i = 0; i < checkItems.length; i++) {
+      items.push({
+        marker: '✅',
+        text: checkItems[i].trim()
+      });
+    }
+    
+    // Process items with ✦ marker
+    const starItems = description.split('✦').slice(1);
+    for (let i = 0; i < starItems.length; i++) {
+      items.push({
+        marker: '✦',
+        text: starItems[i].trim()
+      });
+    }
+    
+    // Process items with ⚡ marker
+    const boltItems = description.split('⚡').slice(1);
+    for (let i = 0; i < boltItems.length; i++) {
+      items.push({
+        marker: '⚡',
+        text: boltItems[i].trim()
+      });
+    }
+    
+    // Process items with 💡 marker
+    const bulbItems = description.split('💡').slice(1);
+    for (let i = 0; i < bulbItems.length; i++) {
+      items.push({
+        marker: '💡',
+        text: bulbItems[i].trim()
+      });
+    }
+    
+    return items;
+  };
+  
+  // Get the description intro (text before any marker)
+  const getDescriptionIntro = () => {
+    const firstMarkerIndex = Math.min(
+      description.indexOf('✅') !== -1 ? description.indexOf('✅') : Infinity,
+      description.indexOf('✦') !== -1 ? description.indexOf('✦') : Infinity,
+      description.indexOf('⚡') !== -1 ? description.indexOf('⚡') : Infinity,
+      description.indexOf('💡') !== -1 ? description.indexOf('💡') : Infinity
+    );
+    
+    return firstMarkerIndex !== Infinity 
+      ? description.substring(0, firstMarkerIndex).trim() 
+      : description;
+  };
+
   return (
     <div className="perspective-1000 w-full h-full">
       <motion.div 
@@ -30,30 +87,12 @@ const ExpertiseCard: React.FC<ExpertiseCardProps> = ({ title, subtitle, descript
         
         {/* Back side */}
         <div className="absolute inset-0 flex flex-col items-center justify-center p-6 backface-hidden transform rotate-y-180 bg-[#0A0A0A]">
-          <p className="text-gray-400 text-center text-xs italic mb-4">{description}</p>
+          <p className="text-gray-400 text-center text-xs italic mb-4">{getDescriptionIntro()}</p>
           <ul className="text-gray-300 text-sm space-y-2 w-full">
-            {description.split('✅').slice(1).map((item, index) => (
+            {getListItems().map((item, index) => (
               <li key={index} className="flex items-start">
-                <span className="text-[#C8A97E] mr-2">✅</span>
-                <span>{item.trim()}</span>
-              </li>
-            ))}
-            {description.split('✦').slice(1).map((item, index) => (
-              <li key={index} className="flex items-start">
-                <span className="text-[#C8A97E] mr-2">✦</span>
-                <span>{item.trim()}</span>
-              </li>
-            ))}
-            {description.split('⚡').slice(1).map((item, index) => (
-              <li key={index} className="flex items-start">
-                <span className="text-[#C8A97E] mr-2">⚡</span>
-                <span>{item.trim()}</span>
-              </li>
-            ))}
-            {description.split('💡').slice(1).map((item, index) => (
-              <li key={index} className="flex items-start">
-                <span className="text-[#C8A97E] mr-2">💡</span>
-                <span>{item.trim()}</span>
+                <span className="text-[#C8A97E] mr-2">{item.marker}</span>
+                <span>{item.text}</span>
               </li>
             ))}
           </ul>
