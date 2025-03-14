@@ -79,9 +79,11 @@ export default function MusicPlayer() {
 
   const currentSong = songs[currentSongIndex];
   
-  // Calculate previous and next indices with circular navigation
+  // Calculate multiple indices with circular navigation
   const prevSongIndex = currentSongIndex === 0 ? songs.length - 1 : currentSongIndex - 1;
   const nextSongIndex = currentSongIndex === songs.length - 1 ? 0 : currentSongIndex + 1;
+  const prevSongIndex2 = prevSongIndex === 0 ? songs.length - 1 : prevSongIndex - 1;
+  const nextSongIndex2 = nextSongIndex === songs.length - 1 ? 0 : nextSongIndex + 1;
 
   // Set player ready after a short delay
   useEffect(() => {
@@ -293,14 +295,15 @@ export default function MusicPlayer() {
     setDragOffset(0);
   };
 
+  // Make drag more sensitive
   const handleDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!isDragging) return;
     
-    const dragDistance = e.clientX - dragStartX;
+    const dragDistance = (e.clientX - dragStartX) * 1.5; // Increased sensitivity
     setDragOffset(dragDistance);
     
     // If dragged far enough, prepare for transition but don't change song yet
-    if (Math.abs(dragDistance) > 100) {
+    if (Math.abs(dragDistance) > 50) { // Reduced threshold for easier navigation
       setIsTransitioning(true);
     }
   };
@@ -321,13 +324,12 @@ export default function MusicPlayer() {
     });
   };
 
-  // Calculate which disc to show based on drag position
+  // Calculate which disc to show based on drag position with increased sensitivity
   const getVisibleDiscIndex = () => {
     if (!isDragging) return currentSongIndex;
     
     // Calculate how many discs to shift based on drag distance
-    const discWidth = 400; // Width of a disc
-    const dragThreshold = 100; // Distance needed to change disc
+    const dragThreshold = 50; // Reduced threshold for easier navigation
     
     // Calculate normalized drag offset (how many discs to shift)
     const dragRatio = dragOffset / dragThreshold;
@@ -354,7 +356,7 @@ export default function MusicPlayer() {
   // Handle drag end with circular navigation
   const handleDragEnd = () => {
     if (isDragging) {
-      if (Math.abs(dragOffset) > 100) {
+      if (Math.abs(dragOffset) > 50) { // Reduced threshold for easier navigation
         // Get the new index based on drag
         const newIndex = getVisibleDiscIndex();
         setCurrentSongIndex(newIndex);
@@ -377,14 +379,42 @@ export default function MusicPlayer() {
       <div className="relative mx-auto" style={{ maxWidth: "500px" }}>
         <div className="flex items-center justify-center">
           <div className="relative flex items-center justify-center overflow-visible">
-            {/* Previous song disc (partially visible) */}
+            {/* Previous song disc 2 (furthest left) */}
             {isDragging && dragOffset > 0 && (
               <motion.div
                 className="absolute z-0 left-0"
-                initial={{ x: "-80%" }}
+                initial={{ x: "-95%" }}
                 animate={{ 
-                  x: `-${80 - Math.min(dragOffset / 2, 40)}%`,
-                  opacity: Math.min(dragOffset / 100, 0.7)
+                  x: `-${95 - Math.min(dragOffset / 3, 20)}%`,
+                  opacity: Math.min(dragOffset / 150, 0.5),
+                  scale: 0.7
+                }}
+                transition={{ type: "tween", duration: 0.1 }}
+              >
+                <div className="w-[400px] h-[400px] rounded-full bg-black relative opacity-60 blur-[3px]">
+                  <div className="absolute inset-0 rounded-full overflow-hidden">
+                    <div className="absolute inset-0 bg-black/70 z-[1]" />
+                    <Image
+                      src={`https://img.youtube.com/vi/${songs[prevSongIndex2].youtubeId}/maxresdefault.jpg`}
+                      alt={songs[prevSongIndex2].title}
+                      fill
+                      className="object-cover grayscale"
+                      unoptimized={true}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Previous song disc (partially visible) */}
+            {isDragging && dragOffset > 0 && (
+              <motion.div
+                className="absolute z-1 left-0"
+                initial={{ x: "-85%" }}
+                animate={{ 
+                  x: `-${85 - Math.min(dragOffset / 2, 30)}%`,
+                  opacity: Math.min(dragOffset / 100, 0.7),
+                  scale: 0.85
                 }}
                 transition={{ type: "tween", duration: 0.1 }}
               >
@@ -406,11 +436,12 @@ export default function MusicPlayer() {
             {/* Next song disc (partially visible) */}
             {isDragging && dragOffset < 0 && (
               <motion.div
-                className="absolute z-0 right-0"
-                initial={{ x: "80%" }}
+                className="absolute z-1 right-0"
+                initial={{ x: "85%" }}
                 animate={{ 
-                  x: `${80 - Math.min(Math.abs(dragOffset) / 2, 40)}%`,
-                  opacity: Math.min(Math.abs(dragOffset) / 100, 0.7)
+                  x: `${85 - Math.min(Math.abs(dragOffset) / 2, 30)}%`,
+                  opacity: Math.min(Math.abs(dragOffset) / 100, 0.7),
+                  scale: 0.85
                 }}
                 transition={{ type: "tween", duration: 0.1 }}
               >
@@ -420,6 +451,33 @@ export default function MusicPlayer() {
                     <Image
                       src={`https://img.youtube.com/vi/${songs[nextSongIndex].youtubeId}/maxresdefault.jpg`}
                       alt={songs[nextSongIndex].title}
+                      fill
+                      className="object-cover grayscale"
+                      unoptimized={true}
+                    />
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {/* Next song disc 2 (furthest right) */}
+            {isDragging && dragOffset < 0 && (
+              <motion.div
+                className="absolute z-0 right-0"
+                initial={{ x: "95%" }}
+                animate={{ 
+                  x: `${95 - Math.min(Math.abs(dragOffset) / 3, 20)}%`,
+                  opacity: Math.min(Math.abs(dragOffset) / 150, 0.5),
+                  scale: 0.7
+                }}
+                transition={{ type: "tween", duration: 0.1 }}
+              >
+                <div className="w-[400px] h-[400px] rounded-full bg-black relative opacity-60 blur-[3px]">
+                  <div className="absolute inset-0 rounded-full overflow-hidden">
+                    <div className="absolute inset-0 bg-black/70 z-[1]" />
+                    <Image
+                      src={`https://img.youtube.com/vi/${songs[nextSongIndex2].youtubeId}/maxresdefault.jpg`}
+                      alt={songs[nextSongIndex2].title}
                       fill
                       className="object-cover grayscale"
                       unoptimized={true}
