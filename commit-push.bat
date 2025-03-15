@@ -1,0 +1,5 @@
+@echo off
+git add .
+git commit -m "Add mock i18n implementation and remove dependencies"
+git push origin main
+echo Done! 
