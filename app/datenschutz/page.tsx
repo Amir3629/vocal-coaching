@@ -1,6 +1,6 @@
 "use client"
 
-import NavBar from "@/components/nav-bar"
+import NavBar from "../components/nav-bar"
 
 export default function DatenschutzPage() {
   return (

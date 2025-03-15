@@ -3,7 +3,7 @@
 import { useState, useEffect, useContext } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Menu, X } from "lucide-react"
-import { Button } from "@/components/ui/button"
+import { Button } from "./ui/button"
 import { LanguageContext } from "./language-switcher"
 
 export default function NavBar() {
