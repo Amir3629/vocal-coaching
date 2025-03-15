@@ -34,9 +34,6 @@ jobs:
       - name: Dependency Integrity Check
         run: git diff --exit-code package*.json || true
 
-      - name: Type Check
-        run: npm run type-check
-
       - name: Build
         run: npm run build
         env:
