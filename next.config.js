@@ -11,8 +11,18 @@ const nextConfig = {
   swcMinify: true,
   images: {
     unoptimized: true,
-    loader: 'custom',
-    loaderFile: './image-loader.js',
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'img.youtube.com',
+        pathname: '/vi/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'i3.ytimg.com',
+        pathname: '/vi/**',
+      }
+    ],
   },
   experimental: {
     optimizeCss: true,
