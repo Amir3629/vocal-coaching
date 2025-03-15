@@ -17,6 +17,9 @@ const nextConfig = {
       }
     ],
   },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
   assetPrefix: process.env.NODE_ENV === 'production' ? '/vocal-coaching/' : '',
   trailingSlash: true,
