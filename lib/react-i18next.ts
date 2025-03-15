@@ -15,14 +15,20 @@ export function useTranslation() {
 
 // Mock Trans component
 export function Trans({ i18nKey, children }: { i18nKey: string, children?: React.ReactNode }) {
-  return <>{children || i18nKey}</>
+  // Return a React fragment without using JSX syntax
+  return React.createElement(React.Fragment, null, children || i18nKey);
 }
 
 // Mock withTranslation HOC
 export function withTranslation() {
   return function(Component: React.ComponentType<any>) {
     return function WrappedComponent(props: any) {
-      return <Component t={(key: string) => key} i18n={{}} {...props} />
+      // Return the component without using JSX syntax
+      return React.createElement(Component, { 
+        t: (key: string) => key, 
+        i18n: {}, 
+        ...props 
+      });
     }
   }
 }
@@ -35,5 +41,6 @@ export const initReactI18next = {
 
 // Mock I18nextProvider
 export function I18nextProvider({ children }: { children: React.ReactNode }) {
-  return <>{children}</>
+  // Return a React fragment without using JSX syntax
+  return React.createElement(React.Fragment, null, children);
 } 
