@@ -7,14 +7,15 @@
     --animation-duration: 300ms;
     --transition-duration: 300ms;
     --card-transition-duration: 200ms;
-    --background: 0 0% 100%;
-    --foreground: 0 0% 3.9%;
+    --background: #000000;
+    --foreground: #ffffff;
     --card: 0 0% 100%;
     --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
     --popover-foreground: 0 0% 3.9%;
-    --primary: 0 0% 9%;
+    --primary: #C8A97E;
     --primary-foreground: 0 0% 98%;
+    --primary-hover: #B69A6E;
     --secondary: 0 0% 96.1%;
     --secondary-foreground: 0 0% 9%;
     --muted: 0 0% 96.1%;
@@ -64,6 +65,9 @@
   html {
     font-size: calc(16px * var(--font-scale-mobile));
     -webkit-text-size-adjust: 100%;
+    background: var(--background);
+    color: var(--foreground);
+    scroll-behavior: smooth;
   }
 
   @media (min-width: 768px) {
@@ -79,9 +83,11 @@
   }
   body {
     @apply bg-background text-foreground;
-    background-color: #080404;
-    color: white;
+    min-height: 100vh;
+    background: var(--background);
+    color: var(--foreground);
     overflow-x: hidden;
+    cursor: url('/vocal-coaching/images/music-cursor.png') 16 16, pointer;
   }
 }
 
@@ -140,15 +146,14 @@
   }
 }
 
-html {
-  scroll-behavior: smooth;
-}
-
 /* Custom section heading styles */
 .section-heading {
   @apply text-4xl font-light tracking-wide text-white;
   font-family: var(--font-playfair);
   letter-spacing: 0.03em;
+  font-size: 2.5rem;
+  font-weight: 600;
+  color: var(--foreground);
 }
 
 .section-heading-container {
@@ -162,8 +167,13 @@ html {
 }
 
 /* Custom scrollbar styles */
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary) transparent;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
@@ -171,24 +181,19 @@ html {
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background: rgba(200, 169, 126, 0.2);
-  border-radius: 4px;
+  background-color: var(--primary);
+  border-radius: 3px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: rgba(200, 169, 126, 0.3);
-}
-
-/* For Firefox */
-.custom-scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(200, 169, 126, 0.2) transparent;
+  background: #b69a6e;
 }
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .section-heading {
     @apply text-3xl;
+    font-size: 2rem;
   }
 
   .prose {
@@ -205,6 +210,10 @@ html {
   a {
     @apply min-h-[44px] min-w-[44px];
     padding: 0.5rem 1rem;
+  }
+
+  .cursor-music {
+    cursor: pointer;
   }
 }
 
@@ -398,10 +407,8 @@ html {
 /* Reduce motion when requested */
 @media (prefers-reduced-motion: reduce) {
   * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
+    animation: none !important;
+    transition: none !important;
   }
 }
 
@@ -444,21 +451,6 @@ html {
     perspective: 1000;
   }
 
-  /* Optimize scrolling */
-  body {
-    -webkit-overflow-scrolling: touch;
-    overflow-x: hidden;
-    overscroll-behavior-y: none;
-  }
-
-  /* Reduce motion when requested */
-  @media (prefers-reduced-motion: reduce) {
-    * {
-      animation: none !important;
-      transition: none !important;
-    }
-  }
-
   /* Optimize images */
   img {
     content-visibility: auto;
@@ -468,21 +460,14 @@ html {
 @layer utilities {
   .perspective-1000 {
     perspective: 1000px;
-    transform-style: preserve-3d;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
-    will-change: transform;
   }
 
   .preserve-3d {
     transform-style: preserve-3d;
-    backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .backface-hidden {
     backface-visibility: hidden;
-    -webkit-backface-visibility: hidden;
   }
 
   .rotate-y-180 {
@@ -493,17 +478,14 @@ html {
 /* 3D Transform Classes */
 .perspective-1000 {
   perspective: 1000px;
-  transform-style: preserve-3d;
 }
 
 .preserve-3d {
   transform-style: preserve-3d;
-  transition: transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .backface-hidden {
   backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
 }
 
 .rotate-y-180 {
@@ -518,6 +500,68 @@ html {
   
   .group:active .preserve-3d {
     transform: rotateY(180deg);
+  }
+}
+
+.cursor-music {
+  cursor: url('/vocal-coaching/images/music-cursor.png') 16 16, pointer;
+}
+
+/* Enhanced hardware acceleration for ultra-smooth animations */
+.hardware-accelerated {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  perspective: 1000px;
+  -webkit-perspective: 1000px;
+  will-change: transform;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Smoother animations with optimized cubic-bezier curve */
+.smooth-transform {
+  transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  will-change: transform;
+}
+
+.smooth-opacity {
+  transition: opacity 0.3s ease-in-out;
+  will-change: opacity;
+}
+
+/* Prevent any layout shifts during animations */
+.prevent-layout-shift {
+  contain: layout;
+  content-visibility: auto;
+  contain-intrinsic-size: auto;
+}
+
+/* Prevent text rendering issues during transforms */
+.prevent-text-shift {
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure GPU acceleration for all animations */
+@media (hover: hover) {
+  .hardware-accelerated {
+    transition: transform 0.001ms;
+  }
+  
+  .hardware-accelerated:hover {
+    transition: transform 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+}
+
+/* Fix for Safari and iOS */
+@supports (-webkit-touch-callout: none) {
+  .hardware-accelerated {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
   }
 }
 

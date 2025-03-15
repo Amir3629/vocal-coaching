@@ -32,16 +32,17 @@ jobs:
         run: npm ci --audit=false
 
       - name: Dependency Integrity Check
-        run: git diff --exit-code package*.json || true
+        run: git diff --exit-code package*.json
+
+      - name: Type Check
+        run: npm run type-check
 
       - name: Build
         run: npm run build
-        env:
-          NODE_ENV: production
 
       - name: Deploy to GitHub Pages
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           branch: gh-pages
           folder: out
-          token: ${{ secrets.GITHUB_TOKEN }} 
+          token: ${{ secrets.GITHUB_TOKEN }}

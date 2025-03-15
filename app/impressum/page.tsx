@@ -1,7 +1,6 @@
 "use client"
 
-import React from 'react'
-import NavBar from "../components/nav-bar"
+import NavBar from "@/components/nav-bar"
 
 export default function ImpressumPage() {
   return (

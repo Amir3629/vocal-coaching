@@ -1,15 +1,17 @@
 import type React from "react"
 import "./globals.css"
+import "./styles/responsive.css"
 import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
-import CookieConsent from "./components/cookie-consent"
-import Footer from "./components/footer"
-import LanguageSwitcher, { LanguageProvider } from "./components/language-switcher"
+import RootClient from "./components/root-client"
+import { Providers } from "./providers"
+import { DebugPanel } from "./utils/diagnostics"
 
 const inter = Inter({ subsets: ["latin"] })
-const playfair = Playfair_Display({ 
-  subsets: ["latin"],
-  variable: '--font-playfair'
+const playfair = Playfair_Display({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-playfair',
 })
 
 export const viewport: Viewport = {
@@ -17,14 +19,14 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false,
-  viewportFit: 'cover',
 }
 
 export const metadata: Metadata = {
-  title: "Mel jazz | Vocal Coaching in Berlin",
-  description:
-    "Professional jazz vocal coaching services in Berlin. Private lessons, workshops, and performance coaching for all levels.",
-  generator: 'v0.dev'
+  title: "Mel jazz - Vocal Coaching in Berlin",
+  description: "Professional vocal coaching and performance in Berlin",
+  icons: {
+    icon: process.env.NODE_ENV === 'production' ? '/vocal-coaching/favicon.ico' : '/favicon.ico',
+  },
 }
 
 export default function RootLayout({
@@ -33,19 +35,15 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`dark ${playfair.variable}`}>
-      <body className={`${inter.className} antialiased`}>
-        <LanguageProvider>
-          <LanguageSwitcher />
-          {children}
-          <Footer />
-          <CookieConsent />
-        </LanguageProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body>
+        <Providers>
+          <RootClient className={`dark-theme-black ${playfair.variable} ${inter.className} antialiased`}>
+            {children}
+          </RootClient>
+          <DebugPanel />
+        </Providers>
       </body>
     </html>
   )
-}
-
-
-
-import './globals.css'
+} 
