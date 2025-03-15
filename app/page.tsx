@@ -20,7 +20,7 @@ import ContactForm from "./components/contact-form"
 import BookingModal from "./components/booking-modal"
 import Collaborations from "./components/collaborations"
 import ServicesSection from "./components/services-section"
-import MusicPlayer from "./components/music-player"
+import MusicPlayerSection from "./components/music-player-section"
 import FlipCards from './components/flip-cards'
 
 export default function Home() {
@@ -165,21 +165,7 @@ export default function Home() {
       </section>
 
       {/* Music Preview Section */}
-      <section className="py-20 px-4 bg-[#040202]">
-        <div className="max-w-7xl mx-auto">
-          <motion.div 
-            className="text-center mb-16"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <h2 className="section-heading mb-4">Meine Musik</h2>
-            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
-          </motion.div>
-          <EnhancedMusicPlayer />
-        </div>
-      </section>
+      <MusicPlayerSection />
 
       {/* Video Preview Section */}
       <section className="py-20 px-4 bg-[#040202]">

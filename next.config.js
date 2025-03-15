@@ -30,6 +30,14 @@ const nextConfig = {
     })
     return config
   },
+  experimental: {
+    images: {
+      allowFutureImage: true,
+    },
+  },
+  publicRuntimeConfig: {
+    basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
+  },
 }
 
 module.exports = nextConfig

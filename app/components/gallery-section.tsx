@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { Dialog, DialogContent } from "./ui/dialog"
 import { ChevronLeft, ChevronRight, X } from "lucide-react"
+import ImageWithFallback from "./image-with-fallback"
+import { getImagePath } from "../../lib/utils"
 
 interface GalleryImage {
   src: string
@@ -17,7 +19,7 @@ interface GalleryImage {
 
 const images: GalleryImage[] = [
   {
-    src: '/vocal-coaching/images/gallery/performance1.jpg',
+    src: '/images/gallery/performance1.jpg',
     alt: "Live Performance im B-Flat Jazz Club",
     span: "col-span-1 md:col-span-2",
     description: "Live Performance im B-Flat Jazz Club",
@@ -25,7 +27,7 @@ const images: GalleryImage[] = [
     location: "Berlin-Mitte"
   },
   {
-    src: '/vocal-coaching/images/gallery/performance2.jpg',
+    src: '/images/gallery/performance2.jpg',
     alt: "Aufnahmesession im Studio",
     span: "col-span-1",
     description: "Aufnahmesession im Studio",
@@ -33,7 +35,7 @@ const images: GalleryImage[] = [
     location: "Recording Studio Berlin"
   },
   {
-    src: '/vocal-coaching/images/gallery/performance3.jpg',
+    src: '/images/gallery/performance3.jpg',
     alt: "Live Concert",
     span: "col-span-1",
     description: "Jazz Festival Auftritt",
@@ -41,7 +43,7 @@ const images: GalleryImage[] = [
     location: "Jazztage Berlin"
   },
   {
-    src: '/vocal-coaching/images/gallery/performance4.jpg',
+    src: '/images/gallery/performance4.jpg',
     alt: "Teaching Session",
     span: "col-span-1 md:col-span-2",
     description: "Gesangsunterricht & Workshop",
@@ -49,7 +51,7 @@ const images: GalleryImage[] = [
     location: "Vocal Studio"
   },
   {
-    src: '/vocal-coaching/images/gallery/performance5.jpg',
+    src: '/images/gallery/performance5.jpg',
     alt: "Piano Performance",
     span: "col-span-1 md:col-span-2",
     description: "Piano & Vocal Performance",
@@ -57,7 +59,7 @@ const images: GalleryImage[] = [
     location: "Jazz Club Berlin"
   },
   {
-    src: '/vocal-coaching/images/gallery/performance6.jpg',
+    src: '/images/gallery/performance6.jpg',
     alt: "Stage Performance",
     span: "col-span-1 md:col-span-2",
     description: "Live Konzert mit Band",
@@ -65,7 +67,7 @@ const images: GalleryImage[] = [
     location: "Konzerthaus Berlin"
   },
   {
-    src: '/vocal-coaching/images/gallery/performance7.jpg',
+    src: '/images/gallery/performance7.jpg',
     alt: "Vocal Workshop",
     span: "col-span-1",
     description: "Vocal Workshop Session",
@@ -73,7 +75,7 @@ const images: GalleryImage[] = [
     location: "Studio Berlin"
   },
   {
-    src: '/vocal-coaching/images/gallery/performance8.jpg',
+    src: '/images/gallery/performance8.jpg',
     alt: "Jazz Club",
     span: "col-span-1",
     description: "Jazz Club Performance",
@@ -81,7 +83,7 @@ const images: GalleryImage[] = [
     location: "A-Trane Berlin"
   },
   {
-    src: '/vocal-coaching/images/gallery/performance9.jpg',
+    src: '/images/gallery/performance9.jpg',
     alt: "Concert Performance",
     span: "col-span-1 md:col-span-2",
     description: "Jazz Concert Evening",
@@ -173,7 +175,7 @@ export default function GallerySection() {
               className="relative aspect-square rounded-lg overflow-hidden cursor-pointer group"
               onClick={() => handleImageClick(image)}
             >
-              <Image
+              <ImageWithFallback
                 src={image.src}
                 alt={image.alt}
                 fill
@@ -209,7 +211,7 @@ export default function GallerySection() {
                     transition={{ duration: 0.3, ease: "easeInOut" }}
                     className="relative aspect-[4/3] w-full overflow-hidden rounded-[32px]"
                   >
-                    <Image
+                    <ImageWithFallback
                       src={selectedImage.src}
                       alt={selectedImage.alt}
                       fill
@@ -223,7 +225,7 @@ export default function GallerySection() {
 
                 {nextImage && (
                   <div className="absolute inset-0 pointer-events-none">
-                    <Image
+                    <ImageWithFallback
                       src={nextImage.src}
                       alt={nextImage.alt}
                       fill
