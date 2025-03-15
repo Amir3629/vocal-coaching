@@ -8,34 +8,31 @@ import LegalDocumentModal from "./legal-document-modal"
 import dynamic from "next/dynamic"
 
 // Dynamically import legal document contents
-const DatenschutzContent = dynamic(
-  () => import("@/app/legal/datenschutz/page").catch(() => () => (
-    <div className="text-red-500">Failed to load Datenschutz content</div>
-  )),
-  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
-)
+const DatenschutzModal = dynamic(
+  () => import("../legal/datenschutz/page").catch(() => () => (
+    <div>Failed to load Datenschutz</div>
+  ))
+);
 
-const AGBContent = dynamic(
-  () => import("@/app/legal/agb/page").catch(() => () => (
-    <div className="text-red-500">Failed to load AGB content</div>
-  )),
-  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
-)
+const AGBModal = dynamic(
+  () => import("../legal/agb/page").catch(() => () => (
+    <div>Failed to load AGB</div>
+  ))
+);
 
-const ImpressumContent = dynamic(
-  () => import("@/app/legal/impressum/page").catch(() => () => (
-    <div className="text-red-500">Failed to load Impressum content</div>
-  )),
-  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
-)
+const ImpressumModal = dynamic(
+  () => import("../legal/impressum/page").catch(() => () => (
+    <div>Failed to load Impressum</div>
+  ))
+);
 
 export default function Footer() {
   const [selectedDoc, setSelectedDoc] = useState<string | null>(null);
 
   const legalDocs = [
-    { title: "Datenschutz", component: DatenschutzContent },
-    { title: "AGB", component: AGBContent },
-    { title: "Impressum", component: ImpressumContent }
+    { title: "Datenschutz", component: DatenschutzModal },
+    { title: "AGB", component: AGBModal },
+    { title: "Impressum", component: ImpressumModal }
   ];
 
   const socialLinks = [

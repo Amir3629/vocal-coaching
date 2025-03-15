@@ -4,7 +4,7 @@ import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import CookieConsent from "./components/cookie-consent"
 import Footer from "./components/footer"
-import LanguageSwitcher, { LanguageProvider } from "@/app/components/language-switcher"
+import LanguageSwitcher, { LanguageProvider } from "./components/language-switcher"
 
 const inter = Inter({ subsets: ["latin"] })
 const playfair = Playfair_Display({ 

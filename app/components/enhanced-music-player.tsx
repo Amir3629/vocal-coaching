@@ -4,9 +4,9 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Slider } from "@/components/ui/slider";
+import { Button } from "./ui/button";
+import { Card } from "./ui/card";
+import { Slider } from "./ui/slider";
 
 declare global {
   interface Window {
