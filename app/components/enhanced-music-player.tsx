@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
+import { Play, Pause } from "lucide-react";
 import { getAudioPath } from "@/app/utils/paths";
 
 interface Track {
@@ -94,7 +94,8 @@ export default function EnhancedMusicPlayer() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [dragDelta, setDragDelta] = useState(0);
-  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
+  const [activeDiscs, setActiveDiscs] = useState<number[]>([]);
+  const [discPositions, setDiscPositions] = useState<{[key: number]: number}>({});
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const discRef = useRef<HTMLDivElement>(null);
@@ -103,7 +104,7 @@ export default function EnhancedMusicPlayer() {
 
   // Get YouTube thumbnail URL
   const getYouTubeThumbnail = (youtubeId: string) => {
-    return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+    return `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
   };
 
   // Get track at index with circular wrapping
@@ -112,10 +113,6 @@ export default function EnhancedMusicPlayer() {
     const wrappedIndex = ((index % tracks.length) + tracks.length) % tracks.length;
     return tracks[wrappedIndex];
   };
-
-  // Get previous, current, and next tracks for carousel
-  const prevTrack = getTrackAtIndex(currentTrackIndex - 1);
-  const nextTrack = getTrackAtIndex(currentTrackIndex + 1);
 
   useEffect(() => {
     // Listen for stop events from other media players
@@ -156,7 +153,7 @@ export default function EnhancedMusicPlayer() {
   const handleEnded = () => {
     setIsPlaying(false);
     // Auto play next track
-    handleNextTrack();
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
   };
 
   // Handle audio error
@@ -188,20 +185,6 @@ export default function EnhancedMusicPlayer() {
     }
   }, [currentTrackIndex, currentTrack.file]);
 
-  // Handle next track
-  const handleNextTrack = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
-    setSwipeDirection('left');
-    setTimeout(() => setSwipeDirection(null), 500);
-  };
-
-  // Handle previous track
-  const handlePrevTrack = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex - 1 + tracks.length) % tracks.length);
-    setSwipeDirection('right');
-    setTimeout(() => setSwipeDirection(null), 500);
-  };
-
   // Disc interaction for horizontal swiping
   const handleDiscMouseDown = (e: React.MouseEvent) => {
     // Only start dragging if not clicking the center button
@@ -223,6 +206,18 @@ export default function EnhancedMusicPlayer() {
     setDragStartX(e.clientX);
     setDragDelta(0);
     
+    // Show discs to the left and right when dragging starts
+    const leftIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+    const rightIndex = (currentTrackIndex + 1) % tracks.length;
+    setActiveDiscs([leftIndex, currentTrackIndex, rightIndex]);
+    
+    // Initialize disc positions
+    setDiscPositions({
+      [leftIndex]: -200,
+      [currentTrackIndex]: 0,
+      [rightIndex]: 200
+    });
+    
     // Add dragging class to body
     document.body.classList.add('dragging-disc');
   };
@@ -232,22 +227,63 @@ export default function EnhancedMusicPlayer() {
     
     const delta = e.clientX - dragStartX;
     setDragDelta(delta);
+    
+    // Update disc positions based on drag delta
+    const leftIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
+    const rightIndex = (currentTrackIndex + 1) % tracks.length;
+    
+    // Check if we need to add more discs as we drag further
+    if (delta > 100 && !activeDiscs.includes((leftIndex - 1 + tracks.length) % tracks.length)) {
+      const farLeftIndex = (leftIndex - 1 + tracks.length) % tracks.length;
+      setActiveDiscs(prev => [...prev, farLeftIndex]);
+      setDiscPositions(prev => ({
+        ...prev,
+        [farLeftIndex]: -400
+      }));
+    } else if (delta < -100 && !activeDiscs.includes((rightIndex + 1) % tracks.length)) {
+      const farRightIndex = (rightIndex + 1) % tracks.length;
+      setActiveDiscs(prev => [...prev, farRightIndex]);
+      setDiscPositions(prev => ({
+        ...prev,
+        [farRightIndex]: 400
+      }));
+    }
+    
+    // Update all disc positions
+    const updatedPositions: {[key: number]: number} = {};
+    activeDiscs.forEach(index => {
+      const basePosition = discPositions[index] || 0;
+      updatedPositions[index] = basePosition + delta * 0.5;
+    });
+    
+    setDiscPositions(updatedPositions);
   };
 
   const handleDiscMouseUp = () => {
     if (!isDragging) return;
     
-    // Determine if swipe was significant enough to change track
-    if (dragDelta > 100) {
-      // Swipe right - go to previous track
-      handlePrevTrack();
-    } else if (dragDelta < -100) {
-      // Swipe left - go to next track
-      handleNextTrack();
+    // Determine which disc is closest to center
+    let closestIndex = currentTrackIndex;
+    let smallestDistance = Infinity;
+    
+    Object.entries(discPositions).forEach(([indexStr, position]) => {
+      const index = parseInt(indexStr);
+      const distance = Math.abs(position);
+      if (distance < smallestDistance) {
+        smallestDistance = distance;
+        closestIndex = index;
+      }
+    });
+    
+    // Change track if a different disc is closer to center
+    if (closestIndex !== currentTrackIndex) {
+      setCurrentTrackIndex(closestIndex);
     }
     
     setIsDragging(false);
     setDragDelta(0);
+    setActiveDiscs([]);
+    setDiscPositions({});
     
     // Remove dragging class from body
     document.body.classList.remove('dragging-disc');
@@ -263,7 +299,7 @@ export default function EnhancedMusicPlayer() {
       window.removeEventListener('mousemove', handleDiscMouseMove);
       window.removeEventListener('mouseup', handleDiscMouseUp);
     };
-  }, [isDragging, dragStartX]);
+  }, [isDragging, dragStartX, activeDiscs, discPositions]);
 
   // Dismiss error after 5 seconds
   useEffect(() => {
@@ -287,54 +323,71 @@ export default function EnhancedMusicPlayer() {
         
         {/* Disc Carousel Container */}
         <div className="relative w-[500px] h-96 mx-auto mb-8 overflow-visible">
-          {/* Previous Track Disc */}
+          {/* Background Discs - Only visible when dragging */}
           <AnimatePresence>
-            {!isDragging && (
-              <motion.div
-                className="absolute top-1/2 left-0 w-64 h-64 -translate-y-1/2 -translate-x-1/4 rounded-full overflow-hidden opacity-40 cursor-pointer"
-                initial={{ x: swipeDirection === 'right' ? '100%' : '-50%', opacity: 0 }}
-                animate={{ x: '-25%', opacity: 0.4 }}
-                exit={{ x: '-50%', opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                onClick={handlePrevTrack}
-              >
-                <div className="relative w-full h-full rounded-full overflow-hidden">
-                  <Image 
-                    src={getYouTubeThumbnail(prevTrack.youtubeId)} 
-                    alt={prevTrack.title}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    className="opacity-90"
-                    unoptimized
-                  />
-                  
-                  {/* Vinyl grooves */}
-                  <div className="absolute inset-0 rounded-full">
-                    <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
-                    <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
-                    <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
+            {isDragging && activeDiscs.map(index => {
+              if (index === currentTrackIndex) return null;
+              
+              const track = getTrackAtIndex(index);
+              const position = discPositions[index] || 0;
+              
+              return (
+                <motion.div
+                  key={`disc-${index}`}
+                  className="absolute top-1/2 left-1/2 w-80 h-80 -translate-y-1/2 rounded-full overflow-hidden"
+                  style={{
+                    zIndex: Math.abs(position) < 50 ? 20 : 10,
+                    opacity: 1 - Math.min(Math.abs(position) / 300, 0.7)
+                  }}
+                  initial={{ x: position > 0 ? '100%' : '-100%', opacity: 0 }}
+                  animate={{ 
+                    x: `calc(-50% + ${position}px)`,
+                    scale: 1 - Math.min(Math.abs(position) / 500, 0.3)
+                  }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <div className="relative w-full h-full rounded-full overflow-hidden">
+                    <div className="absolute inset-0 rounded-full overflow-hidden">
+                      <Image 
+                        src={getYouTubeThumbnail(track.youtubeId)} 
+                        alt={track.title}
+                        fill
+                        style={{ objectFit: 'cover', objectPosition: 'center' }}
+                        className="opacity-100"
+                        unoptimized
+                      />
+                    </div>
+                    
+                    {/* Vinyl grooves */}
+                    <div className="absolute inset-0 rounded-full">
+                      <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[35px] rounded-full border border-[#333]/60"></div>
+                    </div>
+                    
+                    {/* Center label */}
+                    <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-black flex items-center justify-center">
+                      <p className="text-xs text-[#C8A97E] font-medium text-center px-2">{track.title}</p>
+                    </div>
                   </div>
-                  
-                  {/* Center label */}
-                  <div className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-black flex items-center justify-center">
-                    <p className="text-[10px] text-[#C8A97E] font-medium text-center px-1">{prevTrack.title}</p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
+                </motion.div>
+              );
+            })}
           </AnimatePresence>
           
           {/* Main Vinyl Disc */}
           <motion.div 
             ref={discRef}
-            className="absolute top-1/2 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 cursor-grab"
+            className="absolute top-1/2 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 cursor-grab z-30"
             animate={{ 
-              x: isDragging ? `calc(-50% + ${dragDelta}px)` : '-50%',
-              rotate: swipeDirection === 'left' ? -5 : swipeDirection === 'right' ? 5 : 0
+              x: isDragging ? `calc(-50% + ${dragDelta * 0.5}px)` : '-50%',
+              scale: isDragging ? 0.95 : 1
             }}
             transition={{ 
               x: { duration: isDragging ? 0 : 0.5 },
-              rotate: { duration: 0.3 }
+              scale: { duration: 0.3 }
             }}
             onMouseDown={handleDiscMouseDown}
           >
@@ -355,7 +408,7 @@ export default function EnhancedMusicPlayer() {
                   src={getYouTubeThumbnail(currentTrack.youtubeId)} 
                   alt={currentTrack.title}
                   fill
-                  style={{ objectFit: 'cover' }}
+                  style={{ objectFit: 'cover', objectPosition: 'center' }}
                   className="opacity-100"
                   priority
                   unoptimized
@@ -407,50 +460,12 @@ export default function EnhancedMusicPlayer() {
             </div>
           </motion.div>
           
-          {/* Next Track Disc */}
-          <AnimatePresence>
-            {!isDragging && (
-              <motion.div
-                className="absolute top-1/2 right-0 w-64 h-64 -translate-y-1/2 translate-x-1/4 rounded-full overflow-hidden opacity-40 cursor-pointer"
-                initial={{ x: swipeDirection === 'left' ? '-100%' : '50%', opacity: 0 }}
-                animate={{ x: '25%', opacity: 0.4 }}
-                exit={{ x: '50%', opacity: 0 }}
-                transition={{ duration: 0.5 }}
-                onClick={handleNextTrack}
-              >
-                <div className="relative w-full h-full rounded-full overflow-hidden">
-                  <Image 
-                    src={getYouTubeThumbnail(nextTrack.youtubeId)} 
-                    alt={nextTrack.title}
-                    fill
-                    style={{ objectFit: 'cover' }}
-                    className="opacity-90"
-                    unoptimized
-                  />
-                  
-                  {/* Vinyl grooves */}
-                  <div className="absolute inset-0 rounded-full">
-                    <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
-                    <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
-                    <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
-                  </div>
-                  
-                  {/* Center label */}
-                  <div className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-black flex items-center justify-center">
-                    <p className="text-[10px] text-[#C8A97E] font-medium text-center px-1">{nextTrack.title}</p>
-                  </div>
-                </div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-          
-          {/* Navigation Indicators */}
-          <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-4">
-            <ChevronLeft className="w-8 h-8 text-[#C8A97E]/70 cursor-pointer hover:text-[#C8A97E]" onClick={handlePrevTrack} />
-          </div>
-          <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-4">
-            <ChevronRight className="w-8 h-8 text-[#C8A97E]/70 cursor-pointer hover:text-[#C8A97E]" onClick={handleNextTrack} />
-          </div>
+          {/* Drag instruction - only visible when not dragging */}
+          {!isDragging && (
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[#C8A97E]/70 text-xs">
+              Drag disc left or right to browse music
+            </div>
+          )}
         </div>
         
         {/* Track title and artist - BELOW THE DISC */}
