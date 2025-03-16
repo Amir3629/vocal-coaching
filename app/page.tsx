@@ -396,7 +396,7 @@ export default function Home() {
       {/* Expertise Cards Section - Moved after gallery */}
       <section className="bg-black py-16">
         <div className="container mx-auto px-4">
-          <h2 className="section-heading text-center mb-12">Empowering & Aspirational</h2>
+          <h2 className="section-heading text-center mb-12">Faszinierend & Musikalisch</h2>
           <FlipCards />
         </div>
       </section>

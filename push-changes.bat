@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Fix smooth transitions: slower card animations (5s), prevent background jumps, update CVT logo link"
+git commit -m "Fix form validation: add shake animation instead of browser alerts, update section title to 'Faszinierend & Musikalisch', verify CVT link"
 git push
 echo Done!
 pause 

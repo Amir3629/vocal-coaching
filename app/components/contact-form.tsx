@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { motion } from "framer-motion"
 import { MapPin, Clock, Mail, Send } from "lucide-react"
 import Image from "next/image"
@@ -14,15 +14,74 @@ export default function ContactForm() {
   })
   const [showSuccess, setShowSuccess] = useState(false)
   const [bgImageError, setBgImageError] = useState(false)
+  const [invalidFields, setInvalidFields] = useState<string[]>([])
+  
+  // Refs for the input elements
+  const nameInputRef = useRef<HTMLInputElement>(null)
+  const emailInputRef = useRef<HTMLInputElement>(null)
+  const messageInputRef = useRef<HTMLTextAreaElement>(null)
+
+  // Function to validate email format
+  const isValidEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+    return emailRegex.test(email)
+  }
+
+  // Function to shake an element
+  const shakeElement = (element: HTMLElement) => {
+    element.classList.add('shake-animation', 'border-[#C8A97E]')
+    setTimeout(() => {
+      element.classList.remove('shake-animation')
+      // Keep the gold border
+    }, 820) // Animation duration + a little extra
+  }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    setShowSuccess(true)
-    setFormData({ name: "", email: "", message: "" })
+    
+    // Reset invalid fields
+    setInvalidFields([])
+    const newInvalidFields: string[] = []
+    
+    // Validate fields
+    if (!formData.name.trim()) {
+      newInvalidFields.push('name')
+      if (nameInputRef.current) shakeElement(nameInputRef.current)
+    }
+    
+    if (!formData.email.trim() || !isValidEmail(formData.email)) {
+      newInvalidFields.push('email')
+      if (emailInputRef.current) shakeElement(emailInputRef.current)
+    }
+    
+    if (!formData.message.trim()) {
+      newInvalidFields.push('message')
+      if (messageInputRef.current) shakeElement(messageInputRef.current)
+    }
+    
+    // Update invalid fields state
+    setInvalidFields(newInvalidFields)
+    
+    // If no invalid fields, submit the form
+    if (newInvalidFields.length === 0) {
+      setShowSuccess(true)
+      setFormData({ name: "", email: "", message: "" })
+    }
   }
 
   return (
     <>
+      <style jsx global>{`
+        @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+          20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        .shake-animation {
+          animation: shake 0.8s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+      `}</style>
+      
       <section id="contact" className="relative min-h-screen py-12">
         {/* Background */}
         <div className="absolute inset-0 z-0">
@@ -105,35 +164,35 @@ export default function ContactForm() {
 
               {/* Contact Form */}
               <div>
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                   <div>
                     <input
+                      ref={nameInputRef}
                       type="text"
                       placeholder="Name"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      required
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                      className={`w-full bg-white/5 border ${invalidFields.includes('name') ? 'border-[#C8A97E]' : 'border-white/10'} rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors`}
                     />
                   </div>
                   <div>
                     <input
+                      ref={emailInputRef}
                       type="email"
                       placeholder="Email"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      required
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors"
+                      className={`w-full bg-white/5 border ${invalidFields.includes('email') ? 'border-[#C8A97E]' : 'border-white/10'} rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors`}
                     />
                   </div>
                   <div>
                     <textarea
+                      ref={messageInputRef}
                       placeholder="Ihre Nachricht"
                       value={formData.message}
                       onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                      required
                       rows={3}
-                      className="w-full bg-white/5 border border-white/10 rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none"
+                      className={`w-full bg-white/5 border ${invalidFields.includes('message') ? 'border-[#C8A97E]' : 'border-white/10'} rounded-lg px-3 py-2 text-white placeholder-gray-400 focus:outline-none focus:border-[#C8A97E] transition-colors resize-none`}
                     />
                   </div>
                   <motion.button
