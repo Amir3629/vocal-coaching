@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Play, Pause } from "lucide-react";
+import { Play, Pause, ChevronLeft, ChevronRight } from "lucide-react";
 import { getAudioPath } from "@/app/utils/paths";
 
 interface Track {
@@ -92,9 +92,9 @@ export default function EnhancedMusicPlayer() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
-  const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
-  const [startDragPosition, setStartDragPosition] = useState({ x: 0, y: 0 });
-  const [showBackDiscs, setShowBackDiscs] = useState(false);
+  const [dragStartX, setDragStartX] = useState(0);
+  const [dragDelta, setDragDelta] = useState(0);
+  const [swipeDirection, setSwipeDirection] = useState<'left' | 'right' | null>(null);
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const discRef = useRef<HTMLDivElement>(null);
@@ -105,6 +105,17 @@ export default function EnhancedMusicPlayer() {
   const getYouTubeThumbnail = (youtubeId: string) => {
     return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
   };
+
+  // Get track at index with circular wrapping
+  const getTrackAtIndex = (index: number) => {
+    // Ensure positive index with modulo
+    const wrappedIndex = ((index % tracks.length) + tracks.length) % tracks.length;
+    return tracks[wrappedIndex];
+  };
+
+  // Get previous, current, and next tracks for carousel
+  const prevTrack = getTrackAtIndex(currentTrackIndex - 1);
+  const nextTrack = getTrackAtIndex(currentTrackIndex + 1);
 
   useEffect(() => {
     // Listen for stop events from other media players
@@ -145,7 +156,7 @@ export default function EnhancedMusicPlayer() {
   const handleEnded = () => {
     setIsPlaying(false);
     // Auto play next track
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
+    handleNextTrack();
   };
 
   // Handle audio error
@@ -177,28 +188,23 @@ export default function EnhancedMusicPlayer() {
     }
   }, [currentTrackIndex, currentTrack.file]);
 
-  // Disc interaction
-  const handleDiscClick = (e: React.MouseEvent) => {
-    // Only trigger if clicking outside the center button
-    const rect = discRef.current?.getBoundingClientRect();
-    if (rect) {
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const distance = Math.sqrt(
-        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
-      );
-      
-      // If clicking outside the center button area (radius ~40px)
-      if (distance > 60) {
-        setShowBackDiscs(!showBackDiscs);
-      }
-    }
+  // Handle next track
+  const handleNextTrack = () => {
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
+    setSwipeDirection('left');
+    setTimeout(() => setSwipeDirection(null), 500);
   };
 
-  const handleDragStart = (e: React.MouseEvent) => {
-    if (isDragging) return;
-    
-    // Prevent dragging when clicking the center button
+  // Handle previous track
+  const handlePrevTrack = () => {
+    setCurrentTrackIndex((prevIndex) => (prevIndex - 1 + tracks.length) % tracks.length);
+    setSwipeDirection('right');
+    setTimeout(() => setSwipeDirection(null), 500);
+  };
+
+  // Disc interaction for horizontal swiping
+  const handleDiscMouseDown = (e: React.MouseEvent) => {
+    // Only start dragging if not clicking the center button
     const rect = discRef.current?.getBoundingClientRect();
     if (rect) {
       const centerX = rect.left + rect.width / 2;
@@ -214,57 +220,50 @@ export default function EnhancedMusicPlayer() {
     }
     
     setIsDragging(true);
-    setStartDragPosition({ x: e.clientX, y: e.clientY });
+    setDragStartX(e.clientX);
+    setDragDelta(0);
     
     // Add dragging class to body
     document.body.classList.add('dragging-disc');
   };
 
-  const handleDragMove = (e: MouseEvent) => {
+  const handleDiscMouseMove = (e: MouseEvent) => {
     if (!isDragging) return;
     
-    const deltaX = e.clientX - startDragPosition.x;
-    const deltaY = e.clientY - startDragPosition.y;
-    
-    // Apply some damping for smoother movement
-    const damping = 0.5;
-    setDragPosition({
-      x: dragPosition.x + deltaX * damping,
-      y: dragPosition.y + deltaY * damping
-    });
-    
-    setStartDragPosition({ x: e.clientX, y: e.clientY });
+    const delta = e.clientX - dragStartX;
+    setDragDelta(delta);
   };
 
-  const handleDragEnd = () => {
-    setIsDragging(false);
+  const handleDiscMouseUp = () => {
+    if (!isDragging) return;
     
-    // Reset position with animation
-    setDragPosition({ x: 0, y: 0 });
+    // Determine if swipe was significant enough to change track
+    if (dragDelta > 100) {
+      // Swipe right - go to previous track
+      handlePrevTrack();
+    } else if (dragDelta < -100) {
+      // Swipe left - go to next track
+      handleNextTrack();
+    }
+    
+    setIsDragging(false);
+    setDragDelta(0);
     
     // Remove dragging class from body
     document.body.classList.remove('dragging-disc');
   };
 
-  const selectTrack = (index: number) => {
-    setCurrentTrackIndex(index);
-    setShowBackDiscs(false);
-    if (!isPlaying) {
-      setIsPlaying(true);
-    }
-  };
-
   useEffect(() => {
     if (isDragging) {
-      window.addEventListener('mousemove', handleDragMove);
-      window.addEventListener('mouseup', handleDragEnd);
+      window.addEventListener('mousemove', handleDiscMouseMove);
+      window.addEventListener('mouseup', handleDiscMouseUp);
     }
     
     return () => {
-      window.removeEventListener('mousemove', handleDragMove);
-      window.removeEventListener('mouseup', handleDragEnd);
+      window.removeEventListener('mousemove', handleDiscMouseMove);
+      window.removeEventListener('mouseup', handleDiscMouseUp);
     };
-  }, [isDragging, startDragPosition]);
+  }, [isDragging, dragStartX]);
 
   // Dismiss error after 5 seconds
   useEffect(() => {
@@ -286,144 +285,171 @@ export default function EnhancedMusicPlayer() {
         <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
         <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
         
-        {/* Main Vinyl Disc */}
-        <div 
-          ref={discRef}
-          className={`relative w-96 h-96 mx-auto mb-8 cursor-grab ${isDragging ? 'cursor-grabbing' : ''}`}
-          onClick={handleDiscClick}
-          onMouseDown={handleDragStart}
-          style={{
-            transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
-            transition: isDragging ? 'none' : 'transform 0.5s ease-out'
-          }}
-        >
-          {/* Background discs */}
+        {/* Disc Carousel Container */}
+        <div className="relative w-[500px] h-96 mx-auto mb-8 overflow-visible">
+          {/* Previous Track Disc */}
           <AnimatePresence>
-            {showBackDiscs && tracks.map((track, index) => {
-              if (index === currentTrackIndex) return null;
-              
-              // Calculate position for background discs
-              const angle = (index * (360 / tracks.length)) * (Math.PI / 180);
-              const distance = 220; // Distance from center
-              const x = Math.cos(angle) * distance;
-              const y = Math.sin(angle) * distance;
-              
-              return (
-                <motion.div
-                  key={track.id}
-                  className="absolute w-72 h-72 rounded-full shadow-2xl cursor-pointer"
-                  initial={{ opacity: 0, x: 0, y: 0, scale: 0.5 }}
-                  animate={{ 
-                    opacity: 0.8, 
-                    x, 
-                    y, 
-                    scale: 0.8,
-                    transition: { duration: 0.7, ease: "easeOut" }
-                  }}
-                  exit={{ 
-                    opacity: 0, 
-                    x: 0, 
-                    y: 0, 
-                    scale: 0.5,
-                    transition: { duration: 0.5, ease: "easeIn" }
-                  }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    selectTrack(index);
-                  }}
-                  whileHover={{ scale: 0.85, opacity: 1 }}
-                >
-                  {/* Disc image */}
-                  <div className="relative w-full h-full rounded-full overflow-hidden">
-                    <div className="absolute inset-0 rounded-full overflow-hidden">
-                      <Image 
-                        src={getYouTubeThumbnail(track.youtubeId)} 
-                        alt={track.title}
-                        fill
-                        style={{ objectFit: 'cover' }}
-                        className="opacity-90"
-                        unoptimized
-                      />
-                    </div>
-                    
-                    {/* Vinyl grooves */}
-                    <div className="absolute inset-0 rounded-full">
-                      <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
-                      <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
-                      <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
-                      <div className="absolute inset-[35px] rounded-full border border-[#333]/60"></div>
-                    </div>
-                    
-                    {/* Center label */}
-                    <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-black flex items-center justify-center">
-                      <p className="text-xs text-[#C8A97E] font-medium text-center px-2">{track.title}</p>
-                    </div>
+            {!isDragging && (
+              <motion.div
+                className="absolute top-1/2 left-0 w-64 h-64 -translate-y-1/2 -translate-x-1/4 rounded-full overflow-hidden opacity-40 cursor-pointer"
+                initial={{ x: swipeDirection === 'right' ? '100%' : '-50%', opacity: 0 }}
+                animate={{ x: '-25%', opacity: 0.4 }}
+                exit={{ x: '-50%', opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                onClick={handlePrevTrack}
+              >
+                <div className="relative w-full h-full rounded-full overflow-hidden">
+                  <Image 
+                    src={getYouTubeThumbnail(prevTrack.youtubeId)} 
+                    alt={prevTrack.title}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    className="opacity-90"
+                    unoptimized
+                  />
+                  
+                  {/* Vinyl grooves */}
+                  <div className="absolute inset-0 rounded-full">
+                    <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
+                    <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
+                    <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
                   </div>
-                </motion.div>
-              );
-            })}
+                  
+                  {/* Center label */}
+                  <div className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-black flex items-center justify-center">
+                    <p className="text-[10px] text-[#C8A97E] font-medium text-center px-1">{prevTrack.title}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
           </AnimatePresence>
           
-          {/* Main disc */}
-          <div className="absolute inset-0 rounded-full overflow-hidden">
-            {/* Disc image background */}
+          {/* Main Vinyl Disc */}
+          <motion.div 
+            ref={discRef}
+            className="absolute top-1/2 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 cursor-grab"
+            animate={{ 
+              x: isDragging ? `calc(-50% + ${dragDelta}px)` : '-50%',
+              rotate: swipeDirection === 'left' ? -5 : swipeDirection === 'right' ? 5 : 0
+            }}
+            transition={{ 
+              x: { duration: isDragging ? 0 : 0.5 },
+              rotate: { duration: 0.3 }
+            }}
+            onMouseDown={handleDiscMouseDown}
+          >
+            {/* Main disc */}
             <div className="absolute inset-0 rounded-full overflow-hidden">
-              <Image 
-                src={getYouTubeThumbnail(currentTrack.youtubeId)} 
-                alt={currentTrack.title}
-                fill
-                style={{ objectFit: 'cover' }}
-                className="opacity-100"
-                priority
-                unoptimized
-              />
-            </div>
-            
-            {/* Inner disc with grooves */}
-            <motion.div 
-              className="absolute inset-0 rounded-full bg-black/30 backdrop-blur-sm"
-              animate={{ rotate: isPlaying ? 360 : 0 }}
-              transition={{ 
-                duration: 20, 
-                ease: "linear", 
-                repeat: Infinity,
-                repeatType: "loop" 
-              }}
-            >
-              {/* Vinyl grooves */}
-              <div className="absolute inset-0 rounded-full">
-                <div className="absolute inset-[15px] rounded-full border border-[#444]/70"></div>
-                <div className="absolute inset-[30px] rounded-full border border-[#444]/70"></div>
-                <div className="absolute inset-[45px] rounded-full border border-[#444]/70"></div>
-                <div className="absolute inset-[60px] rounded-full border border-[#444]/70"></div>
-                <div className="absolute inset-[75px] rounded-full border border-[#444]/70"></div>
-                <div className="absolute inset-[90px] rounded-full border border-[#444]/70"></div>
-                <div className="absolute inset-[105px] rounded-full border border-[#444]/70"></div>
-                <div className="absolute inset-[120px] rounded-full border border-[#444]/70"></div>
-              </div>
+              {/* Disc image background */}
+              <motion.div 
+                className="absolute inset-0 rounded-full overflow-hidden"
+                animate={{ rotate: isPlaying ? 360 : 0 }}
+                transition={{ 
+                  duration: 20, 
+                  ease: "linear", 
+                  repeat: Infinity,
+                  repeatType: "loop" 
+                }}
+              >
+                <Image 
+                  src={getYouTubeThumbnail(currentTrack.youtubeId)} 
+                  alt={currentTrack.title}
+                  fill
+                  style={{ objectFit: 'cover' }}
+                  className="opacity-100"
+                  priority
+                  unoptimized
+                />
+              </motion.div>
               
-              {/* Center button */}
-              <div className="absolute inset-0 m-auto w-32 h-32 rounded-full bg-black flex items-center justify-center">
-                <motion.button
-                  className="w-24 h-24 rounded-full bg-black flex items-center justify-center"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    handlePlay();
-                  }}
-                  transition={{ duration: 0.3 }}
-                >
-                  {isLoading ? (
-                    <div className="w-8 h-8 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
-                  ) : isPlaying ? (
-                    <Pause className="w-10 h-10 text-[#C8A97E]" />
-                  ) : (
-                    <Play className="w-10 h-10 text-[#C8A97E] ml-1" />
-                  )}
-                </motion.button>
-              </div>
-            </motion.div>
+              {/* Inner disc with grooves */}
+              <motion.div 
+                className="absolute inset-0 rounded-full bg-black/30 backdrop-blur-sm"
+                animate={{ rotate: isPlaying ? 360 : 0 }}
+                transition={{ 
+                  duration: 20, 
+                  ease: "linear", 
+                  repeat: Infinity,
+                  repeatType: "loop" 
+                }}
+              >
+                {/* Vinyl grooves */}
+                <div className="absolute inset-0 rounded-full">
+                  <div className="absolute inset-[15px] rounded-full border border-[#444]/70"></div>
+                  <div className="absolute inset-[30px] rounded-full border border-[#444]/70"></div>
+                  <div className="absolute inset-[45px] rounded-full border border-[#444]/70"></div>
+                  <div className="absolute inset-[60px] rounded-full border border-[#444]/70"></div>
+                  <div className="absolute inset-[75px] rounded-full border border-[#444]/70"></div>
+                  <div className="absolute inset-[90px] rounded-full border border-[#444]/70"></div>
+                  <div className="absolute inset-[105px] rounded-full border border-[#444]/70"></div>
+                  <div className="absolute inset-[120px] rounded-full border border-[#444]/70"></div>
+                </div>
+                
+                {/* Center button */}
+                <div className="absolute inset-0 m-auto w-32 h-32 rounded-full bg-black flex items-center justify-center">
+                  <motion.button
+                    className="w-24 h-24 rounded-full bg-black flex items-center justify-center"
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handlePlay}
+                    transition={{ duration: 0.3 }}
+                  >
+                    {isLoading ? (
+                      <div className="w-8 h-8 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
+                    ) : isPlaying ? (
+                      <Pause className="w-10 h-10 text-[#C8A97E]" />
+                    ) : (
+                      <Play className="w-10 h-10 text-[#C8A97E] ml-1" />
+                    )}
+                  </motion.button>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+          
+          {/* Next Track Disc */}
+          <AnimatePresence>
+            {!isDragging && (
+              <motion.div
+                className="absolute top-1/2 right-0 w-64 h-64 -translate-y-1/2 translate-x-1/4 rounded-full overflow-hidden opacity-40 cursor-pointer"
+                initial={{ x: swipeDirection === 'left' ? '-100%' : '50%', opacity: 0 }}
+                animate={{ x: '25%', opacity: 0.4 }}
+                exit={{ x: '50%', opacity: 0 }}
+                transition={{ duration: 0.5 }}
+                onClick={handleNextTrack}
+              >
+                <div className="relative w-full h-full rounded-full overflow-hidden">
+                  <Image 
+                    src={getYouTubeThumbnail(nextTrack.youtubeId)} 
+                    alt={nextTrack.title}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    className="opacity-90"
+                    unoptimized
+                  />
+                  
+                  {/* Vinyl grooves */}
+                  <div className="absolute inset-0 rounded-full">
+                    <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
+                    <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
+                    <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
+                  </div>
+                  
+                  {/* Center label */}
+                  <div className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-black flex items-center justify-center">
+                    <p className="text-[10px] text-[#C8A97E] font-medium text-center px-1">{nextTrack.title}</p>
+                  </div>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+          
+          {/* Navigation Indicators */}
+          <div className="absolute top-1/2 left-0 -translate-y-1/2 -translate-x-4">
+            <ChevronLeft className="w-8 h-8 text-[#C8A97E]/70 cursor-pointer hover:text-[#C8A97E]" onClick={handlePrevTrack} />
+          </div>
+          <div className="absolute top-1/2 right-0 -translate-y-1/2 translate-x-4">
+            <ChevronRight className="w-8 h-8 text-[#C8A97E]/70 cursor-pointer hover:text-[#C8A97E]" onClick={handleNextTrack} />
           </div>
         </div>
         
