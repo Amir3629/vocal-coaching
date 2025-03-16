@@ -188,7 +188,6 @@ export default function GallerySection() {
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
                 transition={{ duration: 0.5, ease: "easeInOut" }}
-                onClick={(e) => e.stopPropagation()}
               >
                 <button 
                   className="absolute left-[-70px] top-1/2 transform -translate-y-1/2 text-white p-3 rounded-full transition-all duration-300 z-30"
