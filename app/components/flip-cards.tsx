@@ -30,10 +30,12 @@ const FlipCard: React.FC<FlipCardProps> = ({
   };
 
   const handleMouseLeave = () => {
-    // Add a delay before flipping back
-    timeoutRef.current = setTimeout(() => {
-      setIsFlipped(false);
-    }, 2000); // Increased to 2000ms (2 seconds) delay before flipping back
+    // Remove the delay before flipping back
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setIsFlipped(false);
   };
 
   // Clean up timeout on unmount
