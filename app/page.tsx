@@ -21,6 +21,7 @@ import Collaborations from "@/app/components/collaborations"
 import ServiceCard from "@/app/components/service-card"
 import ServicesSection from "./components/services-section"
 import MusicPlayer from "@/app/components/music-player"
+import SimpleMusicPlayer from "@/app/components/simple-music-player"
 import FlipCards from './components/flip-cards'
 import AboutSectionFixed from "@/app/components/about-section-fixed"
 
@@ -190,7 +191,7 @@ export default function Home() {
           >
             <h2 className="section-heading mb-4">Meine Musik</h2>
             <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80 mb-12"></div>
-            <MusicPlayer />
+            <SimpleMusicPlayer />
           </motion.div>
         </div>
       </section>
