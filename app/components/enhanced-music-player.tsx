@@ -106,7 +106,7 @@ export default function EnhancedMusicPlayer() {
   // Get YouTube thumbnail URL - use higher quality image
   const getYouTubeThumbnail = (youtubeId: string) => {
     // Try to get the highest quality thumbnail
-    return `https://i.ytimg.com/vi_webp/${youtubeId}/sddefault.webp`;
+    return `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
   };
 
   // Get track at index with circular wrapping
@@ -118,18 +118,20 @@ export default function EnhancedMusicPlayer() {
 
   // Initialize visible discs
   useEffect(() => {
-    // Always show 5 discs: current, 2 to the left, 2 to the right
+    // Always show all discs for better performance
     const indices = [];
-    for (let i = -2; i <= 2; i++) {
-      const index = (currentTrackIndex + i + tracks.length) % tracks.length;
-      indices.push(index);
+    for (let i = 0; i < tracks.length; i++) {
+      indices.push(i);
     }
     setVisibleDiscs(indices);
     
     // Initialize positions
     const positions: {[key: number]: number} = {};
-    indices.forEach((index, i) => {
-      positions[index] = (i - 2) * 200; // -400, -200, 0, 200, 400
+    indices.forEach(index => {
+      // Calculate position based on distance from current track
+      const distance = index - currentTrackIndex;
+      const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
+      positions[index] = wrappedDistance * 200;
     });
     setDiscPositions(positions);
   }, [currentTrackIndex, tracks.length]);
@@ -258,37 +260,12 @@ export default function EnhancedMusicPlayer() {
     // Update all disc positions based on drag delta
     const updatedPositions: {[key: number]: number} = {};
     visibleDiscs.forEach(index => {
-      const basePosition = discPositions[index] || 0;
-      updatedPositions[index] = basePosition + delta * 0.8;
+      // Calculate position based on distance from current track
+      const distance = index - currentTrackIndex;
+      const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
+      const basePosition = wrappedDistance * 200;
+      updatedPositions[index] = basePosition + delta;
     });
-    
-    setDiscPositions(updatedPositions);
-    
-    // Check if we need to add more discs as we drag further
-    if (delta > 200 || delta < -200) {
-      // Add more discs in the direction we're dragging
-      const newVisibleDiscs = [...visibleDiscs];
-      
-      if (delta > 200) {
-        // Add more discs to the left
-        const leftmostIndex = Math.min(...visibleDiscs);
-        const newIndex = (leftmostIndex - 1 + tracks.length) % tracks.length;
-        if (!newVisibleDiscs.includes(newIndex)) {
-          newVisibleDiscs.push(newIndex);
-          updatedPositions[newIndex] = -600 + delta * 0.8;
-        }
-      } else if (delta < -200) {
-        // Add more discs to the right
-        const rightmostIndex = Math.max(...visibleDiscs);
-        const newIndex = (rightmostIndex + 1) % tracks.length;
-        if (!newVisibleDiscs.includes(newIndex)) {
-          newVisibleDiscs.push(newIndex);
-          updatedPositions[newIndex] = 600 + delta * 0.8;
-        }
-      }
-      
-      setVisibleDiscs(newVisibleDiscs);
-    }
     
     setDiscPositions(updatedPositions);
   };
@@ -354,7 +331,7 @@ export default function EnhancedMusicPlayer() {
         <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
         
         {/* Disc Carousel Container - Moved up to show title */}
-        <div className="relative w-[500px] h-96 mx-auto mb-20 overflow-visible">
+        <div className="relative w-[500px] h-96 mx-auto mb-32 overflow-visible">
           {/* Background Discs - Visible when dragging or when showBackDiscs is true */}
           <AnimatePresence>
             {(isDragging || showBackDiscs) && visibleDiscs.map(index => {
@@ -362,6 +339,9 @@ export default function EnhancedMusicPlayer() {
               
               const track = getTrackAtIndex(index);
               const position = discPositions[index] || 0;
+              
+              // Only show discs that are within a reasonable distance
+              if (Math.abs(position) > 600) return null;
               
               return (
                 <motion.div
@@ -420,7 +400,7 @@ export default function EnhancedMusicPlayer() {
             ref={discRef}
             className="absolute top-1/2 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 cursor-grab z-30"
             animate={{ 
-              x: isDragging ? `calc(-50% + ${dragDelta * 0.8}px)` : '-50%',
+              x: isDragging ? `calc(-50% + ${dragDelta}px)` : '-50%',
               scale: isDragging ? 0.95 : 1
             }}
             transition={{ 
@@ -431,7 +411,7 @@ export default function EnhancedMusicPlayer() {
             onMouseDown={handleDiscMouseDown}
           >
             {/* Main disc */}
-            <div className="absolute inset-0 rounded-full overflow-hidden">
+            <div className="absolute inset-0 rounded-full overflow-hidden shadow-2xl">
               {/* Disc image background - spinning continuously */}
               <motion.div 
                 className="absolute inset-0 rounded-full overflow-hidden"
