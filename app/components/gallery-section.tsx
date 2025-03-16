@@ -192,10 +192,10 @@ export default function GallerySection() {
               >
                 <button
                   onClick={handleClose}
-                  className="absolute top-2 right-2 text-white p-2 rounded-full transition-all duration-300 z-30"
+                  className="absolute top-[-30px] right-[-30px] text-white p-2 rounded-full transition-all duration-300 z-30"
                   aria-label="Close image"
                 >
-                  <X size={20} />
+                  <X size={24} />
                 </button>
                 
                 <button 

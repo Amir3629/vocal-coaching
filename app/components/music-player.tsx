@@ -303,6 +303,7 @@ export default function MusicPlayer() {
   // Spinning animation with slow start
   useEffect(() => {
     if (isPlaying) {
+      // Only animate the current disc
       discControls.start({
         rotate: 360,
         transition: {
@@ -315,7 +316,7 @@ export default function MusicPlayer() {
     } else {
       discControls.stop();
     }
-  }, [isPlaying, discControls]);
+  }, [isPlaying, discControls, currentSongIndex]);
 
   // Listen for global stop events
   useEffect(() => {
@@ -348,6 +349,9 @@ export default function MusicPlayer() {
       setIsPlaying(false);
     } else {
       if (currentSongIndex !== trackIndex) {
+        // Stop all animations before changing tracks
+        discControls.stop();
+        
         setCurrentSongIndex(trackIndex);
         // Stop all discs from spinning when changing tracks
         setIsPlaying(false);
@@ -663,7 +667,7 @@ export default function MusicPlayer() {
                   {/* Vinyl disc background */}
                   <motion.div 
                     className={`w-[400px] h-[400px] rounded-full bg-black relative ${isActive ? 'ring-4 ring-[#C8A97E]/30 ring-offset-2 ring-offset-black/10' : ''}`}
-                    animate={isActive && isPlaying ? discControls : { rotate: 0 }}
+                    animate={isActive && isPlaying && songIndex === currentSongIndex ? discControls : { rotate: 0 }}
                     initial={{ rotate: 0 }}
                     style={{
                       boxShadow: isActive ? '0 10px 30px rgba(0, 0, 0, 0.6)' : 'none'
