@@ -11,7 +11,7 @@ import EnhancedMusicPlayer from "@/app/components/enhanced-music-player"
 import VideoPreview from "@/app/components/video-preview"
 import { Music, Mic, Theater, BookOpen } from "lucide-react"
 import ParallaxBackground from "@/app/components/parallax-background"
-import AboutSection from "@/app/components/about-section"
+import AboutSectionNew from "@/app/components/about-section-new"
 import Certifications from "@/app/components/certifications"
 import GallerySection from "@/app/components/gallery-section"
 import MusicNotes from "@/app/components/music-notes-animation"
@@ -384,7 +384,7 @@ export default function Home() {
 
       {/* About Section */}
       <section id="about">
-        <AboutSection />
+        <AboutSectionNew />
       </section>
 
       {/* References Section */}
