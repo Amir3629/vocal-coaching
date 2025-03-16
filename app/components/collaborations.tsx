@@ -19,14 +19,14 @@ const collaborations = [
     link: "https://www.bluenote.net"
   },
   {
-    name: "CVT Teacher",
+    name: "CVT",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-teacher.svg" : "/images/collaborations/cvt-teacher.svg",
     link: "https://completevocalinstitute.com/complete-vocal-technique-de/"
   },
   {
-    name: "CVT",
-    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-teacher.svg" : "/images/collaborations/cvt-teacher.svg",
-    link: "https://completevocalinstitute.com/complete-vocal-technique-de/"
+    name: "CVT Deutschland",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-deutschland.svg" : "/images/collaborations/cvt-deutschland.svg",
+    link: "https://cvtdeutschland.de/de"
   },
   // Second Row
   {
