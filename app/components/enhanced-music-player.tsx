@@ -7,6 +7,8 @@ import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX } from "lucide-rea
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { Slider } from "@/app/components/ui/slider";
+import EnhancedAudio from "./enhanced-audio";
+import { getAudioPath } from "@/app/utils/paths";
 
 declare global {
   interface Window {
@@ -26,43 +28,31 @@ interface Track {
   id: number;
   title: string;
   artist: string;
-  description: string;
-  youtubeId: string;
-  thumbnail: string;
+  file: string;
+  duration: number; // in seconds
 }
 
 const defaultTracks: Track[] = [
   {
     id: 1,
-    title: "Jazz Performance",
-    artist: "Melanie Wainwright",
-    description: "Live at B-Flat Jazz Club Berlin",
-    youtubeId: "K6x0zEA06uk",
-    thumbnail: "https://img.youtube.com/vi/K6x0zEA06uk/maxresdefault.jpg"
+    title: "Jazz Improvisation",
+    artist: "Mel Jazz",
+    file: "/audio/music-sample-1",
+    duration: 180
   },
   {
     id: 2,
-    title: "Vocal Workshop",
-    artist: "Melanie Wainwright",
-    description: "Complete Vocal Technique Demonstration",
-    youtubeId: "AWsarzdZ1u8",
-    thumbnail: "https://img.youtube.com/vi/AWsarzdZ1u8/maxresdefault.jpg"
+    title: "Soul Expressions",
+    artist: "Mel Jazz",
+    file: "/audio/music-sample-2",
+    duration: 210
   },
   {
     id: 3,
-    title: "Jazz Standards",
-    artist: "Melanie Wainwright",
-    description: "Live Performance Highlights",
-    youtubeId: "GidIMbCmtyk",
-    thumbnail: "https://img.youtube.com/vi/GidIMbCmtyk/maxresdefault.jpg"
-  },
-  {
-    id: 4,
-    title: "Vocal Jazz",
-    artist: "Melanie Wainwright",
-    description: "Studio Session",
-    youtubeId: "hFdMHvB6-Jk",
-    thumbnail: "https://img.youtube.com/vi/hFdMHvB6-Jk/maxresdefault.jpg"
+    title: "Vocal Techniques",
+    artist: "Mel Jazz",
+    file: "/audio/music-sample-3",
+    duration: 195
   }
 ];
 
@@ -70,13 +60,14 @@ const defaultTracks: Track[] = [
 const MEDIA_STOP_EVENT = 'stopAllMedia'
 
 export default function EnhancedMusicPlayer() {
-  const [tracks, setTracks] = useState<Track[]>(defaultTracks);
+  const [tracks] = useState<Track[]>(defaultTracks);
+  const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTrack, setCurrentTrack] = useState(0);
   const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.8);
   const [isMuted, setIsMuted] = useState(false);
+  const [volume, setVolume] = useState(0.7);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [showMiniPlayer, setShowMiniPlayer] = useState(false);
   const [lastPlayTime, setLastPlayTime] = useState(Date.now());
   const [isAPIReady, setIsAPIReady] = useState(false);
@@ -87,24 +78,26 @@ export default function EnhancedMusicPlayer() {
   const audioRef = useRef<HTMLAudioElement>(null);
   const miniPlayerRef = useRef<HTMLDivElement>(null);
 
+  const currentTrack = tracks[currentTrackIndex];
+
   useEffect(() => {
     const loadYouTubeAPI = () => {
       try {
-      if (!window.YT) {
-        const tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
+        if (!window.YT) {
+          const tag = document.createElement('script');
+          tag.src = 'https://www.youtube.com/iframe_api';
           tag.onerror = () => {
             console.error('Failed to load YouTube API');
             setHasError(true);
           };
-        const firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
+          const firstScriptTag = document.getElementsByTagName('script')[0];
+          firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
 
-        window.onYouTubeIframeAPIReady = () => {
+          window.onYouTubeIframeAPIReady = () => {
+            setIsAPIReady(true);
+          };
+        } else {
           setIsAPIReady(true);
-        };
-      } else {
-        setIsAPIReady(true);
         }
       } catch (error) {
         console.error('Error loading YouTube API:', error);
@@ -124,19 +117,19 @@ export default function EnhancedMusicPlayer() {
   useEffect(() => {
     if (isAPIReady && !playerRef.current) {
       try {
-      playerRef.current = new window.YT.Player("youtube-player", {
-        height: "0",
-        width: "0",
-          videoId: tracks[currentTrack].youtubeId,
-        playerVars: {
-          autoplay: 0,
-          controls: 0,
-          disablekb: 1,
-          fs: 0,
-          rel: 0
-        },
-        events: {
-          onStateChange: (event: any) => {
+        playerRef.current = new window.YT.Player("youtube-player", {
+          height: "0",
+          width: "0",
+          videoId: tracks[currentTrackIndex].youtubeId,
+          playerVars: {
+            autoplay: 0,
+            controls: 0,
+            disablekb: 1,
+            fs: 0,
+            rel: 0
+          },
+          events: {
+            onStateChange: (event: any) => {
               try {
                 if (event.data === window.YT.PlayerState.PLAYING) {
                   setIsPlaying(true);
@@ -147,9 +140,9 @@ export default function EnhancedMusicPlayer() {
                 console.error('Error in onStateChange:', error);
                 setIsPlaying(false);
               }
-          },
-          onReady: () => {
-            console.log("Player ready");
+            },
+            onReady: () => {
+              console.log("Player ready");
               if (isPlaying) {
                 try {
                   playerRef.current?.playVideo();
@@ -171,33 +164,30 @@ export default function EnhancedMusicPlayer() {
         setHasError(true);
       }
     }
-  }, [isAPIReady, currentTrack]);
+  }, [isAPIReady, currentTrackIndex]);
 
   useEffect(() => {
     if (isAPIReady && playerRef.current?.loadVideoById) {
       try {
-        playerRef.current.loadVideoById(tracks[currentTrack].youtubeId);
+        playerRef.current.loadVideoById(tracks[currentTrackIndex].youtubeId);
         if (isPlaying) {
           playerRef.current.playVideo();
         } else {
           playerRef.current.pauseVideo();
         }
         setCurrentTime(0);
-        setDuration(playerRef.current.getDuration() || 0);
       } catch (error) {
         console.error("Error loading video:", error);
       }
     }
-  }, [currentTrack, isAPIReady]);
+  }, [currentTrackIndex, isAPIReady]);
 
   useEffect(() => {
     if (isPlaying) {
       progressInterval.current = setInterval(() => {
         if (playerRef.current) {
           const currentTime = playerRef.current.getCurrentTime() || 0;
-          const duration = playerRef.current.getDuration() || 0;
           setCurrentTime(currentTime);
-          setDuration(duration);
         }
       }, 100);
     } else if (progressInterval.current) {
@@ -259,12 +249,12 @@ export default function EnhancedMusicPlayer() {
   };
 
   const handlePrevTrack = () => {
-    setCurrentTrack((prevIndex) => (prevIndex - 1 + tracks.length) % tracks.length);
+    setCurrentTrackIndex((prevIndex) => (prevIndex - 1 + tracks.length) % tracks.length);
     setCurrentTime(0);
   };
 
   const handleNextTrack = () => {
-    setCurrentTrack((prevIndex) => (prevIndex + 1) % tracks.length);
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
     setCurrentTime(0);
   };
 
@@ -279,6 +269,60 @@ export default function EnhancedMusicPlayer() {
     }
   };
 
+  // Format time in MM:SS
+  const formatTime = (time: number) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
+  };
+
+  // Handle progress bar click
+  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!progressInterval.current) return;
+    
+    const progressBar = progressInterval.current;
+    const rect = progressBar.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    
+    if (playerRef.current) {
+      const newTime = percent * playerRef.current.getDuration() || 0;
+      playerRef.current.seekTo(newTime);
+      setCurrentTime(newTime);
+    }
+  };
+
+  // Handle volume change
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+    
+    if (playerRef.current) {
+      playerRef.current.setVolume(newVolume * 100);
+    }
+    
+    if (newVolume === 0) {
+      setIsMuted(true);
+    } else {
+      setIsMuted(false);
+    }
+  };
+
+  // Handle audio ended
+  const handleEnded = () => {
+    setIsPlaying(false);
+    setCurrentTime(0);
+    
+    // Auto play next track
+    handleNextTrack();
+  };
+
+  // Handle audio error
+  const handleError = (error: Error) => {
+    setError(error.message);
+    setIsPlaying(false);
+    setIsLoading(false);
+  };
+
   return (
     <>
       <motion.div id="main-player" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl mx-auto">
@@ -291,41 +335,40 @@ export default function EnhancedMusicPlayer() {
           </Card>
         ) : (
           <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-4 sm:p-6">
-        <div id="youtube-player" className="hidden"></div>
-        
+            <div id="youtube-player" className="hidden"></div>
+            
             <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
-          <AnimatePresence mode="wait">
-            <motion.div
-                  key={tracks[currentTrack].id}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: 20 }}
-              transition={{ duration: 0.3 }}
-                  className="relative w-full sm:w-24 h-24 rounded-lg overflow-hidden"
-            >
-              <Image
-                    src={tracks[currentTrack].thumbnail}
-                    alt={tracks[currentTrack].title}
-                fill
-                className="object-cover"
-              />
-            </motion.div>
-          </AnimatePresence>
+              <AnimatePresence mode="wait">
+                <motion.div
+                      key={tracks[currentTrackIndex].id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 20 }}
+                  transition={{ duration: 0.3 }}
+                      className="relative w-full sm:w-24 h-24 rounded-lg overflow-hidden"
+                >
+                  <Image
+                        src={tracks[currentTrackIndex].thumbnail}
+                        alt={tracks[currentTrackIndex].title}
+                    fill
+                    className="object-cover"
+                  />
+                </motion.div>
+              </AnimatePresence>
 
-          <AnimatePresence mode="wait">
-            <motion.div
-                  key={tracks[currentTrack].id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
-              className="flex-1"
-            >
-                  <h3 className="text-xl sm:text-2xl font-light text-white mb-2">{tracks[currentTrack].title}</h3>
-                  <p className="text-[#C8A97E] text-sm mb-1">{tracks[currentTrack].artist}</p>
-                  <p className="text-gray-400 text-sm">{tracks[currentTrack].description}</p>
-            </motion.div>
-          </AnimatePresence>
+              <AnimatePresence mode="wait">
+                <motion.div
+                      key={tracks[currentTrackIndex].id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3 }}
+                  className="flex-1"
+                >
+                      <h3 className="text-xl sm:text-2xl font-light text-white mb-2">{tracks[currentTrackIndex].title}</h3>
+                      <p className="text-[#C8A97E] text-sm mb-1">{tracks[currentTrackIndex].artist}</p>
+                </motion.div>
+              </AnimatePresence>
             </div>
 
             <div className="flex items-center justify-center gap-4 mb-6">
@@ -355,7 +398,7 @@ export default function EnhancedMusicPlayer() {
                   fill="none"
                   className="text-[#C8A97E]"
                   strokeDasharray="144.51326206513048"
-                    strokeDashoffset={144.51326206513048 * (1 - currentTime / duration * 100 / 100)}
+                    strokeDashoffset={144.51326206513048 * (1 - currentTime / playerRef.current?.getDuration() || 0 * 100 / 100)}
                   transform="rotate(-90 24 24)"
                 />
                 <motion.circle
@@ -410,12 +453,12 @@ export default function EnhancedMusicPlayer() {
             <motion.div
               key={track.id}
                   className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 aspect-video ${
-                    track.id === tracks[currentTrack].id 
+                    track.id === tracks[currentTrackIndex].id 
                   ? "ring-2 ring-[#C8A97E] scale-[1.02]" 
                   : "hover:ring-2 hover:ring-[#C8A97E]/50"
               }`}
               onClick={() => {
-                    setCurrentTrack(tracks.indexOf(track));
+                    setCurrentTrackIndex(tracks.indexOf(track));
                     if (!isPlaying) setIsPlaying(true);
               }}
               whileHover={{ scale: 1.02 }}
@@ -429,13 +472,12 @@ export default function EnhancedMusicPlayer() {
                   className="object-cover"
                 />
                 <div className={`absolute inset-0 transition-opacity duration-300 ${
-                      track.id === tracks[currentTrack].id && isPlaying
+                      track.id === tracks[currentTrackIndex].id && isPlaying
                     ? "bg-black/40"
                     : "bg-black/20"
                 }`} />
                     <div className="absolute bottom-0 left-0 right-0 p-2 sm:p-3 bg-gradient-to-t from-black/90 via-black/50 to-transparent">
                       <p className="text-white text-xs sm:text-sm font-medium mb-0.5 sm:mb-1 line-clamp-1">{track.title}</p>
-                      <p className="text-[#C8A97E] text-xs line-clamp-1">{track.description}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -464,7 +506,7 @@ export default function EnhancedMusicPlayer() {
             <Card className="bg-[#1a1a1a]/90 backdrop-blur-lg border-[#C8A97E]/20 p-3 shadow-2xl">
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={tracks[currentTrack].id}
+                  key={tracks[currentTrackIndex].id}
                   initial={{ opacity: 0, x: 50 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -50 }}
@@ -478,8 +520,8 @@ export default function EnhancedMusicPlayer() {
                   >
                     <div className="absolute inset-0 bg-[#C8A97E]/10" />
                     <img
-                      src={tracks[currentTrack].thumbnail}
-                      alt={tracks[currentTrack].title}
+                      src={tracks[currentTrackIndex].thumbnail}
+                      alt={tracks[currentTrackIndex].title}
                       className="w-full h-full object-cover"
                     />
                   </motion.div>
@@ -491,7 +533,7 @@ export default function EnhancedMusicPlayer() {
                       transition={{ duration: 0.4, delay: 0.1 }}
                       className="text-sm font-medium text-white truncate"
                     >
-                      {tracks[currentTrack].title}
+                      {tracks[currentTrackIndex].title}
                     </motion.h4>
                     <motion.p 
                       initial={{ opacity: 0, y: 10 }}
@@ -499,7 +541,7 @@ export default function EnhancedMusicPlayer() {
                       transition={{ duration: 0.4, delay: 0.2 }}
                       className="text-xs text-[#C8A97E] truncate"
                     >
-                      {tracks[currentTrack].artist}
+                      {tracks[currentTrackIndex].artist}
                     </motion.p>
                   </div>
 
@@ -556,7 +598,7 @@ export default function EnhancedMusicPlayer() {
               <div className="mt-2 relative h-1 bg-gray-800 rounded-full overflow-hidden">
                 <motion.div
                   className="absolute h-full bg-[#C8A97E] rounded-full"
-                  style={{ width: `${(currentTime / duration) * 100}%` }}
+                  style={{ width: `${(currentTime / playerRef.current?.getDuration() || 0) * 100}%` }}
                   transition={{ duration: 0.3, ease: "linear" }}
                 />
               </div>

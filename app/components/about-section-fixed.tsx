@@ -4,14 +4,13 @@ import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { Trophy, Users, Music } from "lucide-react"
+import { getImagePath } from "@/app/utils/paths"
 
 export default function AboutSectionFixed() {
   const [isExpanded, setIsExpanded] = useState(false)
   const detailsRef = useRef<HTMLDivElement>(null)
 
-  const imagePath = process.env.NODE_ENV === 'production'
-    ? "/vocal-coaching/images/about/profile.jpg"
-    : "/images/about/profile.jpg"
+  const imagePath = getImagePath("about", "profile.jpg")
 
   const handleReadMore = () => {
     setIsExpanded(!isExpanded)
