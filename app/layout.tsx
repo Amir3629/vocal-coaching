@@ -4,6 +4,7 @@ import "./styles/responsive.css"
 import type { Metadata, Viewport } from "next"
 import { Inter, Playfair_Display } from "next/font/google"
 import RootClient from "./components/root-client"
+import { MediaProvider } from "./components/media-context"
 
 const inter = Inter({ subsets: ["latin"] })
 const playfair = Playfair_Display({
@@ -33,8 +34,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <RootClient className={`dark-theme-black ${playfair.variable} ${inter.className} antialiased`}>
-      {children}
-    </RootClient>
+    <html lang="en" className="scroll-smooth">
+      <body className={inter.className}>
+        <MediaProvider>
+          <RootClient className={`dark-theme-black ${playfair.variable} ${inter.className} antialiased`}>
+            {children}
+          </RootClient>
+        </MediaProvider>
+      </body>
+    </html>
   )
 } 

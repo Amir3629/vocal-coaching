@@ -4,6 +4,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, Music } from 'lucide-react';
 import Image from 'next/image';
 import { motion, AnimatePresence, useAnimation } from 'framer-motion';
+import { useMedia } from "./media-context"
 
 interface Song {
   title: string;
@@ -80,6 +81,8 @@ export default function MusicPlayer() {
   const discControls = useAnimation();
   const tutorialControls = useAnimation();
   const notificationControls = useAnimation();
+  const { currentlyPlaying, setCurrentlyPlaying, stopAllMedia } = useMedia()
+  const audioRef = useRef<HTMLAudioElement>(null)
 
   const currentSong = songs[currentSongIndex];
   
@@ -314,17 +317,62 @@ export default function MusicPlayer() {
     }
   }, [isPlaying, discControls]);
 
-  const togglePlay = () => {
-    if (!playerReady) return;
-    
-    setIsPlaying(!isPlaying);
-    if (videoRef.current) {
-      const message = !isPlaying 
-        ? '{"event":"command","func":"playVideo","args":""}' 
-        : '{"event":"command","func":"pauseVideo","args":""}';
-      videoRef.current.contentWindow?.postMessage(message, '*');
+  // Listen for global stop events
+  useEffect(() => {
+    const handleStopAllMedia = () => {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        setIsPlaying(false)
+      }
     }
-  };
+    
+    window.addEventListener('stopAllMedia', handleStopAllMedia)
+    return () => {
+      window.removeEventListener('stopAllMedia', handleStopAllMedia)
+    }
+  }, [])
+  
+  // Stop playing when another media starts
+  useEffect(() => {
+    if (currentlyPlaying === 'video' && isPlaying) {
+      if (audioRef.current) {
+        audioRef.current.pause()
+        setIsPlaying(false)
+      }
+    }
+  }, [currentlyPlaying, isPlaying])
+
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      audioRef.current?.pause()
+      setIsPlaying(false)
+      setCurrentlyPlaying(null)
+    } else {
+      if (currentlyPlaying === 'video') {
+        stopAllMedia()
+      }
+      audioRef.current?.play()
+      setIsPlaying(true)
+      setCurrentlyPlaying('music')
+    }
+  }
+  
+  // Make the disc only clickable in the center play button
+  const handleDiscClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Get the position of the click relative to the disc
+    const disc = e.currentTarget
+    const rect = disc.getBoundingClientRect()
+    const x = e.clientX - rect.left - rect.width / 2
+    const y = e.clientY - rect.top - rect.height / 2
+    
+    // Calculate the distance from the center
+    const distance = Math.sqrt(x * x + y * y)
+    
+    // If the click is within the center play button area (30% of disc radius)
+    if (distance < rect.width * 0.15) {
+      handlePlayPause()
+    }
+  }
 
   const playNextSong = () => {
     if (!playerReady || isTransitioning) return;
@@ -601,7 +649,7 @@ export default function MusicPlayer() {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={togglePlay}
+                          onClick={handleDiscClick}
                           className="w-16 h-16 flex items-center justify-center rounded-full bg-black"
                         >
                           {isPlaying ? <Pause size={32} className="text-[#C8A97E]" /> : <Play size={32} className="text-[#C8A97E] ml-1" />}
@@ -730,7 +778,7 @@ export default function MusicPlayer() {
               
               {/* Play/Pause button */}
               <motion.button
-                onClick={togglePlay}
+                onClick={handleDiscClick}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[#C8A97E]/20 text-[#C8A97E]"
@@ -741,6 +789,12 @@ export default function MusicPlayer() {
           </motion.div>
         )}
       </AnimatePresence>
+      <audio 
+        ref={audioRef}
+        src={currentSong.youtubeId} 
+        onEnded={playNextSong}
+        onTimeUpdate={() => {}}
+      />
     </div>
   );
 } 

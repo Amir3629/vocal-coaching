@@ -3,11 +3,13 @@
 import { useRef, useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { VolumeX, Volume2, Play, Pause } from "lucide-react"
+import { useMedia } from "./media-context"
 
 // Add event system for media coordination
 const MEDIA_STOP_EVENT = 'stopAllMedia'
 
 export default function VideoPreview() {
+  const { currentlyPlaying, setCurrentlyPlaying, stopAllMedia } = useMedia()
   const videoRef = useRef<HTMLVideoElement>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isMuted, setIsMuted] = useState(true)
@@ -31,18 +33,30 @@ export default function VideoPreview() {
     }
   }, [])
 
+  // Listen for global stop events
   useEffect(() => {
-    // Listen for stop events from other media players
-    const handleMediaStop = () => {
-      if (isPlaying && videoRef.current) {
-        videoRef.current.pause();
-        setIsPlaying(false);
+    const handleStopAllMedia = () => {
+      if (videoRef.current) {
+        videoRef.current.pause()
+        setIsPlaying(false)
       }
-    };
-
-    window.addEventListener(MEDIA_STOP_EVENT, handleMediaStop);
-    return () => window.removeEventListener(MEDIA_STOP_EVENT, handleMediaStop);
-  }, [isPlaying]);
+    }
+    
+    window.addEventListener('stopAllMedia', handleStopAllMedia)
+    return () => {
+      window.removeEventListener('stopAllMedia', handleStopAllMedia)
+    }
+  }, [])
+  
+  // Stop playing when another media starts
+  useEffect(() => {
+    if (currentlyPlaying === 'music' && isPlaying) {
+      if (videoRef.current) {
+        videoRef.current.pause()
+        setIsPlaying(false)
+      }
+    }
+  }, [currentlyPlaying, isPlaying])
 
   const handleLoadStart = () => {
     setIsLoading(true)
@@ -59,20 +73,18 @@ export default function VideoPreview() {
     setHasError(true)
   }
 
-  const handleVideoClick = async () => {
-    if (!videoRef.current) return
-
-    try {
-      if (isPlaying) {
-        await videoRef.current.pause()
-      } else {
-        // Dispatch event to stop other media
-        window.dispatchEvent(new Event(MEDIA_STOP_EVENT));
-        await videoRef.current.play()
+  const handlePlayPause = () => {
+    if (isPlaying) {
+      videoRef.current?.pause()
+      setIsPlaying(false)
+      setCurrentlyPlaying(null)
+    } else {
+      if (currentlyPlaying === 'music') {
+        stopAllMedia()
       }
-      setIsPlaying(!isPlaying)
-    } catch (error) {
-      console.error('Error playing/pausing video:', error)
+      videoRef.current?.play()
+      setIsPlaying(true)
+      setCurrentlyPlaying('video')
     }
   }
 
@@ -101,7 +113,7 @@ export default function VideoPreview() {
       {/* Dark overlay with play button */}
       <div 
         className={`absolute inset-0 flex items-center justify-center bg-black/60 transition-opacity duration-700 ${isPlaying ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
-        onClick={handleVideoClick}
+        onClick={handlePlayPause}
       >
         <button 
           className="w-12 h-12 flex items-center justify-center rounded-full bg-[#C8A97E] hover:bg-[#B69A6E] transition-colors"

@@ -14,6 +14,12 @@ export default function AboutSection() {
     ? "/vocal-coaching/images/about/profile.jpg"
     : "/images/about/profile.jpg"
 
+  const toggleShowMore = () => {
+    if (!showMore) {
+      setShowMore(true)
+    }
+  }
+
   return (
     <section id="about" className="py-16 md:py-24 bg-black">
       <div className="container mx-auto px-4">
@@ -46,7 +52,7 @@ export default function AboutSection() {
             
             <div className="space-y-6">
               <p className="text-base sm:text-lg text-gray-300">
-                Halb Britin, halb Deutsche, mit rheinischer Lebensfreude und Berliner Weltgewandtheit: Ich verkörpere eine einzigartige Synthese aus Tradition und Avantgarde. Meine musikalische Reise begann in sakralen Kirchenchören und dem gefeierten Gospelensemble Crescendo, bevor ich mit 15 als Frontfrau der Pionier-Girl-Band Die Männer die Rockbühne eroberte – stets mit perfekt gesetztem Cat-Eye und der Überzeugung: „Stil ist Haltung."
+                Halb Britin, halb Deutsche, mit rheinischer Lebensfreude und Berliner Weltgewandtheit: Ich verkörpere eine einzigartige Synthese aus Tradition und Avantgarde. Meine musikalische Reise begann in sakralen Kirchenchören und dem gefeierten Gospelensemble Crescendo, bevor ich mit 15 als Frontfrau der Pionier-Girl-Band Die Männer die Rockbühne eroberte – stets mit perfekt gesetztem Cat-Eye und der Überzeugung: "Stil ist Haltung."
               </p>
               
               <AnimatePresence>
@@ -66,7 +72,7 @@ export default function AboutSection() {
                       <div>
                         <h3 className="text-xl font-semibold text-white mb-3">Diskografie & Aktuelle Projekte</h3>
                         <p className="text-base sm:text-lg text-gray-300">
-                          Drei Alben, drei Kapitel einer künstlerischen Evolution: Von jazzigen Grooves bis zum Chanson-Projekt Berliner Silber 9½ Lieder – eine Hommage an Berlins glamouröse Nachtseite, produziert mit der Sorgfalt eines Couturiers. Das vierte Album? Ein opulentes Werk, das Standards in Samt und Seide hüllt und Eigenkompositionen präsentiert, die zwischen Sylvia Plath und Billie Holiday tanzen. Ob im intimsten Jazzkeller oder im Festsaal historischer Konzerthäuser – ich betrete jede Bühne mit dem Respekt, den die Musik verdient: „Jazz ist die höchste Form musikalischer Diplomatie – sie verhandelt zwischen Chaos und Perfektion."
+                          Drei Alben, drei Kapitel einer künstlerischen Evolution: Von jazzigen Grooves bis zum Chanson-Projekt Berliner Silber 9½ Lieder – eine Hommage an Berlins glamouröse Nachtseite, produziert mit der Sorgfalt eines Couturiers. Das vierte Album? Ein opulentes Werk, das Standards in Samt und Seide hüllt und Eigenkompositionen präsentiert, die zwischen Sylvia Plath und Billie Holiday tanzen. Ob im intimsten Jazzkeller oder im Festsaal historischer Konzerthäuser – ich betrete jede Bühne mit dem Respekt, den die Musik verdient: "Jazz ist die höchste Form musikalischer Diplomatie – sie verhandelt zwischen Chaos und Perfektion."
                         </p>
                       </div>
                     </div>
@@ -76,12 +82,14 @@ export default function AboutSection() {
                 )}
               </AnimatePresence>
 
-              <button
-                onClick={() => setShowMore(!showMore)}
-                className="btn-primary mt-4"
+              <motion.button
+                onClick={toggleShowMore}
+                className={`mt-6 text-[#C8A97E] border border-[#C8A97E] rounded-full px-6 py-2 text-sm hover:bg-[#C8A97E]/10 transition-colors ${showMore ? 'hidden' : 'inline-flex'}`}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
               >
-                {showMore ? "Weniger anzeigen" : "Mehr erfahren"}
-              </button>
+                Mehr erfahren
+              </motion.button>
             </div>
           </div>
         </div>

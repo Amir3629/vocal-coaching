@@ -191,51 +191,57 @@ export default function GallerySection() {
         </div>
 
         {/* Image Modal */}
-        <Dialog open={selectedImage !== null} onOpenChange={() => setSelectedImage(null)}>
-          <div className="fixed inset-0 z-[100] flex items-center justify-center">
-            <div className="fixed inset-0 bg-black/90 backdrop-blur-sm" onClick={() => setSelectedImage(null)} />
-            <div className="relative w-full max-w-5xl max-h-[90vh] z-[101]">
-              {/* Close button */}
-              <button
-                onClick={() => setSelectedImage(null)}
-                className="absolute -top-12 right-0 p-2 text-white/70 hover:text-white transition-colors"
+        {selectedImage !== null && (
+          <motion.div 
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+          >
+            <motion.button 
+              className="absolute top-4 right-4 text-white/80 hover:text-white z-10"
+              onClick={handleClose}
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+            >
+              <X className="w-8 h-8" />
+            </motion.button>
+            
+            <motion.div 
+              className="relative w-full max-w-5xl max-h-[80vh] flex items-center justify-center"
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+            >
+              <button 
+                className="absolute left-4 text-white/80 hover:text-white z-10 transition-all duration-300 hover:scale-110"
+                onClick={handlePrev}
               >
-                <X className="w-6 h-6" />
+                <ChevronLeft className="w-10 h-10" />
               </button>
-
-              {/* Navigation buttons */}
-              <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 flex justify-between px-4 z-20">
-                <button
-                  onClick={handlePrev}
-                  className="p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all transform hover:scale-105"
-                  disabled={!selectedImage}
-                >
-                  <ChevronLeft className="w-6 h-6" />
-                </button>
-                <button
-                  onClick={handleNext}
-                  className="p-2 rounded-full bg-black/50 text-white/80 hover:bg-black/70 hover:text-white transition-all transform hover:scale-105"
-                  disabled={!selectedImage}
-                >
-                  <ChevronRight className="w-6 h-6" />
-                </button>
+              
+              <div className="relative w-full h-full flex items-center justify-center">
+                <Image
+                  src={selectedImage.src}
+                  alt={selectedImage.alt}
+                  width={1200}
+                  height={800}
+                  className="object-contain max-h-[80vh] rounded-lg shadow-2xl transition-all duration-500"
+                />
               </div>
-
-              {/* Image */}
-              {selectedImage && (
-                <div className="relative w-full aspect-[3/2] rounded-lg overflow-hidden">
-                    <Image
-                      src={selectedImage.src}
-                      alt={selectedImage.alt}
-                      fill
-                      className="object-contain"
-                      priority
-                    />
-                  </div>
-                )}
-            </div>
-          </div>
-        </Dialog>
+              
+              <button 
+                className="absolute right-4 text-white/80 hover:text-white z-10 transition-all duration-300 hover:scale-110"
+                onClick={handleNext}
+              >
+                <ChevronRight className="w-10 h-10" />
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
       </div>
     </section>
   )

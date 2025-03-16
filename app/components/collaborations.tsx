@@ -21,7 +21,7 @@ const collaborations = [
   {
     name: "CVT Teacher",
     logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-teacher.svg" : "/images/collaborations/cvt-teacher.svg",
-    link: "https://cvtdeutschland.de/de"
+    link: "https://completevocalinstitute.com/complete-vocal-technique-de/"
   },
   {
     name: "CVT",
