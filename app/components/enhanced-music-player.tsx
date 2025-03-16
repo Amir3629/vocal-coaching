@@ -118,7 +118,7 @@ export default function EnhancedMusicPlayer() {
 
   // Initialize visible discs
   useEffect(() => {
-    // Always show all discs for better performance and visibility
+    // Always prepare all discs for better performance and visibility
     const indices = [];
     for (let i = 0; i < tracks.length; i++) {
       indices.push(i);
@@ -132,8 +132,8 @@ export default function EnhancedMusicPlayer() {
       const distance = index - currentTrackIndex;
       // Use modulo to handle circular wrapping properly
       const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
-      // Increase spacing between discs (250px instead of 200px)
-      positions[index] = wrappedDistance * 250;
+      // Increase spacing between discs (300px instead of 250px)
+      positions[index] = wrappedDistance * 300;
     });
     setDiscPositions(positions);
   }, [currentTrackIndex, tracks.length]);
@@ -209,7 +209,36 @@ export default function EnhancedMusicPlayer() {
     }
   }, [currentTrackIndex, currentTrack.file]);
 
-  // Disc interaction for horizontal swiping
+  // Show background discs
+  const handleDiscClick = (e: React.MouseEvent) => {
+    // Only trigger if clicking outside the center button
+    const rect = discRef.current?.getBoundingClientRect();
+    if (rect) {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+      );
+      
+      // If clicking outside the center button area, toggle background discs
+      if (distance > 60) {
+        // Toggle background discs
+        setShowBackDiscs(!showBackDiscs);
+        
+        // Reset positions when showing discs
+        if (!showBackDiscs) {
+          const positions: {[key: number]: number} = {};
+          visibleDiscs.forEach(index => {
+            const distance = index - currentTrackIndex;
+            const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
+            positions[index] = wrappedDistance * 300;
+          });
+          setDiscPositions(positions);
+        }
+      }
+    }
+  };
+
   const handleDiscMouseDown = (e: React.MouseEvent) => {
     // Only start dragging if not clicking the center button
     const rect = discRef.current?.getBoundingClientRect();
@@ -233,6 +262,15 @@ export default function EnhancedMusicPlayer() {
     // Always show background discs when dragging
     setShowBackDiscs(true);
     
+    // Reset positions when starting to drag
+    const positions: {[key: number]: number} = {};
+    visibleDiscs.forEach(index => {
+      const distance = index - currentTrackIndex;
+      const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
+      positions[index] = wrappedDistance * 300;
+    });
+    setDiscPositions(positions);
+    
     // Add dragging class to body
     document.body.classList.add('dragging-disc');
   };
@@ -252,8 +290,8 @@ export default function EnhancedMusicPlayer() {
       // Calculate position based on distance from current track
       const distance = index - currentTrackIndex;
       const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
-      // Use the same spacing as in the initialization (250px)
-      const basePosition = wrappedDistance * 250;
+      // Use the same spacing as in the initialization (300px)
+      const basePosition = wrappedDistance * 300;
       updatedPositions[index] = basePosition + delta;
     });
     
@@ -291,24 +329,6 @@ export default function EnhancedMusicPlayer() {
     document.body.classList.remove('dragging-disc');
   };
 
-  // Show background discs
-  const handleDiscClick = (e: React.MouseEvent) => {
-    // Only trigger if clicking outside the center button
-    const rect = discRef.current?.getBoundingClientRect();
-    if (rect) {
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const distance = Math.sqrt(
-        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
-      );
-      
-      // If clicking outside the center button area, toggle background discs
-      if (distance > 60) {
-        setShowBackDiscs(!showBackDiscs);
-      }
-    }
-  };
-
   useEffect(() => {
     if (isDragging) {
       window.addEventListener('mousemove', handleDiscMouseMove);
@@ -341,14 +361,8 @@ export default function EnhancedMusicPlayer() {
         <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
         <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
         
-        {/* Track title and artist - MOVED ABOVE THE DISC */}
-        <div className="text-center mb-8">
-          <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
-          <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
-        </div>
-        
-        {/* Disc Carousel Container */}
-        <div className="relative w-[500px] h-96 mx-auto mb-8 overflow-visible">
+        {/* Disc Carousel Container - Moved up */}
+        <div className="relative w-[500px] h-96 mx-auto mb-4 overflow-visible">
           {/* Background Discs - Only visible when showBackDiscs is true */}
           <AnimatePresence mode="wait">
             {showBackDiscs && visibleDiscs.map(index => {
@@ -360,19 +374,24 @@ export default function EnhancedMusicPlayer() {
               // Only show discs that are within a reasonable distance
               if (Math.abs(position) > 600) return null;
               
+              // Calculate scale and blur based on distance
+              const distanceFactor = Math.min(Math.abs(position) / 500, 0.8);
+              const scale = 1 - distanceFactor * 0.4;
+              const blurAmount = distanceFactor * 3;
+              
               return (
                 <motion.div
                   key={`disc-${index}`}
                   className="absolute top-1/2 left-1/2 w-80 h-80 -translate-y-1/2 rounded-full overflow-hidden"
                   style={{
                     zIndex: Math.abs(position) < 50 ? 20 : 10,
-                    opacity: 1 - Math.min(Math.abs(position) / 300, 0.7),
-                    filter: "blur(2px)"
+                    opacity: 1 - distanceFactor * 0.7,
+                    filter: `blur(${blurAmount}px)`
                   }}
                   initial={{ x: position > 0 ? '100%' : '-100%', opacity: 0 }}
                   animate={{ 
                     x: `calc(-50% + ${position}px)`,
-                    scale: 1 - Math.min(Math.abs(position) / 500, 0.3)
+                    scale: scale
                   }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
@@ -416,7 +435,7 @@ export default function EnhancedMusicPlayer() {
           {/* Main Vinyl Disc */}
           <motion.div 
             ref={discRef}
-            className="absolute top-1/2 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 cursor-grab z-30"
+            className="absolute top-1/3 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/3 cursor-grab z-30"
             animate={{ 
               x: isDragging ? `calc(-50% + ${dragDelta}px)` : '-50%',
               scale: isDragging ? 0.95 : 1
@@ -507,6 +526,12 @@ export default function EnhancedMusicPlayer() {
               Click disc to show more music or drag to browse
             </div>
           )}
+        </div>
+        
+        {/* Track title and artist - BELOW THE DISC */}
+        <div className="text-center mt-16 mb-4">
+          <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
+          <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
         </div>
       </div>
       
