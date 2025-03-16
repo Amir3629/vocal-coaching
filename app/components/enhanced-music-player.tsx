@@ -223,10 +223,11 @@ export default function EnhancedMusicPlayer() {
       // If clicking outside the center button area, toggle background discs
       if (distance > 60) {
         // Toggle background discs
-        setShowBackDiscs(!showBackDiscs);
+        const newShowBackDiscs = !showBackDiscs;
+        setShowBackDiscs(newShowBackDiscs);
         
         // Reset positions when showing discs
-        if (!showBackDiscs) {
+        if (newShowBackDiscs) {
           const positions: {[key: number]: number} = {};
           visibleDiscs.forEach(index => {
             const distance = index - currentTrackIndex;
@@ -361,7 +362,7 @@ export default function EnhancedMusicPlayer() {
         <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
         <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
         
-        {/* Disc Carousel Container - Moved up */}
+        {/* Disc Carousel Container - Moved up more */}
         <div className="relative w-[500px] h-96 mx-auto mb-4 overflow-visible">
           {/* Background Discs - Only visible when showBackDiscs is true */}
           <AnimatePresence mode="wait">
@@ -435,7 +436,7 @@ export default function EnhancedMusicPlayer() {
           {/* Main Vinyl Disc */}
           <motion.div 
             ref={discRef}
-            className="absolute top-1/3 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/3 cursor-grab z-30"
+            className="absolute top-1/4 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/4 cursor-grab z-30"
             animate={{ 
               x: isDragging ? `calc(-50% + ${dragDelta}px)` : '-50%',
               scale: isDragging ? 0.95 : 1
@@ -528,8 +529,8 @@ export default function EnhancedMusicPlayer() {
           )}
         </div>
         
-        {/* Track title and artist - BELOW THE DISC */}
-        <div className="text-center mt-16 mb-4">
+        {/* Track title and artist - BELOW THE DISC with more spacing */}
+        <div className="text-center mt-32 mb-4">
           <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
           <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
         </div>
