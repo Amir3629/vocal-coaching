@@ -359,24 +359,15 @@ export default function MusicPlayer() {
   
   // Make the disc only clickable in the center play button
   const handleDiscClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    // Get the position of the click relative to the disc
-    const disc = e.currentTarget
-    const rect = disc.getBoundingClientRect()
-    const x = e.clientX - rect.left - rect.width / 2
-    const y = e.clientY - rect.top - rect.height / 2
-    
-    // Calculate the distance from the center
-    const distance = Math.sqrt(x * x + y * y)
-    
-    // If the click is within the center play button area (30% of disc radius)
-    if (distance < rect.width * 0.15) {
-      handlePlayPause()
-    }
+    // Disable disc click functionality - only the center button should work
+    // This prevents accidental playback when trying to drag
+    e.stopPropagation();
   }
   
   // Handler specifically for the play button
-  const handlePlayButtonClick = () => {
-    handlePlayPause()
+  const handlePlayButtonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    handlePlayPause();
   }
 
   const playNextSong = () => {
@@ -431,15 +422,24 @@ export default function MusicPlayer() {
     }, 500);
   };
 
-  // Drag handlers for continuous carousel navigation
+  // Improved drag handlers for continuous carousel navigation
   const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
     // Prevent default to avoid any browser behaviors
     e.preventDefault();
     e.stopPropagation();
     
+    // Only start dragging if we're not clicking on a button
+    const target = e.target as HTMLElement;
+    if (target.tagName === 'BUTTON' || target.closest('button')) {
+      return;
+    }
+    
     setIsDragging(true);
     setDragStartX(e.clientX);
     setDragOffset(0);
+    
+    // Add a class to the body to indicate dragging (for cursor changes)
+    document.body.classList.add('dragging-disc');
   };
 
   const handleDragMove = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -451,21 +451,19 @@ export default function MusicPlayer() {
     
     const dragDistance = e.clientX - dragStartX;
     
-    // Apply a stronger damping factor to reduce sensitivity with fast mouse movements
-    // This helps prevent lag and jumps when moving the mouse quickly
-    const dampingFactor = 0.5; // Reduced from 0.7 for even smoother movement
+    // Apply a stronger damping factor for smoother movement
+    const dampingFactor = 0.8;
     const dampedDragDistance = dragDistance * dampingFactor;
     
     setDragOffset(dampedDragDistance);
     
     // If drag distance exceeds a threshold, update the drag start position
     // This allows for continuous dragging in the same direction
-    const infiniteDragThreshold = 150; // Lower threshold for more responsive infinite scrolling
+    const infiniteDragThreshold = 100;
     if (Math.abs(dragDistance) > infiniteDragThreshold) {
       // Reset drag start position but maintain the direction of movement
-      // Use a smaller fraction to make transitions smoother
-      setDragStartX(e.clientX - (dragDistance > 0 ? infiniteDragThreshold / 8 : -infiniteDragThreshold / 8));
-      setDragOffset(dragDistance > 0 ? infiniteDragThreshold / 8 : -infiniteDragThreshold / 8);
+      setDragStartX(e.clientX - (dragDistance > 0 ? infiniteDragThreshold / 4 : -infiniteDragThreshold / 4));
+      setDragOffset(dragDistance > 0 ? infiniteDragThreshold / 4 : -infiniteDragThreshold / 4);
     }
   };
 
@@ -494,6 +492,9 @@ export default function MusicPlayer() {
       setTimeout(() => {
         setIsTransitioningDiscs(false);
       }, 600); // Match this with the transition duration in the motion.div
+      
+      // Remove the dragging class
+      document.body.classList.remove('dragging-disc');
     }
     setIsDragging(false);
   };
@@ -581,7 +582,7 @@ export default function MusicPlayer() {
       <div className="relative mx-auto" style={{ maxWidth: "500px" }}>
         <div className="flex items-center justify-center">
           <div 
-            className="relative flex items-center justify-center overflow-visible h-[400px]"
+            className="relative flex items-center justify-center overflow-visible h-[400px] disc-container"
             onMouseDown={handleDragStart}
             onMouseMove={handleDragMove}
             onMouseUp={handleDragEnd}
@@ -590,7 +591,6 @@ export default function MusicPlayer() {
               handleDiscLeave();
             }}
             onMouseEnter={handleDiscHover}
-            style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
           >
             {/* Carousel of discs */}
             {visibleDiscs.map((songIndex) => {
@@ -655,7 +655,7 @@ export default function MusicPlayer() {
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
                           onClick={handlePlayButtonClick}
-                          className="w-16 h-16 flex items-center justify-center rounded-full bg-black"
+                          className="w-16 h-16 flex items-center justify-center rounded-full bg-black play-button-area"
                         >
                           {isPlaying ? <Pause size={32} className="text-[#C8A97E]" /> : <Play size={32} className="text-[#C8A97E] ml-1" />}
                         </motion.button>
@@ -800,6 +800,20 @@ export default function MusicPlayer() {
         onEnded={playNextSong}
         onTimeUpdate={() => {}}
       />
+      <style jsx global>{`
+        .dragging-disc {
+          cursor: grabbing !important;
+        }
+        .disc-container {
+          cursor: grab;
+        }
+        .disc-container:active {
+          cursor: grabbing;
+        }
+        .play-button-area {
+          cursor: pointer !important;
+        }
+      `}</style>
     </div>
   );
 } 
