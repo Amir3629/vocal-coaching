@@ -157,7 +157,7 @@ export default function AboutSection() {
                     className="bg-black/30 p-6 rounded-lg border border-gray-800 flex flex-col items-center text-center"
                     variants={itemVariants}
                   >
-                    <div className="mb-4">{stat.icon}</div>
+                    <div className="mb-4 text-[#C8A97E]">{stat.icon}</div>
                     <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
                     <div className="text-gray-400">{stat.label}</div>
                   </motion.div>

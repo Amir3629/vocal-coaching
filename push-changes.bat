@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Fix About section: Restore expanded content and statistics when clicking Mehr erfahren"
+git commit -m "Fix statistics icons in About section"
 git push
 echo Done!
 pause 
