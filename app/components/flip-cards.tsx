@@ -37,7 +37,7 @@ const FlipCard: React.FC<FlipCardProps> = ({
         style={{ transformStyle: "preserve-3d" }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         initial={{ rotateY: 0 }}
-        transition={{ type: "tween", duration: 0.4 }}
+        transition={{ type: "tween", duration: 0.8 }}
       >
         {/* Front side */}
         <div 
@@ -56,7 +56,7 @@ const FlipCard: React.FC<FlipCardProps> = ({
           className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-[#0A0A0A]"
           style={{ 
             backfaceVisibility: "hidden",
-            transform: "rotateY(180deg)"
+            transform: "rotateY(180deg) rotateZ(180deg)"
           }}
         >
           <p className="text-gray-300 text-center text-sm mb-4">{backContent}</p>
