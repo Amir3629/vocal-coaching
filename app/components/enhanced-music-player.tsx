@@ -300,6 +300,14 @@ export default function EnhancedMusicPlayer() {
                       />
                     </div>
                     
+                    {/* Vinyl grooves */}
+                    <div className="absolute inset-0 rounded-full">
+                      <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[35px] rounded-full border border-[#333]/60"></div>
+                    </div>
+                    
                     {/* Center label */}
                     <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-black flex items-center justify-center">
                       <p className="text-xs text-[#C8A97E] font-medium text-center px-2">{track.title.split(' - ')[0]}</p>
@@ -320,6 +328,7 @@ export default function EnhancedMusicPlayer() {
                 fill
                 style={{ objectFit: 'cover' }}
                 className="opacity-100"
+                priority
               />
             </div>
             
@@ -334,6 +343,18 @@ export default function EnhancedMusicPlayer() {
                 repeatType: "loop" 
               }}
             >
+              {/* Vinyl grooves */}
+              <div className="absolute inset-0 rounded-full">
+                <div className="absolute inset-[15px] rounded-full border border-[#444]/70"></div>
+                <div className="absolute inset-[30px] rounded-full border border-[#444]/70"></div>
+                <div className="absolute inset-[45px] rounded-full border border-[#444]/70"></div>
+                <div className="absolute inset-[60px] rounded-full border border-[#444]/70"></div>
+                <div className="absolute inset-[75px] rounded-full border border-[#444]/70"></div>
+                <div className="absolute inset-[90px] rounded-full border border-[#444]/70"></div>
+                <div className="absolute inset-[105px] rounded-full border border-[#444]/70"></div>
+                <div className="absolute inset-[120px] rounded-full border border-[#444]/70"></div>
+              </div>
+              
               {/* Center button */}
               <div className="absolute inset-0 m-auto w-32 h-32 rounded-full bg-black flex items-center justify-center">
                 <motion.button
