@@ -13,16 +13,18 @@ interface Track {
   file: string;
   duration: number;
   image: string;
+  youtubeId: string;
 }
 
 const defaultTracks: Track[] = [
   {
     id: 1,
-    title: "Autumn Leaves - Jazz Piano",
+    title: "Jazz Piano Improvisation",
     artist: "Melvo Jazz",
     file: "/audio/music-sample-1",
     duration: 180,
-    image: "/images/music/jazz-piano.jpg"
+    image: "/images/music/jazz-piano.jpg",
+    youtubeId: "hFdMHvB6-Jk"
   },
   {
     id: 2,
@@ -30,7 +32,8 @@ const defaultTracks: Track[] = [
     artist: "Melvo Jazz",
     file: "/audio/music-sample-2",
     duration: 210,
-    image: "/images/music/soul-expressions.jpg"
+    image: "/images/music/soul-expressions.jpg",
+    youtubeId: "ZvWZr6TNh9Y"
   },
   {
     id: 3,
@@ -38,7 +41,44 @@ const defaultTracks: Track[] = [
     artist: "Melvo Jazz",
     file: "/audio/music-sample-3",
     duration: 195,
-    image: "/images/music/vocal-techniques.jpg"
+    image: "/images/music/vocal-techniques.jpg",
+    youtubeId: "r58-5DBfMpY"
+  },
+  {
+    id: 4,
+    title: "Jazz Ensemble",
+    artist: "Melvo Jazz",
+    file: "/audio/music-sample-1",
+    duration: 180,
+    image: "/images/music/jazz-piano.jpg",
+    youtubeId: "0zARqh3xwnw"
+  },
+  {
+    id: 5,
+    title: "Piano Composition",
+    artist: "Melvo Jazz",
+    file: "/audio/music-sample-2",
+    duration: 210,
+    image: "/images/music/soul-expressions.jpg",
+    youtubeId: "AWsarzdZ1u8"
+  },
+  {
+    id: 6,
+    title: "Vocal Performance",
+    artist: "Melvo Jazz",
+    file: "/audio/music-sample-3",
+    duration: 195,
+    image: "/images/music/vocal-techniques.jpg",
+    youtubeId: "GidIMbCmtyk"
+  },
+  {
+    id: 7,
+    title: "Jazz Improvisation",
+    artist: "Melvo Jazz",
+    file: "/audio/music-sample-1",
+    duration: 180,
+    image: "/images/music/jazz-piano.jpg",
+    youtubeId: "QgZKO_f5FlM"
   }
 ];
 
@@ -60,6 +100,11 @@ export default function EnhancedMusicPlayer() {
   const discRef = useRef<HTMLDivElement>(null);
   
   const currentTrack = tracks[currentTrackIndex];
+
+  // Get YouTube thumbnail URL
+  const getYouTubeThumbnail = (youtubeId: string) => {
+    return `https://img.youtube.com/vi/${youtubeId}/hqdefault.jpg`;
+  };
 
   useEffect(() => {
     // Listen for stop events from other media players
@@ -292,11 +337,12 @@ export default function EnhancedMusicPlayer() {
                   <div className="relative w-full h-full rounded-full overflow-hidden">
                     <div className="absolute inset-0 rounded-full overflow-hidden">
                       <Image 
-                        src={track.image} 
+                        src={getYouTubeThumbnail(track.youtubeId)} 
                         alt={track.title}
                         fill
                         style={{ objectFit: 'cover' }}
                         className="opacity-90"
+                        unoptimized
                       />
                     </div>
                     
@@ -310,7 +356,7 @@ export default function EnhancedMusicPlayer() {
                     
                     {/* Center label */}
                     <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-black flex items-center justify-center">
-                      <p className="text-xs text-[#C8A97E] font-medium text-center px-2">{track.title.split(' - ')[0]}</p>
+                      <p className="text-xs text-[#C8A97E] font-medium text-center px-2">{track.title}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -323,12 +369,13 @@ export default function EnhancedMusicPlayer() {
             {/* Disc image background */}
             <div className="absolute inset-0 rounded-full overflow-hidden">
               <Image 
-                src={currentTrack.image} 
+                src={getYouTubeThumbnail(currentTrack.youtubeId)} 
                 alt={currentTrack.title}
                 fill
                 style={{ objectFit: 'cover' }}
                 className="opacity-100"
                 priority
+                unoptimized
               />
             </div>
             
