@@ -233,19 +233,13 @@ export default function EnhancedMusicPlayer() {
   }, [error]);
 
   return (
-    <div className="relative h-screen w-full flex items-center justify-center bg-black overflow-hidden">
+    <div className="relative h-screen w-full flex flex-col items-center justify-center bg-black overflow-hidden">
       {/* Background blur effect */}
       <div className="absolute inset-0 bg-black/95 backdrop-blur-xl z-0"></div>
       
       <div className="relative z-10 flex flex-col items-center">
         <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
         <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
-        
-        {/* Track title and artist */}
-        <div className="text-center mb-12">
-          <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
-          <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
-        </div>
         
         {/* Main Vinyl Disc */}
         <div 
@@ -382,6 +376,12 @@ export default function EnhancedMusicPlayer() {
               </div>
             </motion.div>
           </div>
+        </div>
+        
+        {/* Track title and artist - MOVED BELOW THE DISC */}
+        <div className="text-center mt-4">
+          <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
+          <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
         </div>
       </div>
       
