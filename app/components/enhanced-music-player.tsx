@@ -94,17 +94,19 @@ export default function EnhancedMusicPlayer() {
   const [isDragging, setIsDragging] = useState(false);
   const [dragStartX, setDragStartX] = useState(0);
   const [dragDelta, setDragDelta] = useState(0);
-  const [activeDiscs, setActiveDiscs] = useState<number[]>([]);
+  const [visibleDiscs, setVisibleDiscs] = useState<number[]>([]);
   const [discPositions, setDiscPositions] = useState<{[key: number]: number}>({});
+  const [showBackDiscs, setShowBackDiscs] = useState(false);
   
   const audioRef = useRef<HTMLAudioElement>(null);
   const discRef = useRef<HTMLDivElement>(null);
   
   const currentTrack = tracks[currentTrackIndex];
 
-  // Get YouTube thumbnail URL
+  // Get YouTube thumbnail URL - use higher quality image
   const getYouTubeThumbnail = (youtubeId: string) => {
-    return `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
+    // Try to get the highest quality thumbnail
+    return `https://i.ytimg.com/vi_webp/${youtubeId}/sddefault.webp`;
   };
 
   // Get track at index with circular wrapping
@@ -113,6 +115,24 @@ export default function EnhancedMusicPlayer() {
     const wrappedIndex = ((index % tracks.length) + tracks.length) % tracks.length;
     return tracks[wrappedIndex];
   };
+
+  // Initialize visible discs
+  useEffect(() => {
+    // Always show 5 discs: current, 2 to the left, 2 to the right
+    const indices = [];
+    for (let i = -2; i <= 2; i++) {
+      const index = (currentTrackIndex + i + tracks.length) % tracks.length;
+      indices.push(index);
+    }
+    setVisibleDiscs(indices);
+    
+    // Initialize positions
+    const positions: {[key: number]: number} = {};
+    indices.forEach((index, i) => {
+      positions[index] = (i - 2) * 200; // -400, -200, 0, 200, 400
+    });
+    setDiscPositions(positions);
+  }, [currentTrackIndex, tracks.length]);
 
   useEffect(() => {
     // Listen for stop events from other media players
@@ -185,6 +205,24 @@ export default function EnhancedMusicPlayer() {
     }
   }, [currentTrackIndex, currentTrack.file]);
 
+  // Show background discs
+  const handleDiscClick = (e: React.MouseEvent) => {
+    // Only trigger if clicking outside the center button
+    const rect = discRef.current?.getBoundingClientRect();
+    if (rect) {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+      );
+      
+      // If clicking outside the center button area, toggle background discs
+      if (distance > 60) {
+        setShowBackDiscs(!showBackDiscs);
+      }
+    }
+  };
+
   // Disc interaction for horizontal swiping
   const handleDiscMouseDown = (e: React.MouseEvent) => {
     // Only start dragging if not clicking the center button
@@ -205,18 +243,7 @@ export default function EnhancedMusicPlayer() {
     setIsDragging(true);
     setDragStartX(e.clientX);
     setDragDelta(0);
-    
-    // Show discs to the left and right when dragging starts
-    const leftIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-    const rightIndex = (currentTrackIndex + 1) % tracks.length;
-    setActiveDiscs([leftIndex, currentTrackIndex, rightIndex]);
-    
-    // Initialize disc positions
-    setDiscPositions({
-      [leftIndex]: -200,
-      [currentTrackIndex]: 0,
-      [rightIndex]: 200
-    });
+    setShowBackDiscs(true);
     
     // Add dragging class to body
     document.body.classList.add('dragging-disc');
@@ -228,33 +255,40 @@ export default function EnhancedMusicPlayer() {
     const delta = e.clientX - dragStartX;
     setDragDelta(delta);
     
-    // Update disc positions based on drag delta
-    const leftIndex = (currentTrackIndex - 1 + tracks.length) % tracks.length;
-    const rightIndex = (currentTrackIndex + 1) % tracks.length;
+    // Update all disc positions based on drag delta
+    const updatedPositions: {[key: number]: number} = {};
+    visibleDiscs.forEach(index => {
+      const basePosition = discPositions[index] || 0;
+      updatedPositions[index] = basePosition + delta * 0.8;
+    });
+    
+    setDiscPositions(updatedPositions);
     
     // Check if we need to add more discs as we drag further
-    if (delta > 100 && !activeDiscs.includes((leftIndex - 1 + tracks.length) % tracks.length)) {
-      const farLeftIndex = (leftIndex - 1 + tracks.length) % tracks.length;
-      setActiveDiscs(prev => [...prev, farLeftIndex]);
-      setDiscPositions(prev => ({
-        ...prev,
-        [farLeftIndex]: -400
-      }));
-    } else if (delta < -100 && !activeDiscs.includes((rightIndex + 1) % tracks.length)) {
-      const farRightIndex = (rightIndex + 1) % tracks.length;
-      setActiveDiscs(prev => [...prev, farRightIndex]);
-      setDiscPositions(prev => ({
-        ...prev,
-        [farRightIndex]: 400
-      }));
+    if (delta > 200 || delta < -200) {
+      // Add more discs in the direction we're dragging
+      const newVisibleDiscs = [...visibleDiscs];
+      
+      if (delta > 200) {
+        // Add more discs to the left
+        const leftmostIndex = Math.min(...visibleDiscs);
+        const newIndex = (leftmostIndex - 1 + tracks.length) % tracks.length;
+        if (!newVisibleDiscs.includes(newIndex)) {
+          newVisibleDiscs.push(newIndex);
+          updatedPositions[newIndex] = -600 + delta * 0.8;
+        }
+      } else if (delta < -200) {
+        // Add more discs to the right
+        const rightmostIndex = Math.max(...visibleDiscs);
+        const newIndex = (rightmostIndex + 1) % tracks.length;
+        if (!newVisibleDiscs.includes(newIndex)) {
+          newVisibleDiscs.push(newIndex);
+          updatedPositions[newIndex] = 600 + delta * 0.8;
+        }
+      }
+      
+      setVisibleDiscs(newVisibleDiscs);
     }
-    
-    // Update all disc positions
-    const updatedPositions: {[key: number]: number} = {};
-    activeDiscs.forEach(index => {
-      const basePosition = discPositions[index] || 0;
-      updatedPositions[index] = basePosition + delta * 0.5;
-    });
     
     setDiscPositions(updatedPositions);
   };
@@ -282,8 +316,6 @@ export default function EnhancedMusicPlayer() {
     
     setIsDragging(false);
     setDragDelta(0);
-    setActiveDiscs([]);
-    setDiscPositions({});
     
     // Remove dragging class from body
     document.body.classList.remove('dragging-disc');
@@ -299,7 +331,7 @@ export default function EnhancedMusicPlayer() {
       window.removeEventListener('mousemove', handleDiscMouseMove);
       window.removeEventListener('mouseup', handleDiscMouseUp);
     };
-  }, [isDragging, dragStartX, activeDiscs, discPositions]);
+  }, [isDragging, dragStartX, visibleDiscs, discPositions]);
 
   // Dismiss error after 5 seconds
   useEffect(() => {
@@ -321,11 +353,11 @@ export default function EnhancedMusicPlayer() {
         <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
         <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
         
-        {/* Disc Carousel Container */}
-        <div className="relative w-[500px] h-96 mx-auto mb-8 overflow-visible">
-          {/* Background Discs - Only visible when dragging */}
+        {/* Disc Carousel Container - Moved up to show title */}
+        <div className="relative w-[500px] h-96 mx-auto mb-20 overflow-visible">
+          {/* Background Discs - Visible when dragging or when showBackDiscs is true */}
           <AnimatePresence>
-            {isDragging && activeDiscs.map(index => {
+            {(isDragging || showBackDiscs) && visibleDiscs.map(index => {
               if (index === currentTrackIndex) return null;
               
               const track = getTrackAtIndex(index);
@@ -346,6 +378,12 @@ export default function EnhancedMusicPlayer() {
                   }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.3 }}
+                  onClick={() => {
+                    if (!isDragging) {
+                      setCurrentTrackIndex(index);
+                      setShowBackDiscs(false);
+                    }
+                  }}
                 >
                   <div className="relative w-full h-full rounded-full overflow-hidden">
                     <div className="absolute inset-0 rounded-full overflow-hidden">
@@ -382,21 +420,22 @@ export default function EnhancedMusicPlayer() {
             ref={discRef}
             className="absolute top-1/2 left-1/2 w-96 h-96 -translate-x-1/2 -translate-y-1/2 cursor-grab z-30"
             animate={{ 
-              x: isDragging ? `calc(-50% + ${dragDelta * 0.5}px)` : '-50%',
+              x: isDragging ? `calc(-50% + ${dragDelta * 0.8}px)` : '-50%',
               scale: isDragging ? 0.95 : 1
             }}
             transition={{ 
               x: { duration: isDragging ? 0 : 0.5 },
               scale: { duration: 0.3 }
             }}
+            onClick={handleDiscClick}
             onMouseDown={handleDiscMouseDown}
           >
             {/* Main disc */}
             <div className="absolute inset-0 rounded-full overflow-hidden">
-              {/* Disc image background */}
+              {/* Disc image background - spinning continuously */}
               <motion.div 
                 className="absolute inset-0 rounded-full overflow-hidden"
-                animate={{ rotate: isPlaying ? 360 : 0 }}
+                animate={{ rotate: 360 }}
                 transition={{ 
                   duration: 20, 
                   ease: "linear", 
@@ -415,10 +454,10 @@ export default function EnhancedMusicPlayer() {
                 />
               </motion.div>
               
-              {/* Inner disc with grooves */}
+              {/* Inner disc with grooves - spinning continuously */}
               <motion.div 
                 className="absolute inset-0 rounded-full bg-black/30 backdrop-blur-sm"
-                animate={{ rotate: isPlaying ? 360 : 0 }}
+                animate={{ rotate: 360 }}
                 transition={{ 
                   duration: 20, 
                   ease: "linear", 
@@ -444,7 +483,10 @@ export default function EnhancedMusicPlayer() {
                     className="w-24 h-24 rounded-full bg-black flex items-center justify-center"
                     whileHover={{ scale: 1.1 }}
                     whileTap={{ scale: 0.95 }}
-                    onClick={handlePlay}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePlay();
+                    }}
                     transition={{ duration: 0.3 }}
                   >
                     {isLoading ? (
@@ -461,9 +503,9 @@ export default function EnhancedMusicPlayer() {
           </motion.div>
           
           {/* Drag instruction - only visible when not dragging */}
-          {!isDragging && (
+          {!isDragging && !showBackDiscs && (
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[#C8A97E]/70 text-xs">
-              Drag disc left or right to browse music
+              Click disc to show more music or drag to browse
             </div>
           )}
         </div>
