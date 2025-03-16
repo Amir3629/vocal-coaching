@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Fix booking form and header: Improve booking modal styling and fix music player z-index"
+git commit -m "Enhance UI: Improve booking form buttons and add smooth animations to About section"
 git push
 echo Done!
 pause 

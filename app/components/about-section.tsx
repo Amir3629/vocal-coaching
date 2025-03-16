@@ -1,31 +1,81 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { ChevronDown } from "lucide-react"
 import StatsSection from './stats-section'
+import { useTranslation } from 'react-i18next'
+import { Trophy, Users, Music, Star } from "lucide-react"
 
 export default function AboutSection() {
-  const [showMore, setShowMore] = useState(false)
-  const [imageError, setImageError] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(false)
+  const detailsRef = useRef<HTMLDivElement>(null)
+  const { t } = useTranslation()
 
   const imagePath = process.env.NODE_ENV === 'production'
     ? "/vocal-coaching/images/about/profile.jpg"
     : "/images/about/profile.jpg"
 
-  const toggleShowMore = () => {
-    if (!showMore) {
-      setShowMore(true)
+  const handleReadMore = () => {
+    setIsExpanded(!isExpanded)
+    
+    if (!isExpanded && detailsRef.current) {
+      setTimeout(() => {
+        detailsRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })
+      }, 100)
+    }
+  }
+
+  const stats = [
+    { 
+      icon: <Trophy className="w-8 h-8 text-[#C8A97E]" />, 
+      value: "20+", 
+      label: t('about.stats.years', 'Jahre Erfahrung') 
+    },
+    { 
+      icon: <Users className="w-8 h-8 text-[#C8A97E]" />, 
+      value: "1000+", 
+      label: t('about.stats.students', 'Schüler unterrichtet') 
+    },
+    { 
+      icon: <Music className="w-8 h-8 text-[#C8A97E]" />, 
+      value: "500+", 
+      label: t('about.stats.performances', 'Live-Auftritte') 
+    }
+  ]
+
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.3
+      }
+    }
+  }
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { 
+      opacity: 1, 
+      y: 0,
+      transition: { duration: 0.6, ease: "easeOut" }
     }
   }
 
   return (
-    <section id="about" className="py-16 md:py-24 bg-black">
+    <section id="about" className="py-20 bg-[#040202]">
       <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 mb-8 md:mb-0">
-            <div className="relative aspect-[3/4] w-full max-w-md mx-auto lg:max-w-none bg-[#0A0A0A] rounded-xl overflow-hidden">
+        <div className="flex flex-col lg:flex-row gap-12 items-center">
+          <div className="lg:w-1/2">
+            <motion.div 
+              className="relative w-full aspect-[3/4] rounded-lg overflow-hidden"
+              initial={{ opacity: 0, x: -20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
               <Image
                 src={imagePath}
                 alt="Melanie Wainwright"
@@ -33,66 +83,105 @@ export default function AboutSection() {
                 className="object-cover"
                 sizes="(max-width: 768px) 90vw, 45vw"
                 priority
-                onError={() => {
-                  console.error('Error loading about image:', imagePath);
-                  setImageError(true);
-                }}
               />
-              {imageError && (
-                <div className="absolute inset-0 flex items-center justify-center bg-[#040202]/80 text-[#C8A97E]">
-                  <p className="text-center px-4">Bild konnte nicht geladen werden</p>
-                </div>
-              )}
-            </div>
+            </motion.div>
           </div>
           
-          <div className="md:w-1/2 md:pl-12">
-            <h2 className="section-heading mb-6">Über Mich</h2>
-            <div className="w-12 h-0.5 bg-[#C8A97E] mx-0 mb-6"></div>
-            
-            <div className="space-y-6">
-              <p className="text-base sm:text-lg text-gray-300">
-                Halb Britin, halb Deutsche, mit rheinischer Lebensfreude und Berliner Weltgewandtheit: Ich verkörpere eine einzigartige Synthese aus Tradition und Avantgarde. Meine musikalische Reise begann in sakralen Kirchenchören und dem gefeierten Gospelensemble Crescendo, bevor ich mit 15 als Frontfrau der Pionier-Girl-Band Die Männer die Rockbühne eroberte – stets mit perfekt gesetztem Cat-Eye und der Überzeugung: "Stil ist Haltung."
+          <div className="lg:w-1/2">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8 }}
+            >
+              <h2 className="section-heading mb-6">{t('about.title', 'Über mich')}</h2>
+              <div className="w-12 h-0.5 bg-[#C8A97E] mb-6"></div>
+              
+              <p className="text-gray-300 mb-6">
+                {t('about.intro', 'Als leidenschaftliche Sängerin und Vocal Coach mit über 20 Jahren Erfahrung verbinde ich technische Präzision mit künstlerischem Ausdruck. Meine Reise begann in der klassischen Ausbildung und führte mich durch verschiedene Genres – vom Jazz über Soul bis hin zu Pop und Musical.')}
               </p>
               
-              <AnimatePresence>
-                {showMore && (
-                  <motion.div
-                    initial={{ opacity: 0, height: 0 }}
-                    animate={{ opacity: 1, height: "auto" }}
-                    exit={{ opacity: 0, height: 0 }}
-                    transition={{ duration: 0.5 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="prose prose-lg text-gray-300 mb-6">
-                      <p className="text-base sm:text-lg text-gray-300">
-                        Mein Weg führte mich an die Hochschule für Musik und Tanz Köln und das Complete Vocal Institute in Kopenhagen – Stationen, an denen ich nicht nur Jazzgesang, sondern die Philosophie des perfekten Moments studierte. Heute stehe ich auf internationalen Festivalbühnen (von Tokios Blue Note bis zum Montreux Jazz Festival), gebe Masterclasses für angehende Bandleader in Wiesbaden und leite einen Chor, der Präzision mit Seele vereint.
-                      </p>
-                      
-                      <div>
-                        <h3 className="text-xl font-semibold text-white mb-3">Diskografie & Aktuelle Projekte</h3>
-                        <p className="text-base sm:text-lg text-gray-300">
-                          Drei Alben, drei Kapitel einer künstlerischen Evolution: Von jazzigen Grooves bis zum Chanson-Projekt Berliner Silber 9½ Lieder – eine Hommage an Berlins glamouröse Nachtseite, produziert mit der Sorgfalt eines Couturiers. Das vierte Album? Ein opulentes Werk, das Standards in Samt und Seide hüllt und Eigenkompositionen präsentiert, die zwischen Sylvia Plath und Billie Holiday tanzen. Ob im intimsten Jazzkeller oder im Festsaal historischer Konzerthäuser – ich betrete jede Bühne mit dem Respekt, den die Musik verdient: "Jazz ist die höchste Form musikalischer Diplomatie – sie verhandelt zwischen Chaos und Perfektion."
-                        </p>
-                      </div>
-                    </div>
-                    
-                    <StatsSection />
-                  </motion.div>
-                )}
-              </AnimatePresence>
-
-              <motion.button
-                onClick={toggleShowMore}
-                className={`mt-6 text-[#C8A97E] border border-[#C8A97E] rounded-full px-6 py-2 text-sm hover:bg-[#C8A97E]/10 transition-colors ${showMore ? 'hidden' : 'inline-flex'}`}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+              <button
+                onClick={handleReadMore}
+                className="text-[#C8A97E] hover:text-[#D4AF37] transition-colors flex items-center gap-2"
               >
-                Mehr erfahren
-              </motion.button>
-            </div>
+                {isExpanded ? t('about.readLess', 'Weniger anzeigen') : t('about.readMore', 'Mehr erfahren')}
+                <svg
+                  className={`w-4 h-4 transform transition-transform duration-300 ${isExpanded ? 'rotate-180' : ''}`}
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </motion.div>
           </div>
         </div>
+        
+        <AnimatePresence>
+          {isExpanded && (
+            <motion.div
+              ref={detailsRef}
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              className="mt-12 overflow-hidden"
+            >
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4">{t('about.philosophy.title', 'Meine Philosophie')}</h3>
+                  <p className="text-gray-300 mb-4">
+                    {t('about.philosophy.content', 'Ich glaube an einen ganzheitlichen Ansatz beim Gesangsunterricht. Jede Stimme ist einzigartig, und mein Ziel ist es, Ihre natürlichen Stärken zu fördern und gleichzeitig technische Herausforderungen zu überwinden. Durch die Kombination von wissenschaftlich fundierten Methoden mit kreativer Ausdrucksfreiheit schaffe ich einen Raum, in dem Sie Ihre stimmlichen Fähigkeiten voll entfalten können.')}
+                  </p>
+                </div>
+                
+                <div>
+                  <h3 className="text-xl font-semibold text-white mb-4">{t('about.approach.title', 'Mein Ansatz')}</h3>
+                  <p className="text-gray-300 mb-4">
+                    {t('about.approach.content', 'Als zertifizierte Complete Vocal Technique (CVT) Lehrerin biete ich einen strukturierten, aber flexiblen Unterrichtsansatz. Ich passe meine Methoden an Ihre individuellen Bedürfnisse an, ob Sie Anfänger sind oder bereits professionell singen. Mein Unterricht umfasst Stimmtechnik, Repertoireentwicklung, Bühnenpräsenz und Ausdrucksfähigkeit – alles, was Sie brauchen, um Ihr volles Potenzial zu entfalten.')}
+                  </p>
+                </div>
+              </div>
+              
+              <motion.div 
+                className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6"
+                variants={containerVariants}
+                initial="hidden"
+                animate="visible"
+              >
+                {stats.map((stat, index) => (
+                  <motion.div 
+                    key={index}
+                    className="bg-black/30 p-6 rounded-lg border border-gray-800 flex flex-col items-center text-center"
+                    variants={itemVariants}
+                  >
+                    <div className="mb-4">{stat.icon}</div>
+                    <div className="text-3xl font-bold text-white mb-2">{stat.value}</div>
+                    <div className="text-gray-400">{stat.label}</div>
+                  </motion.div>
+                ))}
+              </motion.div>
+              
+              <motion.div 
+                className="mt-12"
+                variants={itemVariants}
+                initial="hidden"
+                animate="visible"
+                transition={{ delay: 0.9 }}
+              >
+                <h3 className="text-xl font-semibold text-white mb-4">{t('about.certifications.title', 'Zertifizierungen & Ausbildung')}</h3>
+                <ul className="list-disc list-inside text-gray-300 space-y-2">
+                  <li>{t('about.certifications.cvt', 'Zertifizierte Complete Vocal Technique (CVT) Lehrerin')}</li>
+                  <li>{t('about.certifications.degree', 'Abschluss in Musikpädagogik mit Schwerpunkt Gesang')}</li>
+                  <li>{t('about.certifications.jazz', 'Spezialisierung auf Jazz- und Improvisationstechniken')}</li>
+                  <li>{t('about.certifications.performance', 'Fortbildungen in Bühnenpräsenz und Performance-Psychologie')}</li>
+                </ul>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </section>
   )

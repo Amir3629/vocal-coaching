@@ -123,14 +123,14 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                     <div className="flex justify-between mt-12">
                       <button
                         onClick={() => setCurrentStep('service')}
-                        className="px-6 py-2 border border-gray-700 text-gray-300 rounded-md hover:border-gray-500 transition-colors"
+                        className="px-6 py-2 border border-gray-700 text-gray-300 rounded-full hover:border-gray-500 transition-colors"
                       >
                         {t('booking.back', 'Zurück')}
                       </button>
                       
                       <button
                         onClick={() => setCurrentStep('confirm')}
-                        className="px-6 py-2 bg-[#C8A97E] text-black font-medium rounded-md hover:bg-[#D4AF37] transition-colors"
+                        className="px-6 py-2 bg-[#C8A97E] text-black font-medium rounded-full hover:bg-[#D4AF37] transition-colors"
                       >
                         {t('booking.continue', 'Weiter')}
                       </button>
@@ -162,14 +162,14 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                     <div className="flex justify-between mt-12">
                       <button
                         onClick={() => setCurrentStep('details')}
-                        className="px-6 py-2 border border-gray-700 text-gray-300 rounded-md hover:border-gray-500 transition-colors"
+                        className="px-6 py-2 border border-gray-700 text-gray-300 rounded-full hover:border-gray-500 transition-colors"
                       >
                         {t('booking.back', 'Zurück')}
                       </button>
                       
                       <button
                         onClick={closeBookingForm}
-                        className="px-6 py-2 bg-[#C8A97E] text-black font-medium rounded-md hover:bg-[#D4AF37] transition-colors"
+                        className="px-6 py-2 bg-[#C8A97E] text-black font-medium rounded-full hover:bg-[#D4AF37] transition-colors"
                       >
                         {t('booking.finish', 'Abschließen')}
                       </button>
