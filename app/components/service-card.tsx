@@ -62,8 +62,12 @@ export default function ServiceCard({
         top: scrollTarget,
         behavior: 'smooth'
       })
-    }, 50) // Reduced delay to start scrolling earlier
+    }, 100) // Increased delay for smoother synchronization with slower animation
   }
+
+  // Custom transition durations
+  const expandDuration = 2000; // 2 seconds for expanding
+  const contractDuration = 3000; // 3 seconds for contracting (slower)
 
   return (
     <motion.div
@@ -74,13 +78,14 @@ export default function ServiceCard({
       transition={{ duration: 0.5, delay }}
       className={`group relative w-full bg-black/20 backdrop-blur-sm rounded-xl overflow-hidden 
         ${isHovered ? 'min-h-[520px]' : 'min-h-[320px]'} 
-        transition-all duration-2000
         ${link ? 'cursor-pointer' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
       style={{ 
         height: isHovered ? 'auto' : '320px',
+        transitionProperty: 'all',
+        transitionDuration: isHovered ? `${expandDuration}ms` : `${contractDuration}ms`,
         transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
       }}
     >
@@ -91,8 +96,12 @@ export default function ServiceCard({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={`object-cover opacity-40 transition-all duration-2000
-              ${isHovered ? 'filter-none scale-105' : 'blur-[1px] scale-100'}`}
+            className={`object-cover opacity-40 ${isHovered ? 'filter-none scale-105' : 'blur-[1px] scale-100'}`}
+            style={{
+              transitionProperty: 'all',
+              transitionDuration: isHovered ? `${expandDuration}ms` : `${contractDuration}ms`,
+              transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
+            }}
             priority={delay === 0}
             loading={delay === 0 ? "eager" : "lazy"}
             quality={90}
@@ -151,7 +160,7 @@ export default function ServiceCard({
               height: isHovered ? 'auto' : 0
             }}
             transition={{ 
-              duration: 2.0,
+              duration: isHovered ? expandDuration / 1000 : contractDuration / 1000, // Convert to seconds for framer-motion
               ease: 'easeInOut'
             }}
           >
