@@ -2,28 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
-import { Slider } from "@/app/components/ui/slider";
-import EnhancedAudio from "./enhanced-audio";
-import { getAudioPath, getImagePath } from "@/app/utils/paths";
-
-// Remove YouTube player integration
-// declare global {
-//   interface Window {
-//     YT: {
-//       Player: any;
-//       PlayerState: {
-//         PLAYING: number;
-//         PAUSED: number;
-//         ENDED: number;
-//       };
-//     };
-//     onYouTubeIframeAPIReady: () => void;
-//   }
-// }
+import { getAudioPath } from "@/app/utils/paths";
 
 interface Track {
   id: number;
@@ -31,9 +13,6 @@ interface Track {
   artist: string;
   file: string;
   duration: number; // in seconds
-  // Remove YouTube-related properties
-  // youtubeId?: string;
-  // thumbnail?: string;
 }
 
 const defaultTracks: Track[] = [
@@ -42,35 +21,26 @@ const defaultTracks: Track[] = [
     title: "Jazz Improvisation",
     artist: "Mel Jazz",
     file: "/audio/music-sample-1",
-    duration: 180,
-    // Remove YouTube-related properties
-    // youtubeId: "K6x0zEA06uk",
-    // thumbnail: getImagePath("music", "track1-thumbnail.jpg")
+    duration: 180
   },
   {
     id: 2,
     title: "Soul Expressions",
     artist: "Mel Jazz",
     file: "/audio/music-sample-2",
-    duration: 210,
-    // Remove YouTube-related properties
-    // youtubeId: "AWsarzdZ1u8",
-    // thumbnail: getImagePath("music", "track2-thumbnail.jpg")
+    duration: 210
   },
   {
     id: 3,
     title: "Vocal Techniques",
     artist: "Mel Jazz",
     file: "/audio/music-sample-3",
-    duration: 195,
-    // Remove YouTube-related properties
-    // youtubeId: "GidIMbCmtyk",
-    // thumbnail: getImagePath("music", "track3-thumbnail.jpg")
+    duration: 195
   }
 ];
 
 // Add event system for media coordination
-const MEDIA_STOP_EVENT = 'stopAllMedia'
+const MEDIA_STOP_EVENT = 'stopAllMedia';
 
 export default function EnhancedMusicPlayer() {
   const [tracks] = useState<Track[]>(defaultTracks);
@@ -84,137 +54,27 @@ export default function EnhancedMusicPlayer() {
   const [showMiniPlayer, setShowMiniPlayer] = useState(false);
   const [lastPlayTime, setLastPlayTime] = useState(Date.now());
   
-  // Remove YouTube-related state
-  // const [isAPIReady, setIsAPIReady] = useState(false);
-  // const [hasError, setHasError] = useState(false);
-  // const playerRef = useRef<Window['YT']['Player'] | null>(null);
-  
-  const containerRef = useRef<HTMLDivElement>(null);
-  const progressInterval = useRef<NodeJS.Timeout | null>(null);
+  const progressBarRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
+  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const miniPlayerRef = useRef<HTMLDivElement>(null);
 
   const currentTrack = tracks[currentTrackIndex];
 
-  // Remove YouTube API loading
-  // useEffect(() => {
-  //   const loadYouTubeAPI = () => {
-  //     try {
-  //       if (!window.YT) {
-  //         const tag = document.createElement('script');
-  //         tag.src = 'https://www.youtube.com/iframe_api';
-  //         tag.onerror = () => {
-  //           console.error('Failed to load YouTube API');
-  //           setHasError(true);
-  //         };
-  //         const firstScriptTag = document.getElementsByTagName('script')[0];
-  //         firstScriptTag.parentNode?.insertBefore(tag, firstScriptTag);
-
-  //         window.onYouTubeIframeAPIReady = () => {
-  //           setIsAPIReady(true);
-  //         };
-  //       } else {
-  //         setIsAPIReady(true);
-  //       }
-  //     } catch (error) {
-  //       console.error('Error loading YouTube API:', error);
-  //       setHasError(true);
-  //     }
-  //   };
-
-  //   loadYouTubeAPI();
-
-  //   return () => {
-  //     if (progressInterval.current) {
-  //       clearInterval(progressInterval.current);
-  //     }
-  //   };
-  // }, []);
-
-  // Remove YouTube player initialization
-  // useEffect(() => {
-  //   if (isAPIReady && !playerRef.current) {
-  //     try {
-  //       playerRef.current = new window.YT.Player("youtube-player", {
-  //         height: "0",
-  //         width: "0",
-  //         videoId: tracks[currentTrackIndex].youtubeId,
-  //         playerVars: {
-  //           autoplay: 0,
-  //           controls: 0,
-  //           disablekb: 1,
-  //           fs: 0,
-  //           rel: 0
-  //         },
-  //         events: {
-  //           onStateChange: (event: any) => {
-  //             try {
-  //               if (event.data === window.YT.PlayerState.PLAYING) {
-  //                 setIsPlaying(true);
-  //               } else if (event.data === window.YT.PlayerState.PAUSED) {
-  //                 setIsPlaying(false);
-  //               }
-  //             } catch (error) {
-  //               console.error('Error in onStateChange:', error);
-  //               setIsPlaying(false);
-  //             }
-  //           },
-  //           onReady: () => {
-  //             console.log("Player ready");
-  //             if (isPlaying) {
-  //               try {
-  //                 playerRef.current?.playVideo();
-  //               } catch (error) {
-  //                 console.error('Error playing video:', error);
-  //                 setIsPlaying(false);
-  //               }
-  //             }
-  //           },
-  //           onError: (event: any) => {
-  //             console.error("YouTube player error:", event);
-  //             setIsPlaying(false);
-  //             setHasError(true);
-  //           }
-  //         }
-  //       });
-  //     } catch (error) {
-  //       console.error("Error initializing YouTube player:", error);
-  //       setHasError(true);
-  //     }
-  //   }
-  // }, [isAPIReady, currentTrackIndex]);
-
-  // Remove YouTube video loading
-  // useEffect(() => {
-  //   if (isAPIReady && playerRef.current?.loadVideoById) {
-  //     try {
-  //       playerRef.current.loadVideoById(tracks[currentTrackIndex].youtubeId);
-  //       if (isPlaying) {
-  //         playerRef.current.playVideo();
-  //       } else {
-  //         playerRef.current.pauseVideo();
-  //       }
-  //       setCurrentTime(0);
-  //     } catch (error) {
-  //       console.error("Error loading video:", error);
-  //     }
-  //   }
-  // }, [currentTrackIndex, isAPIReady]);
-
-  // Update progress tracking to use audio element instead of YouTube
+  // Update progress tracking
   useEffect(() => {
     if (isPlaying) {
-      progressInterval.current = setInterval(() => {
+      intervalRef.current = setInterval(() => {
         if (audioRef.current) {
           setCurrentTime(audioRef.current.currentTime);
         }
       }, 100);
-    } else if (progressInterval.current) {
-      clearInterval(progressInterval.current);
+    } else if (intervalRef.current) {
+      clearInterval(intervalRef.current);
     }
     return () => {
-      if (progressInterval.current) {
-        clearInterval(progressInterval.current);
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
       }
     };
   }, [isPlaying]);
@@ -256,7 +116,7 @@ export default function EnhancedMusicPlayer() {
     return () => window.removeEventListener(MEDIA_STOP_EVENT, handleMediaStop);
   }, [isPlaying]);
 
-  // Update play/pause to use audio element instead of YouTube
+  // Handle play/pause
   const handlePlay = () => {
     if (isPlaying) {
       setIsPlaying(false);
@@ -286,7 +146,7 @@ export default function EnhancedMusicPlayer() {
     setCurrentTime(0);
   };
 
-  // Update mute to use audio element instead of YouTube
+  // Toggle mute
   const toggleMute = () => {
     setIsMuted(!isMuted);
     if (audioRef.current) {
@@ -301,7 +161,7 @@ export default function EnhancedMusicPlayer() {
     return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
   };
 
-  // Update progress bar click to use audio element instead of YouTube
+  // Handle progress bar click
   const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (!progressBarRef.current) return;
     
@@ -316,7 +176,7 @@ export default function EnhancedMusicPlayer() {
     }
   };
 
-  // Update volume change to use audio element instead of YouTube
+  // Handle volume change
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
     setVolume(newVolume);
@@ -342,19 +202,38 @@ export default function EnhancedMusicPlayer() {
   };
 
   // Handle audio error
-  const handleError = (error: Error) => {
-    setError(error.message);
+  const handleError = (e: React.SyntheticEvent<HTMLAudioElement, Event>) => {
+    console.error("Audio error:", e);
+    setError("Failed to play audio. Please try again.");
     setIsPlaying(false);
     setIsLoading(false);
   };
+
+  // Update audio src when track changes
+  useEffect(() => {
+    if (audioRef.current) {
+      const audioPath = getAudioPath(currentTrack.file);
+      audioRef.current.src = `${audioPath}.mp3`;
+      
+      if (isPlaying) {
+        setIsLoading(true);
+        audioRef.current.play()
+          .then(() => {
+            setIsLoading(false);
+          })
+          .catch(err => {
+            console.error("Failed to play audio:", err);
+            setIsLoading(false);
+            setError("Failed to play audio. Please try again.");
+          });
+      }
+    }
+  }, [currentTrackIndex, currentTrack.file]);
 
   return (
     <>
       <motion.div id="main-player" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl mx-auto">
         <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-4 sm:p-6">
-          {/* Remove YouTube player div */}
-          {/* <div id="youtube-player" className="hidden"></div> */}
-          
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
             <div className="relative w-full sm:w-24 h-24 rounded-lg overflow-hidden bg-[#C8A97E]/20 flex items-center justify-center">
               <Music className="w-12 h-12 text-[#C8A97E]" />
@@ -412,7 +291,9 @@ export default function EnhancedMusicPlayer() {
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
               >
-                {isPlaying ? (
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
+                ) : isPlaying ? (
                   <Pause className="w-5 sm:w-6 h-5 sm:h-6" />
                 ) : (
                   <Play className="w-5 sm:w-6 h-5 sm:h-6 ml-1" />
@@ -443,6 +324,18 @@ export default function EnhancedMusicPlayer() {
             </motion.button>
           </div>
 
+          <div ref={progressBarRef} className="h-2 bg-gray-700 rounded-full mb-2 cursor-pointer" onClick={handleProgressBarClick}>
+            <div 
+              className="h-full bg-[#C8A97E] rounded-full"
+              style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
+            ></div>
+          </div>
+          
+          <div className="flex justify-between text-xs text-gray-400 mb-6">
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(currentTrack.duration)}</span>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             {tracks.map((track) => (
               <motion.div
@@ -471,6 +364,18 @@ export default function EnhancedMusicPlayer() {
               </motion.div>
             ))}
           </div>
+
+          {error && (
+            <div className="mt-4 p-3 bg-red-500/20 text-red-200 rounded-md text-sm">
+              {error}
+              <button 
+                className="ml-2 underline"
+                onClick={() => setError(null)}
+              >
+                Dismiss
+              </button>
+            </div>
+          )}
         </Card>
       </motion.div>
                 
@@ -567,15 +472,11 @@ export default function EnhancedMusicPlayer() {
       </AnimatePresence>
 
       {/* Hidden audio element */}
-      <EnhancedAudio
-        src={currentTrack.file}
-        formats={["mp3", "ogg"]}
-        onPlay={() => setIsPlaying(true)}
-        onPause={() => setIsPlaying(false)}
+      <audio
+        ref={audioRef}
         onEnded={handleEnded}
         onError={handleError}
         className="hidden"
-        ref={audioRef}
       />
     </>
   );
