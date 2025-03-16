@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
-import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music } from "lucide-react";
+import { Play, Pause } from "lucide-react";
 import { getAudioPath } from "@/app/utils/paths";
 
 interface Track {
@@ -11,30 +11,34 @@ interface Track {
   title: string;
   artist: string;
   file: string;
-  duration: number; // in seconds
+  duration: number;
+  image: string;
 }
 
 const defaultTracks: Track[] = [
   {
     id: 1,
-    title: "Jazz Improvisation",
-    artist: "Mel Jazz",
+    title: "Autumn Leaves - Jazz Piano",
+    artist: "Melvo Jazz",
     file: "/audio/music-sample-1",
-    duration: 180
+    duration: 180,
+    image: "/images/music/jazz-piano.jpg"
   },
   {
     id: 2,
     title: "Soul Expressions",
-    artist: "Mel Jazz",
+    artist: "Melvo Jazz",
     file: "/audio/music-sample-2",
-    duration: 210
+    duration: 210,
+    image: "/images/music/soul-expressions.jpg"
   },
   {
     id: 3,
     title: "Vocal Techniques",
-    artist: "Mel Jazz",
+    artist: "Melvo Jazz",
     file: "/audio/music-sample-3",
-    duration: 195
+    duration: 195,
+    image: "/images/music/vocal-techniques.jpg"
   }
 ];
 
@@ -45,39 +49,17 @@ export default function EnhancedMusicPlayer() {
   const [tracks] = useState<Track[]>(defaultTracks);
   const [currentTrackIndex, setCurrentTrackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [isMuted, setIsMuted] = useState(false);
-  const [volume, setVolume] = useState(0.7);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
   const [startDragPosition, setStartDragPosition] = useState({ x: 0, y: 0 });
+  const [showBackDiscs, setShowBackDiscs] = useState(false);
   
-  const progressBarRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const discRef = useRef<HTMLDivElement>(null);
   
   const currentTrack = tracks[currentTrackIndex];
-  
-  // Update progress tracking
-  useEffect(() => {
-    if (isPlaying) {
-      intervalRef.current = setInterval(() => {
-        if (audioRef.current) {
-          setCurrentTime(audioRef.current.currentTime);
-        }
-      }, 100);
-    } else if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-    }
-    return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
-    };
-  }, [isPlaying]);
 
   useEffect(() => {
     // Listen for stop events from other media players
@@ -114,69 +96,11 @@ export default function EnhancedMusicPlayer() {
     }
   };
 
-  const handlePrevTrack = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex - 1 + tracks.length) % tracks.length);
-    setCurrentTime(0);
-  };
-
-  const handleNextTrack = () => {
-    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
-    setCurrentTime(0);
-  };
-
-  // Toggle mute
-  const toggleMute = () => {
-    setIsMuted(!isMuted);
-    if (audioRef.current) {
-      audioRef.current.muted = !isMuted;
-    }
-  };
-
-  // Format time in MM:SS
-  const formatTime = (time: number) => {
-    const minutes = Math.floor(time / 60);
-    const seconds = Math.floor(time % 60);
-    return `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
-  };
-
-  // Handle progress bar click
-  const handleProgressBarClick = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!progressBarRef.current) return;
-    
-    const progressBar = progressBarRef.current;
-    const rect = progressBar.getBoundingClientRect();
-    const percent = (e.clientX - rect.left) / rect.width;
-    
-    if (audioRef.current) {
-      const newTime = percent * currentTrack.duration;
-      audioRef.current.currentTime = newTime;
-      setCurrentTime(newTime);
-    }
-  };
-
-  // Handle volume change
-  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newVolume = parseFloat(e.target.value);
-    setVolume(newVolume);
-    
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
-    
-    if (newVolume === 0) {
-      setIsMuted(true);
-    } else {
-      setIsMuted(false);
-    }
-  };
-
   // Handle audio ended
   const handleEnded = () => {
     setIsPlaying(false);
-    setCurrentTime(0);
-    
     // Auto play next track
-    handleNextTrack();
+    setCurrentTrackIndex((prevIndex) => (prevIndex + 1) % tracks.length);
   };
 
   // Handle audio error
@@ -209,6 +133,10 @@ export default function EnhancedMusicPlayer() {
   }, [currentTrackIndex, currentTrack.file]);
 
   // Drag functionality
+  const handleDiscClick = () => {
+    setShowBackDiscs(!showBackDiscs);
+  };
+
   const handleDragStart = (e: React.MouseEvent) => {
     if (isDragging) return;
     
@@ -245,6 +173,14 @@ export default function EnhancedMusicPlayer() {
     document.body.classList.remove('dragging-disc');
   };
 
+  const selectTrack = (index: number) => {
+    setCurrentTrackIndex(index);
+    setShowBackDiscs(false);
+    if (!isPlaying) {
+      setIsPlaying(true);
+    }
+  };
+
   useEffect(() => {
     if (isDragging) {
       window.addEventListener('mousemove', handleDragMove);
@@ -269,184 +205,153 @@ export default function EnhancedMusicPlayer() {
   }, [error]);
 
   return (
-    <div className="bg-black/90 backdrop-blur-lg rounded-lg p-8 max-w-md mx-auto relative overflow-hidden">
+    <div className="relative h-screen w-full flex items-center justify-center bg-black overflow-hidden">
       {/* Background blur effect */}
-      <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/80 backdrop-blur-md z-0"></div>
+      <div className="absolute inset-0 bg-black/90 backdrop-blur-xl z-0"></div>
       
-      <div className="relative z-10">
+      <div className="relative z-10 flex flex-col items-center">
+        <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
+        <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
+        
         {/* Track title and artist */}
-        <div className="text-center mb-8">
+        <div className="text-center mb-12">
           <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
           <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
         </div>
         
-        {/* Vinyl Disc */}
+        {/* Main Vinyl Disc */}
         <div 
           ref={discRef}
-          className={`relative w-48 h-48 mx-auto mb-8 cursor-grab ${isDragging ? 'cursor-grabbing' : ''}`}
+          className={`relative w-80 h-80 mx-auto mb-8 cursor-grab ${isDragging ? 'cursor-grabbing' : ''}`}
+          onClick={handleDiscClick}
           onMouseDown={handleDragStart}
           style={{
             transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
             transition: isDragging ? 'none' : 'transform 0.5s ease-out'
           }}
         >
-          {/* Outer ring */}
-          <div className="absolute inset-0 rounded-full border-[6px] border-[#222] shadow-lg"></div>
+          {/* Background discs */}
+          <AnimatePresence>
+            {showBackDiscs && tracks.map((track, index) => {
+              if (index === currentTrackIndex) return null;
+              
+              // Calculate position for background discs
+              const angle = (index * (360 / tracks.length)) * (Math.PI / 180);
+              const distance = 180; // Distance from center
+              const x = Math.cos(angle) * distance;
+              const y = Math.sin(angle) * distance;
+              
+              return (
+                <motion.div
+                  key={track.id}
+                  className="absolute w-60 h-60 rounded-full shadow-2xl cursor-pointer"
+                  initial={{ opacity: 0, x: 0, y: 0, scale: 0.5 }}
+                  animate={{ 
+                    opacity: 0.7, 
+                    x, 
+                    y, 
+                    scale: 0.8,
+                    transition: { duration: 0.5, ease: "easeOut" }
+                  }}
+                  exit={{ 
+                    opacity: 0, 
+                    x: 0, 
+                    y: 0, 
+                    scale: 0.5,
+                    transition: { duration: 0.3, ease: "easeIn" }
+                  }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    selectTrack(index);
+                  }}
+                  whileHover={{ scale: 0.85, opacity: 0.9 }}
+                >
+                  {/* Disc image */}
+                  <div className="relative w-full h-full rounded-full overflow-hidden">
+                    <div className="absolute inset-0 rounded-full overflow-hidden">
+                      <Image 
+                        src={track.image} 
+                        alt={track.title}
+                        fill
+                        style={{ objectFit: 'cover' }}
+                        className="opacity-60"
+                      />
+                    </div>
+                    
+                    {/* Vinyl grooves */}
+                    <div className="absolute inset-0 rounded-full">
+                      <div className="absolute inset-[5px] rounded-full border border-[#222]/50"></div>
+                      <div className="absolute inset-[15px] rounded-full border border-[#222]/50"></div>
+                      <div className="absolute inset-[25px] rounded-full border border-[#222]/50"></div>
+                      <div className="absolute inset-[35px] rounded-full border border-[#222]/50"></div>
+                    </div>
+                    
+                    {/* Center label */}
+                    <div className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-[#C8A97E]/80 flex items-center justify-center">
+                      <p className="text-xs text-black font-medium text-center">{track.title.split(' - ')[0]}</p>
+                    </div>
+                  </div>
+                </motion.div>
+              );
+            })}
+          </AnimatePresence>
           
-          {/* Inner disc */}
-          <motion.div 
-            className="absolute inset-[6px] rounded-full bg-black"
-            animate={{ rotate: isPlaying ? 360 : 0 }}
-            transition={{ 
-              duration: 20, 
-              ease: "linear", 
-              repeat: Infinity,
-              repeatType: "loop" 
-            }}
-          >
-            {/* Grooves */}
-            <div className="absolute inset-[10px] rounded-full border border-[#222]"></div>
-            <div className="absolute inset-[20px] rounded-full border border-[#222]"></div>
-            <div className="absolute inset-[30px] rounded-full border border-[#222]"></div>
-            <div className="absolute inset-[40px] rounded-full border border-[#222]"></div>
-            <div className="absolute inset-[50px] rounded-full border border-[#222]"></div>
-            
-            {/* Label */}
-            <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-[#C8A97E]/90 flex items-center justify-center shadow-inner">
-              <motion.button
-                className="w-16 h-16 rounded-full bg-black flex items-center justify-center shadow-lg"
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.95 }}
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePlay();
-                }}
-                transition={{ duration: 0.3 }}
-              >
-                {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
-                ) : isPlaying ? (
-                  <Pause className="w-6 h-6 text-[#C8A97E]" />
-                ) : (
-                  <Play className="w-6 h-6 text-[#C8A97E] ml-1" />
-                )}
-              </motion.button>
+          {/* Main disc with outer ring */}
+          <div className="absolute inset-0 rounded-full border-[8px] border-[#222] shadow-2xl overflow-hidden">
+            {/* Disc image background */}
+            <div className="absolute inset-0 rounded-full overflow-hidden">
+              <Image 
+                src={currentTrack.image} 
+                alt={currentTrack.title}
+                fill
+                style={{ objectFit: 'cover' }}
+                className="opacity-70"
+              />
             </div>
-          </motion.div>
-        </div>
-        
-        {/* Progress Bar */}
-        <div 
-          ref={progressBarRef}
-          className="h-1 bg-[#333] rounded-full mb-2 cursor-pointer mx-4"
-          onClick={handleProgressBarClick}
-        >
-          <div 
-            className="h-full bg-[#C8A97E] rounded-full"
-            style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
-          ></div>
-        </div>
-        
-        <div className="flex justify-between text-xs text-gray-500 mb-6 mx-4">
-          <span>{formatTime(currentTime)}</span>
-          <span>{formatTime(currentTrack.duration)}</span>
-        </div>
-        
-        {/* Controls */}
-        <div className="flex justify-center items-center gap-6 mb-8">
-          <motion.button 
-            className="text-white hover:text-[#C8A97E] transition-colors"
-            onClick={handlePrevTrack}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ duration: 0.3 }}
-          >
-            <SkipBack size={20} />
-          </motion.button>
-          
-          <motion.button 
-            className="text-white hover:text-[#C8A97E] transition-colors"
-            onClick={handleNextTrack}
-            whileHover={{ scale: 1.2 }}
-            whileTap={{ scale: 0.9 }}
-            transition={{ duration: 0.3 }}
-          >
-            <SkipForward size={20} />
-          </motion.button>
-          
-          <motion.div 
-            className="flex items-center gap-2 ml-4"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.3 }}
-          >
-            <button 
-              className="text-white hover:text-[#C8A97E] transition-colors"
-              onClick={toggleMute}
-            >
-              {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-            </button>
             
-            <input 
-              type="range"
-              min="0"
-              max="1"
-              step="0.01"
-              value={isMuted ? 0 : volume}
-              onChange={handleVolumeChange}
-              className="w-16 h-1 bg-[#333] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#C8A97E]"
-            />
-          </motion.div>
-        </div>
-        
-        {/* Track List */}
-        <div className="space-y-2">
-          {tracks.map((track) => (
-            <motion.div
-              key={track.id}
-              className={`flex items-center p-3 rounded-lg cursor-pointer transition-all duration-300 ${
-                track.id === currentTrack.id 
-                ? "bg-[#C8A97E]/20 border border-[#C8A97E]/40" 
-                : "bg-black/50 hover:bg-[#222]/50"
-              }`}
-              onClick={() => {
-                setCurrentTrackIndex(tracks.indexOf(track));
-                if (!isPlaying) setIsPlaying(true);
-              }}
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.3 }}
-            >
-              <div className="w-8 h-8 rounded-full bg-[#222] flex items-center justify-center mr-3">
-                <Music className="w-4 h-4 text-[#C8A97E]" />
-              </div>
-              <div>
-                <p className="text-white text-sm font-medium">{track.title}</p>
-                <p className="text-gray-500 text-xs">{track.artist}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-        
-        {/* Error message */}
-        <AnimatePresence>
-          {error && (
+            {/* Inner disc with grooves */}
             <motion.div 
-              className="mt-4 p-3 bg-red-500/20 text-red-200 rounded-md text-sm"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.3 }}
+              className="absolute inset-0 rounded-full bg-black/40 backdrop-blur-sm"
+              animate={{ rotate: isPlaying ? 360 : 0 }}
+              transition={{ 
+                duration: 20, 
+                ease: "linear", 
+                repeat: Infinity,
+                repeatType: "loop" 
+              }}
             >
-              {error}
-              <button 
-                className="ml-2 underline"
-                onClick={() => setError(null)}
-              >
-                Dismiss
-              </button>
+              {/* Grooves */}
+              <div className="absolute inset-[15px] rounded-full border border-[#333]/70"></div>
+              <div className="absolute inset-[30px] rounded-full border border-[#333]/70"></div>
+              <div className="absolute inset-[45px] rounded-full border border-[#333]/70"></div>
+              <div className="absolute inset-[60px] rounded-full border border-[#333]/70"></div>
+              <div className="absolute inset-[75px] rounded-full border border-[#333]/70"></div>
+              <div className="absolute inset-[90px] rounded-full border border-[#333]/70"></div>
+              
+              {/* Center label */}
+              <div className="absolute inset-0 m-auto w-32 h-32 rounded-full bg-[#C8A97E]/90 flex items-center justify-center shadow-inner">
+                <motion.button
+                  className="w-20 h-20 rounded-full bg-black/80 flex items-center justify-center shadow-lg"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePlay();
+                  }}
+                  transition={{ duration: 0.3 }}
+                >
+                  {isLoading ? (
+                    <div className="w-6 h-6 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
+                  ) : isPlaying ? (
+                    <Pause className="w-8 h-8 text-[#C8A97E]" />
+                  ) : (
+                    <Play className="w-8 h-8 text-[#C8A97E] ml-1" />
+                  )}
+                </motion.button>
+              </div>
             </motion.div>
-          )}
-        </AnimatePresence>
+          </div>
+        </div>
       </div>
       
       {/* Hidden audio element */}
