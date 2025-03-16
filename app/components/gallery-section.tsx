@@ -101,45 +101,26 @@ export default function GallerySection() {
 
   const handleClose = () => {
     setSelectedImage(null)
-    setNextImage(null)
   }
 
-  const handleNext = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!selectedImage || isTransitioning) return
-    
-    const currentIndex = images.findIndex(img => img.src === selectedImage.src)
-    const nextIndex = (currentIndex + 1) % images.length
-    setIsTransitioning(true)
-    setNextImage(images[nextIndex])
-    
-    setTimeout(() => {
-      setSelectedImage(images[nextIndex])
-      setNextImage(null)
-      setIsTransitioning(false)
-    }, 300)
-  }
-
-  const handlePrev = (e: React.MouseEvent) => {
-    e.stopPropagation()
-    if (!selectedImage || isTransitioning) return
-    
+  const handlePrev = () => {
+    if (selectedImage === null) return
     const currentIndex = images.findIndex(img => img.src === selectedImage.src)
     const prevIndex = (currentIndex - 1 + images.length) % images.length
-    setIsTransitioning(true)
-    setNextImage(images[prevIndex])
-    
-    setTimeout(() => {
-      setSelectedImage(images[prevIndex])
-      setNextImage(null)
-      setIsTransitioning(false)
-    }, 300)
+    setSelectedImage(images[prevIndex])
+  }
+
+  const handleNext = () => {
+    if (selectedImage === null) return
+    const currentIndex = images.findIndex(img => img.src === selectedImage.src)
+    const nextIndex = (currentIndex + 1) % images.length
+    setSelectedImage(images[nextIndex])
   }
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (!selectedImage) return
-    if (e.key === 'ArrowRight') handleNext(e as unknown as React.MouseEvent)
-    if (e.key === 'ArrowLeft') handlePrev(e as unknown as React.MouseEvent)
+    if (e.key === 'ArrowRight') handleNext()
+    if (e.key === 'ArrowLeft') handlePrev()
     if (e.key === 'Escape') handleClose()
   }
 
@@ -224,13 +205,22 @@ export default function GallerySection() {
               </button>
               
               <div className="relative w-full h-full flex items-center justify-center">
-                <Image
-                  src={selectedImage.src}
-                  alt={selectedImage.alt}
-                  width={1200}
-                  height={800}
-                  className="object-contain max-h-[80vh] rounded-lg shadow-2xl transition-all duration-500"
-                />
+                <motion.div
+                  key={selectedImage.src}
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  transition={{ duration: 0.3 }}
+                  className="w-full h-full flex items-center justify-center"
+                >
+                  <Image
+                    src={selectedImage.src}
+                    alt={selectedImage.alt}
+                    width={1200}
+                    height={800}
+                    className="object-contain max-h-[80vh] rounded-lg shadow-2xl transition-all duration-500"
+                  />
+                </motion.div>
               </div>
               
               <button 

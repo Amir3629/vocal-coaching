@@ -25,7 +25,7 @@ const collaborations = [
   },
   {
     name: "CVT",
-    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/logos/cvt-logo.png" : "/images/logos/cvt-logo.png",
+    logo: process.env.NODE_ENV === 'production' ? "/vocal-coaching/images/collaborations/cvt-teacher.svg" : "/images/collaborations/cvt-teacher.svg",
     link: "https://completevocalinstitute.com/complete-vocal-technique-de/"
   },
   // Second Row
