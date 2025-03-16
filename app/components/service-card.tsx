@@ -56,14 +56,13 @@ export default function ServiceCard({
     // Change state first
     setIsHovered(false)
     
-    // Use a fixed delay to ensure the animation has started
-    // but not completed before scrolling
+    // Use a longer delay to better match the card animation
     setTimeout(() => {
       window.scrollTo({
         top: scrollTarget,
         behavior: 'smooth'
       })
-    }, 100)
+    }, 50) // Reduced delay to start scrolling earlier
   }
 
   return (
@@ -75,7 +74,7 @@ export default function ServiceCard({
       transition={{ duration: 0.5, delay }}
       className={`group relative w-full bg-black/20 backdrop-blur-sm rounded-xl overflow-hidden 
         ${isHovered ? 'min-h-[520px]' : 'min-h-[320px]'} 
-        transition-all duration-1500
+        transition-all duration-2000
         ${link ? 'cursor-pointer' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
@@ -92,7 +91,7 @@ export default function ServiceCard({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={`object-cover opacity-40 transition-all duration-1500
+            className={`object-cover opacity-40 transition-all duration-2000
               ${isHovered ? 'filter-none scale-105' : 'blur-[1px] scale-100'}`}
             priority={delay === 0}
             loading={delay === 0 ? "eager" : "lazy"}
@@ -152,7 +151,7 @@ export default function ServiceCard({
               height: isHovered ? 'auto' : 0
             }}
             transition={{ 
-              duration: 1.5,
+              duration: 2.0,
               ease: 'easeInOut'
             }}
           >
