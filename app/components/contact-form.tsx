@@ -156,7 +156,7 @@ export default function ContactForm() {
         isOpen={showSuccess}
         onClose={() => setShowSuccess(false)}
         title="Nachricht gesendet!"
-        message="Vielen Dank für Ihre Nachricht. Ich werde mich in Kürze bei Ihnen melden."
+        message="Vielen Dank für Ihre Nachricht. Ich werde mich in\u00A0Kürze bei Ihnen melden."
       />
     </>
   )

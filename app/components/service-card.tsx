@@ -52,15 +52,12 @@ export default function ServiceCard({
   const handleMouseLeave = () => {
     setIsHovered(false)
     
-    // After the card shrinks, smoothly scroll back to the original position
-    setTimeout(() => {
-      if (cardRef.current) {
-        window.scrollTo({
-          top: scrollPositionRef.current,
-          behavior: 'smooth'
-        })
-      }
-    }, 100) // Small delay to let the card start shrinking first
+    // After the card starts shrinking, smoothly scroll back to the original position
+    // Start scrolling immediately but make it take the same amount of time as the card animation
+    window.scrollTo({
+      top: scrollPositionRef.current,
+      behavior: 'smooth'
+    })
   }
 
   return (
@@ -72,14 +69,14 @@ export default function ServiceCard({
       transition={{ duration: 0.5, delay }}
       className={`group relative w-full bg-black/20 backdrop-blur-sm rounded-xl overflow-hidden 
         ${isHovered ? 'min-h-[520px]' : 'min-h-[320px]'} 
-        transition-all duration-1000
+        transition-all duration-1500
         ${link ? 'cursor-pointer' : ''}`}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       onClick={handleClick}
       style={{ 
         height: isHovered ? 'auto' : '320px',
-        transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)'
+        transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
       }}
     >
       {image && (
@@ -89,7 +86,7 @@ export default function ServiceCard({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={`object-cover opacity-40 transition-all duration-1000
+            className={`object-cover opacity-40 transition-all duration-1500
               ${isHovered ? 'filter-none scale-105' : 'blur-[1px] scale-100'}`}
             priority={delay === 0}
             loading={delay === 0 ? "eager" : "lazy"}
@@ -149,7 +146,7 @@ export default function ServiceCard({
               height: isHovered ? 'auto' : 0
             }}
             transition={{ 
-              duration: 1.0,
+              duration: 1.5,
               ease: 'easeInOut'
             }}
           >
