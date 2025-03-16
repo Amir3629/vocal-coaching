@@ -105,7 +105,7 @@ export default function EnhancedMusicPlayer() {
 
   // Get YouTube thumbnail URL - use higher quality image
   const getYouTubeThumbnail = (youtubeId: string) => {
-    // Try to get the highest quality thumbnail
+    // Use the highest quality thumbnail available
     return `https://img.youtube.com/vi/${youtubeId}/maxresdefault.jpg`;
   };
 
@@ -409,6 +409,7 @@ export default function EnhancedMusicPlayer() {
             }}
             onClick={handleDiscClick}
             onMouseDown={handleDiscMouseDown}
+            style={{ boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)' }}
           >
             {/* Main disc */}
             <div className="absolute inset-0 rounded-full overflow-hidden shadow-2xl">
