@@ -2,9 +2,8 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music } from "lucide-react";
-import { Button } from "@/app/components/ui/button";
-import { Card } from "@/app/components/ui/card";
 import { getAudioPath } from "@/app/utils/paths";
 
 interface Track {
@@ -51,10 +50,14 @@ export default function EnhancedMusicPlayer() {
   const [volume, setVolume] = useState(0.7);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragPosition, setDragPosition] = useState({ x: 0, y: 0 });
+  const [startDragPosition, setStartDragPosition] = useState({ x: 0, y: 0 });
   
   const progressBarRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
+  const discRef = useRef<HTMLDivElement>(null);
   
   const currentTrack = tracks[currentTrackIndex];
   
@@ -205,20 +208,94 @@ export default function EnhancedMusicPlayer() {
     }
   }, [currentTrackIndex, currentTrack.file]);
 
+  // Drag functionality
+  const handleDragStart = (e: React.MouseEvent) => {
+    if (isDragging) return;
+    
+    setIsDragging(true);
+    setStartDragPosition({ x: e.clientX, y: e.clientY });
+    
+    // Add dragging class to body
+    document.body.classList.add('dragging-disc');
+  };
+
+  const handleDragMove = (e: MouseEvent) => {
+    if (!isDragging) return;
+    
+    const deltaX = e.clientX - startDragPosition.x;
+    const deltaY = e.clientY - startDragPosition.y;
+    
+    // Apply some damping for smoother movement
+    const damping = 0.5;
+    setDragPosition({
+      x: dragPosition.x + deltaX * damping,
+      y: dragPosition.y + deltaY * damping
+    });
+    
+    setStartDragPosition({ x: e.clientX, y: e.clientY });
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    
+    // Reset position with animation
+    setDragPosition({ x: 0, y: 0 });
+    
+    // Remove dragging class from body
+    document.body.classList.remove('dragging-disc');
+  };
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('mousemove', handleDragMove);
+      window.addEventListener('mouseup', handleDragEnd);
+    }
+    
+    return () => {
+      window.removeEventListener('mousemove', handleDragMove);
+      window.removeEventListener('mouseup', handleDragEnd);
+    };
+  }, [isDragging, startDragPosition]);
+
+  // Dismiss error after 5 seconds
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 5000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   return (
-    <div className="bg-[#0A0A0A] rounded-lg p-6 max-w-md mx-auto">
-      <div className="flex flex-col items-center mb-6">
-        <h3 className="text-lg font-semibold text-white mb-1 text-center">{currentTrack.title}</h3>
-        <p className="text-sm text-[#C8A97E] mb-6 text-center">{currentTrack.artist}</p>
+    <div className="bg-black/90 backdrop-blur-lg rounded-lg p-8 max-w-md mx-auto relative overflow-hidden">
+      {/* Background blur effect */}
+      <div className="absolute inset-0 bg-gradient-to-b from-black/40 to-black/80 backdrop-blur-md z-0"></div>
+      
+      <div className="relative z-10">
+        {/* Track title and artist */}
+        <div className="text-center mb-8">
+          <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
+          <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
+        </div>
         
         {/* Vinyl Disc */}
-        <div className="relative w-32 h-32 mb-6">
+        <div 
+          ref={discRef}
+          className={`relative w-48 h-48 mx-auto mb-8 cursor-grab ${isDragging ? 'cursor-grabbing' : ''}`}
+          onMouseDown={handleDragStart}
+          style={{
+            transform: `translate(${dragPosition.x}px, ${dragPosition.y}px)`,
+            transition: isDragging ? 'none' : 'transform 0.5s ease-out'
+          }}
+        >
           {/* Outer ring */}
-          <div className="absolute inset-0 rounded-full border-4 border-[#333333]"></div>
+          <div className="absolute inset-0 rounded-full border-[6px] border-[#222] shadow-lg"></div>
           
           {/* Inner disc */}
           <motion.div 
-            className="absolute inset-[4px] rounded-full bg-[#111] border border-[#222]"
+            className="absolute inset-[6px] rounded-full bg-black"
             animate={{ rotate: isPlaying ? 360 : 0 }}
             transition={{ 
               duration: 20, 
@@ -228,124 +305,149 @@ export default function EnhancedMusicPlayer() {
             }}
           >
             {/* Grooves */}
-            <div className="absolute inset-[8px] rounded-full border border-[#222]"></div>
-            <div className="absolute inset-[16px] rounded-full border border-[#222]"></div>
-            <div className="absolute inset-[24px] rounded-full border border-[#222]"></div>
-            <div className="absolute inset-[32px] rounded-full border border-[#222]"></div>
+            <div className="absolute inset-[10px] rounded-full border border-[#222]"></div>
+            <div className="absolute inset-[20px] rounded-full border border-[#222]"></div>
+            <div className="absolute inset-[30px] rounded-full border border-[#222]"></div>
+            <div className="absolute inset-[40px] rounded-full border border-[#222]"></div>
+            <div className="absolute inset-[50px] rounded-full border border-[#222]"></div>
             
             {/* Label */}
-            <div className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-[#C8A97E]">
-              <div className="absolute inset-0 flex items-center justify-center">
-                <motion.button
-                  className="w-12 h-12 rounded-full bg-black flex items-center justify-center"
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handlePlay}
-                >
-                  {isLoading ? (
-                    <div className="w-4 h-4 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
-                  ) : isPlaying ? (
-                    <Pause className="w-5 h-5 text-[#C8A97E]" />
-                  ) : (
-                    <Play className="w-5 h-5 text-[#C8A97E] ml-0.5" />
-                  )}
-                </motion.button>
-              </div>
+            <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-[#C8A97E]/90 flex items-center justify-center shadow-inner">
+              <motion.button
+                className="w-16 h-16 rounded-full bg-black flex items-center justify-center shadow-lg"
+                whileHover={{ scale: 1.1 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePlay();
+                }}
+                transition={{ duration: 0.3 }}
+              >
+                {isLoading ? (
+                  <div className="w-5 h-5 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
+                ) : isPlaying ? (
+                  <Pause className="w-6 h-6 text-[#C8A97E]" />
+                ) : (
+                  <Play className="w-6 h-6 text-[#C8A97E] ml-1" />
+                )}
+              </motion.button>
             </div>
           </motion.div>
         </div>
-      </div>
-      
-      {/* Progress Bar */}
-      <div 
-        ref={progressBarRef}
-        className="h-1 bg-[#333] rounded-full mb-2 cursor-pointer"
-        onClick={handleProgressBarClick}
-      >
+        
+        {/* Progress Bar */}
         <div 
-          className="h-full bg-[#C8A97E] rounded-full"
-          style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
-        ></div>
-      </div>
-      
-      <div className="flex justify-between text-xs text-gray-500 mb-6">
-        <span>{formatTime(currentTime)}</span>
-        <span>{formatTime(currentTrack.duration)}</span>
-      </div>
-      
-      {/* Controls */}
-      <div className="flex justify-center items-center gap-4 mb-8">
-        <button 
-          className="text-white hover:text-[#C8A97E] transition-colors"
-          onClick={handlePrevTrack}
+          ref={progressBarRef}
+          className="h-1 bg-[#333] rounded-full mb-2 cursor-pointer mx-4"
+          onClick={handleProgressBarClick}
         >
-          <SkipBack size={20} />
-        </button>
+          <div 
+            className="h-full bg-[#C8A97E] rounded-full"
+            style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
+          ></div>
+        </div>
         
-        <button 
-          className="text-white hover:text-[#C8A97E] transition-colors"
-          onClick={handleNextTrack}
-        >
-          <SkipForward size={20} />
-        </button>
+        <div className="flex justify-between text-xs text-gray-500 mb-6 mx-4">
+          <span>{formatTime(currentTime)}</span>
+          <span>{formatTime(currentTrack.duration)}</span>
+        </div>
         
-        <div className="flex items-center gap-2 ml-4">
-          <button 
+        {/* Controls */}
+        <div className="flex justify-center items-center gap-6 mb-8">
+          <motion.button 
             className="text-white hover:text-[#C8A97E] transition-colors"
-            onClick={toggleMute}
+            onClick={handlePrevTrack}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
+            transition={{ duration: 0.3 }}
           >
-            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
-          </button>
+            <SkipBack size={20} />
+          </motion.button>
           
-          <input 
-            type="range"
-            min="0"
-            max="1"
-            step="0.01"
-            value={isMuted ? 0 : volume}
-            onChange={handleVolumeChange}
-            className="w-16 h-1 bg-[#333] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#C8A97E]"
-          />
-        </div>
-      </div>
-      
-      {/* Track List */}
-      <div className="space-y-2">
-        {tracks.map((track) => (
-          <div
-            key={track.id}
-            className={`flex items-center p-3 rounded-lg cursor-pointer transition-all duration-200 ${
-              track.id === currentTrack.id 
-              ? "bg-[#C8A97E]/20 border border-[#C8A97E]/40" 
-              : "bg-[#111] hover:bg-[#222]"
-            }`}
-            onClick={() => {
-              setCurrentTrackIndex(tracks.indexOf(track));
-              if (!isPlaying) setIsPlaying(true);
-            }}
+          <motion.button 
+            className="text-white hover:text-[#C8A97E] transition-colors"
+            onClick={handleNextTrack}
+            whileHover={{ scale: 1.2 }}
+            whileTap={{ scale: 0.9 }}
+            transition={{ duration: 0.3 }}
           >
-            <div className="w-8 h-8 rounded-full bg-[#222] flex items-center justify-center mr-3">
-              <Music className="w-4 h-4 text-[#C8A97E]" />
-            </div>
-            <div>
-              <p className="text-white text-sm font-medium">{track.title}</p>
-              <p className="text-gray-500 text-xs">{track.artist}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-      
-      {error && (
-        <div className="mt-4 p-3 bg-red-500/20 text-red-200 rounded-md text-sm">
-          {error}
-          <button 
-            className="ml-2 underline"
-            onClick={() => setError(null)}
+            <SkipForward size={20} />
+          </motion.button>
+          
+          <motion.div 
+            className="flex items-center gap-2 ml-4"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
           >
-            Dismiss
-          </button>
+            <button 
+              className="text-white hover:text-[#C8A97E] transition-colors"
+              onClick={toggleMute}
+            >
+              {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+            </button>
+            
+            <input 
+              type="range"
+              min="0"
+              max="1"
+              step="0.01"
+              value={isMuted ? 0 : volume}
+              onChange={handleVolumeChange}
+              className="w-16 h-1 bg-[#333] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#C8A97E]"
+            />
+          </motion.div>
         </div>
-      )}
+        
+        {/* Track List */}
+        <div className="space-y-2">
+          {tracks.map((track) => (
+            <motion.div
+              key={track.id}
+              className={`flex items-center p-3 rounded-lg cursor-pointer transition-all duration-300 ${
+                track.id === currentTrack.id 
+                ? "bg-[#C8A97E]/20 border border-[#C8A97E]/40" 
+                : "bg-black/50 hover:bg-[#222]/50"
+              }`}
+              onClick={() => {
+                setCurrentTrackIndex(tracks.indexOf(track));
+                if (!isPlaying) setIsPlaying(true);
+              }}
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.3 }}
+            >
+              <div className="w-8 h-8 rounded-full bg-[#222] flex items-center justify-center mr-3">
+                <Music className="w-4 h-4 text-[#C8A97E]" />
+              </div>
+              <div>
+                <p className="text-white text-sm font-medium">{track.title}</p>
+                <p className="text-gray-500 text-xs">{track.artist}</p>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+        
+        {/* Error message */}
+        <AnimatePresence>
+          {error && (
+            <motion.div 
+              className="mt-4 p-3 bg-red-500/20 text-red-200 rounded-md text-sm"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -10 }}
+              transition={{ duration: 0.3 }}
+            >
+              {error}
+              <button 
+                className="ml-2 underline"
+                onClick={() => setError(null)}
+              >
+                Dismiss
+              </button>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
       
       {/* Hidden audio element */}
       <audio
@@ -354,6 +456,14 @@ export default function EnhancedMusicPlayer() {
         onError={handleError}
         className="hidden"
       />
+      
+      {/* Add global styles for dragging */}
+      <style jsx global>{`
+        body.dragging-disc {
+          cursor: grabbing;
+          user-select: none;
+        }
+      `}</style>
     </div>
   );
 } 
