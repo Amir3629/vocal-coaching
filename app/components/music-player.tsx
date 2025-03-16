@@ -73,6 +73,7 @@ export default function MusicPlayer() {
   const [visibleDiscs, setVisibleDiscs] = useState<number[]>([]);
   const [activeDiscIndex, setActiveDiscIndex] = useState(0);
   const [isTransitioningDiscs, setIsTransitioningDiscs] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
   const videoRef = useRef<HTMLIFrameElement>(null);
   const progressBarRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<HTMLDivElement>(null);
@@ -503,6 +504,7 @@ export default function MusicPlayer() {
 
   // Mouse hover handlers for notification
   const handleDiscHover = () => {
+    setIsHovering(true);
     setShowNotification(true);
     notificationControls.start({
       opacity: [0, 1, 1, 0],
@@ -517,6 +519,10 @@ export default function MusicPlayer() {
     });
   };
 
+  const handleDiscLeave = () => {
+    setIsHovering(false);
+  };
+
   return (
     <div className="max-w-5xl mx-auto relative py-10" ref={playerRef}>
       <div className="relative mx-auto" style={{ maxWidth: "500px" }}>
@@ -526,7 +532,10 @@ export default function MusicPlayer() {
             onMouseDown={handleDragStart}
             onMouseMove={handleDragMove}
             onMouseUp={handleDragEnd}
-            onMouseLeave={handleDragEnd}
+            onMouseLeave={(e) => {
+              handleDragEnd(e);
+              handleDiscLeave();
+            }}
             onMouseEnter={handleDiscHover}
             style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
           >
@@ -543,6 +552,9 @@ export default function MusicPlayer() {
               // Discs to the left will be shifted right, discs to the right will be shifted left
               const overlapOffset = position < 0 ? 40 : (position > 0 ? -40 : 0);
               
+              // Only show non-active discs when hovering or dragging
+              const shouldShow = isActive || isHovering || isDragging;
+              
               return (
                 <motion.div
                   key={`disc-${songIndex}`}
@@ -551,7 +563,7 @@ export default function MusicPlayer() {
                   animate={{ 
                     x: position + overlapOffset, // Add overlap offset
                     scale,
-                    opacity,
+                    opacity: shouldShow ? opacity : 0, // Hide non-active discs when not hovering
                     filter: `blur(${blur}px)`,
                     zIndex
                   }}
@@ -560,7 +572,8 @@ export default function MusicPlayer() {
                     stiffness: 180, // Lower stiffness for smoother movement
                     damping: 22,
                     mass: 1,
-                    duration: isDragging ? 0.05 : 0.6 // Longer duration when not dragging for smoother transitions
+                    duration: isDragging ? 0.05 : 0.6, // Longer duration when not dragging for smoother transitions
+                    opacity: { duration: 0.3 } // Faster opacity transition
                   }}
                   style={{ 
                     transformOrigin: 'center center',
@@ -591,11 +604,11 @@ export default function MusicPlayer() {
                           onClick={togglePlay}
                           className="w-16 h-16 flex items-center justify-center rounded-full bg-black"
                         >
-                          {isPlaying ? <Pause size={32} className="text-white" /> : <Play size={32} className="text-white ml-1" />}
+                          {isPlaying ? <Pause size={32} className="text-[#C8A97E]" /> : <Play size={32} className="text-[#C8A97E] ml-1" />}
                         </motion.button>
                       </div>
                     )}
-
+                    
                     {/* Video thumbnail as background */}
                     <div className="absolute inset-0 rounded-full overflow-hidden opacity-70 transition-opacity duration-500">
                       <div className="absolute inset-0 bg-black/40 z-[1]" /> {/* Darkening overlay */}
@@ -608,7 +621,7 @@ export default function MusicPlayer() {
                       />
                     </div>
                   </motion.div>
-
+                  
                   {/* Song info - only visible on active disc */}
                   {isActive && (
                     <div className="absolute -bottom-24 left-1/2 transform -translate-x-1/2 w-64 text-center">

@@ -44,7 +44,7 @@ export default function SuccessMessage({ isOpen, onClose, title, message }: Succ
     if (isOpen) {
       const timer = setTimeout(() => {
         onClose()
-      }, 3000)
+      }, 6000)
       return () => clearTimeout(timer)
     }
   }, [isOpen, onClose])
@@ -56,7 +56,7 @@ export default function SuccessMessage({ isOpen, onClose, title, message }: Succ
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="inline-flex flex-wrap"
+        className="inline-flex flex-wrap justify-center"
       >
         {Array.from(text).map((letter, index) => (
           <motion.span
@@ -66,6 +66,7 @@ export default function SuccessMessage({ isOpen, onClose, title, message }: Succ
             style={{ 
               display: 'inline-block',
               whiteSpace: letter === ' ' ? 'pre' : 'normal',
+              textAlign: 'center'
             }}
           >
             {letter}
