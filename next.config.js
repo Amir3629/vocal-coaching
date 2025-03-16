@@ -27,6 +27,9 @@ const nextConfig = {
     })
     return config
   },
+  publicRuntimeConfig: {
+    basePath: process.env.NODE_ENV === 'production' ? '/vocal-coaching' : '',
+  },
 }
 
 module.exports = nextConfig
