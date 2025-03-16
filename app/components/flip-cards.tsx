@@ -21,54 +21,64 @@ const FlipCard: React.FC<FlipCardProps> = ({
 }) => {
   const [isFlipped, setIsFlipped] = useState(false);
 
-  const handleFlip = () => {
-    setIsFlipped(!isFlipped);
-  };
-
   return (
     <div 
       className="w-full h-full"
-      style={{ perspective: "1000px" }}
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
-      <motion.div 
-        className="relative w-full aspect-square bg-[#0A0A0A] rounded-lg border border-[#1A1A1A] overflow-hidden cursor-pointer"
-        style={{ transformStyle: "preserve-3d" }}
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        initial={{ rotateY: 0 }}
-        transition={{ type: "tween", duration: 0.8 }}
+      <div 
+        className="relative w-full h-full"
+        style={{ 
+          perspective: "1000px",
+          transformStyle: "preserve-3d",
+          transition: "transform 0.8s"
+        }}
       >
-        {/* Front side */}
+        {/* Card container */}
         <div 
-          className="absolute inset-0 flex flex-col items-center justify-center p-6"
-          style={{ backfaceVisibility: "hidden" }}
-        >
-          <div className="text-[#C8A97E] mb-6 text-4xl">
-            {icon}
-          </div>
-          <h3 className="text-white text-xl font-medium text-center mb-2">{title}</h3>
-          <p className="text-[#C8A97E] text-sm text-center">{description}</p>
-        </div>
-
-        {/* Back side */}
-        <div 
-          className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-[#0A0A0A]"
+          className="w-full h-full"
           style={{ 
-            backfaceVisibility: "hidden",
-            transform: "rotateY(180deg) rotateZ(180deg)"
+            transform: isFlipped ? "rotateY(180deg)" : "rotateY(0deg)",
+            transformStyle: "preserve-3d",
+            transition: "transform 0.8s"
           }}
         >
-          <p className="text-gray-300 text-center text-sm mb-4">{backContent}</p>
-          
-          {funFact && (
-            <div className="mt-4 w-full">
-              <p className="text-[#C8A97E] text-xs font-bold">Wusstest du schon?</p>
-              <p className="text-gray-300 text-xs">{funFact}</p>
+          {/* Front side */}
+          <div 
+            className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-[#0A0A0A] rounded-lg border border-[#1A1A1A] overflow-hidden"
+            style={{ 
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden"
+            }}
+          >
+            <div className="text-[#C8A97E] mb-6 text-4xl">
+              {icon}
             </div>
-          )}
+            <h3 className="text-white text-xl font-medium text-center mb-2">{title}</h3>
+            <p className="text-[#C8A97E] text-sm text-center">{description}</p>
+          </div>
+
+          {/* Back side */}
+          <div 
+            className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-[#0A0A0A] rounded-lg border border-[#1A1A1A] overflow-hidden"
+            style={{ 
+              backfaceVisibility: "hidden",
+              WebkitBackfaceVisibility: "hidden",
+              transform: "rotateY(180deg)"
+            }}
+          >
+            <p className="text-gray-300 text-center text-sm mb-4">{backContent}</p>
+            
+            {funFact && (
+              <div className="mt-4 w-full">
+                <p className="text-[#C8A97E] text-xs font-bold">Wusstest du schon?</p>
+                <p className="text-gray-300 text-xs">{funFact}</p>
+              </div>
+            )}
+          </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   );
 };
