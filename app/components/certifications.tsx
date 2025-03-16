@@ -166,6 +166,17 @@ export default function JourneyShowcase() {
               </div>
             )
           })}
+          <a 
+            href="https://completevocalinstitute.com/complete-vocal-technique-de/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="block relative border border-white/20 rounded-lg p-4 hover:border-[#C8A97E]/50 transition-all duration-300"
+          >
+            <div className="text-center">
+              <h3 className="text-2xl font-bold mb-1">CVT</h3>
+              <p className="text-sm text-white/80">AUTHORISED TEACHER</p>
+            </div>
+          </a>
         </div>
       </div>
     </section>

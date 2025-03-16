@@ -69,8 +69,8 @@ export default function ServiceCard({
       // Reset scrolling state after animation completes
       setTimeout(() => {
         setIsScrolling(false)
-      }, 1000)
-    }, 50) // Reduced delay to start scrolling earlier
+      }, 3000) // Longer reset time to match the animation duration
+    }, 100) // Slightly increased delay for smoother transition
   }
 
   // Prevent any scroll events while our custom scrolling is active
@@ -85,16 +85,20 @@ export default function ServiceCard({
 
     if (isScrolling) {
       window.addEventListener('scroll', preventScroll, { passive: false });
+      window.addEventListener('wheel', preventScroll, { passive: false });
+      window.addEventListener('touchmove', preventScroll, { passive: false });
     }
 
     return () => {
       window.removeEventListener('scroll', preventScroll);
+      window.removeEventListener('wheel', preventScroll);
+      window.removeEventListener('touchmove', preventScroll);
     };
   }, [isScrolling]);
 
   // Custom transition durations
-  const expandDuration = 2000; // 2 seconds for expanding
-  const contractDuration = 3000; // 3 seconds for contracting (slower)
+  const expandDuration = 2500; // 2.5 seconds for expanding
+  const contractDuration = 5000; // 5 seconds for contracting (much slower)
 
   return (
     <motion.div
@@ -134,7 +138,13 @@ export default function ServiceCard({
             loading={delay === 0 ? "eager" : "lazy"}
             quality={90}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80" 
+               style={{
+                 transitionProperty: 'opacity',
+                 transitionDuration: isHovered ? `${expandDuration}ms` : `${contractDuration}ms`,
+                 transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
+               }}
+          />
         </div>
       )}
 
@@ -148,9 +158,9 @@ export default function ServiceCard({
                 rotate: isHovered ? [0, -5, 5, 0] : 0
               }}
               transition={{ 
-                duration: isHovered ? 1.2 : 2.0,
+                duration: isHovered ? 1.5 : 3.0,
                 scale: { type: 'spring', stiffness: 100 },
-                rotate: { duration: isHovered ? 1.5 : 2.5, ease: 'easeInOut' }
+                rotate: { duration: isHovered ? 1.8 : 3.5, ease: 'easeInOut' }
               }}
             >
               {icon}

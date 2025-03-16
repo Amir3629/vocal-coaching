@@ -220,14 +220,16 @@ export default function Home() {
             fill
             className="object-cover opacity-50"
             style={{
-              transition: 'transform 3s ease-in-out',
+              transition: 'transform 5s ease-in-out, opacity 5s ease-in-out',
               transform: 'scale(1.01)' // Very slight scale to prevent any visible edges
             }}
             priority
             quality={100}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/80 via-[#040202]/60 to-[#040202]/80" />
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_40%,_#040202_90%)] opacity-80" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#040202]/80 via-[#040202]/60 to-[#040202]/80" 
+               style={{ transition: 'opacity 5s ease-in-out' }} />
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_transparent_40%,_#040202_90%)] opacity-80"
+               style={{ transition: 'opacity 5s ease-in-out' }} />
         </div>
 
         <div className="container mx-auto px-4 relative z-10">
