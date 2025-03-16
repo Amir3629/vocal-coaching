@@ -209,24 +209,6 @@ export default function EnhancedMusicPlayer() {
     }
   }, [currentTrackIndex, currentTrack.file]);
 
-  // Show background discs
-  const handleDiscClick = (e: React.MouseEvent) => {
-    // Only trigger if clicking outside the center button
-    const rect = discRef.current?.getBoundingClientRect();
-    if (rect) {
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      const distance = Math.sqrt(
-        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
-      );
-      
-      // If clicking outside the center button area, toggle background discs
-      if (distance > 60) {
-        setShowBackDiscs(!showBackDiscs);
-      }
-    }
-  };
-
   // Disc interaction for horizontal swiping
   const handleDiscMouseDown = (e: React.MouseEvent) => {
     // Only start dragging if not clicking the center button
@@ -247,6 +229,8 @@ export default function EnhancedMusicPlayer() {
     setIsDragging(true);
     setDragStartX(e.clientX);
     setDragDelta(0);
+    
+    // Always show background discs when dragging
     setShowBackDiscs(true);
     
     // Add dragging class to body
@@ -300,8 +284,29 @@ export default function EnhancedMusicPlayer() {
     setIsDragging(false);
     setDragDelta(0);
     
+    // Keep showing background discs after dragging
+    // User needs to click again to hide them
+    
     // Remove dragging class from body
     document.body.classList.remove('dragging-disc');
+  };
+
+  // Show background discs
+  const handleDiscClick = (e: React.MouseEvent) => {
+    // Only trigger if clicking outside the center button
+    const rect = discRef.current?.getBoundingClientRect();
+    if (rect) {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+      );
+      
+      // If clicking outside the center button area, toggle background discs
+      if (distance > 60) {
+        setShowBackDiscs(!showBackDiscs);
+      }
+    }
   };
 
   useEffect(() => {
@@ -336,11 +341,17 @@ export default function EnhancedMusicPlayer() {
         <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
         <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
         
+        {/* Track title and artist - MOVED ABOVE THE DISC */}
+        <div className="text-center mb-8">
+          <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
+          <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
+        </div>
+        
         {/* Disc Carousel Container */}
         <div className="relative w-[500px] h-96 mx-auto mb-8 overflow-visible">
-          {/* Background Discs - Visible when dragging or when showBackDiscs is true */}
+          {/* Background Discs - Only visible when showBackDiscs is true */}
           <AnimatePresence mode="wait">
-            {(isDragging || showBackDiscs) && visibleDiscs.map(index => {
+            {showBackDiscs && visibleDiscs.map(index => {
               if (index === currentTrackIndex) return null;
               
               const track = getTrackAtIndex(index);
@@ -355,7 +366,8 @@ export default function EnhancedMusicPlayer() {
                   className="absolute top-1/2 left-1/2 w-80 h-80 -translate-y-1/2 rounded-full overflow-hidden"
                   style={{
                     zIndex: Math.abs(position) < 50 ? 20 : 10,
-                    opacity: 1 - Math.min(Math.abs(position) / 300, 0.7)
+                    opacity: 1 - Math.min(Math.abs(position) / 300, 0.7),
+                    filter: "blur(2px)"
                   }}
                   initial={{ x: position > 0 ? '100%' : '-100%', opacity: 0 }}
                   animate={{ 
@@ -419,14 +431,14 @@ export default function EnhancedMusicPlayer() {
           >
             {/* Main disc */}
             <div className="absolute inset-0 rounded-full overflow-hidden shadow-2xl">
-              {/* Disc image background - spinning continuously */}
+              {/* Disc image background - spinning only when playing */}
               <motion.div 
                 className="absolute inset-0 rounded-full overflow-hidden"
-                animate={{ rotate: 360 }}
+                animate={{ rotate: isPlaying ? 360 : 0 }}
                 transition={{ 
                   duration: 20, 
                   ease: "linear", 
-                  repeat: Infinity,
+                  repeat: isPlaying ? Infinity : 0,
                   repeatType: "loop" 
                 }}
               >
@@ -441,14 +453,14 @@ export default function EnhancedMusicPlayer() {
                 />
               </motion.div>
               
-              {/* Inner disc with grooves - spinning continuously */}
+              {/* Inner disc with grooves - spinning only when playing */}
               <motion.div 
                 className="absolute inset-0 rounded-full bg-black/30 backdrop-blur-sm"
-                animate={{ rotate: 360 }}
+                animate={{ rotate: isPlaying ? 360 : 0 }}
                 transition={{ 
                   duration: 20, 
                   ease: "linear", 
-                  repeat: Infinity,
+                  repeat: isPlaying ? Infinity : 0,
                   repeatType: "loop" 
                 }}
               >
@@ -489,18 +501,12 @@ export default function EnhancedMusicPlayer() {
             </div>
           </motion.div>
           
-          {/* Drag instruction - only visible when not dragging */}
+          {/* Hint for disc interaction - only visible when not dragging */}
           {!isDragging && !showBackDiscs && (
             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 text-[#C8A97E]/70 text-xs">
               Click disc to show more music or drag to browse
             </div>
           )}
-        </div>
-        
-        {/* Track title and artist - BELOW THE DISC */}
-        <div className="text-center mt-4 mb-8">
-          <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
-          <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
         </div>
       </div>
       
