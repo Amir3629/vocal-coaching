@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Create modular booking form with service selection and progress bar components"
+git commit -m "Fix gallery navigation: Move arrows further outside image frame and reposition close button"
 git push
 echo Done!
 pause 
