@@ -50,14 +50,20 @@ export default function ServiceCard({
   }
 
   const handleMouseLeave = () => {
+    // Store the position before changing state
+    const scrollTarget = scrollPositionRef.current
+    
+    // Change state first
     setIsHovered(false)
     
-    // After the card starts shrinking, smoothly scroll back to the original position
-    // Start scrolling immediately but make it take the same amount of time as the card animation
-    window.scrollTo({
-      top: scrollPositionRef.current,
-      behavior: 'smooth'
-    })
+    // Use a fixed delay to ensure the animation has started
+    // but not completed before scrolling
+    setTimeout(() => {
+      window.scrollTo({
+        top: scrollTarget,
+        behavior: 'smooth'
+      })
+    }, 100)
   }
 
   return (

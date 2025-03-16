@@ -51,9 +51,7 @@ export default function SuccessMessage({ isOpen, onClose, title, message }: Succ
 
   // Animated text component for letter-by-letter animation
   const AnimatedText = ({ text }: { text: string }) => {
-    // Replace "in Kürze" with "in&nbsp;Kürze" to prevent splitting
-    const processedText = text.replace("in Kürze", "in\u00A0Kürze");
-    
+    // Don't use Unicode replacement, it's causing issues
     return (
       <motion.div
         variants={containerVariants}
@@ -61,19 +59,22 @@ export default function SuccessMessage({ isOpen, onClose, title, message }: Succ
         animate="visible"
         className="inline-flex flex-wrap justify-center"
       >
-        {Array.from(processedText).map((letter, index) => (
-          <motion.span
-            key={`letter-${index}`}
-            variants={letterVariants}
-            custom={index}
-            style={{ 
-              display: 'inline-block',
-              whiteSpace: letter === ' ' ? 'pre' : 'normal',
-              textAlign: 'center'
-            }}
-          >
-            {letter}
-          </motion.span>
+        {text.split(' ').map((word, wordIndex) => (
+          <span key={`word-${wordIndex}`} className="whitespace-nowrap mr-1">
+            {Array.from(word).map((letter, letterIndex) => (
+              <motion.span
+                key={`letter-${wordIndex}-${letterIndex}`}
+                variants={letterVariants}
+                custom={wordIndex * 5 + letterIndex} // Offset by word to maintain timing
+                style={{ 
+                  display: 'inline-block',
+                  textAlign: 'center'
+                }}
+              >
+                {letter}
+              </motion.span>
+            ))}
+          </span>
         ))}
       </motion.div>
     );

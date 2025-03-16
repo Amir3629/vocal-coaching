@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Fix word break in contact form and synchronize service card animations with scroll"
+git commit -m "Fix notification text display and improve service card scroll behavior"
 git push
 echo Done!
 pause 
