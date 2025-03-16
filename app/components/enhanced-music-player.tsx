@@ -125,15 +125,15 @@ export default function EnhancedMusicPlayer() {
     }
     setVisibleDiscs(indices);
     
-    // Initialize positions with more spacing for better visibility
+    // Initialize positions with less spacing for overlapping effect
     const positions: {[key: number]: number} = {};
     indices.forEach(index => {
       // Calculate position based on distance from current track
       const distance = index - currentTrackIndex;
       // Use modulo to handle circular wrapping properly
       const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
-      // Increase spacing between discs (300px instead of 250px)
-      positions[index] = wrappedDistance * 300;
+      // Reduce spacing between discs (180px instead of 300px) for overlapping effect
+      positions[index] = wrappedDistance * 180;
     });
     setDiscPositions(positions);
   }, [currentTrackIndex, tracks.length]);
@@ -230,7 +230,7 @@ export default function EnhancedMusicPlayer() {
         visibleDiscs.forEach(index => {
           const distance = index - currentTrackIndex;
           const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
-          positions[index] = wrappedDistance * 300;
+          positions[index] = wrappedDistance * 180;
         });
         setDiscPositions(positions);
       }
@@ -265,7 +265,7 @@ export default function EnhancedMusicPlayer() {
     visibleDiscs.forEach(index => {
       const distance = index - currentTrackIndex;
       const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
-      positions[index] = wrappedDistance * 300;
+      positions[index] = wrappedDistance * 180;
     });
     setDiscPositions(positions);
     
@@ -285,8 +285,8 @@ export default function EnhancedMusicPlayer() {
       // Calculate position based on distance from current track
       const distance = index - currentTrackIndex;
       const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
-      // Use the same spacing as in the initialization (300px)
-      const basePosition = wrappedDistance * 300;
+      // Use the same spacing as in the initialization (180px)
+      const basePosition = wrappedDistance * 180;
       updatedPositions[index] = basePosition + delta;
     });
     
@@ -353,8 +353,8 @@ export default function EnhancedMusicPlayer() {
         <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
         <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
         
-        {/* Disc Carousel Container - Moved up more */}
-        <div className="relative w-[500px] h-96 mx-auto mb-4 overflow-visible">
+        {/* Disc Carousel Container - With increased width to prevent cutoff */}
+        <div className="relative w-[800px] h-96 mx-auto mb-4 overflow-visible">
           {/* Background Discs - Always rendered but only visible when showBackDiscs is true */}
           {visibleDiscs.map(index => {
             if (index === currentTrackIndex) return null;
@@ -365,18 +365,31 @@ export default function EnhancedMusicPlayer() {
             // Only show discs that are within a reasonable distance
             if (Math.abs(position) > 600) return null;
             
-            // Calculate scale and blur based on distance
-            const distanceFactor = Math.min(Math.abs(position) / 500, 0.8);
-            const scale = 1 - distanceFactor * 0.4;
-            const blurAmount = distanceFactor * 3;
+            // Calculate distance from center for visual effects
+            const distance = Math.abs(position);
+            
+            // Progressive scaling - discs get smaller as they go further back
+            // Front disc is 100%, background discs start at 75% and get smaller
+            const baseScale = 0.75; // Background discs are 75% of main disc size
+            const scaleReduction = Math.min(distance / 1000, 0.25); // Up to 25% smaller based on distance
+            const scale = baseScale - scaleReduction;
+            
+            // Progressive blur based on distance
+            const blurAmount = Math.min(distance / 100, 3);
+            
+            // Progressive opacity based on distance
+            const opacity = Math.max(0.3, 1 - (distance / 600));
+            
+            // Calculate z-index based on distance (closer discs appear on top)
+            const zIndex = 20 - Math.floor(distance / 50);
             
             return (
               <motion.div
                 key={`disc-${index}`}
                 className="absolute top-1/2 left-1/2 w-80 h-80 -translate-y-1/2 rounded-full overflow-hidden"
                 style={{
-                  zIndex: Math.abs(position) < 50 ? 20 : 10,
-                  opacity: showBackDiscs ? (1 - distanceFactor * 0.7) : 0,
+                  zIndex: zIndex,
+                  opacity: showBackDiscs ? opacity : 0,
                   filter: `blur(${blurAmount}px)`,
                   pointerEvents: showBackDiscs ? 'auto' : 'none'
                 }}
@@ -384,7 +397,10 @@ export default function EnhancedMusicPlayer() {
                   x: `calc(-50% + ${position}px)`,
                   scale: scale
                 }}
-                transition={{ duration: 0.3 }}
+                transition={{ 
+                  duration: 0.5,
+                  ease: "easeInOut"
+                }}
                 onClick={() => {
                   if (!isDragging && showBackDiscs) {
                     setCurrentTrackIndex(index);
@@ -430,7 +446,7 @@ export default function EnhancedMusicPlayer() {
               scale: isDragging ? 0.95 : 1
             }}
             transition={{ 
-              x: { duration: isDragging ? 0 : 0.5 },
+              x: { duration: isDragging ? 0 : 0.5, ease: "easeInOut" },
               scale: { duration: 0.3 }
             }}
             onClick={handleDiscClick}
