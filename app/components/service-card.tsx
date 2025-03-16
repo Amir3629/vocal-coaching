@@ -36,6 +36,7 @@ export default function ServiceCard({
   const [isHovered, setIsHovered] = useState(false)
   const cardRef = useRef<HTMLDivElement>(null)
   const scrollPositionRef = useRef(0)
+  const [isScrolling, setIsScrolling] = useState(false)
 
   const handleClick = () => {
     if (link) {
@@ -55,15 +56,41 @@ export default function ServiceCard({
     
     // Change state first
     setIsHovered(false)
+    setIsScrolling(true)
     
     // Use a longer delay to better match the card animation
+    // and prevent any scroll jumps
     setTimeout(() => {
       window.scrollTo({
         top: scrollTarget,
         behavior: 'smooth'
       })
-    }, 100) // Increased delay for smoother synchronization with slower animation
+      
+      // Reset scrolling state after animation completes
+      setTimeout(() => {
+        setIsScrolling(false)
+      }, 1000)
+    }, 50) // Reduced delay to start scrolling earlier
   }
+
+  // Prevent any scroll events while our custom scrolling is active
+  useEffect(() => {
+    const preventScroll = (e: Event) => {
+      if (isScrolling) {
+        e.preventDefault();
+        return false;
+      }
+      return true;
+    };
+
+    if (isScrolling) {
+      window.addEventListener('scroll', preventScroll, { passive: false });
+    }
+
+    return () => {
+      window.removeEventListener('scroll', preventScroll);
+    };
+  }, [isScrolling]);
 
   // Custom transition durations
   const expandDuration = 2000; // 2 seconds for expanding
@@ -96,8 +123,9 @@ export default function ServiceCard({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={`object-cover opacity-40 ${isHovered ? 'filter-none scale-105' : 'blur-[1px] scale-100'}`}
+            className="object-cover opacity-40"
             style={{
+              filter: isHovered ? 'none' : 'blur(1px)',
               transitionProperty: 'all',
               transitionDuration: isHovered ? `${expandDuration}ms` : `${contractDuration}ms`,
               transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
@@ -120,9 +148,9 @@ export default function ServiceCard({
                 rotate: isHovered ? [0, -5, 5, 0] : 0
               }}
               transition={{ 
-                duration: 1.2,
+                duration: isHovered ? 1.2 : 2.0,
                 scale: { type: 'spring', stiffness: 100 },
-                rotate: { duration: 1.5, ease: 'easeInOut' }
+                rotate: { duration: isHovered ? 1.5 : 2.5, ease: 'easeInOut' }
               }}
             >
               {icon}

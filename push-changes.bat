@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Make card closing animation slower (3 seconds) than opening animation (2 seconds)"
+git commit -m "Fix image zoom and scroll issues: remove scale effect, prevent scroll jumps, add smooth transitions"
 git push
 echo Done!
 pause 

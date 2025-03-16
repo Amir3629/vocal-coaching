@@ -213,12 +213,16 @@ export default function Home() {
 
       {/* Services Section */}
       <section id="services" className="relative w-full py-20 bg-[#040202]">
-        <div className="absolute inset-0 w-full h-full">
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
           <Image
             src="/vocal-coaching/images/backgrounds/services-bg.jpg"
             alt="Services Background"
             fill
             className="object-cover opacity-50"
+            style={{
+              transition: 'transform 3s ease-in-out',
+              transform: 'scale(1.01)' // Very slight scale to prevent any visible edges
+            }}
             priority
             quality={100}
           />
