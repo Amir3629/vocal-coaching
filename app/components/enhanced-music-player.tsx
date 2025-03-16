@@ -223,19 +223,16 @@ export default function EnhancedMusicPlayer() {
       // If clicking outside the center button area, toggle background discs
       if (distance > 60) {
         // Toggle background discs
-        const newShowBackDiscs = !showBackDiscs;
-        setShowBackDiscs(newShowBackDiscs);
+        setShowBackDiscs(!showBackDiscs);
         
         // Reset positions when showing discs
-        if (newShowBackDiscs) {
-          const positions: {[key: number]: number} = {};
-          visibleDiscs.forEach(index => {
-            const distance = index - currentTrackIndex;
-            const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
-            positions[index] = wrappedDistance * 300;
-          });
-          setDiscPositions(positions);
-        }
+        const positions: {[key: number]: number} = {};
+        visibleDiscs.forEach(index => {
+          const distance = index - currentTrackIndex;
+          const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
+          positions[index] = wrappedDistance * 300;
+        });
+        setDiscPositions(positions);
       }
     }
   };
@@ -282,9 +279,6 @@ export default function EnhancedMusicPlayer() {
     const delta = e.clientX - dragStartX;
     setDragDelta(delta);
     
-    // Force show background discs when dragging
-    setShowBackDiscs(true);
-    
     // Update all disc positions based on drag delta
     const updatedPositions: {[key: number]: number} = {};
     visibleDiscs.forEach(index => {
@@ -322,9 +316,6 @@ export default function EnhancedMusicPlayer() {
     
     setIsDragging(false);
     setDragDelta(0);
-    
-    // Keep showing background discs after dragging
-    // User needs to click again to hide them
     
     // Remove dragging class from body
     document.body.classList.remove('dragging-disc');
@@ -364,74 +355,71 @@ export default function EnhancedMusicPlayer() {
         
         {/* Disc Carousel Container - Moved up more */}
         <div className="relative w-[500px] h-96 mx-auto mb-4 overflow-visible">
-          {/* Background Discs - Only visible when showBackDiscs is true */}
-          <AnimatePresence mode="wait">
-            {showBackDiscs && visibleDiscs.map(index => {
-              if (index === currentTrackIndex) return null;
-              
-              const track = getTrackAtIndex(index);
-              const position = discPositions[index] || 0;
-              
-              // Only show discs that are within a reasonable distance
-              if (Math.abs(position) > 600) return null;
-              
-              // Calculate scale and blur based on distance
-              const distanceFactor = Math.min(Math.abs(position) / 500, 0.8);
-              const scale = 1 - distanceFactor * 0.4;
-              const blurAmount = distanceFactor * 3;
-              
-              return (
-                <motion.div
-                  key={`disc-${index}`}
-                  className="absolute top-1/2 left-1/2 w-80 h-80 -translate-y-1/2 rounded-full overflow-hidden"
-                  style={{
-                    zIndex: Math.abs(position) < 50 ? 20 : 10,
-                    opacity: 1 - distanceFactor * 0.7,
-                    filter: `blur(${blurAmount}px)`
-                  }}
-                  initial={{ x: position > 0 ? '100%' : '-100%', opacity: 0 }}
-                  animate={{ 
-                    x: `calc(-50% + ${position}px)`,
-                    scale: scale
-                  }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 0.3 }}
-                  onClick={() => {
-                    if (!isDragging) {
-                      setCurrentTrackIndex(index);
-                      setShowBackDiscs(false);
-                    }
-                  }}
-                >
-                  <div className="relative w-full h-full rounded-full overflow-hidden">
-                    <div className="absolute inset-0 rounded-full overflow-hidden">
-                      <Image 
-                        src={getYouTubeThumbnail(track.youtubeId)} 
-                        alt={track.title}
-                        fill
-                        style={{ objectFit: 'cover', objectPosition: 'center' }}
-                        className="opacity-100"
-                        unoptimized
-                      />
-                    </div>
-                    
-                    {/* Vinyl grooves */}
-                    <div className="absolute inset-0 rounded-full">
-                      <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
-                      <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
-                      <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
-                      <div className="absolute inset-[35px] rounded-full border border-[#333]/60"></div>
-                    </div>
-                    
-                    {/* Center label */}
-                    <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-black flex items-center justify-center">
-                      <p className="text-xs text-[#C8A97E] font-medium text-center px-2">{track.title}</p>
-                    </div>
+          {/* Background Discs - Always rendered but only visible when showBackDiscs is true */}
+          {visibleDiscs.map(index => {
+            if (index === currentTrackIndex) return null;
+            
+            const track = getTrackAtIndex(index);
+            const position = discPositions[index] || 0;
+            
+            // Only show discs that are within a reasonable distance
+            if (Math.abs(position) > 600) return null;
+            
+            // Calculate scale and blur based on distance
+            const distanceFactor = Math.min(Math.abs(position) / 500, 0.8);
+            const scale = 1 - distanceFactor * 0.4;
+            const blurAmount = distanceFactor * 3;
+            
+            return (
+              <motion.div
+                key={`disc-${index}`}
+                className="absolute top-1/2 left-1/2 w-80 h-80 -translate-y-1/2 rounded-full overflow-hidden"
+                style={{
+                  zIndex: Math.abs(position) < 50 ? 20 : 10,
+                  opacity: showBackDiscs ? (1 - distanceFactor * 0.7) : 0,
+                  filter: `blur(${blurAmount}px)`,
+                  pointerEvents: showBackDiscs ? 'auto' : 'none'
+                }}
+                animate={{ 
+                  x: `calc(-50% + ${position}px)`,
+                  scale: scale
+                }}
+                transition={{ duration: 0.3 }}
+                onClick={() => {
+                  if (!isDragging && showBackDiscs) {
+                    setCurrentTrackIndex(index);
+                    setShowBackDiscs(false);
+                  }
+                }}
+              >
+                <div className="relative w-full h-full rounded-full overflow-hidden">
+                  <div className="absolute inset-0 rounded-full overflow-hidden">
+                    <Image 
+                      src={getYouTubeThumbnail(track.youtubeId)} 
+                      alt={track.title}
+                      fill
+                      style={{ objectFit: 'cover', objectPosition: 'center' }}
+                      className="opacity-100"
+                      unoptimized
+                    />
                   </div>
-                </motion.div>
-              );
-            })}
-          </AnimatePresence>
+                  
+                  {/* Vinyl grooves */}
+                  <div className="absolute inset-0 rounded-full">
+                    <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
+                    <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
+                    <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
+                    <div className="absolute inset-[35px] rounded-full border border-[#333]/60"></div>
+                  </div>
+                  
+                  {/* Center label */}
+                  <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-black flex items-center justify-center">
+                    <p className="text-xs text-[#C8A97E] font-medium text-center px-2">{track.title}</p>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
           
           {/* Main Vinyl Disc */}
           <motion.div 
