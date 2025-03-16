@@ -132,13 +132,41 @@ export default function EnhancedMusicPlayer() {
     }
   }, [currentTrackIndex, currentTrack.file]);
 
-  // Drag functionality
-  const handleDiscClick = () => {
-    setShowBackDiscs(!showBackDiscs);
+  // Disc interaction
+  const handleDiscClick = (e: React.MouseEvent) => {
+    // Only trigger if clicking outside the center button
+    const rect = discRef.current?.getBoundingClientRect();
+    if (rect) {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+      );
+      
+      // If clicking outside the center button area (radius ~40px)
+      if (distance > 60) {
+        setShowBackDiscs(!showBackDiscs);
+      }
+    }
   };
 
   const handleDragStart = (e: React.MouseEvent) => {
     if (isDragging) return;
+    
+    // Prevent dragging when clicking the center button
+    const rect = discRef.current?.getBoundingClientRect();
+    if (rect) {
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+      const distance = Math.sqrt(
+        Math.pow(e.clientX - centerX, 2) + Math.pow(e.clientY - centerY, 2)
+      );
+      
+      // If clicking inside the center button area, don't start dragging
+      if (distance < 60) {
+        return;
+      }
+    }
     
     setIsDragging(true);
     setStartDragPosition({ x: e.clientX, y: e.clientY });
@@ -207,7 +235,7 @@ export default function EnhancedMusicPlayer() {
   return (
     <div className="relative h-screen w-full flex items-center justify-center bg-black overflow-hidden">
       {/* Background blur effect */}
-      <div className="absolute inset-0 bg-black/90 backdrop-blur-xl z-0"></div>
+      <div className="absolute inset-0 bg-black/95 backdrop-blur-xl z-0"></div>
       
       <div className="relative z-10 flex flex-col items-center">
         <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
@@ -222,7 +250,7 @@ export default function EnhancedMusicPlayer() {
         {/* Main Vinyl Disc */}
         <div 
           ref={discRef}
-          className={`relative w-80 h-80 mx-auto mb-8 cursor-grab ${isDragging ? 'cursor-grabbing' : ''}`}
+          className={`relative w-96 h-96 mx-auto mb-8 cursor-grab ${isDragging ? 'cursor-grabbing' : ''}`}
           onClick={handleDiscClick}
           onMouseDown={handleDragStart}
           style={{
@@ -237,34 +265,34 @@ export default function EnhancedMusicPlayer() {
               
               // Calculate position for background discs
               const angle = (index * (360 / tracks.length)) * (Math.PI / 180);
-              const distance = 180; // Distance from center
+              const distance = 220; // Distance from center
               const x = Math.cos(angle) * distance;
               const y = Math.sin(angle) * distance;
               
               return (
                 <motion.div
                   key={track.id}
-                  className="absolute w-60 h-60 rounded-full shadow-2xl cursor-pointer"
+                  className="absolute w-72 h-72 rounded-full shadow-2xl cursor-pointer"
                   initial={{ opacity: 0, x: 0, y: 0, scale: 0.5 }}
                   animate={{ 
-                    opacity: 0.7, 
+                    opacity: 0.8, 
                     x, 
                     y, 
                     scale: 0.8,
-                    transition: { duration: 0.5, ease: "easeOut" }
+                    transition: { duration: 0.7, ease: "easeOut" }
                   }}
                   exit={{ 
                     opacity: 0, 
                     x: 0, 
                     y: 0, 
                     scale: 0.5,
-                    transition: { duration: 0.3, ease: "easeIn" }
+                    transition: { duration: 0.5, ease: "easeIn" }
                   }}
                   onClick={(e) => {
                     e.stopPropagation();
                     selectTrack(index);
                   }}
-                  whileHover={{ scale: 0.85, opacity: 0.9 }}
+                  whileHover={{ scale: 0.85, opacity: 1 }}
                 >
                   {/* Disc image */}
                   <div className="relative w-full h-full rounded-full overflow-hidden">
@@ -274,21 +302,22 @@ export default function EnhancedMusicPlayer() {
                         alt={track.title}
                         fill
                         style={{ objectFit: 'cover' }}
-                        className="opacity-60"
+                        className="opacity-70"
                       />
                     </div>
                     
                     {/* Vinyl grooves */}
                     <div className="absolute inset-0 rounded-full">
-                      <div className="absolute inset-[5px] rounded-full border border-[#222]/50"></div>
-                      <div className="absolute inset-[15px] rounded-full border border-[#222]/50"></div>
-                      <div className="absolute inset-[25px] rounded-full border border-[#222]/50"></div>
-                      <div className="absolute inset-[35px] rounded-full border border-[#222]/50"></div>
+                      <div className="absolute inset-[5px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[15px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[25px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[35px] rounded-full border border-[#333]/60"></div>
+                      <div className="absolute inset-[45px] rounded-full border border-[#333]/60"></div>
                     </div>
                     
                     {/* Center label */}
-                    <div className="absolute inset-0 m-auto w-20 h-20 rounded-full bg-[#C8A97E]/80 flex items-center justify-center">
-                      <p className="text-xs text-black font-medium text-center">{track.title.split(' - ')[0]}</p>
+                    <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-[#C8A97E]/90 flex items-center justify-center shadow-lg">
+                      <p className="text-xs text-black font-medium text-center px-2">{track.title.split(' - ')[0]}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -297,7 +326,7 @@ export default function EnhancedMusicPlayer() {
           </AnimatePresence>
           
           {/* Main disc with outer ring */}
-          <div className="absolute inset-0 rounded-full border-[8px] border-[#222] shadow-2xl overflow-hidden">
+          <div className="absolute inset-0 rounded-full border-[10px] border-[#222] shadow-2xl overflow-hidden">
             {/* Disc image background */}
             <div className="absolute inset-0 rounded-full overflow-hidden">
               <Image 
@@ -305,13 +334,13 @@ export default function EnhancedMusicPlayer() {
                 alt={currentTrack.title}
                 fill
                 style={{ objectFit: 'cover' }}
-                className="opacity-70"
+                className="opacity-75"
               />
             </div>
             
             {/* Inner disc with grooves */}
             <motion.div 
-              className="absolute inset-0 rounded-full bg-black/40 backdrop-blur-sm"
+              className="absolute inset-0 rounded-full bg-black/50 backdrop-blur-sm"
               animate={{ rotate: isPlaying ? 360 : 0 }}
               transition={{ 
                 duration: 20, 
@@ -321,17 +350,19 @@ export default function EnhancedMusicPlayer() {
               }}
             >
               {/* Grooves */}
-              <div className="absolute inset-[15px] rounded-full border border-[#333]/70"></div>
-              <div className="absolute inset-[30px] rounded-full border border-[#333]/70"></div>
-              <div className="absolute inset-[45px] rounded-full border border-[#333]/70"></div>
-              <div className="absolute inset-[60px] rounded-full border border-[#333]/70"></div>
-              <div className="absolute inset-[75px] rounded-full border border-[#333]/70"></div>
-              <div className="absolute inset-[90px] rounded-full border border-[#333]/70"></div>
+              <div className="absolute inset-[15px] rounded-full border border-[#444]/70"></div>
+              <div className="absolute inset-[30px] rounded-full border border-[#444]/70"></div>
+              <div className="absolute inset-[45px] rounded-full border border-[#444]/70"></div>
+              <div className="absolute inset-[60px] rounded-full border border-[#444]/70"></div>
+              <div className="absolute inset-[75px] rounded-full border border-[#444]/70"></div>
+              <div className="absolute inset-[90px] rounded-full border border-[#444]/70"></div>
+              <div className="absolute inset-[105px] rounded-full border border-[#444]/70"></div>
+              <div className="absolute inset-[120px] rounded-full border border-[#444]/70"></div>
               
               {/* Center label */}
-              <div className="absolute inset-0 m-auto w-32 h-32 rounded-full bg-[#C8A97E]/90 flex items-center justify-center shadow-inner">
+              <div className="absolute inset-0 m-auto w-40 h-40 rounded-full bg-[#C8A97E] flex items-center justify-center shadow-inner">
                 <motion.button
-                  className="w-20 h-20 rounded-full bg-black/80 flex items-center justify-center shadow-lg"
+                  className="w-24 h-24 rounded-full bg-black/90 flex items-center justify-center shadow-xl"
                   whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}
                   onClick={(e) => {
@@ -341,11 +372,11 @@ export default function EnhancedMusicPlayer() {
                   transition={{ duration: 0.3 }}
                 >
                   {isLoading ? (
-                    <div className="w-6 h-6 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
+                    <div className="w-8 h-8 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
                   ) : isPlaying ? (
-                    <Pause className="w-8 h-8 text-[#C8A97E]" />
+                    <Pause className="w-10 h-10 text-[#C8A97E]" />
                   ) : (
-                    <Play className="w-8 h-8 text-[#C8A97E] ml-1" />
+                    <Play className="w-10 h-10 text-[#C8A97E] ml-1" />
                   )}
                 </motion.button>
               </div>

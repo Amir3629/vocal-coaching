@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Redesign music player with gramophone-style vinyl disc, YouTube music images, and background discs"
+git commit -m "Final enhancements to music player: larger disc, improved center button, smoother animations"
 git push
 echo Done!
 pause 
