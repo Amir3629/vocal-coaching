@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Fix CVT Deutschland logo: Restore the CVT Deutschland logo with correct link to https://cvtdeutschland.de/de"
+git commit -m "Fix gallery image closing: Allow closing images by clicking anywhere on the background"
 git push
 echo Done!
 pause 

@@ -179,10 +179,14 @@ export default function GallerySection() {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
+            onClick={handleClose}
           >
             <motion.button 
               className="absolute top-4 right-4 text-white/80 hover:text-white z-10"
-              onClick={handleClose}
+              onClick={(e) => {
+                e.stopPropagation();
+                handleClose();
+              }}
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
@@ -196,15 +200,22 @@ export default function GallerySection() {
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
               transition={{ duration: 0.5, ease: "easeInOut" }}
+              onClick={(e) => e.stopPropagation()}
             >
               <button 
                 className="absolute left-4 text-white/80 hover:text-white z-10 transition-all duration-300 hover:scale-110"
-                onClick={handlePrev}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrev();
+                }}
               >
                 <ChevronLeft className="w-10 h-10" />
               </button>
               
-              <div className="relative w-full h-full flex items-center justify-center">
+              <div 
+                className="relative w-full h-full flex items-center justify-center"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <motion.div
                   key={selectedImage.src}
                   initial={{ opacity: 0, x: 20 }}
@@ -225,7 +236,10 @@ export default function GallerySection() {
               
               <button 
                 className="absolute right-4 text-white/80 hover:text-white z-10 transition-all duration-300 hover:scale-110"
-                onClick={handleNext}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
               >
                 <ChevronRight className="w-10 h-10" />
               </button>
