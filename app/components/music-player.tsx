@@ -302,8 +302,11 @@ export default function MusicPlayer() {
 
   // Spinning animation with slow start
   useEffect(() => {
-    if (isPlaying) {
-      // Only animate the current disc
+    // Stop all animations first
+    discControls.stop();
+    
+    // Only animate if playing and only for the current song
+    if (isPlaying && currentSongIndex === activeDiscIndex) {
       discControls.start({
         rotate: 360,
         transition: {
@@ -313,10 +316,8 @@ export default function MusicPlayer() {
           repeatType: "loop"
         }
       });
-    } else {
-      discControls.stop();
     }
-  }, [isPlaying, discControls, currentSongIndex]);
+  }, [isPlaying, discControls, currentSongIndex, activeDiscIndex]);
 
   // Listen for global stop events
   useEffect(() => {
@@ -353,6 +354,7 @@ export default function MusicPlayer() {
         discControls.stop();
         
         setCurrentSongIndex(trackIndex);
+        setActiveDiscIndex(trackIndex);
         // Stop all discs from spinning when changing tracks
         setIsPlaying(false);
         
