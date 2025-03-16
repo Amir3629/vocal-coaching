@@ -8,7 +8,7 @@ import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
 import { Slider } from "@/app/components/ui/slider";
 import EnhancedAudio from "./enhanced-audio";
-import { getAudioPath } from "@/app/utils/paths";
+import { getAudioPath, getImagePath } from "@/app/utils/paths";
 
 declare global {
   interface Window {
@@ -30,6 +30,8 @@ interface Track {
   artist: string;
   file: string;
   duration: number; // in seconds
+  youtubeId?: string;
+  thumbnail?: string;
 }
 
 const defaultTracks: Track[] = [
@@ -38,21 +40,27 @@ const defaultTracks: Track[] = [
     title: "Jazz Improvisation",
     artist: "Mel Jazz",
     file: "/audio/music-sample-1",
-    duration: 180
+    duration: 180,
+    youtubeId: "K6x0zEA06uk",
+    thumbnail: getImagePath("music", "track1-thumbnail.jpg")
   },
   {
     id: 2,
     title: "Soul Expressions",
     artist: "Mel Jazz",
     file: "/audio/music-sample-2",
-    duration: 210
+    duration: 210,
+    youtubeId: "AWsarzdZ1u8",
+    thumbnail: getImagePath("music", "track2-thumbnail.jpg")
   },
   {
     id: 3,
     title: "Vocal Techniques",
     artist: "Mel Jazz",
     file: "/audio/music-sample-3",
-    duration: 195
+    duration: 195,
+    youtubeId: "GidIMbCmtyk",
+    thumbnail: getImagePath("music", "track3-thumbnail.jpg")
   }
 ];
 
