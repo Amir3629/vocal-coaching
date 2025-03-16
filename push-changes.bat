@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Restore vinyl disc design to music player while keeping fixes"
+git commit -m "Simplify music player design to match original style"
 git push
 echo Done!
 pause 

@@ -2,11 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
-import { getAudioPath, getImagePath } from "@/app/utils/paths";
+import { getAudioPath } from "@/app/utils/paths";
 
 interface Track {
   id: number;
@@ -14,7 +13,6 @@ interface Track {
   artist: string;
   file: string;
   duration: number; // in seconds
-  image?: string; // Add image property for disc
 }
 
 const defaultTracks: Track[] = [
@@ -23,24 +21,21 @@ const defaultTracks: Track[] = [
     title: "Jazz Improvisation",
     artist: "Mel Jazz",
     file: "/audio/music-sample-1",
-    duration: 180,
-    image: "/images/music/vinyl-disc.png" // Add disc image
+    duration: 180
   },
   {
     id: 2,
     title: "Soul Expressions",
     artist: "Mel Jazz",
     file: "/audio/music-sample-2",
-    duration: 210,
-    image: "/images/music/vinyl-disc.png" // Add disc image
+    duration: 210
   },
   {
     id: 3,
     title: "Vocal Techniques",
     artist: "Mel Jazz",
     file: "/audio/music-sample-3",
-    duration: 195,
-    image: "/images/music/vinyl-disc.png" // Add disc image
+    duration: 195
   }
 ];
 
@@ -56,18 +51,13 @@ export default function EnhancedMusicPlayer() {
   const [volume, setVolume] = useState(0.7);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [showMiniPlayer, setShowMiniPlayer] = useState(false);
-  const [lastPlayTime, setLastPlayTime] = useState(Date.now());
-  const [isDragging, setIsDragging] = useState(false);
   
   const progressBarRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
-  const miniPlayerRef = useRef<HTMLDivElement>(null);
-  const discRef = useRef<HTMLDivElement>(null);
-
+  
   const currentTrack = tracks[currentTrackIndex];
-
+  
   // Update progress tracking
   useEffect(() => {
     if (isPlaying) {
@@ -85,28 +75,6 @@ export default function EnhancedMusicPlayer() {
       }
     };
   }, [isPlaying]);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const mainPlayerRect = document.getElementById('main-player')?.getBoundingClientRect();
-      if (mainPlayerRect && isPlaying) {
-        setShowMiniPlayer(mainPlayerRect.bottom < 0);
-        setLastPlayTime(Date.now());
-      }
-    };
-
-    const checkPlayStatus = setInterval(() => {
-      if (!isPlaying && Date.now() - lastPlayTime > 3000) {
-        setShowMiniPlayer(false);
-      }
-    }, 1000);
-
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      clearInterval(checkPlayStatus);
-    };
-  }, [isPlaying, lastPlayTime]);
 
   useEffect(() => {
     // Listen for stop events from other media players
@@ -237,314 +205,148 @@ export default function EnhancedMusicPlayer() {
     }
   }, [currentTrackIndex, currentTrack.file]);
 
-  // Disc drag functionality
-  const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!discRef.current) return;
-    setIsDragging(true);
-    document.body.classList.add('dragging-disc');
-  };
-
-  const handleDragEnd = () => {
-    setIsDragging(false);
-    document.body.classList.remove('dragging-disc');
-  };
-
-  useEffect(() => {
-    const handleMouseUp = () => {
-      if (isDragging) {
-        handleDragEnd();
-      }
-    };
-
-    document.addEventListener('mouseup', handleMouseUp);
-    return () => {
-      document.removeEventListener('mouseup', handleMouseUp);
-    };
-  }, [isDragging]);
-
   return (
-    <>
-      <motion.div id="main-player" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl mx-auto">
-        <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-4 sm:p-6">
-          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
-            {/* Vinyl Disc */}
-            <div 
-              ref={discRef}
-              className="relative w-full sm:w-48 h-48 rounded-full overflow-hidden flex-shrink-0 cursor-grab"
-              onMouseDown={handleDragStart}
-            >
-              <div className={`absolute inset-0 rounded-full overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}>
-                <div className="relative w-full h-full">
-                  <motion.div 
-                    className="absolute inset-0 bg-black rounded-full"
-                    animate={{ rotate: isPlaying ? 360 : 0 }}
-                    transition={{ 
-                      duration: 20, 
-                      ease: "linear", 
-                      repeat: Infinity,
-                      repeatType: "loop" 
-                    }}
-                  >
-                    {/* Vinyl grooves */}
-                    <div className="absolute inset-2 rounded-full border-2 border-[#333333]"></div>
-                    <div className="absolute inset-6 rounded-full border-2 border-[#333333]"></div>
-                    <div className="absolute inset-10 rounded-full border-2 border-[#333333]"></div>
-                    <div className="absolute inset-14 rounded-full border-2 border-[#333333]"></div>
-                    <div className="absolute inset-18 rounded-full border-2 border-[#333333]"></div>
-                    
-                    {/* Vinyl label */}
-                    <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-[#C8A97E]/80 flex items-center justify-center">
-                      <div className="text-black text-xs font-bold text-center">
-                        <div>MELANIE</div>
-                        <div>JAZZ</div>
-                      </div>
-                    </div>
-                  </motion.div>
-                  
-                  {/* Center hole and play button */}
-                  <div className="absolute inset-0 flex items-center justify-center z-10">
-                    <div className="w-16 h-16 rounded-full bg-[#C8A97E] flex items-center justify-center shadow-lg">
-                      <motion.button
-                        className="w-14 h-14 rounded-full bg-black flex items-center justify-center"
-                        whileHover={{ scale: 1.1 }}
-                        whileTap={{ scale: 0.95 }}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handlePlay();
-                        }}
-                      >
-                        {isLoading ? (
-                          <div className="w-5 h-5 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
-                        ) : isPlaying ? (
-                          <Pause className="w-6 h-6 text-[#C8A97E]" />
-                        ) : (
-                          <Play className="w-6 h-6 text-[#C8A97E] ml-1" />
-                        )}
-                      </motion.button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex-1">
-              <h3 className="text-xl sm:text-2xl font-light text-white mb-2">{currentTrack.title}</h3>
-              <p className="text-[#C8A97E] text-sm mb-4">{currentTrack.artist}</p>
-              
-              <div ref={progressBarRef} className="h-2 bg-gray-700 rounded-full mb-2 cursor-pointer" onClick={handleProgressBarClick}>
-                <div 
-                  className="h-full bg-[#C8A97E] rounded-full"
-                  style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
-                ></div>
-              </div>
-              
-              <div className="flex justify-between text-xs text-gray-400 mb-6">
-                <span>{formatTime(currentTime)}</span>
-                <span>{formatTime(currentTrack.duration)}</span>
-              </div>
-              
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handlePrevTrack}
-                    className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-                  >
-                    <SkipBack className="w-5 h-5" />
-                  </motion.button>
-                  
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleNextTrack}
-                    className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-                  >
-                    <SkipForward className="w-5 h-5" />
-                  </motion.button>
-                </div>
-                
-                <div className="flex items-center gap-2">
-                  <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={toggleMute}
-                    className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-                  >
-                    {isMuted ? (
-                      <VolumeX className="w-5 h-5" />
-                    ) : (
-                      <Volume2 className="w-5 h-5" />
-                    )}
-                  </motion.button>
-                  
-                  <input 
-                    type="range"
-                    min="0"
-                    max="1"
-                    step="0.01"
-                    value={isMuted ? 0 : volume}
-                    onChange={handleVolumeChange}
-                    className="w-24 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#C8A97E]"
-                  />
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8">
-            {tracks.map((track) => (
-              <motion.div
-                key={track.id}
-                className={`relative rounded-lg overflow-hidden cursor-pointer transition-all duration-300 p-4 ${
-                  track.id === tracks[currentTrackIndex].id 
-                  ? "bg-[#C8A97E]/20 ring-2 ring-[#C8A97E]" 
-                  : "bg-black/30 hover:bg-[#C8A97E]/10"
-                }`}
-                onClick={() => {
-                  setCurrentTrackIndex(tracks.indexOf(track));
-                  if (!isPlaying) setIsPlaying(true);
-                }}
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-              >
-                <div className="flex items-center">
-                  <div className="w-10 h-10 rounded-full bg-[#C8A97E]/30 flex items-center justify-center mr-3">
-                    <Music className="w-5 h-5 text-[#C8A97E]" />
-                  </div>
-                  <div>
-                    <p className="text-white text-sm font-medium">{track.title}</p>
-                    <p className="text-gray-400 text-xs">{track.artist}</p>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-
-          {error && (
-            <div className="mt-4 p-3 bg-red-500/20 text-red-200 rounded-md text-sm">
-              {error}
-              <button 
-                className="ml-2 underline"
-                onClick={() => setError(null)}
-              >
-                Dismiss
-              </button>
-            </div>
-          )}
-        </Card>
-      </motion.div>
-                
-      {/* Floating Mini Player */}
-      <AnimatePresence mode="wait">
-        {showMiniPlayer && (
-          <motion.div
-            ref={miniPlayerRef}
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 100 }}
-            transition={{
-              type: "spring", 
-              stiffness: 50,
-              damping: 15,
-              mass: 1.2
+    <div className="bg-[#0A0A0A] rounded-lg p-6 max-w-md mx-auto">
+      <div className="flex flex-col items-center mb-6">
+        <h3 className="text-lg font-semibold text-white mb-1 text-center">{currentTrack.title}</h3>
+        <p className="text-sm text-[#C8A97E] mb-6 text-center">{currentTrack.artist}</p>
+        
+        {/* Vinyl Disc */}
+        <div className="relative w-32 h-32 mb-6">
+          {/* Outer ring */}
+          <div className="absolute inset-0 rounded-full border-4 border-[#333333]"></div>
+          
+          {/* Inner disc */}
+          <motion.div 
+            className="absolute inset-[4px] rounded-full bg-[#111] border border-[#222]"
+            animate={{ rotate: isPlaying ? 360 : 0 }}
+            transition={{ 
+              duration: 20, 
+              ease: "linear", 
+              repeat: Infinity,
+              repeatType: "loop" 
             }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-md"
           >
-            <Card className="bg-[#1a1a1a]/90 backdrop-blur-lg border-[#C8A97E]/20 p-3 shadow-2xl">
-              <div className="flex items-center gap-3">
-                <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
-                  <motion.div 
-                    className="absolute inset-0 bg-black rounded-full"
-                    animate={{ rotate: isPlaying ? 360 : 0 }}
-                    transition={{ 
-                      duration: 20, 
-                      ease: "linear", 
-                      repeat: Infinity,
-                      repeatType: "loop" 
-                    }}
-                  >
-                    {/* Vinyl grooves */}
-                    <div className="absolute inset-1 rounded-full border border-[#333333]"></div>
-                    <div className="absolute inset-2 rounded-full border border-[#333333]"></div>
-                    <div className="absolute inset-3 rounded-full border border-[#333333]"></div>
-                    <div className="absolute inset-4 rounded-full border border-[#333333]"></div>
-                    
-                    {/* Vinyl label */}
-                    <div className="absolute inset-0 m-auto w-6 h-6 rounded-full bg-[#C8A97E]/80"></div>
-                  </motion.div>
-                </div>
-
-                <div className="flex-1 min-w-0">
-                  <h4 className="text-sm font-medium text-white truncate">
-                    {currentTrack.title}
-                  </h4>
-                  <p className="text-xs text-[#C8A97E] truncate">
-                    {currentTrack.artist}
-                  </p>
-                </div>
-
-                <div className="flex items-center gap-2">
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Button
-                      onClick={handlePrevTrack}
-                      size="sm"
-                      variant="outline"
-                      className="text-white hover:text-[#C8A97E]"
-                    >
-                      <SkipBack className="h-4 w-4" />
-                    </Button>
-                  </motion.div>
-
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Button
-                      onClick={handlePlay}
-                      size="sm"
-                      variant="outline"
-                      className="text-white hover:text-[#C8A97E]"
-                    >
-                      {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-                    </Button>
-                  </motion.div>
-
-                  <motion.div
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ duration: 0.3 }}
-                  >
-                    <Button
-                      onClick={handleNextTrack}
-                      size="sm"
-                      variant="outline"
-                      className="text-white hover:text-[#C8A97E]"
-                    >
-                      <SkipForward className="h-4 w-4" />
-                    </Button>
-                  </motion.div>
-                </div>
+            {/* Grooves */}
+            <div className="absolute inset-[8px] rounded-full border border-[#222]"></div>
+            <div className="absolute inset-[16px] rounded-full border border-[#222]"></div>
+            <div className="absolute inset-[24px] rounded-full border border-[#222]"></div>
+            <div className="absolute inset-[32px] rounded-full border border-[#222]"></div>
+            
+            {/* Label */}
+            <div className="absolute inset-0 m-auto w-16 h-16 rounded-full bg-[#C8A97E]">
+              <div className="absolute inset-0 flex items-center justify-center">
+                <motion.button
+                  className="w-12 h-12 rounded-full bg-black flex items-center justify-center"
+                  whileHover={{ scale: 1.1 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handlePlay}
+                >
+                  {isLoading ? (
+                    <div className="w-4 h-4 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
+                  ) : isPlaying ? (
+                    <Pause className="w-5 h-5 text-[#C8A97E]" />
+                  ) : (
+                    <Play className="w-5 h-5 text-[#C8A97E] ml-0.5" />
+                  )}
+                </motion.button>
               </div>
-
-              {/* Progress bar with smoother animation */}
-              <div className="mt-2 relative h-1 bg-gray-800 rounded-full overflow-hidden">
-                <motion.div
-                  className="absolute h-full bg-[#C8A97E] rounded-full"
-                  style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
-                  transition={{ duration: 0.3, ease: "linear" }}
-                />
-              </div>
-            </Card>
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
-
+        </div>
+      </div>
+      
+      {/* Progress Bar */}
+      <div 
+        ref={progressBarRef}
+        className="h-1 bg-[#333] rounded-full mb-2 cursor-pointer"
+        onClick={handleProgressBarClick}
+      >
+        <div 
+          className="h-full bg-[#C8A97E] rounded-full"
+          style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
+        ></div>
+      </div>
+      
+      <div className="flex justify-between text-xs text-gray-500 mb-6">
+        <span>{formatTime(currentTime)}</span>
+        <span>{formatTime(currentTrack.duration)}</span>
+      </div>
+      
+      {/* Controls */}
+      <div className="flex justify-center items-center gap-4 mb-8">
+        <button 
+          className="text-white hover:text-[#C8A97E] transition-colors"
+          onClick={handlePrevTrack}
+        >
+          <SkipBack size={20} />
+        </button>
+        
+        <button 
+          className="text-white hover:text-[#C8A97E] transition-colors"
+          onClick={handleNextTrack}
+        >
+          <SkipForward size={20} />
+        </button>
+        
+        <div className="flex items-center gap-2 ml-4">
+          <button 
+            className="text-white hover:text-[#C8A97E] transition-colors"
+            onClick={toggleMute}
+          >
+            {isMuted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          </button>
+          
+          <input 
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            value={isMuted ? 0 : volume}
+            onChange={handleVolumeChange}
+            className="w-16 h-1 bg-[#333] rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-2 [&::-webkit-slider-thumb]:h-2 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#C8A97E]"
+          />
+        </div>
+      </div>
+      
+      {/* Track List */}
+      <div className="space-y-2">
+        {tracks.map((track) => (
+          <div
+            key={track.id}
+            className={`flex items-center p-3 rounded-lg cursor-pointer transition-all duration-200 ${
+              track.id === currentTrack.id 
+              ? "bg-[#C8A97E]/20 border border-[#C8A97E]/40" 
+              : "bg-[#111] hover:bg-[#222]"
+            }`}
+            onClick={() => {
+              setCurrentTrackIndex(tracks.indexOf(track));
+              if (!isPlaying) setIsPlaying(true);
+            }}
+          >
+            <div className="w-8 h-8 rounded-full bg-[#222] flex items-center justify-center mr-3">
+              <Music className="w-4 h-4 text-[#C8A97E]" />
+            </div>
+            <div>
+              <p className="text-white text-sm font-medium">{track.title}</p>
+              <p className="text-gray-500 text-xs">{track.artist}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      {error && (
+        <div className="mt-4 p-3 bg-red-500/20 text-red-200 rounded-md text-sm">
+          {error}
+          <button 
+            className="ml-2 underline"
+            onClick={() => setError(null)}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+      
       {/* Hidden audio element */}
       <audio
         ref={audioRef}
@@ -552,6 +354,6 @@ export default function EnhancedMusicPlayer() {
         onError={handleError}
         className="hidden"
       />
-    </>
+    </div>
   );
 } 
