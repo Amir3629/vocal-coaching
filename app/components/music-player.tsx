@@ -342,20 +342,33 @@ export default function MusicPlayer() {
     }
   }, [currentlyPlaying, isPlaying])
 
-  const handlePlayPause = () => {
-    if (isPlaying) {
-      audioRef.current?.pause()
-      setIsPlaying(false)
-      setCurrentlyPlaying(null)
+  const handlePlayPause = (trackIndex: number) => {
+    if (currentSongIndex === trackIndex && isPlaying) {
+      audioRef.current?.pause();
+      setIsPlaying(false);
     } else {
-      if (currentlyPlaying === 'video') {
-        stopAllMedia()
+      if (currentSongIndex !== trackIndex) {
+        setCurrentSongIndex(trackIndex);
+        // Stop all discs from spinning when changing tracks
+        setIsPlaying(false);
+        
+        // Small timeout to ensure the audio element has updated its src
+        setTimeout(() => {
+          if (audioRef.current) {
+            audioRef.current.play().catch(error => {
+              console.error("Error playing audio:", error);
+            });
+            setIsPlaying(true);
+          }
+        }, 50);
+      } else {
+        audioRef.current?.play().catch(error => {
+          console.error("Error playing audio:", error);
+        });
+        setIsPlaying(true);
       }
-      audioRef.current?.play()
-      setIsPlaying(true)
-      setCurrentlyPlaying('music')
     }
-  }
+  };
   
   // Make the disc only clickable in the center play button
   const handleDiscClick = (e: React.MouseEvent<HTMLDivElement>) => {
@@ -367,7 +380,7 @@ export default function MusicPlayer() {
   // Handler specifically for the play button
   const handlePlayButtonClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    handlePlayPause();
+    handlePlayPause(currentSongIndex);
   }
 
   const playNextSong = () => {
@@ -668,7 +681,7 @@ export default function MusicPlayer() {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={handlePlayButtonClick}
+                          onClick={() => handlePlayPause(songIndex)}
                           className="w-16 h-16 flex items-center justify-center rounded-full bg-black play-button-area"
                         >
                           {isPlaying ? <Pause size={32} className="text-[#C8A97E]" /> : <Play size={32} className="text-[#C8A97E] ml-1" />}
@@ -797,7 +810,7 @@ export default function MusicPlayer() {
               
               {/* Play/Pause button */}
               <motion.button
-                onClick={handlePlayButtonClick}
+                onClick={() => handlePlayPause(currentSongIndex)}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[#C8A97E]/20 text-[#C8A97E]"

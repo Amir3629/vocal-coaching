@@ -192,14 +192,14 @@ export default function GallerySection() {
               >
                 <button
                   onClick={handleClose}
-                  className="absolute top-2 right-2 bg-black/70 hover:bg-black/90 text-white p-2 rounded-full transition-all duration-300 z-30"
+                  className="absolute top-2 right-2 text-white p-2 rounded-full transition-all duration-300 z-30"
                   aria-label="Close image"
                 >
                   <X size={20} />
                 </button>
                 
                 <button 
-                  className="absolute left-[-70px] top-1/2 transform -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-all duration-300 z-30"
+                  className="absolute left-[-70px] top-1/2 transform -translate-y-1/2 text-white p-3 rounded-full transition-all duration-300 z-30"
                   onClick={(e) => {
                     e.stopPropagation();
                     handlePrev();
@@ -232,7 +232,7 @@ export default function GallerySection() {
                 </div>
                 
                 <button 
-                  className="absolute right-[-70px] top-1/2 transform -translate-y-1/2 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-all duration-300 z-30"
+                  className="absolute right-[-70px] top-1/2 transform -translate-y-1/2 text-white p-3 rounded-full transition-all duration-300 z-30"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleNext();
