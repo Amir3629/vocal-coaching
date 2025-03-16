@@ -179,7 +179,7 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Music Preview Section */}
+      {/* Music Player Section */}
       <section className="py-20 px-4 bg-[#040202]">
         <div className="max-w-7xl mx-auto">
           <motion.div 
@@ -189,8 +189,6 @@ export default function Home() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <h2 className="section-heading mb-4">Meine Musik</h2>
-            <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80 mb-12"></div>
             <EnhancedMusicPlayer />
           </motion.div>
         </div>
