@@ -172,80 +172,79 @@ export default function GallerySection() {
         </div>
 
         {/* Image Modal */}
-        {selectedImage !== null && (
-          <motion.div 
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/90"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.5, ease: "easeInOut" }}
-            onClick={handleClose}
-          >
-            <motion.button 
-              className="absolute top-4 right-4 text-white/80 hover:text-white z-10"
-              onClick={(e) => {
-                e.stopPropagation();
-                handleClose();
-              }}
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.2 }}
+        <AnimatePresence>
+          {selectedImage && (
+            <motion.div
+              className="fixed inset-0 bg-black/90 z-50 flex items-center justify-center"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
+              onClick={handleClose}
             >
-              <X className="w-8 h-8" />
-            </motion.button>
-            
-            <motion.div 
-              className="relative w-full max-w-5xl max-h-[80vh] flex items-center justify-center"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button 
-                className="absolute left-4 text-white/80 hover:text-white z-10 transition-all duration-300 hover:scale-110"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handlePrev();
-                }}
-              >
-                <ChevronLeft className="w-10 h-10" />
-              </button>
-              
-              <div 
-                className="relative w-full h-full flex items-center justify-center"
+              <motion.div
+                className="relative max-w-4xl max-h-[90vh] w-full"
+                initial={{ scale: 0.9, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.9, opacity: 0 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <motion.div
-                  key={selectedImage.src}
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  exit={{ opacity: 0, x: -20 }}
-                  transition={{ duration: 0.3 }}
-                  className="w-full h-full flex items-center justify-center"
+                <button
+                  onClick={handleClose}
+                  className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white p-2 rounded-full transition-all duration-300 z-30"
+                  aria-label="Close image"
                 >
-                  <Image
-                    src={selectedImage.src}
-                    alt={selectedImage.alt}
-                    width={1200}
-                    height={800}
-                    className="object-contain max-h-[80vh] rounded-lg shadow-2xl transition-all duration-500"
-                  />
-                </motion.div>
-              </div>
-              
-              <button 
-                className="absolute right-4 text-white/80 hover:text-white z-10 transition-all duration-300 hover:scale-110"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  handleNext();
-                }}
-              >
-                <ChevronRight className="w-10 h-10" />
-              </button>
+                  <X size={24} />
+                </button>
+                
+                <button 
+                  className="absolute left-[-60px] top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 z-30"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handlePrev();
+                  }}
+                  aria-label="Previous image"
+                >
+                  <ChevronLeft size={30} />
+                </button>
+                
+                <div 
+                  className="relative w-full h-full flex items-center justify-center"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <motion.div
+                    key={selectedImage.src}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    transition={{ duration: 0.3 }}
+                    className="w-full h-full flex items-center justify-center"
+                  >
+                    <Image
+                      src={selectedImage.src}
+                      alt={selectedImage.alt}
+                      width={1200}
+                      height={800}
+                      className="object-contain max-h-[80vh] rounded-lg shadow-2xl transition-all duration-500"
+                    />
+                  </motion.div>
+                </div>
+                
+                <button 
+                  className="absolute right-[-60px] top-1/2 transform -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white p-3 rounded-full transition-all duration-300 z-30"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleNext();
+                  }}
+                  aria-label="Next image"
+                >
+                  <ChevronRight size={30} />
+                </button>
+              </motion.div>
             </motion.div>
-          </motion.div>
-        )}
+          )}
+        </AnimatePresence>
       </div>
     </section>
   )

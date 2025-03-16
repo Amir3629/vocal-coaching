@@ -451,19 +451,35 @@ export default function MusicPlayer() {
     
     const dragDistance = e.clientX - dragStartX;
     
-    // Apply a stronger damping factor for smoother movement
-    const dampingFactor = 0.8;
+    // Apply a stronger damping factor for more responsive movement
+    const dampingFactor = 1.2;
     const dampedDragDistance = dragDistance * dampingFactor;
     
     setDragOffset(dampedDragDistance);
     
-    // If drag distance exceeds a threshold, update the drag start position
-    // This allows for continuous dragging in the same direction
-    const infiniteDragThreshold = 100;
-    if (Math.abs(dragDistance) > infiniteDragThreshold) {
-      // Reset drag start position but maintain the direction of movement
-      setDragStartX(e.clientX - (dragDistance > 0 ? infiniteDragThreshold / 4 : -infiniteDragThreshold / 4));
-      setDragOffset(dragDistance > 0 ? infiniteDragThreshold / 4 : -infiniteDragThreshold / 4);
+    // Make disc switching more responsive by reducing the threshold
+    const dragThreshold = 80; // Reduced threshold for easier disc switching
+    
+    if (Math.abs(dragDistance) > dragThreshold) {
+      // Determine direction of drag
+      const direction = dragDistance > 0 ? -1 : 1; // -1 for right (previous), 1 for left (next)
+      
+      // Calculate new index with proper wrapping
+      const newIndex = (currentSongIndex + direction + songs.length) % songs.length;
+      
+      // Update current song index and reset drag
+      setCurrentSongIndex(newIndex);
+      setActiveDiscIndex(newIndex);
+      setDragStartX(e.clientX);
+      setDragOffset(0);
+      
+      // Set transitioning state to true to keep discs visible during transition
+      setIsTransitioningDiscs(true);
+      
+      // After transition is complete, set transitioning to false
+      setTimeout(() => {
+        setIsTransitioningDiscs(false);
+      }, 300);
     }
   };
 
@@ -515,13 +531,11 @@ export default function MusicPlayer() {
       }
     }
     
-    // Use floating point math for smoother transitions
-    // Increase spacing between discs for more overlap
-    const basePosition = distance * 160; // Reduced from 200px for more overlap
+    // Increase spacing between discs for better visibility
+    const basePosition = distance * 200; // Increased from 160px for more separation
     
     // Apply stronger easing function for smoother movement with fast drags
-    // This reduces the impact of rapid mouse movements
-    const easedDragOffset = dragOffset * (1 - Math.abs(dragOffset) / 4000);
+    const easedDragOffset = dragOffset * (1 - Math.abs(dragOffset) / 2000);
     
     return basePosition + easedDragOffset;
   };
@@ -530,16 +544,16 @@ export default function MusicPlayer() {
   const getDiscScale = (position: number) => {
     const absPosition = Math.abs(position);
     // Center disc is full size, others get progressively smaller
-    // Improved scale curve for more dramatic effect
-    return Math.max(0.3, 1 - (absPosition / 400) * 0.7);
+    // More dramatic scale curve for better visual effect
+    return Math.max(0.2, 1 - (absPosition / 300) * 0.8);
   };
 
   // Calculate disc opacity based on its position from center
   const getDiscOpacity = (position: number) => {
     const absPosition = Math.abs(position);
     // Center disc is fully opaque, others get progressively more transparent
-    // Improved opacity curve for more dramatic effect
-    return Math.max(0.2, 1 - (absPosition / 250) * 0.8);
+    // More dramatic opacity curve for better visual effect
+    return Math.max(0.1, 1 - (absPosition / 200) * 0.9);
   };
 
   // Calculate disc z-index based on its position from center
