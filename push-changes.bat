@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Fix music player: Ensure only current disc spins by stopping all animations when changing tracks"
+git commit -m "Remove gallery close button: Allow closing images by clicking anywhere on the background"
 git push
 echo Done!
 pause 

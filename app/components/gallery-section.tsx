@@ -179,7 +179,7 @@ export default function GallerySection() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
               onClick={handleClose}
             >
               <motion.div
@@ -187,17 +187,9 @@ export default function GallerySection() {
                 initial={{ scale: 0.9, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.9, opacity: 0 }}
-                transition={{ duration: 0.3, ease: "easeInOut" }}
+                transition={{ duration: 0.5, ease: "easeInOut" }}
                 onClick={(e) => e.stopPropagation()}
               >
-                <button
-                  onClick={handleClose}
-                  className="absolute top-[-30px] right-[-30px] text-white p-2 rounded-full transition-all duration-300 z-30"
-                  aria-label="Close image"
-                >
-                  <X size={24} />
-                </button>
-                
                 <button 
                   className="absolute left-[-70px] top-1/2 transform -translate-y-1/2 text-white p-3 rounded-full transition-all duration-300 z-30"
                   onClick={(e) => {
@@ -211,14 +203,13 @@ export default function GallerySection() {
                 
                 <div 
                   className="relative w-full h-full flex items-center justify-center"
-                  onClick={(e) => e.stopPropagation()}
                 >
                   <motion.div
                     key={selectedImage.src}
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     exit={{ opacity: 0, x: -20 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.5 }}
                     className="w-full h-full flex items-center justify-center"
                   >
                     <Image
