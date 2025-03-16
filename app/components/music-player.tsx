@@ -373,6 +373,11 @@ export default function MusicPlayer() {
       handlePlayPause()
     }
   }
+  
+  // Handler specifically for the play button
+  const handlePlayButtonClick = () => {
+    handlePlayPause()
+  }
 
   const playNextSong = () => {
     if (!playerReady || isTransitioning) return;
@@ -649,7 +654,7 @@ export default function MusicPlayer() {
                         <motion.button
                           whileHover={{ scale: 1.1 }}
                           whileTap={{ scale: 0.95 }}
-                          onClick={handleDiscClick}
+                          onClick={handlePlayButtonClick}
                           className="w-16 h-16 flex items-center justify-center rounded-full bg-black"
                         >
                           {isPlaying ? <Pause size={32} className="text-[#C8A97E]" /> : <Play size={32} className="text-[#C8A97E] ml-1" />}
@@ -778,7 +783,7 @@ export default function MusicPlayer() {
               
               {/* Play/Pause button */}
               <motion.button
-                onClick={handleDiscClick}
+                onClick={handlePlayButtonClick}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-[#C8A97E]/20 text-[#C8A97E]"
