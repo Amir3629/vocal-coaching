@@ -1,12 +1,11 @@
 "use client"
 
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
-import { ChevronDown } from "lucide-react"
-import StatsSection from './stats-section'
+import { Trophy, Users, Music } from "lucide-react"
 import { useTranslation } from 'react-i18next'
-import { Trophy, Users, Music, Star } from "lucide-react"
+import StatsSection from './stats-section'
 
 export default function AboutSection() {
   const [isExpanded, setIsExpanded] = useState(false)
@@ -84,6 +83,7 @@ export default function AboutSection() {
                 sizes="(max-width: 768px) 90vw, 45vw"
                 priority
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent"></div>
             </motion.div>
           </div>
           
@@ -94,7 +94,7 @@ export default function AboutSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.8 }}
             >
-              <h2 className="section-heading mb-6">{t('about.title', 'Über mich')}</h2>
+              <h2 className="text-3xl font-bold text-white mb-6">{t('about.title', 'Über mich')}</h2>
               <div className="w-12 h-0.5 bg-[#C8A97E] mb-6"></div>
               
               <p className="text-gray-300 mb-6">
