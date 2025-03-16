@@ -118,20 +118,22 @@ export default function EnhancedMusicPlayer() {
 
   // Initialize visible discs
   useEffect(() => {
-    // Always show all discs for better performance
+    // Always show all discs for better performance and visibility
     const indices = [];
     for (let i = 0; i < tracks.length; i++) {
       indices.push(i);
     }
     setVisibleDiscs(indices);
     
-    // Initialize positions
+    // Initialize positions with more spacing for better visibility
     const positions: {[key: number]: number} = {};
     indices.forEach(index => {
       // Calculate position based on distance from current track
       const distance = index - currentTrackIndex;
+      // Use modulo to handle circular wrapping properly
       const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
-      positions[index] = wrappedDistance * 200;
+      // Increase spacing between discs (250px instead of 200px)
+      positions[index] = wrappedDistance * 250;
     });
     setDiscPositions(positions);
   }, [currentTrackIndex, tracks.length]);
@@ -257,13 +259,17 @@ export default function EnhancedMusicPlayer() {
     const delta = e.clientX - dragStartX;
     setDragDelta(delta);
     
+    // Force show background discs when dragging
+    setShowBackDiscs(true);
+    
     // Update all disc positions based on drag delta
     const updatedPositions: {[key: number]: number} = {};
     visibleDiscs.forEach(index => {
       // Calculate position based on distance from current track
       const distance = index - currentTrackIndex;
       const wrappedDistance = ((distance + tracks.length / 2) % tracks.length) - tracks.length / 2;
-      const basePosition = wrappedDistance * 200;
+      // Use the same spacing as in the initialization (250px)
+      const basePosition = wrappedDistance * 250;
       updatedPositions[index] = basePosition + delta;
     });
     
@@ -330,10 +336,10 @@ export default function EnhancedMusicPlayer() {
         <h2 className="text-3xl font-bold text-white mb-6">Meine Musik</h2>
         <div className="w-16 h-1 bg-[#C8A97E] mb-12"></div>
         
-        {/* Disc Carousel Container - Moved up to show title */}
-        <div className="relative w-[500px] h-96 mx-auto mb-32 overflow-visible">
+        {/* Disc Carousel Container */}
+        <div className="relative w-[500px] h-96 mx-auto mb-8 overflow-visible">
           {/* Background Discs - Visible when dragging or when showBackDiscs is true */}
-          <AnimatePresence>
+          <AnimatePresence mode="wait">
             {(isDragging || showBackDiscs) && visibleDiscs.map(index => {
               if (index === currentTrackIndex) return null;
               
@@ -409,7 +415,7 @@ export default function EnhancedMusicPlayer() {
             }}
             onClick={handleDiscClick}
             onMouseDown={handleDiscMouseDown}
-            style={{ boxShadow: '0 20px 50px rgba(0, 0, 0, 0.5)' }}
+            style={{ boxShadow: '0 25px 60px rgba(0, 0, 0, 0.7)' }}
           >
             {/* Main disc */}
             <div className="absolute inset-0 rounded-full overflow-hidden shadow-2xl">
@@ -492,7 +498,7 @@ export default function EnhancedMusicPlayer() {
         </div>
         
         {/* Track title and artist - BELOW THE DISC */}
-        <div className="text-center mt-4">
+        <div className="text-center mt-4 mb-8">
           <h3 className="text-xl font-medium text-white mb-1">{currentTrack.title}</h3>
           <p className="text-sm text-[#C8A97E]">{currentTrack.artist}</p>
         </div>
