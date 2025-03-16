@@ -16,7 +16,7 @@ import Certifications from "@/app/components/certifications"
 import GallerySection from "@/app/components/gallery-section"
 import MusicNotes from "@/app/components/music-notes-animation"
 import ContactForm from "@/app/components/contact-form"
-import BookingModal from "@/app/components/booking-modal"
+import BookingForm from '@/app/components/booking-form'
 import Collaborations from "@/app/components/collaborations"
 import ServiceCard from "@/app/components/service-card"
 import ServicesSection from "./components/services-section"
@@ -413,7 +413,7 @@ export default function Home() {
         <ContactForm />
       </section>
 
-      <BookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
+      <BookingForm isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useLanguage } from './language-switcher'
 import { useTranslation } from 'react-i18next'
@@ -13,7 +13,13 @@ type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-ges
 // Form step type
 type FormStep = 'service' | 'details' | 'confirm'
 
-export default function BookingForm() {
+// Props interface
+interface BookingFormProps {
+  isOpen?: boolean;
+  onClose?: () => void;
+}
+
+export default function BookingForm({ isOpen: externalIsOpen, onClose }: BookingFormProps) {
   const { currentLang } = useLanguage()
   const { t } = useTranslation()
   
@@ -23,6 +29,13 @@ export default function BookingForm() {
   // State for current step and service type
   const [currentStep, setCurrentStep] = useState<FormStep>('service')
   const [serviceType, setServiceType] = useState<ServiceType>(null)
+  
+  // Handle external isOpen prop
+  useEffect(() => {
+    if (externalIsOpen !== undefined) {
+      setIsOpen(externalIsOpen);
+    }
+  }, [externalIsOpen]);
   
   // Handle service selection
   const handleServiceSelect = (service: ServiceType) => {
@@ -41,6 +54,10 @@ export default function BookingForm() {
   // Close booking form
   const closeBookingForm = () => {
     setIsOpen(false)
+    // Call external onClose if provided
+    if (onClose) {
+      onClose();
+    }
   }
   
   return (
