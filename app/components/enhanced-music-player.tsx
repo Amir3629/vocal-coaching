@@ -2,10 +2,11 @@
 
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { Play, Pause, SkipBack, SkipForward, Volume2, VolumeX, Music } from "lucide-react";
 import { Button } from "@/app/components/ui/button";
 import { Card } from "@/app/components/ui/card";
-import { getAudioPath } from "@/app/utils/paths";
+import { getAudioPath, getImagePath } from "@/app/utils/paths";
 
 interface Track {
   id: number;
@@ -13,6 +14,7 @@ interface Track {
   artist: string;
   file: string;
   duration: number; // in seconds
+  image?: string; // Add image property for disc
 }
 
 const defaultTracks: Track[] = [
@@ -21,21 +23,24 @@ const defaultTracks: Track[] = [
     title: "Jazz Improvisation",
     artist: "Mel Jazz",
     file: "/audio/music-sample-1",
-    duration: 180
+    duration: 180,
+    image: "/images/music/vinyl-disc.png" // Add disc image
   },
   {
     id: 2,
     title: "Soul Expressions",
     artist: "Mel Jazz",
     file: "/audio/music-sample-2",
-    duration: 210
+    duration: 210,
+    image: "/images/music/vinyl-disc.png" // Add disc image
   },
   {
     id: 3,
     title: "Vocal Techniques",
     artist: "Mel Jazz",
     file: "/audio/music-sample-3",
-    duration: 195
+    duration: 195,
+    image: "/images/music/vinyl-disc.png" // Add disc image
   }
 ];
 
@@ -53,11 +58,13 @@ export default function EnhancedMusicPlayer() {
   const [error, setError] = useState<string | null>(null);
   const [showMiniPlayer, setShowMiniPlayer] = useState(false);
   const [lastPlayTime, setLastPlayTime] = useState(Date.now());
+  const [isDragging, setIsDragging] = useState(false);
   
   const progressBarRef = useRef<HTMLDivElement>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const miniPlayerRef = useRef<HTMLDivElement>(null);
+  const discRef = useRef<HTMLDivElement>(null);
 
   const currentTrack = tracks[currentTrackIndex];
 
@@ -230,113 +237,162 @@ export default function EnhancedMusicPlayer() {
     }
   }, [currentTrackIndex, currentTrack.file]);
 
+  // Disc drag functionality
+  const handleDragStart = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!discRef.current) return;
+    setIsDragging(true);
+    document.body.classList.add('dragging-disc');
+  };
+
+  const handleDragEnd = () => {
+    setIsDragging(false);
+    document.body.classList.remove('dragging-disc');
+  };
+
+  useEffect(() => {
+    const handleMouseUp = () => {
+      if (isDragging) {
+        handleDragEnd();
+      }
+    };
+
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDragging]);
+
   return (
     <>
       <motion.div id="main-player" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full max-w-4xl mx-auto">
         <Card className="bg-[#080505]/80 backdrop-blur-sm border-[#C8A97E]/20 p-4 sm:p-6">
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 mb-6">
-            <div className="relative w-full sm:w-24 h-24 rounded-lg overflow-hidden bg-[#C8A97E]/20 flex items-center justify-center">
-              <Music className="w-12 h-12 text-[#C8A97E]" />
+            {/* Vinyl Disc */}
+            <div 
+              ref={discRef}
+              className="relative w-full sm:w-48 h-48 rounded-full overflow-hidden flex-shrink-0 cursor-grab"
+              onMouseDown={handleDragStart}
+            >
+              <div className={`absolute inset-0 rounded-full overflow-hidden ${isDragging ? 'cursor-grabbing' : 'cursor-grab'}`}>
+                <div className="relative w-full h-full">
+                  <motion.div 
+                    className="absolute inset-0 bg-black rounded-full"
+                    animate={{ rotate: isPlaying ? 360 : 0 }}
+                    transition={{ 
+                      duration: 20, 
+                      ease: "linear", 
+                      repeat: Infinity,
+                      repeatType: "loop" 
+                    }}
+                  >
+                    {/* Vinyl grooves */}
+                    <div className="absolute inset-2 rounded-full border-2 border-[#333333]"></div>
+                    <div className="absolute inset-6 rounded-full border-2 border-[#333333]"></div>
+                    <div className="absolute inset-10 rounded-full border-2 border-[#333333]"></div>
+                    <div className="absolute inset-14 rounded-full border-2 border-[#333333]"></div>
+                    <div className="absolute inset-18 rounded-full border-2 border-[#333333]"></div>
+                    
+                    {/* Vinyl label */}
+                    <div className="absolute inset-0 m-auto w-24 h-24 rounded-full bg-[#C8A97E]/80 flex items-center justify-center">
+                      <div className="text-black text-xs font-bold text-center">
+                        <div>MELANIE</div>
+                        <div>JAZZ</div>
+                      </div>
+                    </div>
+                  </motion.div>
+                  
+                  {/* Center hole and play button */}
+                  <div className="absolute inset-0 flex items-center justify-center z-10">
+                    <div className="w-16 h-16 rounded-full bg-[#C8A97E] flex items-center justify-center shadow-lg">
+                      <motion.button
+                        className="w-14 h-14 rounded-full bg-black flex items-center justify-center"
+                        whileHover={{ scale: 1.1 }}
+                        whileTap={{ scale: 0.95 }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handlePlay();
+                        }}
+                      >
+                        {isLoading ? (
+                          <div className="w-5 h-5 border-2 border-[#C8A97E] border-t-transparent rounded-full animate-spin"></div>
+                        ) : isPlaying ? (
+                          <Pause className="w-6 h-6 text-[#C8A97E]" />
+                        ) : (
+                          <Play className="w-6 h-6 text-[#C8A97E] ml-1" />
+                        )}
+                      </motion.button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
 
             <div className="flex-1">
               <h3 className="text-xl sm:text-2xl font-light text-white mb-2">{currentTrack.title}</h3>
-              <p className="text-[#C8A97E] text-sm mb-1">{currentTrack.artist}</p>
+              <p className="text-[#C8A97E] text-sm mb-4">{currentTrack.artist}</p>
+              
+              <div ref={progressBarRef} className="h-2 bg-gray-700 rounded-full mb-2 cursor-pointer" onClick={handleProgressBarClick}>
+                <div 
+                  className="h-full bg-[#C8A97E] rounded-full"
+                  style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
+                ></div>
+              </div>
+              
+              <div className="flex justify-between text-xs text-gray-400 mb-6">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(currentTrack.duration)}</span>
+              </div>
+              
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handlePrevTrack}
+                    className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+                  >
+                    <SkipBack className="w-5 h-5" />
+                  </motion.button>
+                  
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={handleNextTrack}
+                    className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+                  >
+                    <SkipForward className="w-5 h-5" />
+                  </motion.button>
+                </div>
+                
+                <div className="flex items-center gap-2">
+                  <motion.button
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={toggleMute}
+                    className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
+                  >
+                    {isMuted ? (
+                      <VolumeX className="w-5 h-5" />
+                    ) : (
+                      <Volume2 className="w-5 h-5" />
+                    )}
+                  </motion.button>
+                  
+                  <input 
+                    type="range"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value={isMuted ? 0 : volume}
+                    onChange={handleVolumeChange}
+                    className="w-24 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-3 [&::-webkit-slider-thumb]:h-3 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-[#C8A97E]"
+                  />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="flex items-center justify-center gap-4 mb-6">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handlePrevTrack}
-              className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-            >
-              <SkipBack className="w-5 h-5" />
-            </motion.button>
-
-            <div className="relative">
-              <svg className="w-14 sm:w-16 h-14 sm:h-16" viewBox="0 0 48 48">
-                <circle
-                  cx="24"
-                  cy="24"
-                  r="23"
-                  className="fill-[#C8A97E]/10"
-                />
-                <motion.circle
-                  cx="24"
-                  cy="24"
-                  r="23"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  fill="none"
-                  className="text-[#C8A97E]"
-                  strokeDasharray="144.51326206513048"
-                  strokeDashoffset={144.51326206513048 * (1 - currentTime / currentTrack.duration)}
-                  transform="rotate(-90 24 24)"
-                />
-                <motion.circle
-                  cx="24"
-                  cy="24"
-                  r="21"
-                  className="fill-[#C8A97E] cursor-pointer"
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handlePlay}
-                />
-              </svg>
-              <motion.div
-                className="absolute inset-0 flex items-center justify-center text-black"
-                onClick={handlePlay}
-                whileHover={{ scale: 1.1 }}
-                whileTap={{ scale: 0.9 }}
-              >
-                {isLoading ? (
-                  <div className="w-5 h-5 border-2 border-black border-t-transparent rounded-full animate-spin"></div>
-                ) : isPlaying ? (
-                  <Pause className="w-5 sm:w-6 h-5 sm:h-6" />
-                ) : (
-                  <Play className="w-5 sm:w-6 h-5 sm:h-6 ml-1" />
-                )}
-              </motion.div>
-            </div>
-
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={handleNextTrack}
-              className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-            >
-              <SkipForward className="w-5 h-5" />
-            </motion.button>
-
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.95 }}
-              onClick={toggleMute}
-              className="w-10 h-10 rounded-full bg-[#C8A97E]/10 hover:bg-[#C8A97E]/20 flex items-center justify-center text-[#C8A97E] transition-colors"
-            >
-              {isMuted ? (
-                <VolumeX className="w-5 h-5" />
-              ) : (
-                <Volume2 className="w-5 h-5" />
-              )}
-            </motion.button>
-          </div>
-
-          <div ref={progressBarRef} className="h-2 bg-gray-700 rounded-full mb-2 cursor-pointer" onClick={handleProgressBarClick}>
-            <div 
-              className="h-full bg-[#C8A97E] rounded-full"
-              style={{ width: `${(currentTime / currentTrack.duration) * 100}%` }}
-            ></div>
-          </div>
-          
-          <div className="flex justify-between text-xs text-gray-400 mb-6">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(currentTrack.duration)}</span>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-8">
             {tracks.map((track) => (
               <motion.div
                 key={track.id}
@@ -397,8 +453,26 @@ export default function EnhancedMusicPlayer() {
           >
             <Card className="bg-[#1a1a1a]/90 backdrop-blur-lg border-[#C8A97E]/20 p-3 shadow-2xl">
               <div className="flex items-center gap-3">
-                <div className="relative w-12 h-12 rounded-lg overflow-hidden flex-shrink-0 bg-[#C8A97E]/20 flex items-center justify-center">
-                  <Music className="w-6 h-6 text-[#C8A97E]" />
+                <div className="relative w-12 h-12 rounded-full overflow-hidden flex-shrink-0">
+                  <motion.div 
+                    className="absolute inset-0 bg-black rounded-full"
+                    animate={{ rotate: isPlaying ? 360 : 0 }}
+                    transition={{ 
+                      duration: 20, 
+                      ease: "linear", 
+                      repeat: Infinity,
+                      repeatType: "loop" 
+                    }}
+                  >
+                    {/* Vinyl grooves */}
+                    <div className="absolute inset-1 rounded-full border border-[#333333]"></div>
+                    <div className="absolute inset-2 rounded-full border border-[#333333]"></div>
+                    <div className="absolute inset-3 rounded-full border border-[#333333]"></div>
+                    <div className="absolute inset-4 rounded-full border border-[#333333]"></div>
+                    
+                    {/* Vinyl label */}
+                    <div className="absolute inset-0 m-auto w-6 h-6 rounded-full bg-[#C8A97E]/80"></div>
+                  </motion.div>
                 </div>
 
                 <div className="flex-1 min-w-0">

@@ -1,7 +1,7 @@
 @echo off
 echo Committing and pushing changes...
 git add .
-git commit -m "Fix enhanced music player: Remove YouTube integration to fix GitHub Pages deployment"
+git commit -m "Restore vinyl disc design to music player while keeping fixes"
 git push
 echo Done!
 pause 
