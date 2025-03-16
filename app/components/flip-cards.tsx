@@ -27,18 +27,23 @@ const FlipCard: React.FC<FlipCardProps> = ({
 
   return (
     <div 
-      className="perspective-1000 w-full h-full"
+      className="w-full h-full"
+      style={{ perspective: "1000px" }}
       onMouseEnter={() => setIsFlipped(true)}
       onMouseLeave={() => setIsFlipped(false)}
     >
       <motion.div 
-        className="relative w-full aspect-square bg-[#0A0A0A] rounded-lg border border-[#1A1A1A] overflow-hidden transform-style-3d transition-transform duration-500 cursor-pointer"
+        className="relative w-full aspect-square bg-[#0A0A0A] rounded-lg border border-[#1A1A1A] overflow-hidden cursor-pointer"
+        style={{ transformStyle: "preserve-3d" }}
         animate={{ rotateY: isFlipped ? 180 : 0 }}
         initial={{ rotateY: 0 }}
         transition={{ type: "tween", duration: 0.4 }}
       >
         {/* Front side */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 backface-hidden">
+        <div 
+          className="absolute inset-0 flex flex-col items-center justify-center p-6"
+          style={{ backfaceVisibility: "hidden" }}
+        >
           <div className="text-[#C8A97E] mb-6 text-4xl">
             {icon}
           </div>
@@ -47,7 +52,13 @@ const FlipCard: React.FC<FlipCardProps> = ({
         </div>
 
         {/* Back side */}
-        <div className="absolute inset-0 flex flex-col items-center justify-center p-6 backface-hidden transform rotate-y-180 bg-[#0A0A0A]">
+        <div 
+          className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-[#0A0A0A]"
+          style={{ 
+            backfaceVisibility: "hidden",
+            transform: "rotateY(180deg)"
+          }}
+        >
           <p className="text-gray-300 text-center text-sm mb-4">{backContent}</p>
           
           {funFact && (
