@@ -22,6 +22,7 @@ import ServiceCard from "@/app/components/service-card"
 import ServicesSection from "./components/services-section"
 import MusicPlayer from "@/app/components/music-player"
 import FlipCards from './components/flip-cards'
+import AboutSectionFixed from "@/app/components/about-section-fixed"
 
 export default function Home() {
   const [isLoaded, setIsLoaded] = useState(false)
@@ -384,7 +385,7 @@ export default function Home() {
 
       {/* About Section */}
       <section id="about">
-        <AboutSectionNew />
+        <AboutSectionFixed />
       </section>
 
       {/* References Section */}
