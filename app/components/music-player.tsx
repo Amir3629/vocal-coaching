@@ -611,7 +611,7 @@ export default function MusicPlayer() {
   };
 
   return (
-    <div className="max-w-5xl mx-auto relative py-10" ref={playerRef}>
+    <div className="max-w-5xl mx-auto relative py-10 z-10" ref={playerRef}>
       <div className="relative mx-auto" style={{ maxWidth: "500px" }}>
         <div className="flex items-center justify-center">
           <div 

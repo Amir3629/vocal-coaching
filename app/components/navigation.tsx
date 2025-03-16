@@ -100,7 +100,7 @@ export default function Navigation() {
   }
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-black/90 backdrop-blur-sm' : 'bg-transparent'}`}>
+    <header className="fixed top-0 left-0 right-0 bg-black/80 backdrop-blur-md z-[100] transition-all duration-300">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-20">
           <Link 
@@ -184,6 +184,6 @@ export default function Navigation() {
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </header>
   )
 } 
