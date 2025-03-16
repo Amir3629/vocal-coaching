@@ -51,6 +51,9 @@ export default function SuccessMessage({ isOpen, onClose, title, message }: Succ
 
   // Animated text component for letter-by-letter animation
   const AnimatedText = ({ text }: { text: string }) => {
+    // Replace "in Kürze" with "in&nbsp;Kürze" to prevent splitting
+    const processedText = text.replace("in Kürze", "in\u00A0Kürze");
+    
     return (
       <motion.div
         variants={containerVariants}
@@ -58,7 +61,7 @@ export default function SuccessMessage({ isOpen, onClose, title, message }: Succ
         animate="visible"
         className="inline-flex flex-wrap justify-center"
       >
-        {Array.from(text).map((letter, index) => (
+        {Array.from(processedText).map((letter, index) => (
           <motion.span
             key={`letter-${index}`}
             variants={letterVariants}

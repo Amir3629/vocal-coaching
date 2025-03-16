@@ -1,6 +1,6 @@
 ﻿"use client"
 
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 import Image from "next/image"
 import { motion } from "framer-motion"
 import { Check } from "lucide-react"
@@ -34,6 +34,8 @@ export default function ServiceCard({
   link
 }: ServiceCardProps) {
   const [isHovered, setIsHovered] = useState(false)
+  const cardRef = useRef<HTMLDivElement>(null)
+  const scrollPositionRef = useRef(0)
 
   const handleClick = () => {
     if (link) {
@@ -41,22 +43,43 @@ export default function ServiceCard({
     }
   }
 
+  const handleMouseEnter = () => {
+    // Store current scroll position when hovering
+    scrollPositionRef.current = window.scrollY
+    setIsHovered(true)
+  }
+
+  const handleMouseLeave = () => {
+    setIsHovered(false)
+    
+    // After the card shrinks, smoothly scroll back to the original position
+    setTimeout(() => {
+      if (cardRef.current) {
+        window.scrollTo({
+          top: scrollPositionRef.current,
+          behavior: 'smooth'
+        })
+      }
+    }, 100) // Small delay to let the card start shrinking first
+  }
+
   return (
     <motion.div
+      ref={cardRef}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-50px" }}
       transition={{ duration: 0.5, delay }}
       className={`group relative w-full bg-black/20 backdrop-blur-sm rounded-xl overflow-hidden 
         ${isHovered ? 'min-h-[520px]' : 'min-h-[320px]'} 
-        transition-all duration-700
+        transition-all duration-1000
         ${link ? 'cursor-pointer' : ''}`}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
       onClick={handleClick}
       style={{ 
         height: isHovered ? 'auto' : '320px',
-        transitionTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)'
+        transitionTimingFunction: 'cubic-bezier(0.22, 1, 0.36, 1)'
       }}
     >
       {image && (
@@ -66,7 +89,7 @@ export default function ServiceCard({
             alt={title}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-            className={`object-cover opacity-40 transition-all duration-700
+            className={`object-cover opacity-40 transition-all duration-1000
               ${isHovered ? 'filter-none scale-105' : 'blur-[1px] scale-100'}`}
             priority={delay === 0}
             loading={delay === 0 ? "eager" : "lazy"}
@@ -126,7 +149,7 @@ export default function ServiceCard({
               height: isHovered ? 'auto' : 0
             }}
             transition={{ 
-              duration: 0.7,
+              duration: 1.0,
               ease: 'easeInOut'
             }}
           >
