@@ -2,60 +2,16 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useLanguage } from './language-switcher'
+import { useLanguage } from '@/app/components/language-switcher'
 import { useTranslation } from 'react-i18next'
-import ServiceSelection from './booking/service-selection'
-import ProgressBar from './booking/progress-bar'
-import LiveSingingForm from './booking/live-singing-form'
-import VocalCoachingForm from './booking/vocal-coaching-form'
-import WorkshopForm from './booking/workshop-form'
-import ConfirmationStep from './booking/confirmation-step'
+import { ServiceType, FormStep, FormData, BookingFormProps } from '@/app/components/booking/types'
+import ServiceSelection from '@/app/components/booking/service-selection'
+import ProgressBar from '@/app/components/booking/progress-bar'
+import LiveSingingForm from '@/app/components/booking/live-singing-form'
+import VocalCoachingForm from '@/app/components/booking/vocal-coaching-form'
+import WorkshopForm from '@/app/components/booking/workshop-form'
+import ConfirmationStep from '@/app/components/booking/confirmation-step'
 import { X, ArrowLeft, ArrowRight, Check } from 'lucide-react'
-
-// Service types
-type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
-
-// Form step type
-type FormStep = 'service' | 'details' | 'confirm'
-
-// Form data interface
-interface FormData {
-  // Common fields
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  
-  // Live Singing fields
-  eventType?: 'wedding' | 'corporate' | 'private' | 'other';
-  eventDate?: string;
-  guestCount?: string;
-  musicPreferences?: string[];
-  jazzStandards?: string;
-  
-  // Vocal Coaching fields
-  sessionType?: '1:1' | 'group' | 'online';
-  skillLevel?: 'beginner' | 'intermediate' | 'advanced';
-  focusArea?: string[];
-  preferredDate?: string;
-  preferredTime?: string;
-  
-  // Workshop fields
-  workshopTheme?: string;
-  groupSize?: string;
-  preferredDates?: string[];
-  workshopDuration?: string;
-  
-  // Legal
-  termsAccepted: boolean;
-  privacyAccepted: boolean;
-}
-
-// Props interface
-interface BookingFormProps {
-  isOpen?: boolean;
-  onClose?: () => void;
-}
 
 export default function BookingForm({ isOpen: externalIsOpen, onClose }: BookingFormProps) {
   const { currentLang } = useLanguage()
@@ -195,121 +151,148 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
   }
   
   return (
-    <>
-      {/* Booking Form Modal */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.4 }}
-            onClick={closeBookingForm}
-          >
-            <motion.div
-              className="w-full max-w-3xl bg-gradient-to-b from-[#0A0A0A] to-[#151515] rounded-xl shadow-2xl overflow-hidden border border-[#222]"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.9, opacity: 0 }}
-              transition={{ duration: 0.4, type: 'spring', damping: 25 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className="p-8 relative">
-                {/* Close button */}
-                <button 
-                  onClick={closeBookingForm}
-                  className="absolute top-4 right-4 text-gray-400 hover:text-white transition-colors"
-                  aria-label="Close booking form"
-                >
-                  <X size={24} />
-                </button>
-                
-                <h2 className="text-2xl font-bold text-white mb-8 text-center">
-                  {currentStep === 'service' 
-                    ? t('booking.title', 'Buchung') 
-                    : currentStep === 'details' && serviceType === 'professioneller-gesang'
-                      ? t('booking.liveSingingTitle', 'Live Gesang buchen')
-                      : currentStep === 'details' && serviceType === 'vocal-coaching'
-                        ? t('booking.vocalCoachingTitle', 'Vocal Coaching buchen')
-                        : currentStep === 'details' && serviceType === 'gesangsunterricht'
-                          ? t('booking.workshopTitle', 'Gesangsunterricht buchen')
-                          : t('booking.confirmTitle', 'Buchung bestätigen')
-                  }
-                </h2>
-                
-                {/* Progress Bar */}
-                <div className="mb-10">
-                  <ProgressBar currentStep={currentStep} />
-                </div>
-                
-                {/* Step 1: Service Selection */}
-                {currentStep === 'service' && (
-                  <ServiceSelection 
-                    selectedService={serviceType} 
-                    onSelect={handleServiceSelect} 
-                  />
-                )}
-                
-                {/* Step 2: Service-specific Form */}
-                {currentStep === 'details' && renderServiceForm()}
-                
-                {/* Step 3: Confirmation */}
-                {currentStep === 'confirm' && (
-                  <ConfirmationStep 
-                    formData={formData} 
-                    serviceType={serviceType}
-                    onChange={handleFormChange}
-                  />
-                )}
-                
-                {/* Navigation Buttons */}
-                <div className="flex justify-between mt-8">
-                  {currentStep !== 'service' ? (
-                      <button
-                      onClick={goToPrevStep}
-                      className="px-6 py-2 border border-gray-700 text-gray-300 rounded-full hover:border-gray-500 transition-colors flex items-center"
-                      >
-                      <ArrowLeft size={16} className="mr-2" />
-                        {t('booking.back', 'Zurück')}
-                      </button>
-                  ) : (
-                    <div></div> // Empty div to maintain flex spacing
-                  )}
-                  
-                  {currentStep !== 'confirm' ? (
-                    <button
-                      onClick={goToNextStep}
-                      disabled={!isCurrentStepValid()}
-                      className={`px-6 py-2 rounded-full flex items-center ${
-                        isCurrentStepValid()
-                          ? 'bg-[#C8A97E] text-black font-medium hover:bg-[#D4AF37] transition-colors'
-                          : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                      }`}
-                    >
-                      {t('booking.continue', 'Weiter')}
-                      <ArrowRight size={16} className="ml-2" />
-                    </button>
-                  ) : (
-                      <button
-                      onClick={handleSubmit}
-                      disabled={!isCurrentStepValid()}
-                      className={`px-6 py-2 rounded-full flex items-center ${
-                        isCurrentStepValid()
-                          ? 'bg-[#C8A97E] text-black font-medium hover:bg-[#D4AF37] transition-colors'
-                          : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-                      }`}
-                    >
-                      {t('booking.submit', 'Absenden')}
-                      <Check size={16} className="ml-2" />
-                      </button>
-                  )}
-                  </div>
+    <div className="w-full max-w-3xl mx-auto">
+      <div className="bg-[#121212] border border-gray-800 rounded-xl shadow-xl overflow-hidden">
+        {/* Progress Steps */}
+        <div className="bg-[#1A1A1A] p-3 border-b border-gray-800">
+          <div className="flex items-center justify-between max-w-2xl mx-auto">
+            {/* Step 1 */}
+            <div className="flex flex-col items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep >= 'details' ? 'bg-[#C8A97E] text-black' : 'bg-gray-800 text-gray-400'
+              }`}>
+                <span className="text-xs font-medium">1</span>
               </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </>
+              <span className="text-xs mt-1 text-gray-400">{t('booking.service', 'Dienst')}</span>
+            </div>
+            
+            {/* Connector */}
+            <div className="w-full max-w-[60px] h-[2px] bg-gray-800 mx-1">
+              <div className={`h-full bg-[#C8A97E] transition-all duration-300 ${
+                currentStep >= 'details' ? 'w-full' : 'w-0'
+              }`}></div>
+            </div>
+            
+            {/* Step 2 */}
+            <div className="flex flex-col items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep >= 'details' ? 'bg-[#C8A97E] text-black' : 'bg-gray-800 text-gray-400'
+              }`}>
+                <span className="text-xs font-medium">2</span>
+              </div>
+              <span className="text-xs mt-1 text-gray-400">{t('booking.details', 'Details')}</span>
+            </div>
+            
+            {/* Connector */}
+            <div className="w-full max-w-[60px] h-[2px] bg-gray-800 mx-1">
+              <div className={`h-full bg-[#C8A97E] transition-all duration-300 ${
+                currentStep >= 'confirm' ? 'w-full' : 'w-0'
+              }`}></div>
+            </div>
+            
+            {/* Step 3 */}
+            <div className="flex flex-col items-center">
+              <div className={`w-8 h-8 rounded-full flex items-center justify-center ${
+                currentStep >= 'confirm' ? 'bg-[#C8A97E] text-black' : 'bg-gray-800 text-gray-400'
+              }`}>
+                <span className="text-xs font-medium">3</span>
+              </div>
+              <span className="text-xs mt-1 text-gray-400">{t('booking.confirmation', 'Bestätigen')}</span>
+            </div>
+          </div>
+        </div>
+        
+        {/* Form Content */}
+        <div className="max-h-[60vh] overflow-y-auto custom-scrollbar p-4">
+          <style jsx>{`
+            .custom-scrollbar::-webkit-scrollbar {
+              width: 6px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-track {
+              background: #1A1A1A;
+              border-radius: 10px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb {
+              background: #C8A97E;
+              border-radius: 10px;
+            }
+            .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+              background: #B69A6E;
+            }
+          `}</style>
+          
+          {/* Service Selection Step */}
+          {currentStep === 'service' && (
+            <div className="space-y-4 animate-in fade-in duration-500">
+              <h2 className="text-xl font-semibold text-white mb-4">
+                {t('booking.selectService', 'Wählen Sie einen Dienst')}
+              </h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                {/* ... service cards ... */}
+              </div>
+            </div>
+          )}
+          
+          {/* Details Step */}
+          {currentStep === 'details' && renderServiceForm()}
+          
+          {/* Confirmation Step */}
+          {currentStep === 'confirm' && (
+            <ConfirmationStep 
+              formData={formData} 
+              serviceType={serviceType}
+              onChange={handleFormChange}
+            />
+          )}
+        </div>
+        
+        {/* Navigation Buttons */}
+        <div className="bg-[#1A1A1A] p-3 border-t border-gray-800 flex justify-between">
+          {/* Back Button */}
+          {currentStep > 'service' && (
+            <button
+              type="button"
+              onClick={goToPrevStep}
+              className="px-3 py-1.5 border border-gray-700 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors text-sm"
+            >
+              {t('booking.back', 'Zurück')}
+            </button>
+          )}
+          
+          {/* Next Button - Only show on Service and Details steps */}
+          {currentStep < 'confirm' && (
+            <button
+              type="button"
+              onClick={goToNextStep}
+              disabled={!isCurrentStepValid()}
+              className={`px-4 py-1.5 rounded-lg text-sm ${
+                isCurrentStepValid() 
+                  ? 'bg-[#C8A97E] text-black hover:bg-[#D4AF37]' 
+                  : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+              } transition-colors ml-auto`}
+            >
+              {t('booking.next', 'Weiter')}
+            </button>
+          )}
+          
+          {/* Submit Button */}
+          {currentStep === 'confirm' && (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!isCurrentStepValid()}
+              className={`px-4 py-1.5 rounded-lg text-sm ${
+                isCurrentStepValid()
+                  ? 'bg-[#C8A97E] text-black hover:bg-[#D4AF37]'
+                  : 'bg-gray-700 text-gray-400 cursor-not-allowed'
+              } transition-colors ml-auto`}
+            >
+              {t('booking.submit', 'Absenden')}
+            </button>
+          )}
+        </div>
+      </div>
+    </div>
   )
 }

@@ -1,12 +1,13 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Check, Calendar, Users, Music, BookOpen, Target, Info, Clock, AlertCircle, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LegalDocumentModal from '../legal-document-modal'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
+import { ServiceType, FormData, ConfirmationStepProps } from './types'
 
 // Dynamically import legal document contents
 const DatenschutzContent = dynamic(
@@ -23,46 +24,6 @@ const AGBContent = dynamic(
   { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
 )
 
-// Service types
-type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
-
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  
-  // Live Singing fields
-  eventType?: 'wedding' | 'corporate' | 'private' | 'other';
-  eventDate?: string;
-  guestCount?: string;
-  musicPreferences?: string[];
-  jazzStandards?: string;
-  
-  // Vocal Coaching fields
-  sessionType?: '1:1' | 'group' | 'online';
-  skillLevel?: 'beginner' | 'intermediate' | 'advanced';
-  focusArea?: string[];
-  preferredDate?: string;
-  preferredTime?: string;
-  
-  // Workshop fields
-  workshopTheme?: string;
-  groupSize?: string;
-  preferredDates?: string[];
-  workshopDuration?: string;
-  
-  // Legal
-  termsAccepted: boolean;
-  privacyAccepted: boolean;
-}
-
-interface ConfirmationStepProps {
-  formData: FormData;
-  serviceType: ServiceType;
-  onChange: (data: Partial<FormData>) => void;
-}
-
 export default function ConfirmationStep({ formData, serviceType, onChange }: ConfirmationStepProps) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -71,6 +32,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   const [showSuccessNotification, setShowSuccessNotification] = useState(false)
   const [missingFields, setMissingFields] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isClosing, setIsClosing] = useState(false)
   
   // Format date for display
   const formatDate = (dateString?: string) => {
@@ -278,12 +240,15 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
       // Show success notification
       setShowSuccessNotification(true)
       
-      // Hide notification after 5 seconds
+      // Start closing animation after 3 seconds
       setTimeout(() => {
-        setShowSuccessNotification(false)
-      }, 5000)
-      
-      // No redirection to success page
+        setIsClosing(true)
+        
+        // Redirect to home page after closing animation (1 second)
+        setTimeout(() => {
+          router.push('/')
+        }, 1000)
+      }, 3000)
     } catch (error) {
       console.error('Error sending email:', error)
       // Handle error
@@ -293,7 +258,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   }
   
   return (
-    <div className="py-4 space-y-6 animate-in fade-in duration-500">
+    <div className={`py-4 space-y-6 animate-in fade-in duration-500 ${isClosing ? 'animate-out fade-out duration-1000' : ''}`}>
       <div className="space-y-4">
         <h3 className="text-xl font-semibold text-white mb-4">
           {t('booking.bookingSummary', 'Buchungsübersicht')}
@@ -547,29 +512,26 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
       <AnimatePresence>
         {showSuccessNotification && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.9 }}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            className="fixed bottom-8 right-8 bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-4 flex items-center z-50 min-w-[300px] max-w-md"
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
           >
-            <div className="w-10 h-10 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mr-3">
-              <Check className="w-5 h-5 text-[#C8A97E]" />
-            </div>
-            <div>
-              <h4 className="text-white font-medium">
+            <div className="bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-6 flex flex-col items-center max-w-md mx-auto">
+              <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mb-4">
+                <Check className="w-8 h-8 text-[#C8A97E]" />
+              </div>
+              <h4 className="text-white text-xl font-medium mb-2">
                 {t('booking.bookingSuccess', 'Buchung erfolgreich!')}
               </h4>
-              <p className="text-gray-400 text-sm">
+              <p className="text-gray-400 text-center mb-2">
                 {t('booking.bookingSuccessMessage', 'Wir werden uns in Kürze bei Ihnen melden.')}
               </p>
+              <p className="text-gray-500 text-sm text-center">
+                {t('booking.redirecting', 'Sie werden in Kürze weitergeleitet...')}
+              </p>
             </div>
-            <button
-              onClick={() => setShowSuccessNotification(false)}
-              className="ml-auto text-gray-400 hover:text-white"
-            >
-              <X className="w-5 h-5" />
-            </button>
           </motion.div>
         )}
       </AnimatePresence>

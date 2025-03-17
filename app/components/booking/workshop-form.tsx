@@ -3,23 +3,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { BookOpen, Users, Calendar, Info, Clock, ExternalLink } from 'lucide-react'
-
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  workshopTheme?: string;
-  groupSize?: string;
-  preferredDates?: string[];
-  workshopDuration?: string;
-  termsAccepted: boolean;
-}
-
-interface WorkshopFormProps {
-  formData: FormData;
-  onChange: (data: Partial<FormData>) => void;
-}
+import { FormData, WorkshopFormProps } from './types'
 
 export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) {
   const { t } = useTranslation()

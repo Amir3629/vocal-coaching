@@ -3,24 +3,7 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Users, BarChart, Target, Info, Calendar, Clock, ExternalLink } from 'lucide-react'
-
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  sessionType?: '1:1' | 'group' | 'online';
-  skillLevel?: 'beginner' | 'intermediate' | 'advanced';
-  focusArea?: string[];
-  preferredDate?: string;
-  preferredTime?: string;
-  termsAccepted: boolean;
-}
-
-interface VocalCoachingFormProps {
-  formData: FormData;
-  onChange: (data: Partial<FormData>) => void;
-}
+import { FormData, VocalCoachingFormProps } from './types'
 
 export default function VocalCoachingForm({ formData, onChange }: VocalCoachingFormProps) {
   const { t } = useTranslation()
@@ -296,7 +279,7 @@ export default function VocalCoachingForm({ formData, onChange }: VocalCoachingF
         </div>
       </div>
       
-      {/* Preferred Date and Time */}
+      {/* Terminplanung with Calendar Integration */}
       <div className="space-y-4">
         <div className="flex items-center">
           <Calendar className="w-5 h-5 text-[#C8A97E] mr-2" />
@@ -306,44 +289,76 @@ export default function VocalCoachingForm({ formData, onChange }: VocalCoachingF
         </div>
         
         <div className="bg-[#1A1A1A]/50 border border-[#C8A97E]/20 rounded-lg p-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <label htmlFor="preferredDate" className="block text-sm font-medium text-white">
-                {t('booking.preferredDate', 'Bevorzugtes Datum')}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Calendar className="h-5 w-5 text-gray-500" />
-                </div>
-                <input
-                  type="date"
-                  id="preferredDate"
-                  value={formData.preferredDate || ''}
-                  onChange={(e) => onChange({ preferredDate: e.target.value })}
-                  className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-                />
-              </div>
+          <div className="flex items-start mb-4">
+            <div className="bg-[#C8A97E]/10 p-2 rounded-full mr-3">
+              <Calendar className="w-5 h-5 text-[#C8A97E]" />
             </div>
-            
-            <div className="space-y-2">
-              <label htmlFor="preferredTime" className="block text-sm font-medium text-white">
-                {t('booking.preferredTime', 'Bevorzugte Uhrzeit')}
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Clock className="h-5 w-5 text-gray-500" />
+            <div>
+              <h4 className="text-white font-medium mb-1">
+                {t('booking.availableSlots', 'Verfügbare Termine')}
+              </h4>
+              <p className="text-gray-400 text-sm mb-3">
+                {t('booking.selectAvailableSlot', 'Wählen Sie einen verfügbaren Termin aus:')}
+              </p>
+              
+              {/* Google Calendar Embedded Iframe - Smaller Height */}
+              <div className="w-full rounded-lg overflow-hidden border border-gray-800 mb-4 h-[300px]">
+                <iframe 
+                  src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ30T2yfDb7XKvIARrVpIy2KIPltFAg7-YUnQlejiuhoJaIU3tvpj3ZR6Vn5klhf33WZjAu9QmYR?gv=true" 
+                  style={{ border: 0 }} 
+                  width="100%" 
+                  height="100%" 
+                  frameBorder="0"
+                  title="Google Calendar Appointments"
+                ></iframe>
+              </div>
+              
+              <p className="text-sm text-gray-400 mb-3">
+                {t('booking.orSpecifyPreference', 'Oder geben Sie Ihre Terminpräferenzen an, falls kein passender Termin verfügbar ist:')}
+              </p>
+            </div>
+          </div>
+          
+          <div className="border-t border-gray-800 pt-4 mt-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
+              <div className="space-y-2">
+                <label htmlFor="preferredDate" className="block text-sm font-medium text-white">
+                  {t('booking.preferredDate', 'Bevorzugtes Datum')}
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Calendar className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <input
+                    type="date"
+                    id="preferredDate"
+                    value={formData.preferredDate || ''}
+                    onChange={(e) => onChange({ preferredDate: e.target.value })}
+                    className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
+                  />
                 </div>
-                <select
-                  id="preferredTime"
-                  value={formData.preferredTime || ''}
-                  onChange={(e) => onChange({ preferredTime: e.target.value })}
-                  className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white appearance-none"
-                >
-                  <option value="">{t('booking.selectOption', 'Bitte wählen')}</option>
-                  <option value="morning">{t('booking.morning', 'Vormittag (9:00 - 12:00)')}</option>
-                  <option value="afternoon">{t('booking.afternoon', 'Nachmittag (12:00 - 17:00)')}</option>
-                  <option value="evening">{t('booking.evening', 'Abend (17:00 - 20:00)')}</option>
-                </select>
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="preferredTime" className="block text-sm font-medium text-white">
+                  {t('booking.preferredTime', 'Bevorzugte Uhrzeit')}
+                </label>
+                <div className="relative">
+                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <Clock className="h-5 w-5 text-gray-500" />
+                  </div>
+                  <select
+                    id="preferredTime"
+                    value={formData.preferredTime || ''}
+                    onChange={(e) => onChange({ preferredTime: e.target.value })}
+                    className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white appearance-none"
+                  >
+                    <option value="">{t('booking.selectOption', 'Bitte wählen')}</option>
+                    <option value="morning">{t('booking.morning', 'Vormittag (9:00 - 12:00)')}</option>
+                    <option value="afternoon">{t('booking.afternoon', 'Nachmittag (12:00 - 17:00)')}</option>
+                    <option value="evening">{t('booking.evening', 'Abend (17:00 - 20:00)')}</option>
+                  </select>
+                </div>
               </div>
             </div>
           </div>

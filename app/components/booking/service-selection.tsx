@@ -4,14 +4,7 @@ import React from 'react'
 import { motion } from 'framer-motion'
 import { useTranslation } from 'react-i18next'
 import { Mic, Music, Calendar, Check } from 'lucide-react'
-
-// Service types
-type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
-
-interface ServiceSelectionProps {
-  selectedService: ServiceType
-  onSelect: (service: ServiceType) => void
-}
+import { ServiceType, ServiceSelectionProps } from './types'
 
 export default function ServiceSelection({ selectedService, onSelect }: ServiceSelectionProps) {
   const { t } = useTranslation()
