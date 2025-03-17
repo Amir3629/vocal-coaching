@@ -1,13 +1,12 @@
 "use client"
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Check, Calendar, Users, Music, BookOpen, Target, Info, Clock, AlertCircle, X } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import LegalDocumentModal from '../legal-document-modal'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import { ServiceType, FormData, ConfirmationStepProps } from './types'
 
 // Dynamically import legal document contents
 const DatenschutzContent = dynamic(
@@ -24,6 +23,46 @@ const AGBContent = dynamic(
   { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
 )
 
+// Service types
+type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
+
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  
+  // Live Singing fields
+  eventType?: 'wedding' | 'corporate' | 'private' | 'other';
+  eventDate?: string;
+  guestCount?: string;
+  musicPreferences?: string[];
+  jazzStandards?: string;
+  
+  // Vocal Coaching fields
+  sessionType?: '1:1' | 'group' | 'online';
+  skillLevel?: 'beginner' | 'intermediate' | 'advanced';
+  focusArea?: string[];
+  preferredDate?: string;
+  preferredTime?: string;
+  
+  // Workshop fields
+  workshopTheme?: string;
+  groupSize?: string;
+  preferredDates?: string[];
+  workshopDuration?: string;
+  
+  // Legal
+  termsAccepted: boolean;
+  privacyAccepted: boolean;
+}
+
+interface ConfirmationStepProps {
+  formData: FormData;
+  serviceType: ServiceType;
+  onChange: (data: Partial<FormData>) => void;
+}
+
 export default function ConfirmationStep({ formData, serviceType, onChange }: ConfirmationStepProps) {
   const { t } = useTranslation()
   const router = useRouter()
@@ -32,7 +71,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   const [showSuccessNotification, setShowSuccessNotification] = useState(false)
   const [missingFields, setMissingFields] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [isClosing, setIsClosing] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   
   // Format date for display
   const formatDate = (dateString?: string) => {
@@ -201,64 +240,67 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   }
   
   // Handle form submission
-  const handleSubmit = async () => {
-    // Validate form
-    const requiredFields = ['name', 'email', 'phone', 'termsAccepted', 'privacyAccepted']
-    const missing = requiredFields.filter(field => !formData[field as keyof FormData])
-    
-    if (missing.length > 0) {
-      setMissingFields(missing)
-      return
-    }
-    
-    setIsSubmitting(true)
-    
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
     try {
+      // Validate required fields
+      if (!formData.name || !formData.email || !formData.phone) {
+        throw new Error('Bitte füllen Sie alle erforderlichen Felder aus.');
+      }
+
       // Prepare email data
       const emailData = {
-        service_id: 'service_xxxxxxx', // Replace with your EmailJS service ID
-        template_id: 'template_xxxxxxx', // Replace with your EmailJS template ID
-        user_id: 'user_xxxxxxxxxx', // Replace with your EmailJS user ID
-        template_params: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
-          message: formData.message,
-          service_type: serviceType,
-          ...getServiceSpecificDetails()
-        }
+        to: 'melvocalcoaching@gmail.com',
+        subject: `Neue Buchungsanfrage: ${getServiceName()}`,
+        text: `
+          Neue Buchungsanfrage:
+          
+          Service: ${getServiceName()}
+          ${getServiceSpecificDetails()}
+          
+          Kontaktinformationen:
+          Name: ${formData.name}
+          E-Mail: ${formData.email}
+          Telefon: ${formData.phone}
+          
+          Nachricht:
+          ${formData.message || 'Keine Nachricht'}
+        `,
+      };
+
+      // Send email
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Fehler beim Senden der E-Mail');
       }
-      
-      // Send email (commented out for now)
-      // const response = await emailjs.send(
-      //   emailData.service_id,
-      //   emailData.template_id,
-      //   emailData.template_params,
-      //   emailData.user_id
-      // )
-      
+
       // Show success notification
-      setShowSuccessNotification(true)
+      setShowSuccessNotification(true);
       
-      // Start closing animation after 3 seconds
+      // Auto-close after 3 seconds
       setTimeout(() => {
-        setIsClosing(true)
-        
-        // Redirect to home page after closing animation (1 second)
-        setTimeout(() => {
-          router.push('/')
-        }, 1000)
-      }, 3000)
-    } catch (error) {
-      console.error('Error sending email:', error)
-      // Handle error
+        setShowSuccessNotification(false);
+      }, 3000);
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
   
   return (
-    <div className={`py-4 space-y-6 animate-in fade-in duration-500 ${isClosing ? 'animate-out fade-out duration-1000' : ''}`}>
+    <div className="py-4 space-y-6 animate-in fade-in duration-500">
       <div className="space-y-4">
         <h3 className="text-xl font-semibold text-white mb-4">
           {t('booking.bookingSummary', 'Buchungsübersicht')}
@@ -485,8 +527,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
         {/* Submit Button */}
         <div className="mt-6">
           <button
-            type="button"
-            onClick={handleSubmit}
+            type="submit"
             disabled={isSubmitting}
             className="w-full py-3 bg-[#C8A97E] text-black font-medium rounded-lg hover:bg-[#D4AF37] transition-colors flex items-center justify-center"
           >
@@ -509,32 +550,25 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
       </div>
       
       {/* Success Notification */}
-      <AnimatePresence>
-        {showSuccessNotification && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            className="fixed inset-0 flex items-center justify-center z-50 bg-black/50 backdrop-blur-sm"
-          >
-            <div className="bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-6 flex flex-col items-center max-w-md mx-auto">
-              <div className="w-16 h-16 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mb-4">
-                <Check className="w-8 h-8 text-[#C8A97E]" />
+      {showSuccessNotification && (
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all duration-500 ease-in-out">
+            <div className="text-center">
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
+                <Check className="h-6 w-6 text-green-600" aria-hidden="true" />
               </div>
-              <h4 className="text-white text-xl font-medium mb-2">
-                {t('booking.bookingSuccess', 'Buchung erfolgreich!')}
-              </h4>
-              <p className="text-gray-400 text-center mb-2">
-                {t('booking.bookingSuccessMessage', 'Wir werden uns in Kürze bei Ihnen melden.')}
-              </p>
-              <p className="text-gray-500 text-sm text-center">
-                {t('booking.redirecting', 'Sie werden in Kürze weitergeleitet...')}
-              </p>
+              <h3 className="mt-3 text-lg font-medium leading-6 text-gray-900">
+                Vielen Dank für Ihre Anfrage!
+              </h3>
+              <div className="mt-2">
+                <p className="text-sm text-gray-500">
+                  Wir haben Ihre Anfrage erhalten und werden uns in Kürze bei Ihnen melden.
+                </p>
+              </div>
             </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+          </div>
+        </div>
+      )}
       
       {/* Legal Document Modals */}
       <LegalDocumentModal isOpen={showAGB} onClose={() => setShowAGB(false)}>

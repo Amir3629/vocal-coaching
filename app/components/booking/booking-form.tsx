@@ -262,62 +262,90 @@ export default function BookingForm() {
   }
   
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <ProgressBar 
-          currentStep={currentStep} 
-          totalSteps={4} 
-          labels={[
-            t('booking.service', 'Dienst'),
-            t('booking.personal', 'Persönlich'),
-            t('booking.details', 'Details'),
-            t('booking.confirm', 'Bestätigen')
-          ]}
-        />
-      </div>
-      
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-white">
-          {getStepTitle()}
-        </h2>
-        <p className="text-gray-400 mt-2">
-          {currentStep === 0 && t('booking.selectServiceDesc', 'Wählen Sie den gewünschten Dienst aus.')}
-          {currentStep === 1 && t('booking.personalInfoDesc', 'Geben Sie Ihre Kontaktdaten ein.')}
-          {currentStep === 2 && t('booking.serviceDetailsDesc', 'Geben Sie weitere Details zu Ihrer Anfrage an.')}
-          {currentStep === 3 && t('booking.confirmationDesc', 'Überprüfen Sie Ihre Angaben und senden Sie die Anfrage ab.')}
-        </p>
-      </div>
-      
-      <div className="bg-[#121212] border border-gray-800 rounded-xl p-6 mb-6">
-        {renderStep()}
-      </div>
-      
-      <div className="mt-8 flex justify-between">
-        {currentStep > 0 && (
-          <button
-            type="button"
-            onClick={handlePrevStep}
-            className="px-6 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
-          >
-            {t('booking.back', 'Zurück')}
-          </button>
-        )}
-        
-        <div className={currentStep > 0 ? 'ml-auto' : 'w-full'}>
-          {currentStep < 3 ? (
-            <SubmitButton 
-              onClick={handleNextStep} 
-              disabled={!isStepValid()}
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-white rounded-lg shadow-xl max-w-3xl w-full max-h-[90vh] overflow-y-auto custom-scrollbar">
+        <div className="max-w-4xl mx-auto">
+          <div className="mb-8">
+            <ProgressBar 
+              currentStep={currentStep} 
+              totalSteps={4} 
+              labels={[
+                t('booking.service', 'Dienst'),
+                t('booking.personal', 'Persönlich'),
+                t('booking.details', 'Details'),
+                t('booking.confirm', 'Bestätigen')
+              ]}
             />
-          ) : (
-            <SubmitButton 
-              isLastStep
-              onClick={handleSubmit}
-              isSubmitting={isSubmitting}
-            />
-          )}
+          </div>
+          
+          <div className="mb-6">
+            <h2 className="text-2xl font-bold text-white">
+              {getStepTitle()}
+            </h2>
+            <p className="text-gray-400 mt-2">
+              {currentStep === 0 && t('booking.selectServiceDesc', 'Wählen Sie den gewünschten Dienst aus.')}
+              {currentStep === 1 && t('booking.personalInfoDesc', 'Geben Sie Ihre Kontaktdaten ein.')}
+              {currentStep === 2 && t('booking.serviceDetailsDesc', 'Geben Sie weitere Details zu Ihrer Anfrage an.')}
+              {currentStep === 3 && t('booking.confirmationDesc', 'Überprüfen Sie Ihre Angaben und senden Sie die Anfrage ab.')}
+            </p>
+          </div>
+          
+          <div className="bg-[#121212] border border-gray-800 rounded-xl p-6 mb-6">
+            {renderStep()}
+          </div>
+          
+          <div className="mt-8 flex justify-between">
+            {currentStep > 0 && (
+              <button
+                type="button"
+                onClick={handlePrevStep}
+                className="px-6 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
+              >
+                {t('booking.back', 'Zurück')}
+              </button>
+            )}
+            
+            <div className={currentStep > 0 ? 'ml-auto' : 'w-full'}>
+              {currentStep < 3 ? (
+                <SubmitButton 
+                  onClick={handleNextStep} 
+                  disabled={!isStepValid()}
+                />
+              ) : (
+                <SubmitButton 
+                  isLastStep
+                  onClick={handleSubmit}
+                  isSubmitting={isSubmitting}
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
     </div>
   )
-} 
+}
+
+// Add custom scrollbar styles
+const customScrollbarStyles = `
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+`;
+
+// Add the styles to the component
+<style jsx global>{customScrollbarStyles}</style> 

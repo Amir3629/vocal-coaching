@@ -22,7 +22,7 @@ export default function LegalDocumentModal({
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog 
         as="div" 
-        className="relative z-[100]" 
+        className="relative z-50" 
         initialFocus={cancelButtonRef} 
         onClose={onClose}
       >
@@ -35,11 +35,11 @@ export default function LegalDocumentModal({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-black/90 backdrop-blur-sm transition-opacity" />
+          <div className="fixed inset-0 bg-black/80 backdrop-blur-sm transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 overflow-y-auto">
-          <div className="flex min-h-full items-center justify-center p-4 text-center sm:p-0">
+          <div className="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
             <Transition.Child
               as={Fragment}
               enter="ease-out duration-300"
@@ -49,7 +49,7 @@ export default function LegalDocumentModal({
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-[#121212] border border-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl max-h-[90vh]">
+              <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-[#121212] border border-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl">
                 <div className="absolute right-0 top-0 pr-4 pt-4 block z-10">
                   <motion.button
                     type="button"
@@ -86,7 +86,7 @@ export default function LegalDocumentModal({
                       background: #B69A6E;
                     }
                   `}</style>
-                  {children}
+              {children}
                 </div>
               </Dialog.Panel>
             </Transition.Child>

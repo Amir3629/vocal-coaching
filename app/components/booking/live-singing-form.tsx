@@ -3,7 +3,24 @@
 import React from 'react'
 import { useTranslation } from 'react-i18next'
 import { Calendar, Users, Music, Info, ExternalLink } from 'lucide-react'
-import { FormData, LiveSingingFormProps } from './types'
+
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  eventType?: 'wedding' | 'corporate' | 'private' | 'other';
+  eventDate?: string;
+  guestCount?: string;
+  musicPreferences?: string[];
+  jazzStandards?: string;
+  termsAccepted: boolean;
+}
+
+interface LiveSingingFormProps {
+  formData: FormData;
+  onChange: (data: Partial<FormData>) => void;
+}
 
 export default function LiveSingingForm({ formData, onChange }: LiveSingingFormProps) {
   const { t } = useTranslation()
