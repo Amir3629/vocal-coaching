@@ -4,7 +4,7 @@ import { Music, Mic, Users2, Theater } from "lucide-react"
 import ServiceCard from "./service-card"
 import { motion } from "framer-motion"
 import { useLanguage } from "./language-switcher"
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../hooks/use-translation'
 
 interface ServiceDetails {
   includes: string[];
@@ -22,7 +22,7 @@ interface ServiceTranslation {
 }
 
 export default function ServicesSection() {
-  const { currentLang } = useLanguage()
+  const { currentLanguage } = useLanguage()
   const { t } = useTranslation()
 
   const services = [
@@ -88,64 +88,63 @@ export default function ServicesSection() {
   };
 
   return (
-    <section id="services" className="py-20 bg-[#040202]">
+    <section id="services" className="py-20 bg-neutral-100 dark:bg-neutral-900 relative">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="section-heading mb-4"
-          >
-            {t('services.title')}
-          </motion.h2>
-          <div className="w-24 h-0.5 bg-[#C8A97E] mx-auto opacity-80"></div>
+        <div className="max-w-4xl mx-auto text-center mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t('services.title')}</h2>
+          <p className="text-lg text-neutral-600 dark:text-neutral-400">
+            {t('services.subtitle')}
+          </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="bg-black/40 backdrop-blur-sm rounded-lg p-6 border border-white/10"
-          >
-            <h3 className="text-xl font-medium text-white mb-4">
-              {t('services.singing.title')}
-            </h3>
-            <p className="text-white/70 mb-6">
-              {t('services.singing.description')}
-            </p>
-            <ul className="space-y-3">
-              {getFeatures('singing').map((feature, index) => (
-                <li key={index} className="flex items-center gap-2 text-white/60">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#C8A97E]" />
-                  {feature}
-                </li>
-              ))}
-            </ul>
-          </motion.div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mt-12">
+          <ServiceCard
+            title={t('services.singing.title')}
+            subtitle={t('services.singing.subtitle')}
+            description={t('services.singing.description')}
+            features={t('services.singing.features')}
+            details={t('services.singing.details')}
+            image="/images/services/singing.jpg"
+            icon="microphone"
+            delay={0.1}
+            link={`/booking?service=${currentLanguage === 'en' ? 'live-singing' : 'professioneller-gesang'}`}
+          />
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-6xl mx-auto">
-            {services.map((service, index) => {
-              const details = getDetails(service.key);
-              return (
-                <ServiceCard
-                  key={service.key}
-                  title={t(`services.${service.key}.title`)}
-                  subtitle={t(`services.${service.key}.subtitle`)}
-                  description={t(`services.${service.key}.description`)}
-                  icon={<service.icon className="w-6 h-6" />}
-                  features={getFeatures(service.key)}
-                  details={details}
-                  image={service.image}
-                  delay={index * 0.2}
-                  link={service.link}
-                />
-              );
-            })}
-          </div>
+          <ServiceCard
+            title={t('services.coaching.title')}
+            subtitle={t('services.coaching.subtitle')}
+            description={t('services.coaching.description')}
+            features={t('services.coaching.features')}
+            details={t('services.coaching.details')}
+            image="/images/services/coaching.jpg"
+            icon="music"
+            delay={0.2}
+            link={`/booking?service=${currentLanguage === 'en' ? 'vocal-coaching' : 'gesangsunterricht'}`}
+          />
+          
+          <ServiceCard
+            title={t('services.workshop.title')}
+            subtitle={t('services.workshop.subtitle')}
+            description={t('services.workshop.description')}
+            features={t('services.workshop.features')}
+            details={t('services.workshop.details')}
+            image="/images/services/workshop.jpg"
+            icon="users"
+            delay={0.3}
+            link={`/booking?service=workshop`}
+          />
+          
+          <ServiceCard
+            title={t('services.chor.title')}
+            subtitle={t('services.chor.subtitle')}
+            description={t('services.chor.description')}
+            features={t('services.chor.features')}
+            details={t('services.chor.details')}
+            image="/images/services/chor.jpg"
+            icon="music-note"
+            delay={0.4}
+            link="https://www.thechornextdoor.com"
+          />
         </div>
       </div>
     </section>

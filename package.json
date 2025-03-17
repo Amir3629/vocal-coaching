@@ -7,10 +7,16 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "setup": "node check-dependencies.js && node setup-local-images.js",
+    "check": "node check-dependencies.js",
+    "backup": "powershell -ExecutionPolicy Bypass -File .\\simple-backup.ps1",
     "check-images": "node scripts/check-images.js",
     "verify-assets": "node scripts/verify-assets.js",
     "predeploy": "npm run verify-assets && npm run build",
-    "deploy": "type nul > out/.nojekyll && xcopy /E /I /Y public\\* out\\ && gh-pages -d out"
+    "deploy": "type nul > out/.nojekyll && xcopy /E /I /Y public\\* out\\ && gh-pages -d out",
+    "placeholders": "node placeholder.js",
+    "download-placeholders": "node download-placeholders.js",
+    "dev:clean": "npm run setup-dev && npm run download-placeholders && npm run dev"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

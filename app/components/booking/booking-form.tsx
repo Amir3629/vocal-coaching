@@ -10,33 +10,49 @@ import WorkshopForm from './workshop-form'
 import ConfirmationStep from './confirmation-step'
 import SubmitButton from './submit-button'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { XMarkIcon } from '@heroicons/react/24/outline'
-import ServiceSelectionStep from './service-selection-step'
-import PersonalInfoStep from './personal-info-step'
-import ServiceSpecificStep from './service-specific-step'
-import LegalDocumentModal from './legal-document-modal'
-import { ServiceType, FormData } from '@/app/types/booking'
-import { motion } from 'framer-motion'
-import { X } from 'lucide-react'
+import LegalDocumentModal from '../legal-document-modal'
 
-interface BookingFormProps {
-  onClose: () => void;
-}
+// Service types
+type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
 
-interface Step {
-  id: number;
+// Form data interface
+interface FormData {
   name: string;
+  email: string;
+  phone: string;
+  message: string;
+  
+  // Live Singing fields
+  eventType?: 'wedding' | 'corporate' | 'private' | 'other';
+  eventDate?: string;
+  guestCount?: string;
+  jazzStandards?: string;
+  
+  // Vocal Coaching fields
+  sessionType?: '1:1' | 'group' | 'online';
+  skillLevel?: 'beginner' | 'intermediate' | 'advanced';
+  focusArea?: string[];
+  preferredDate?: string;
+  preferredTime?: string;
+  
+  // Workshop fields
+  workshopTheme?: string;
+  groupSize?: string;
+  preferredDates?: string[];
+  workshopDuration?: string;
+  
+  // Legal
+  termsAccepted: boolean;
+  privacyAccepted: boolean;
 }
 
-export default function BookingForm({ onClose }: BookingFormProps) {
+export default function BookingForm() {
   const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [currentStep, setCurrentStep] = useState(1)
-  const [selectedService, setSelectedService] = useState<ServiceType | null>(null)
+  const [currentStep, setCurrentStep] = useState(0)
+  const [selectedService, setSelectedService] = useState<ServiceType>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [showLegalDocument, setShowLegalDocument] = useState(false)
-  const [documentType, setDocumentType] = useState<'terms' | 'privacy'>('terms')
   
   // Initialize form data with empty values
   const [formData, setFormData] = useState<FormData>({
@@ -47,12 +63,6 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     termsAccepted: false,
     privacyAccepted: false
   })
-  
-  const steps: Step[] = [
-    { id: 1, name: t('booking.steps.serviceSelection', 'Service Auswahl') },
-    { id: 2, name: t('booking.steps.details', 'Details') },
-    { id: 3, name: t('booking.steps.confirmation', 'Bestätigung') },
-  ]
   
   // Handle service selection from URL parameter
   useEffect(() => {
@@ -65,7 +75,6 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   // Handle service selection
   const handleServiceSelect = (service: ServiceType) => {
     setSelectedService(service)
-    setCurrentStep(2)
   }
   
   // Handle form data changes
@@ -74,7 +83,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   }
   
   // Go to next step
-  const handleNext = () => {
+  const handleNextStep = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -82,8 +91,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   }
   
   // Go to previous step
-  const handleBack = () => {
-    if (currentStep > 1) {
+  const handlePrevStep = () => {
+    if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
@@ -103,36 +112,125 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     }, 1500)
   }
   
-  const handleLegalDocumentClick = (type: 'terms' | 'privacy') => {
-    setDocumentType(type)
-    setShowLegalDocument(true)
+  // Get step title
+  const getStepTitle = () => {
+    switch (currentStep) {
+      case 0:
+        return t('booking.selectService', 'Dienst auswählen')
+      case 1:
+        return t('booking.personalInfo', 'Persönliche Informationen')
+      case 2:
+        return t('booking.serviceDetails', 'Details zum Dienst')
+      case 3:
+        return t('booking.confirmation', 'Bestätigung')
+      default:
+        return ''
+    }
   }
   
   // Render the current step
   const renderStep = () => {
     switch (currentStep) {
+      case 0:
+        return (
+          <ServiceSelection 
+            selectedService={selectedService} 
+            onSelect={handleServiceSelect} 
+          />
+        )
       case 1:
         return (
-          <ServiceSelectionStep
-            selectedService={selectedService}
-            onServiceSelect={handleServiceSelect}
-          />
+          <div className="space-y-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <label htmlFor="name" className="block text-sm font-medium text-white">
+                  {t('booking.name', 'Name')} *
+                </label>
+                <input
+                  type="text"
+                  id="name"
+                  value={formData.name}
+                  onChange={(e) => handleFormChange({ name: e.target.value })}
+                  className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="email" className="block text-sm font-medium text-white">
+                  {t('booking.email', 'E-Mail')} *
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  value={formData.email}
+                  onChange={(e) => handleFormChange({ email: e.target.value })}
+                  className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
+                  required
+                />
+              </div>
+              
+              <div className="space-y-2">
+                <label htmlFor="phone" className="block text-sm font-medium text-white">
+                  {t('booking.phone', 'Telefon')} *
+                </label>
+                <input
+                  type="tel"
+                  id="phone"
+                  value={formData.phone}
+                  onChange={(e) => handleFormChange({ phone: e.target.value })}
+                  className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
+                  required
+                />
+              </div>
+            </div>
+            
+            <div className="space-y-2">
+              <label htmlFor="message" className="block text-sm font-medium text-white">
+                {t('booking.message', 'Nachricht')}
+              </label>
+              <textarea
+                id="message"
+                value={formData.message}
+                onChange={(e) => handleFormChange({ message: e.target.value })}
+                rows={4}
+                className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
+              />
+            </div>
+          </div>
         )
       case 2:
-        return (
-          <ServiceSpecificStep
-            serviceType={selectedService!}
-            formData={formData}
-            onFormDataChange={handleFormChange}
-          />
-        )
+        switch (selectedService) {
+          case 'professioneller-gesang':
+            return (
+              <LiveSingingForm 
+                formData={formData} 
+                onChange={handleFormChange} 
+              />
+            )
+          case 'vocal-coaching':
+            return (
+              <VocalCoachingForm 
+                formData={formData} 
+                onChange={handleFormChange} 
+              />
+            )
+          case 'gesangsunterricht':
+            return (
+              <WorkshopForm 
+                formData={formData} 
+                onChange={handleFormChange} 
+              />
+            )
+          default:
+            return null
+        }
       case 3:
         return (
-          <ConfirmationStep
-            formData={formData}
-            onFormDataChange={handleFormChange}
-            onSubmit={handleSubmit}
-            onLegalDocumentClick={handleLegalDocumentClick}
+          <ConfirmationStep 
+            formData={formData} 
+            serviceType={selectedService} 
+            onChange={handleFormChange} 
           />
         )
       default:
@@ -143,8 +241,10 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   // Check if the current step is valid
   const isStepValid = () => {
     switch (currentStep) {
-      case 1:
+      case 0:
         return !!selectedService
+      case 1:
+        return !!formData.name && !!formData.email && !!formData.phone
       case 2:
         // Basic validation for service-specific forms
         if (selectedService === 'professioneller-gesang') {
@@ -163,90 +263,62 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   }
   
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
-          onClick={onClose}
+    <div className="max-w-4xl mx-auto">
+      <div className="mb-8">
+        <ProgressBar 
+          currentStep={currentStep} 
+          totalSteps={4} 
+          labels={[
+            t('booking.service', 'Dienst'),
+            t('booking.personal', 'Persönlich'),
+            t('booking.details', 'Details'),
+            t('booking.confirm', 'Bestätigen')
+          ]}
         />
-
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.95 }}
-          transition={{ duration: 0.2 }}
-          className="relative inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 sm:align-middle"
-        >
-          <div className="absolute right-0 top-0 pr-4 pt-4">
-            <button
-              type="button"
-              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
-              onClick={onClose}
-            >
-              <span className="sr-only">Close</span>
-              <X className="h-6 w-6" aria-hidden="true" />
-            </button>
-          </div>
-
-          <div className="sm:flex sm:items-start">
-            <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
-              <div className="max-h-[80vh] overflow-y-auto custom-scrollbar">
-                <div className="space-y-6">
-                  <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-medium leading-6 text-gray-900">
-                      {t('booking.title', 'Buchungsanfrage')}
-                    </h3>
-                  </div>
-
-                  <div className="mt-2">
-                    {currentStep === 0 && (
-                      <ServiceSelectionStep
-                        formData={formData}
-                        onFormDataChange={handleFormChange}
-                        onNext={handleNext}
-                      />
-                    )}
-                    {currentStep === 1 && (
-                      <PersonalInfoStep
-                        formData={formData}
-                        onFormDataChange={handleFormChange}
-                        onNext={handleNext}
-                        onBack={handleBack}
-                      />
-                    )}
-                    {currentStep === 2 && (
-                      <ServiceSpecificStep
-                        formData={formData}
-                        onFormDataChange={handleFormChange}
-                        onNext={handleNext}
-                        onBack={handleBack}
-                        serviceType={formData.serviceType}
-                      />
-                    )}
-                    {currentStep === 3 && (
-                      <ConfirmationStep
-                        formData={formData}
-                        onFormDataChange={handleFormChange}
-                        onSubmit={handleSubmit}
-                        onLegalDocumentClick={handleLegalDocumentClick}
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </motion.div>
       </div>
-
-      <LegalDocumentModal
-        isOpen={showLegalDocument}
-        onClose={() => setShowLegalDocument(false)}
-        documentType={documentType}
-      />
+      
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-white">
+          {getStepTitle()}
+        </h2>
+        <p className="text-gray-400 mt-2">
+          {currentStep === 0 && t('booking.selectServiceDesc', 'Wählen Sie den gewünschten Dienst aus.')}
+          {currentStep === 1 && t('booking.personalInfoDesc', 'Geben Sie Ihre Kontaktdaten ein.')}
+          {currentStep === 2 && t('booking.serviceDetailsDesc', 'Geben Sie weitere Details zu Ihrer Anfrage an.')}
+          {currentStep === 3 && t('booking.confirmationDesc', 'Überprüfen Sie Ihre Angaben und senden Sie die Anfrage ab.')}
+        </p>
+      </div>
+      
+      <div className="bg-[#121212] border border-gray-800 rounded-xl p-6 mb-6">
+        {renderStep()}
+      </div>
+      
+      <div className="mt-8 flex justify-between">
+        {currentStep > 0 && (
+          <button
+            type="button"
+            onClick={handlePrevStep}
+            className="px-6 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
+          >
+            {t('booking.back', 'Zurück')}
+          </button>
+        )}
+        
+        <div className={currentStep > 0 ? 'ml-auto' : 'w-full'}>
+          {currentStep < 3 ? (
+            <SubmitButton 
+              onClick={handleNextStep} 
+              disabled={!isStepValid()}
+            />
+          ) : (
+            <SubmitButton 
+              isLastStep
+              onClick={handleSubmit}
+              isSubmitting={isSubmitting}
+            />
+          )}
+        </div>
+      </div>
     </div>
   )
 } 

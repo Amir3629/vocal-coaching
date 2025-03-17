@@ -7,7 +7,6 @@ import { motion, AnimatePresence } from 'framer-motion'
 import LegalDocumentModal from '../legal-document-modal'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
-import { FormData } from '@/app/types/booking'
 
 // Dynamically import legal document contents
 const DatenschutzContent = dynamic(
@@ -27,19 +26,44 @@ const AGBContent = dynamic(
 // Service types
 type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
 
-interface ConfirmationStepProps {
-  formData: FormData;
-  onFormDataChange: (data: FormData) => void;
-  onSubmit: () => void;
-  onLegalDocumentClick: (type: 'terms' | 'privacy') => void;
+interface FormData {
+  name: string;
+  email: string;
+  phone: string;
+  message: string;
+  
+  // Live Singing fields
+  eventType?: 'wedding' | 'corporate' | 'private' | 'other';
+  eventDate?: string;
+  guestCount?: string;
+  musicPreferences?: string[];
+  jazzStandards?: string;
+  
+  // Vocal Coaching fields
+  sessionType?: '1:1' | 'group' | 'online';
+  skillLevel?: 'beginner' | 'intermediate' | 'advanced';
+  focusArea?: string[];
+  preferredDate?: string;
+  preferredTime?: string;
+  
+  // Workshop fields
+  workshopTheme?: string;
+  groupSize?: string;
+  preferredDates?: string[];
+  workshopDuration?: string;
+  
+  // Legal
+  termsAccepted: boolean;
+  privacyAccepted: boolean;
 }
 
-export default function ConfirmationStep({ 
-  formData, 
-  onFormDataChange, 
-  onSubmit,
-  onLegalDocumentClick 
-}: ConfirmationStepProps) {
+interface ConfirmationStepProps {
+  formData: FormData;
+  serviceType: ServiceType;
+  onChange: (data: Partial<FormData>) => void;
+}
+
+export default function ConfirmationStep({ formData, serviceType, onChange }: ConfirmationStepProps) {
   const { t } = useTranslation()
   const router = useRouter()
   const [showAGB, setShowAGB] = useState(false)
@@ -47,10 +71,6 @@ export default function ConfirmationStep({
   const [showSuccessNotification, setShowSuccessNotification] = useState(false)
   const [missingFields, setMissingFields] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [acceptedPrivacyPolicy, setAcceptedPrivacyPolicy] = useState(false)
-  const [acceptedTerms, setAcceptedTerms] = useState(false)
-  const [isPrivacyPolicyOpen, setIsPrivacyPolicyOpen] = useState(false)
-  const [isTermsOpen, setIsTermsOpen] = useState(false)
   
   // Format date for display
   const formatDate = (dateString?: string) => {
@@ -70,7 +90,7 @@ export default function ConfirmationStep({
   
   // Get service name based on type
   const getServiceName = () => {
-    switch(formData.serviceType) {
+    switch(serviceType) {
       case 'gesangsunterricht':
         return t('booking.jazzWorkshop', 'Jazz Workshop');
       case 'vocal-coaching':
@@ -174,7 +194,7 @@ export default function ConfirmationStep({
   
   // Get service-specific details for email
   const getServiceSpecificDetails = () => {
-    switch (formData.serviceType) {
+    switch (serviceType) {
       case 'professioneller-gesang':
         return {
           event_type: formData.eventType,
@@ -206,11 +226,11 @@ export default function ConfirmationStep({
   const validateForm = () => {
     const missing: string[] = [];
     
-    if (!formData.acceptedTerms) {
+    if (!formData.termsAccepted) {
       missing.push(t('booking.termsAndConditions', 'AGB'));
     }
     
-    if (!formData.acceptedPrivacy) {
+    if (!formData.privacyAccepted) {
       missing.push(t('booking.privacyPolicy', 'Datenschutzerklärung'));
     }
     
@@ -221,7 +241,7 @@ export default function ConfirmationStep({
   // Handle form submission
   const handleSubmit = async () => {
     // Validate form
-    const requiredFields = ['name', 'email', 'phone', 'acceptedTerms', 'acceptedPrivacy']
+    const requiredFields = ['name', 'email', 'phone', 'termsAccepted', 'privacyAccepted']
     const missing = requiredFields.filter(field => !formData[field as keyof FormData])
     
     if (missing.length > 0) {
@@ -242,7 +262,7 @@ export default function ConfirmationStep({
           email: formData.email,
           phone: formData.phone,
           message: formData.message,
-          service_type: formData.serviceType,
+          service_type: serviceType,
           ...getServiceSpecificDetails()
         }
       }
@@ -272,129 +292,314 @@ export default function ConfirmationStep({
     }
   }
   
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    onFormDataChange({
-      ...formData,
-      [name]: type === 'checkbox' ? checked : value
-    });
-  };
-
   return (
-    <div className="space-y-6">
+    <div className="py-4 space-y-6 animate-in fade-in duration-500">
       <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-900">Bestätigung</h3>
-        <p className="text-sm text-gray-500">
-          Bitte überprüfen Sie Ihre Eingaben und bestätigen Sie die Datenschutzerklärung.
-        </p>
-      </div>
-
-      <div className="space-y-4">
-        <div className="flex items-start">
-          <div className="flex items-center h-5">
-            <input
-              id="privacy-policy"
-              name="acceptedPrivacy"
-              type="checkbox"
-              checked={formData.acceptedPrivacy}
-              onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
+        <h3 className="text-xl font-semibold text-white mb-4">
+          {t('booking.bookingSummary', 'Buchungsübersicht')}
+        </h3>
+        
+        <div className="bg-[#1A1A1A] rounded-lg p-5 border border-gray-800">
+          {/* Service Type */}
+          <div className="mb-4 pb-3 border-b border-gray-800">
+            <h4 className="text-lg font-medium text-white mb-2">
+              {t('booking.selectedService', 'Ausgewählter Dienst')}
+            </h4>
+            <p className="text-[#C8A97E]">{getServiceName()}</p>
           </div>
-          <div className="ml-3 text-sm">
-            <label htmlFor="privacy-policy" className="font-medium text-gray-700">
-              Ich akzeptiere die{' '}
-              <button
+          
+          {/* Personal Information */}
+          <div className="mb-4 pb-3 border-b border-gray-800">
+            <h4 className="text-lg font-medium text-white mb-2">
+              {t('booking.personalInfo', 'Persönliche Informationen')}
+            </h4>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div>
+                <p className="text-gray-400 text-sm">{t('booking.name', 'Name')}:</p>
+                <p className="text-white">{formData.name}</p>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm">{t('booking.email', 'E-Mail')}:</p>
+                <p className="text-white">{formData.email}</p>
+              </div>
+              <div>
+                <p className="text-gray-400 text-sm">{t('booking.phone', 'Telefon')}:</p>
+                <p className="text-white">{formData.phone}</p>
+              </div>
+            </div>
+          </div>
+          
+          {/* Service-specific details */}
+          {serviceType === 'professioneller-gesang' && (
+            <div className="mb-4 pb-3 border-b border-gray-800">
+              <h4 className="text-lg font-medium text-white mb-2">
+                {t('booking.eventDetails', 'Veranstaltungsdetails')}
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                  <p className="text-gray-400 text-sm">{t('booking.eventType', 'Art der Veranstaltung')}:</p>
+                  <p className="text-white">{getEventTypeName()}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">{t('booking.eventDate', 'Datum der Veranstaltung')}:</p>
+                  <p className="text-white">{formatDate(formData.eventDate)}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">{t('booking.guestCount', 'Anzahl der Gäste')}:</p>
+                  <p className="text-white">{formData.guestCount}</p>
+                </div>
+                {formData.jazzStandards && (
+                  <div className="col-span-2">
+                    <p className="text-gray-400 text-sm">{t('booking.jazzStandards', 'Jazz Standards')}:</p>
+                    <p className="text-white">{formData.jazzStandards}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {serviceType === 'vocal-coaching' && (
+            <div className="mb-4 pb-3 border-b border-gray-800">
+              <h4 className="text-lg font-medium text-white mb-2">
+                {t('booking.sessionDetails', 'Session Details')}
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                  <p className="text-gray-400 text-sm">{t('booking.sessionType', 'Art der Session')}:</p>
+                  <p className="text-white">{getSessionTypeName()}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">{t('booking.skillLevel', 'Erfahrungslevel')}:</p>
+                  <p className="text-white">{getSkillLevelName()}</p>
+                </div>
+                {formData.focusArea && formData.focusArea.length > 0 && (
+                  <div className="col-span-2">
+                    <p className="text-gray-400 text-sm">{t('booking.focusAreas', 'Schwerpunkte')}:</p>
+                    <p className="text-white">{formData.focusArea.join(', ')}</p>
+                  </div>
+                )}
+                {formData.preferredDate && (
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.preferredDate', 'Bevorzugtes Datum')}:</p>
+                    <p className="text-white">{formatDate(formData.preferredDate)}</p>
+                  </div>
+                )}
+                {formData.preferredTime && (
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.preferredTime', 'Bevorzugte Uhrzeit')}:</p>
+                    <p className="text-white">{formData.preferredTime}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {serviceType === 'gesangsunterricht' && (
+            <div className="mb-4 pb-3 border-b border-gray-800">
+              <h4 className="text-lg font-medium text-white mb-2">
+                {t('booking.workshopDetails', 'Workshop Details')}
+              </h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div>
+                  <p className="text-gray-400 text-sm">{t('booking.workshopTheme', 'Workshop-Thema')}:</p>
+                  <p className="text-white">{getWorkshopThemeName()}</p>
+                </div>
+                <div>
+                  <p className="text-gray-400 text-sm">{t('booking.groupSize', 'Gruppengröße')}:</p>
+                  <p className="text-white">{formData.groupSize}</p>
+                </div>
+                {formData.workshopDuration && (
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.workshopDuration', 'Workshop-Dauer')}:</p>
+                    <p className="text-white">{getWorkshopDuration()}</p>
+                  </div>
+                )}
+                {formData.preferredDates && formData.preferredDates.length > 0 && (
+                  <div className="col-span-2">
+                    <p className="text-gray-400 text-sm">{t('booking.preferredDates', 'Bevorzugte Termine')}:</p>
+                    <p className="text-white">{getPreferredDatesFormatted()}</p>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+          
+          {/* Additional Information */}
+          {formData.message && (
+            <div className="mb-4 pb-3 border-b border-gray-800">
+              <h4 className="text-lg font-medium text-white mb-2">
+                {t('booking.additionalInfo', 'Zusätzliche Informationen')}
+              </h4>
+              <p className="text-white whitespace-pre-line">{formData.message}</p>
+            </div>
+          )}
+        </div>
+      </div>
+      
+      {/* Terms and Conditions */}
+      <div className="pt-4 bg-transparent">
+        {/* Error message for missing fields */}
+        <AnimatePresence>
+          {missingFields.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0, transition: { type: "spring", stiffness: 500, damping: 30 } }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-lg flex items-start"
+            >
+              <AlertCircle className="w-5 h-5 text-red-500 mr-2 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-red-200 text-sm">
+                  {t('booking.acceptTermsError', 'Bitte akzeptieren Sie die folgenden Bedingungen:')}
+                </p>
+                <ul className="list-disc list-inside text-red-300 text-sm mt-1">
+                  {missingFields.map((field, index) => (
+                    <li key={index}>{field}</li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        <div className="space-y-3 bg-[#1A1A1A] p-4 rounded-lg border border-gray-800">
+          <h4 className="text-lg font-medium text-white mb-3">
+            {t('booking.legalTerms', 'Buchungsbedingungen')}
+          </h4>
+          
+          <div className="flex items-start">
+            <div className="flex items-center h-5">
+              <input
+                id="terms"
+                type="checkbox"
+                checked={formData.termsAccepted}
+                onChange={(e) => onChange({ termsAccepted: e.target.checked })}
+                className="w-4 h-4 accent-[#C8A97E] focus:ring-[#C8A97E] focus:ring-2"
+                required
+              />
+            </div>
+            <label htmlFor="terms" className="ml-2 text-sm text-gray-300">
+              {t('booking.termsAgreement', 'Ich akzeptiere die ')}
+              <button 
                 type="button"
-                onClick={() => onLegalDocumentClick('privacy')}
-                className="text-blue-600 hover:text-blue-500"
+                onClick={() => setShowAGB(true)}
+                className="text-[#C8A97E] hover:underline focus:outline-none"
               >
-                Datenschutzerklärung
+                {t('booking.termsAndConditions', 'AGB')}
               </button>
+              . *
             </label>
           </div>
-        </div>
-
-        <div className="flex items-start">
-          <div className="flex items-center h-5">
-            <input
-              id="terms"
-              name="acceptedTerms"
-              type="checkbox"
-              checked={formData.acceptedTerms}
-              onChange={handleChange}
-              className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
-            />
-          </div>
-          <div className="ml-3 text-sm">
-            <label htmlFor="terms" className="font-medium text-gray-700">
-              Ich akzeptiere die{' '}
-              <button
+          
+          <div className="flex items-start">
+            <div className="flex items-center h-5">
+              <input
+                id="privacy"
+                type="checkbox"
+                checked={formData.privacyAccepted || false}
+                onChange={(e) => onChange({ privacyAccepted: e.target.checked })}
+                className="w-4 h-4 accent-[#C8A97E] focus:ring-[#C8A97E] focus:ring-2"
+                required
+              />
+            </div>
+            <label htmlFor="privacy" className="ml-2 text-sm text-gray-300">
+              {t('booking.privacyAgreement', 'Ich akzeptiere die ')}
+              <button 
                 type="button"
-                onClick={() => onLegalDocumentClick('terms')}
-                className="text-blue-600 hover:text-blue-500"
+                onClick={() => setShowDatenschutz(true)}
+                className="text-[#C8A97E] hover:underline focus:outline-none"
               >
-                AGB
+                {t('booking.privacyPolicy', 'Datenschutzerklärung')}
               </button>
+              . *
             </label>
           </div>
+          
+          <p className="text-sm text-gray-400 mt-4">
+            <Info className="w-4 h-4 inline-block mr-1 text-[#C8A97E]" />
+            {t('booking.confirmationNote', 'Nach dem Absenden der Buchungsanfrage werden wir uns zeitnah mit Ihnen in Verbindung setzen, um die Details zu besprechen und einen Termin zu vereinbaren.')}
+          </p>
+        </div>
+        
+        {/* Submit Button */}
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="w-full py-3 bg-[#C8A97E] text-black font-medium rounded-lg hover:bg-[#D4AF37] transition-colors flex items-center justify-center"
+          >
+            {isSubmitting ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {t('booking.submitting', 'Wird gesendet...')}
+              </>
+            ) : (
+              <>
+                <Check className="w-5 h-5 mr-2" />
+                {t('booking.submit', 'Anfrage senden')}
+              </>
+            )}
+          </button>
         </div>
       </div>
-
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={!formData.acceptedPrivacy || !formData.acceptedTerms}
-          className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-        >
-          Anfrage senden
-        </button>
-      </div>
-
-      {isPrivacyPolicyOpen && (
-        <LegalDocumentModal
-          title="Datenschutzerklärung"
-          onClose={() => setIsPrivacyPolicyOpen(false)}
-        >
-          <PrivacyPolicy />
-        </LegalDocumentModal>
-      )}
-
-      {isTermsOpen && (
-        <LegalDocumentModal
-          title="AGB"
-          onClose={() => setIsTermsOpen(false)}
-        >
-          <Terms />
-        </LegalDocumentModal>
-      )}
-
+      
+      {/* Success Notification */}
       <AnimatePresence>
         {showSuccessNotification && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.9 }}
-            transition={{ duration: 0.3 }}
-            className="fixed inset-0 flex items-center justify-center z-[100]"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            className="fixed bottom-8 right-8 bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-4 flex items-center z-50 min-w-[300px] max-w-md"
           >
-            <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4">
-              <div className="text-center">
-                <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-                  <Check className="h-6 w-6 text-green-600" aria-hidden="true" />
-                </div>
-                <h3 className="text-lg font-medium text-gray-900 mb-2">
-                  Vielen Dank für Ihre Anfrage!
-                </h3>
-                <p className="text-sm text-gray-500">
-                  Wir werden uns in Kürze bei Ihnen melden.
-                </p>
-              </div>
+            <div className="w-10 h-10 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mr-3">
+              <Check className="w-5 h-5 text-[#C8A97E]" />
             </div>
+            <div>
+              <h4 className="text-white font-medium">
+                {t('booking.bookingSuccess', 'Buchung erfolgreich!')}
+              </h4>
+              <p className="text-gray-400 text-sm">
+                {t('booking.bookingSuccessMessage', 'Wir werden uns in Kürze bei Ihnen melden.')}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowSuccessNotification(false)}
+              className="ml-auto text-gray-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
+      
+      {/* Legal Document Modals */}
+      <LegalDocumentModal isOpen={showAGB} onClose={() => setShowAGB(false)}>
+        <div className="p-4">
+          <h2 className="text-2xl font-bold mb-6 text-white">
+            {t('booking.termsAndConditions', 'AGB')}
+          </h2>
+          <div className="prose prose-invert max-w-none">
+            <AGBContent />
+          </div>
+        </div>
+      </LegalDocumentModal>
+      
+      <LegalDocumentModal isOpen={showDatenschutz} onClose={() => setShowDatenschutz(false)}>
+        <div className="p-4">
+          <h2 className="text-2xl font-bold mb-6 text-white">
+            {t('booking.privacyPolicy', 'Datenschutzerklärung')}
+          </h2>
+          <div className="prose prose-invert max-w-none">
+            <DatenschutzContent />
+          </div>
+        </div>
+      </LegalDocumentModal>
     </div>
   )
 } 

@@ -1,9 +1,9 @@
 ﻿"use client"
 
 import { useState, useRef, useEffect } from "react"
-import Image from "next/image"
 import { motion } from "framer-motion"
 import { Check } from "lucide-react"
+import { AppImage } from "@/app/components/ui/image"
 
 interface ServiceCardProps {
   title: string
@@ -122,7 +122,7 @@ export default function ServiceCard({
     >
       {image && (
         <div className="absolute inset-0">
-          <Image
+          <AppImage
             src={image}
             alt={title}
             fill
@@ -135,7 +135,6 @@ export default function ServiceCard({
               transitionTimingFunction: 'cubic-bezier(0.16, 1, 0.3, 1)'
             }}
             priority={delay === 0}
-            loading={delay === 0 ? "eager" : "lazy"}
             quality={90}
           />
           <div className="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/80" 

@@ -19,24 +19,27 @@ interface FormData {
 
 interface VocalCoachingFormProps {
   formData: FormData;
-  onFormDataChange: (data: Partial<FormData>) => void;
+  onChange: (data: Partial<FormData>) => void;
 }
 
-export default function VocalCoachingForm({ formData, onFormDataChange }: VocalCoachingFormProps) {
+export default function VocalCoachingForm({ formData, onChange }: VocalCoachingFormProps) {
   const { t } = useTranslation()
   
   // Handle checkbox changes for focus areas
   const handleFocusAreaChange = (area: string) => {
     const currentAreas = formData.focusArea || []
-    let newAreas
-
+    
     if (currentAreas.includes(area)) {
-      newAreas = currentAreas.filter(a => a !== area)
+      // Remove area if already selected
+      onChange({
+        focusArea: currentAreas.filter(a => a !== area)
+      })
     } else {
-      newAreas = [...currentAreas, area]
+      // Add area if not already selected
+      onChange({
+        focusArea: [...currentAreas, area]
+      })
     }
-
-    onFormDataChange({ focusArea: newAreas })
   }
   
   return (
@@ -56,7 +59,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
               type="text"
               id="name"
               value={formData.name}
-              onChange={(e) => onFormDataChange({ name: e.target.value })}
+              onChange={(e) => onChange({ name: e.target.value })}
               className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
               placeholder={t('booking.namePlaceholder', 'Ihr vollständiger Name')}
               required
@@ -71,7 +74,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
               type="email"
               id="email"
               value={formData.email}
-              onChange={(e) => onFormDataChange({ email: e.target.value })}
+              onChange={(e) => onChange({ email: e.target.value })}
               className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
               placeholder={t('booking.emailPlaceholder', 'Ihre E-Mail-Adresse')}
               required
@@ -86,7 +89,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
               type="tel"
               id="phone"
               value={formData.phone}
-              onChange={(e) => onFormDataChange({ phone: e.target.value })}
+              onChange={(e) => onChange({ phone: e.target.value })}
               className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
               placeholder={t('booking.phonePlaceholder', 'Ihre Telefonnummer')}
               required
@@ -109,7 +112,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <button
               type="button"
-              onClick={() => onFormDataChange({ sessionType: '1:1' })}
+              onClick={() => onChange({ sessionType: '1:1' })}
               className={`px-4 py-3 rounded-lg border ${
                 formData.sessionType === '1:1'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -126,7 +129,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
             
             <button
               type="button"
-              onClick={() => onFormDataChange({ sessionType: 'group' })}
+              onClick={() => onChange({ sessionType: 'group' })}
               className={`px-4 py-3 rounded-lg border ${
                 formData.sessionType === 'group'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -143,7 +146,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
             
             <button
               type="button"
-              onClick={() => onFormDataChange({ sessionType: 'online' })}
+              onClick={() => onChange({ sessionType: 'online' })}
               className={`px-4 py-3 rounded-lg border ${
                 formData.sessionType === 'online'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -169,7 +172,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <button
               type="button"
-              onClick={() => onFormDataChange({ skillLevel: 'beginner' })}
+              onClick={() => onChange({ skillLevel: 'beginner' })}
               className={`px-4 py-2 rounded-lg border ${
                 formData.skillLevel === 'beginner'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -181,7 +184,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
             
             <button
               type="button"
-              onClick={() => onFormDataChange({ skillLevel: 'intermediate' })}
+              onClick={() => onChange({ skillLevel: 'intermediate' })}
               className={`px-4 py-2 rounded-lg border ${
                 formData.skillLevel === 'intermediate'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -193,7 +196,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
             
             <button
               type="button"
-              onClick={() => onFormDataChange({ skillLevel: 'advanced' })}
+              onClick={() => onChange({ skillLevel: 'advanced' })}
               className={`px-4 py-2 rounded-lg border ${
                 formData.skillLevel === 'advanced'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -316,7 +319,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
                   type="date"
                   id="preferredDate"
                   value={formData.preferredDate || ''}
-                  onChange={(e) => onFormDataChange({ preferredDate: e.target.value })}
+                  onChange={(e) => onChange({ preferredDate: e.target.value })}
                   className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
                 />
               </div>
@@ -333,7 +336,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
                 <select
                   id="preferredTime"
                   value={formData.preferredTime || ''}
-                  onChange={(e) => onFormDataChange({ preferredTime: e.target.value })}
+                  onChange={(e) => onChange({ preferredTime: e.target.value })}
                   className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white appearance-none"
                 >
                   <option value="">{t('booking.selectOption', 'Bitte wählen')}</option>
@@ -356,7 +359,7 @@ export default function VocalCoachingForm({ formData, onFormDataChange }: VocalC
         <textarea
           id="message"
           value={formData.message}
-          onChange={(e) => onFormDataChange({ message: e.target.value })}
+          onChange={(e) => onChange({ message: e.target.value })}
           className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors min-h-[100px]"
           placeholder={t('booking.coachingGoals', 'Ihre Ziele und Erwartungen an das Coaching')}
         />

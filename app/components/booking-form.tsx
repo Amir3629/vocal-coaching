@@ -78,10 +78,6 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
     privacyAccepted: false
   })
   
-  // State for legal document modals
-  const [showTermsModal, setShowTermsModal] = useState(false)
-  const [showPrivacyModal, setShowPrivacyModal] = useState(false)
-  
   // Handle external isOpen prop
   useEffect(() => {
     if (externalIsOpen !== undefined) {
@@ -98,15 +94,6 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
   // Handle form data changes
   const handleFormChange = (data: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...data }))
-  }
-  
-  // Handle legal document click
-  const handleLegalDocumentClick = (type: 'terms' | 'privacy') => {
-    if (type === 'terms') {
-      setShowTermsModal(true)
-    } else if (type === 'privacy') {
-      setShowPrivacyModal(true)
-    }
   }
   
   // Go to next step
@@ -185,21 +172,21 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
         return (
           <LiveSingingForm 
             formData={formData} 
-            onFormDataChange={handleFormChange} 
+            onChange={handleFormChange} 
           />
         )
       case 'vocal-coaching':
         return (
           <VocalCoachingForm 
             formData={formData} 
-            onFormDataChange={handleFormChange} 
+            onChange={handleFormChange} 
           />
         )
       case 'gesangsunterricht':
         return (
           <WorkshopForm 
             formData={formData} 
-            onFormDataChange={handleFormChange} 
+            onChange={handleFormChange} 
           />
         )
       default:
@@ -258,9 +245,9 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                 
                 {/* Step 1: Service Selection */}
                 {currentStep === 'service' && (
-                  <ServiceSelection
-                    selectedService={serviceType}
-                    onSelect={handleServiceSelect}
+                  <ServiceSelection 
+                    selectedService={serviceType} 
+                    onSelect={handleServiceSelect} 
                   />
                 )}
                 
@@ -271,9 +258,8 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                 {currentStep === 'confirm' && (
                   <ConfirmationStep 
                     formData={formData} 
-                    onFormDataChange={handleFormChange}
-                    onSubmit={handleSubmit}
-                    onLegalDocumentClick={handleLegalDocumentClick}
+                    serviceType={serviceType}
+                    onChange={handleFormChange}
                   />
                 )}
                 

@@ -10,7 +10,9 @@ import WorkshopForm from './workshop-form'
 import ConfirmationStep from './confirmation-step'
 import SubmitButton from './submit-button'
 import { useRouter } from 'next/navigation'
-import { ServiceType } from '@/app/types/booking'
+
+// Service types
+type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
 
 // Form data interface
 interface FormData {
@@ -98,17 +100,6 @@ export default function BookingForm() {
       // Redirect to success page
       router.push('/booking/success')
     }, 1500)
-  }
-  
-  // Handle legal document clicks
-  const handleLegalDocumentClick = (type: 'terms' | 'privacy') => {
-    if (type === 'terms') {
-      // Open terms modal or navigate to terms page
-      window.open('/agb', '_blank')
-    } else if (type === 'privacy') {
-      // Open privacy policy modal or navigate to privacy page
-      window.open('/datenschutz', '_blank')
-    }
   }
   
   // Get step title
@@ -204,21 +195,21 @@ export default function BookingForm() {
             return (
               <LiveSingingForm 
                 formData={formData} 
-                onFormDataChange={handleFormChange} 
+                onChange={handleFormChange} 
               />
             )
           case 'vocal-coaching':
             return (
               <VocalCoachingForm 
                 formData={formData} 
-                onFormDataChange={handleFormChange} 
+                onChange={handleFormChange} 
               />
             )
           case 'gesangsunterricht':
             return (
               <WorkshopForm 
                 formData={formData} 
-                onFormDataChange={handleFormChange} 
+                onChange={handleFormChange} 
               />
             )
           default:
@@ -228,9 +219,8 @@ export default function BookingForm() {
         return (
           <ConfirmationStep 
             formData={formData} 
-            onFormDataChange={handleFormChange}
-            onSubmit={handleSubmit}
-            onLegalDocumentClick={handleLegalDocumentClick}
+            serviceType={selectedService} 
+            onChange={handleFormChange} 
           />
         )
       default:
