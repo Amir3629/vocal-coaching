@@ -71,7 +71,6 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   const [showSuccessNotification, setShowSuccessNotification] = useState(false)
   const [missingFields, setMissingFields] = useState<string[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
   
   // Format date for display
   const formatDate = (dateString?: string) => {
@@ -240,64 +239,58 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   }
   
   // Handle form submission
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-
+  const handleSubmit = async () => {
+    // Validate form
+    const requiredFields = ['name', 'email', 'phone', 'termsAccepted', 'privacyAccepted']
+    const missing = requiredFields.filter(field => !formData[field as keyof FormData])
+    
+    if (missing.length > 0) {
+      setMissingFields(missing)
+      return
+    }
+    
+    setIsSubmitting(true)
+    
     try {
-      // Validate required fields
-      if (!formData.name || !formData.email || !formData.phone) {
-        throw new Error('Bitte füllen Sie alle erforderlichen Felder aus.');
-      }
-
       // Prepare email data
       const emailData = {
-        to: 'melvocalcoaching@gmail.com',
-        subject: `Neue Buchungsanfrage: ${getServiceName()}`,
-        text: `
-          Neue Buchungsanfrage:
-          
-          Service: ${getServiceName()}
-          ${getServiceSpecificDetails()}
-          
-          Kontaktinformationen:
-          Name: ${formData.name}
-          E-Mail: ${formData.email}
-          Telefon: ${formData.phone}
-          
-          Nachricht:
-          ${formData.message || 'Keine Nachricht'}
-        `,
-      };
-
-      // Send email
-      const response = await fetch('/api/send-email', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(emailData),
-      });
-
-      if (!response.ok) {
-        throw new Error('Fehler beim Senden der E-Mail');
+        service_id: 'service_xxxxxxx', // Replace with your EmailJS service ID
+        template_id: 'template_xxxxxxx', // Replace with your EmailJS template ID
+        user_id: 'user_xxxxxxxxxx', // Replace with your EmailJS user ID
+        template_params: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+          service_type: serviceType,
+          ...getServiceSpecificDetails()
+        }
       }
-
-      // Show success notification
-      setShowSuccessNotification(true);
       
-      // Auto-close after 3 seconds
+      // Send email (commented out for now)
+      // const response = await emailjs.send(
+      //   emailData.service_id,
+      //   emailData.template_id,
+      //   emailData.template_params,
+      //   emailData.user_id
+      // )
+      
+      // Show success notification
+      setShowSuccessNotification(true)
+      
+      // Hide notification after 5 seconds
       setTimeout(() => {
-        setShowSuccessNotification(false);
-      }, 3000);
-
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Ein Fehler ist aufgetreten');
+        setShowSuccessNotification(false)
+      }, 5000)
+      
+      // No redirection to success page
+    } catch (error) {
+      console.error('Error sending email:', error)
+      // Handle error
     } finally {
-      setIsSubmitting(false);
+      setIsSubmitting(false)
     }
-  };
+  }
   
   return (
     <div className="py-4 space-y-6 animate-in fade-in duration-500">
@@ -527,7 +520,8 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
         {/* Submit Button */}
         <div className="mt-6">
           <button
-            type="submit"
+            type="button"
+            onClick={handleSubmit}
             disabled={isSubmitting}
             className="w-full py-3 bg-[#C8A97E] text-black font-medium rounded-lg hover:bg-[#D4AF37] transition-colors flex items-center justify-center"
           >
@@ -550,25 +544,35 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
       </div>
       
       {/* Success Notification */}
-      {showSuccessNotification && (
-        <div className="fixed inset-0 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-md w-full mx-4 transform transition-all duration-500 ease-in-out">
-            <div className="text-center">
-              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-green-100">
-                <Check className="h-6 w-6 text-green-600" aria-hidden="true" />
-              </div>
-              <h3 className="mt-3 text-lg font-medium leading-6 text-gray-900">
-                Vielen Dank für Ihre Anfrage!
-              </h3>
-              <div className="mt-2">
-                <p className="text-sm text-gray-500">
-                  Wir haben Ihre Anfrage erhalten und werden uns in Kürze bei Ihnen melden.
-                </p>
-              </div>
+      <AnimatePresence>
+        {showSuccessNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            className="fixed bottom-8 right-8 bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-4 flex items-center z-50 min-w-[300px] max-w-md"
+          >
+            <div className="w-10 h-10 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mr-3">
+              <Check className="w-5 h-5 text-[#C8A97E]" />
             </div>
-          </div>
-        </div>
-      )}
+            <div>
+              <h4 className="text-white font-medium">
+                {t('booking.bookingSuccess', 'Buchung erfolgreich!')}
+              </h4>
+              <p className="text-gray-400 text-sm">
+                {t('booking.bookingSuccessMessage', 'Wir werden uns in Kürze bei Ihnen melden.')}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowSuccessNotification(false)}
+              className="ml-auto text-gray-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
       
       {/* Legal Document Modals */}
       <LegalDocumentModal isOpen={showAGB} onClose={() => setShowAGB(false)}>

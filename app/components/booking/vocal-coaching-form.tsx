@@ -43,7 +43,7 @@ export default function VocalCoachingForm({ formData, onChange }: VocalCoachingF
   }
   
   return (
-    <div className="space-y-6 custom-scrollbar max-h-[80vh] overflow-y-auto">
+    <div className="space-y-8 animate-in fade-in duration-500">
       <div className="space-y-4">
         <h3 className="text-xl font-semibold text-white mb-4">
           {t('booking.personalInfo', 'Persönliche Informationen')}
@@ -364,50 +364,6 @@ export default function VocalCoachingForm({ formData, onChange }: VocalCoachingF
           placeholder={t('booking.coachingGoals', 'Ihre Ziele und Erwartungen an das Coaching')}
         />
       </div>
-
-      {/* Calendar Integration */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-medium text-white">Terminplanung</h3>
-        <div className="bg-[#1A1A1A] rounded-lg shadow-sm border border-gray-800 p-4">
-          <div className="aspect-w-16 aspect-h-9">
-            <iframe
-              src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ30T2yfDb7XKvIARrVpIy2KIPltFAg7-YUnQlejiuhoJaIU3tvpj3ZR6Vn5klhf33WZjAu9QmYR"
-              className="w-full h-full rounded-lg"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
-          </div>
-          <p className="mt-2 text-sm text-gray-400">
-            Wählen Sie einen verfügbaren Termin aus dem Kalender aus.
-          </p>
-        </div>
-      </div>
     </div>
   )
-}
-
-// Add custom scrollbar styles
-const customScrollbarStyles = `
-  .custom-scrollbar::-webkit-scrollbar {
-    width: 8px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 4px;
-  }
-  
-  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: #555;
-  }
-`;
-
-// Add the styles to the component
-<style jsx global>{customScrollbarStyles}</style> 
+} 
