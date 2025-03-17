@@ -78,6 +78,10 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
     privacyAccepted: false
   })
   
+  // State for legal document modals
+  const [showTermsModal, setShowTermsModal] = useState(false)
+  const [showPrivacyModal, setShowPrivacyModal] = useState(false)
+  
   // Handle external isOpen prop
   useEffect(() => {
     if (externalIsOpen !== undefined) {
@@ -94,6 +98,15 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
   // Handle form data changes
   const handleFormChange = (data: Partial<FormData>) => {
     setFormData(prev => ({ ...prev, ...data }))
+  }
+  
+  // Handle legal document click
+  const handleLegalDocumentClick = (type: 'terms' | 'privacy') => {
+    if (type === 'terms') {
+      setShowTermsModal(true)
+    } else if (type === 'privacy') {
+      setShowPrivacyModal(true)
+    }
   }
   
   // Go to next step
