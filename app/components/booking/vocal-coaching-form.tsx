@@ -367,11 +367,11 @@ export default function VocalCoachingForm({ formData, onChange }: VocalCoachingF
 
       {/* Calendar Integration */}
       <div className="space-y-4">
-        <h3 className="text-lg font-medium text-gray-900">Terminplanung</h3>
-        <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
+        <h3 className="text-lg font-medium text-white">Terminplanung</h3>
+        <div className="bg-[#1A1A1A] rounded-lg shadow-sm border border-gray-800 p-4">
           <div className="aspect-w-16 aspect-h-9">
             <iframe
-              src="https://calendar.google.com/calendar/embed?src=YOUR_CALENDAR_ID&ctz=Europe%2FBerlin&mode=WEEK&showCalendars=0&showTabs=0&showPrint=0&showTitle=0&showNav=0&showDate=0&showTz=0"
+              src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ30T2yfDb7XKvIARrVpIy2KIPltFAg7-YUnQlejiuhoJaIU3tvpj3ZR6Vn5klhf33WZjAu9QmYR"
               className="w-full h-full rounded-lg"
               style={{ border: 0 }}
               allowFullScreen
@@ -379,7 +379,7 @@ export default function VocalCoachingForm({ formData, onChange }: VocalCoachingF
               referrerPolicy="no-referrer-when-downgrade"
             />
           </div>
-          <p className="mt-2 text-sm text-gray-500">
+          <p className="mt-2 text-sm text-gray-400">
             Wählen Sie einen verfügbaren Termin aus dem Kalender aus.
           </p>
         </div>
