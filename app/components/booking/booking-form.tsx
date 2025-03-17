@@ -14,52 +14,27 @@ import { XMarkIcon } from '@heroicons/react/24/outline'
 import ServiceSelectionStep from './service-selection-step'
 import PersonalInfoStep from './personal-info-step'
 import ServiceSpecificStep from './service-specific-step'
-
-// Service types
-type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
-
-// Form data interface
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  
-  // Live Singing fields
-  eventType?: 'wedding' | 'corporate' | 'private' | 'other';
-  eventDate?: string;
-  guestCount?: string;
-  jazzStandards?: string;
-  
-  // Vocal Coaching fields
-  sessionType?: '1:1' | 'group' | 'online';
-  skillLevel?: 'beginner' | 'intermediate' | 'advanced';
-  focusArea?: string[];
-  preferredDate?: string;
-  preferredTime?: string;
-  
-  // Workshop fields
-  workshopTheme?: string;
-  groupSize?: string;
-  preferredDates?: string[];
-  workshopDuration?: string;
-  
-  // Legal
-  termsAccepted: boolean;
-  privacyAccepted: boolean;
-}
+import LegalDocumentModal from './legal-document-modal'
+import { ServiceType, FormData } from '@/app/types/booking'
 
 interface BookingFormProps {
   onClose: () => void;
+}
+
+interface Step {
+  id: number;
+  name: string;
 }
 
 export default function BookingForm({ onClose }: BookingFormProps) {
   const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
-  const [currentStep, setCurrentStep] = useState(0)
-  const [selectedService, setSelectedService] = useState<ServiceType>(null)
+  const [currentStep, setCurrentStep] = useState(1)
+  const [selectedService, setSelectedService] = useState<ServiceType | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
+  const [showLegalDocument, setShowLegalDocument] = useState(false)
+  const [documentType, setDocumentType] = useState<'terms' | 'privacy'>('terms')
   
   // Initialize form data with empty values
   const [formData, setFormData] = useState<FormData>({
@@ -70,6 +45,12 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     termsAccepted: false,
     privacyAccepted: false
   })
+  
+  const steps: Step[] = [
+    { id: 1, name: t('booking.steps.serviceSelection', 'Service Auswahl') },
+    { id: 2, name: t('booking.steps.details', 'Details') },
+    { id: 3, name: t('booking.steps.confirmation', 'Bestätigung') },
+  ]
   
   // Handle service selection from URL parameter
   useEffect(() => {
@@ -82,6 +63,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   // Handle service selection
   const handleServiceSelect = (service: ServiceType) => {
     setSelectedService(service)
+    setCurrentStep(2)
   }
   
   // Handle form data changes
@@ -90,7 +72,7 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   }
   
   // Go to next step
-  const handleNextStep = () => {
+  const handleNext = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
@@ -98,8 +80,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   }
   
   // Go to previous step
-  const handlePrevStep = () => {
-    if (currentStep > 0) {
+  const handleBack = () => {
+    if (currentStep > 1) {
       setCurrentStep(currentStep - 1)
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
@@ -119,71 +101,36 @@ export default function BookingForm({ onClose }: BookingFormProps) {
     }, 1500)
   }
   
-  // Get step title
-  const getStepTitle = () => {
-    switch (currentStep) {
-      case 0:
-        return t('booking.selectService', 'Dienst auswählen')
-      case 1:
-        return t('booking.personalInfo', 'Persönliche Informationen')
-      case 2:
-        return t('booking.serviceDetails', 'Details zum Dienst')
-      case 3:
-        return t('booking.confirmation', 'Bestätigung')
-      default:
-        return ''
-    }
+  const handleLegalDocumentClick = (type: 'terms' | 'privacy') => {
+    setDocumentType(type)
+    setShowLegalDocument(true)
   }
   
   // Render the current step
   const renderStep = () => {
     switch (currentStep) {
-      case 0:
+      case 1:
         return (
           <ServiceSelectionStep
             selectedService={selectedService}
             onServiceSelect={handleServiceSelect}
           />
         )
-      case 1:
+      case 2:
         return (
-          <PersonalInfoStep
+          <ServiceSpecificStep
+            serviceType={selectedService!}
             formData={formData}
-            onChange={handleFormChange}
+            onFormDataChange={handleFormChange}
           />
         )
-      case 2:
-        switch (selectedService) {
-          case 'professioneller-gesang':
-            return (
-              <LiveSingingForm 
-                formData={formData} 
-                onChange={handleFormChange} 
-              />
-            )
-          case 'vocal-coaching':
-            return (
-              <VocalCoachingForm 
-                formData={formData} 
-                onChange={handleFormChange} 
-              />
-            )
-          case 'gesangsunterricht':
-            return (
-              <WorkshopForm 
-                formData={formData} 
-                onChange={handleFormChange} 
-              />
-            )
-          default:
-            return null
-        }
       case 3:
         return (
-          <ConfirmationStep 
-            formData={formData} 
-            serviceType={selectedService} 
-            onChange={handleFormChange} 
+          <ConfirmationStep
+            formData={formData}
+            onFormDataChange={handleFormChange}
+            onSubmit={handleSubmit}
+            onLegalDocumentClick={handleLegalDocumentClick}
           />
         )
       default:
@@ -194,10 +141,8 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   // Check if the current step is valid
   const isStepValid = () => {
     switch (currentStep) {
-      case 0:
-        return !!selectedService
       case 1:
-        return !!formData.name && !!formData.email && !!formData.phone
+        return !!selectedService
       case 2:
         // Basic validation for service-specific forms
         if (selectedService === 'professioneller-gesang') {
@@ -239,18 +184,18 @@ export default function BookingForm({ onClose }: BookingFormProps) {
             <div className="mb-8">
               <nav aria-label="Progress">
                 <ol role="list" className="space-y-4 md:flex md:space-y-0 md:space-x-8">
-                  {steps.map((step, index) => (
-                    <li key={step.name} className="md:flex-1">
+                  {steps.map((step) => (
+                    <li key={step.id} className="md:flex-1">
                       <div
                         className={`group flex flex-col border-l-4 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4 ${
-                          currentStep >= index
+                          currentStep >= step.id
                             ? 'border-[#C8A97E]'
                             : 'border-gray-700'
                         }`}
                       >
                         <span
                           className={`text-sm font-medium ${
-                            currentStep >= index
+                            currentStep >= step.id
                               ? 'text-[#C8A97E]'
                               : 'text-gray-500'
                           }`}
@@ -266,51 +211,26 @@ export default function BookingForm({ onClose }: BookingFormProps) {
 
             {/* Form Steps */}
             <div className="space-y-6">
-              {currentStep === 0 && (
-                <ServiceSelectionStep
-                  selectedService={selectedService}
-                  onServiceSelect={handleServiceSelect}
-                />
-              )}
-              {currentStep === 1 && (
-                <PersonalInfoStep
-                  formData={formData}
-                  onChange={handleFormChange}
-                />
-              )}
-              {currentStep === 2 && (
-                <ServiceSpecificStep
-                  serviceType={selectedService}
-                  formData={formData}
-                  onChange={handleFormChange}
-                />
-              )}
-              {currentStep === 3 && (
-                <ConfirmationStep
-                  formData={formData}
-                  serviceType={selectedService}
-                  onSubmit={handleSubmit}
-                />
-              )}
+              {renderStep()}
             </div>
 
             {/* Navigation Buttons */}
             <div className="mt-8 flex justify-between">
               <button
                 type="button"
-                onClick={handlePrevStep}
-                disabled={currentStep === 0}
+                onClick={handleBack}
+                disabled={currentStep === 1}
                 className="inline-flex items-center px-4 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#C8A97E] disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {t('booking.back', 'Zurück')}
               </button>
               <button
                 type="button"
-                onClick={handleNextStep}
+                onClick={handleNext}
                 disabled={!isStepValid()}
                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-[#C8A97E] hover:bg-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#C8A97E] disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {currentStep === steps.length - 1
+                {currentStep === steps.length
                   ? t('booking.submit', 'Absenden')
                   : t('booking.next', 'Weiter')}
               </button>
@@ -318,6 +238,12 @@ export default function BookingForm({ onClose }: BookingFormProps) {
           </div>
         </div>
       </div>
+
+      <LegalDocumentModal
+        isOpen={showLegalDocument}
+        onClose={() => setShowLegalDocument(false)}
+        documentType={documentType}
+      />
     </div>
   )
 } 
