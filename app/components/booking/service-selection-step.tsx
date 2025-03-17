@@ -1,6 +1,5 @@
 import { useTranslation } from 'react-i18next';
-
-type ServiceType = 'vocal-coaching' | 'gesangsunterricht' | 'professioneller-gesang';
+import { ServiceType } from '@/app/types/booking';
 
 interface ServiceSelectionStepProps {
   selectedService: ServiceType | null;

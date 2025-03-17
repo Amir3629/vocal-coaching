@@ -1,31 +1,49 @@
 import { useTranslation } from 'react-i18next';
+import { ServiceType } from '@/app/types/booking';
 import VocalCoachingForm from './vocal-coaching-form';
-import WorkshopForm from './workshop-form';
-import LiveSingingForm from './live-singing-form';
-
-type ServiceType = 'vocal-coaching' | 'gesangsunterricht' | 'professioneller-gesang';
+import GesangsunterrichtForm from './gesangsunterricht-form';
+import ProfessionalSingingForm from './professional-singing-form';
 
 interface ServiceSpecificStepProps {
-  serviceType: ServiceType | null;
+  serviceType: ServiceType;
   formData: any;
-  onChange: (data: any) => void;
+  onFormDataChange: (data: any) => void;
 }
 
-export default function ServiceSpecificStep({ serviceType, formData, onChange }: ServiceSpecificStepProps) {
+export default function ServiceSpecificStep({ serviceType, formData, onFormDataChange }: ServiceSpecificStepProps) {
   const { t } = useTranslation();
 
-  if (!serviceType) {
-    return null;
-  }
+  const renderServiceForm = () => {
+    switch (serviceType) {
+      case 'vocal-coaching':
+        return (
+          <VocalCoachingForm
+            formData={formData}
+            onFormDataChange={onFormDataChange}
+          />
+        );
+      case 'gesangsunterricht':
+        return (
+          <GesangsunterrichtForm
+            formData={formData}
+            onFormDataChange={onFormDataChange}
+          />
+        );
+      case 'professioneller-gesang':
+        return (
+          <ProfessionalSingingForm
+            formData={formData}
+            onFormDataChange={onFormDataChange}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
-  switch (serviceType) {
-    case 'vocal-coaching':
-      return <VocalCoachingForm formData={formData} onChange={onChange} />;
-    case 'gesangsunterricht':
-      return <WorkshopForm formData={formData} onChange={onChange} />;
-    case 'professioneller-gesang':
-      return <LiveSingingForm formData={formData} onChange={onChange} />;
-    default:
-      return null;
-  }
+  return (
+    <div className="space-y-4">
+      {renderServiceForm()}
+    </div>
+  );
 } 
