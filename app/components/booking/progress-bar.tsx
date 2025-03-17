@@ -6,13 +6,15 @@ import { useTranslation } from 'react-i18next'
 import { Check, Music, Calendar, FileText } from 'lucide-react'
 
 // Form step type
-type FormStep = 'service' | 'details' | 'confirm'
+type FormStep = 'service' | 'details' | 'confirm' | number
 
 interface ProgressBarProps {
-  currentStep: FormStep
+  currentStep: FormStep;
+  totalSteps?: number;
+  labels?: string[];
 }
 
-export default function ProgressBar({ currentStep }: ProgressBarProps) {
+export default function ProgressBar({ currentStep, totalSteps = 3, labels }: ProgressBarProps) {
   const { t } = useTranslation()
   
   return (

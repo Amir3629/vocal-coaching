@@ -31,19 +31,24 @@ interface FormData {
   eventDate?: string;
   guestCount?: string;
   musicPreferences?: string[];
+  jazzStandards?: string;
   
   // Vocal Coaching fields
   sessionType?: '1:1' | 'group' | 'online';
   skillLevel?: 'beginner' | 'intermediate' | 'advanced';
   focusArea?: string[];
+  preferredDate?: string;
+  preferredTime?: string;
   
   // Workshop fields
   workshopTheme?: string;
   groupSize?: string;
   preferredDates?: string[];
+  workshopDuration?: string;
   
   // Legal
   termsAccepted: boolean;
+  privacyAccepted: boolean;
 }
 
 // Props interface
@@ -69,7 +74,8 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
     email: '',
     phone: '',
     message: '',
-    termsAccepted: false
+    termsAccepted: false,
+    privacyAccepted: false
   })
   
   // Handle external isOpen prop
@@ -129,7 +135,8 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
       email: '',
       phone: '',
       message: '',
-      termsAccepted: false
+      termsAccepted: false,
+      privacyAccepted: false
     })
     
     // Call external onClose if provided
@@ -240,7 +247,7 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                 {currentStep === 'service' && (
                   <ServiceSelection 
                     selectedService={serviceType} 
-                    onServiceSelect={handleServiceSelect} 
+                    onSelect={handleServiceSelect} 
                   />
                 )}
                 
