@@ -102,6 +102,17 @@ export default function BookingForm() {
     }, 1500)
   }
   
+  // Handle legal document clicks
+  const handleLegalDocumentClick = (type: 'terms' | 'privacy') => {
+    if (type === 'terms') {
+      // Open terms modal or navigate to terms page
+      window.open('/agb', '_blank')
+    } else if (type === 'privacy') {
+      // Open privacy policy modal or navigate to privacy page
+      window.open('/datenschutz', '_blank')
+    }
+  }
+  
   // Get step title
   const getStepTitle = () => {
     switch (currentStep) {
@@ -219,8 +230,9 @@ export default function BookingForm() {
         return (
           <ConfirmationStep 
             formData={formData} 
-            serviceType={selectedService} 
-            onChange={handleFormChange} 
+            onFormDataChange={handleFormChange}
+            onSubmit={handleSubmit}
+            onLegalDocumentClick={handleLegalDocumentClick}
           />
         )
       default:
