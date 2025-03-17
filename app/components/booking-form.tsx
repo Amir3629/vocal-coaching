@@ -185,21 +185,21 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
         return (
           <LiveSingingForm 
             formData={formData} 
-            onChange={handleFormChange} 
+            onFormDataChange={handleFormChange} 
           />
         )
       case 'vocal-coaching':
         return (
           <VocalCoachingForm 
             formData={formData} 
-            onChange={handleFormChange} 
+            onFormDataChange={handleFormChange} 
           />
         )
       case 'gesangsunterricht':
         return (
           <WorkshopForm 
             formData={formData} 
-            onChange={handleFormChange} 
+            onFormDataChange={handleFormChange} 
           />
         )
       default:
@@ -258,9 +258,9 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                 
                 {/* Step 1: Service Selection */}
                 {currentStep === 'service' && (
-                  <ServiceSelection 
-                    selectedService={serviceType} 
-                    onSelect={handleServiceSelect} 
+                  <ServiceSelection
+                    selectedService={serviceType}
+                    onSelect={handleServiceSelect}
                   />
                 )}
                 
