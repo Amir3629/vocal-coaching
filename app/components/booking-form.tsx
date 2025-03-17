@@ -258,8 +258,9 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                 {currentStep === 'confirm' && (
                   <ConfirmationStep 
                     formData={formData} 
-                    serviceType={serviceType}
-                    onChange={handleFormChange}
+                    onFormDataChange={handleFormChange}
+                    onSubmit={handleSubmit}
+                    onLegalDocumentClick={handleLegalDocumentClick}
                   />
                 )}
                 
