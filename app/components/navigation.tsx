@@ -40,8 +40,9 @@ export default function Navigation() {
     { href: "/#about", label: t('nav.about') },
     { href: "/#references", label: t('nav.references') },
     { href: "/#testimonials", label: t('nav.testimonials') },
-    { href: "/#contact", label: t('nav.contact') },
+    { href: "/calendar", label: t('nav.calendar', 'Kalender') },
     { href: "/booking", label: t('nav.booking', 'Booking') },
+    { href: "/#contact", label: t('nav.contact') },
   ]
 
   useEffect(() => {

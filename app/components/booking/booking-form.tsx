@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import ProgressBar from './progress-bar'
 import ServiceSelection from './service-selection'
@@ -9,7 +9,7 @@ import VocalCoachingForm from './vocal-coaching-form'
 import WorkshopForm from './workshop-form'
 import ConfirmationStep from './confirmation-step'
 import SubmitButton from './submit-button'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 // Service types
 type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
@@ -48,6 +48,7 @@ interface FormData {
 export default function BookingForm() {
   const { t } = useTranslation()
   const router = useRouter()
+  const searchParams = useSearchParams()
   const [currentStep, setCurrentStep] = useState(0)
   const [selectedService, setSelectedService] = useState<ServiceType>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -61,6 +62,14 @@ export default function BookingForm() {
     termsAccepted: false,
     privacyAccepted: false
   })
+  
+  // Handle service selection from URL parameter
+  useEffect(() => {
+    const serviceParam = searchParams.get('service')
+    if (serviceParam && ['gesangsunterricht', 'vocal-coaching', 'professioneller-gesang'].includes(serviceParam)) {
+      setSelectedService(serviceParam as ServiceType)
+    }
+  }, [searchParams])
   
   // Handle service selection
   const handleServiceSelect = (service: ServiceType) => {

@@ -1,7 +1,7 @@
 import React from 'react'
 import Link from 'next/link'
 import { Metadata } from 'next'
-import { CheckCircle, Calendar, ArrowLeft, ExternalLink } from 'lucide-react'
+import { CheckCircle, Calendar, ArrowLeft } from 'lucide-react'
 
 export const metadata: Metadata = {
   title: 'Booking Successful | Melanie Becker Vocal Coaching',
@@ -9,9 +9,6 @@ export const metadata: Metadata = {
 }
 
 export default function BookingSuccessPage() {
-  // Google Calendar appointment scheduling link
-  const googleCalendarLink = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ30T2yfDb7XKvIARrVpIy2KIPltFAg7-YUnQlejiuhoJaIU3tvpj3ZR6Vn5klhf33WZjAu9QmYR"
-  
   return (
     <div className="container mx-auto px-4 py-24">
       <div className="max-w-2xl mx-auto text-center">
@@ -53,28 +50,6 @@ export default function BookingSuccessPage() {
               <span>Once confirmed, you will receive a calendar invitation for your appointment.</span>
             </li>
           </ul>
-          
-          <div className="mt-6 pt-4 border-t border-gray-800">
-            <div className="bg-[#0A0A0A] rounded-lg p-4 border border-[#C8A97E]/30">
-              <h3 className="text-white font-medium mb-2 flex items-center justify-center">
-                <Calendar className="w-5 h-5 mr-2 text-[#C8A97E]" />
-                Book Directly in My Calendar
-              </h3>
-              <p className="text-gray-400 text-sm mb-4">
-                For vocal coaching sessions, you can also book directly in my calendar to see real-time availability.
-              </p>
-              <a 
-                href={googleCalendarLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-2 bg-[#C8A97E] text-black font-medium rounded-lg hover:bg-[#D4AF37] transition-colors flex items-center justify-center"
-              >
-                <Calendar className="w-4 h-4 mr-2" />
-                View Available Time Slots
-                <ExternalLink className="w-3 h-3 ml-1" />
-              </a>
-            </div>
-          </div>
         </div>
         
         <Link 

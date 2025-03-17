@@ -259,13 +259,13 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                 {/* Navigation Buttons */}
                 <div className="flex justify-between mt-8">
                   {currentStep !== 'service' ? (
-                    <button
+                      <button
                       onClick={goToPrevStep}
                       className="px-6 py-2 border border-gray-700 text-gray-300 rounded-full hover:border-gray-500 transition-colors flex items-center"
-                    >
+                      >
                       <ArrowLeft size={16} className="mr-2" />
-                      {t('booking.back', 'Zurück')}
-                    </button>
+                        {t('booking.back', 'Zurück')}
+                      </button>
                   ) : (
                     <div></div> // Empty div to maintain flex spacing
                   )}
@@ -284,7 +284,7 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                       <ArrowRight size={16} className="ml-2" />
                     </button>
                   ) : (
-                    <button
+                      <button
                       onClick={handleSubmit}
                       disabled={!isCurrentStepValid()}
                       className={`px-6 py-2 rounded-full flex items-center ${
@@ -295,9 +295,9 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
                     >
                       {t('booking.submit', 'Absenden')}
                       <Check size={16} className="ml-2" />
-                    </button>
+                      </button>
                   )}
-                </div>
+                  </div>
               </div>
             </motion.div>
           </motion.div>

@@ -322,15 +322,6 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
                   </div>
                 )}
               </div>
-              
-              <div className="mt-3 bg-[#1A1A1A]/50 p-3 rounded-lg border border-[#C8A97E]/20">
-                <div className="flex items-start">
-                  <Calendar className="w-5 h-5 text-[#C8A97E] mr-2 flex-shrink-0 mt-0.5" />
-                  <p className="text-sm text-gray-300">
-                    {t('booking.calendarIntegration', 'Sie können auch direkt einen Termin in meinem Kalender buchen. Klicken Sie auf "Kalender öffnen" im vorherigen Schritt oder besuchen Sie den Kalender nach Abschluss der Buchung.')}
-                  </p>
-                </div>
-              </div>
             </div>
           )}
           
