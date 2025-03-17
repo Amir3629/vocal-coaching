@@ -18,29 +18,24 @@ interface FormData {
 
 interface WorkshopFormProps {
   formData: FormData;
-  onChange: (data: Partial<FormData>) => void;
+  onFormDataChange: (data: Partial<FormData>) => void;
 }
 
-export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) {
+export default function WorkshopForm({ formData, onFormDataChange }: WorkshopFormProps) {
   const { t } = useTranslation()
   
   // Handle date selection
-  const handleDateChange = (date: string) => {
+  const handlePreferredDateChange = (date: string) => {
     const currentDates = formData.preferredDates || []
-    
+    let newDates
+
     if (currentDates.includes(date)) {
-      // Remove date if already selected
-      onChange({
-        preferredDates: currentDates.filter(d => d !== date)
-      })
+      newDates = currentDates.filter(d => d !== date)
     } else {
-      // Add date if not already selected (max 3)
-      if (currentDates.length < 3) {
-        onChange({
-          preferredDates: [...currentDates, date]
-        })
-      }
+      newDates = [...currentDates, date]
     }
+
+    onFormDataChange({ preferredDates: newDates })
   }
   
   return (
@@ -60,7 +55,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
               type="text"
               id="name"
               value={formData.name}
-              onChange={(e) => onChange({ name: e.target.value })}
+              onChange={(e) => onFormDataChange({ name: e.target.value })}
               className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
               placeholder={t('booking.namePlaceholder', 'Ihr vollständiger Name')}
               required
@@ -75,7 +70,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
               type="email"
               id="email"
               value={formData.email}
-              onChange={(e) => onChange({ email: e.target.value })}
+              onChange={(e) => onFormDataChange({ email: e.target.value })}
               className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
               placeholder={t('booking.emailPlaceholder', 'Ihre E-Mail-Adresse')}
               required
@@ -90,7 +85,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
               type="tel"
               id="phone"
               value={formData.phone}
-              onChange={(e) => onChange({ phone: e.target.value })}
+              onChange={(e) => onFormDataChange({ phone: e.target.value })}
               className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
               placeholder={t('booking.phonePlaceholder', 'Ihre Telefonnummer')}
               required
@@ -113,7 +108,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <button
               type="button"
-              onClick={() => onChange({ workshopTheme: 'jazz-improv' })}
+              onClick={() => onFormDataChange({ workshopTheme: 'jazz-improv' })}
               className={`px-4 py-3 rounded-lg border ${
                 formData.workshopTheme === 'jazz-improv'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -130,7 +125,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
             
             <button
               type="button"
-              onClick={() => onChange({ workshopTheme: 'vocal-health' })}
+              onClick={() => onFormDataChange({ workshopTheme: 'vocal-health' })}
               className={`px-4 py-3 rounded-lg border ${
                 formData.workshopTheme === 'vocal-health'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -147,7 +142,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
             
             <button
               type="button"
-              onClick={() => onChange({ workshopTheme: 'performance' })}
+              onClick={() => onFormDataChange({ workshopTheme: 'performance' })}
               className={`px-4 py-3 rounded-lg border ${
                 formData.workshopTheme === 'performance'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -173,7 +168,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
           <select
             id="workshopDuration"
             value={formData.workshopDuration || ''}
-            onChange={(e) => onChange({ workshopDuration: e.target.value })}
+            onChange={(e) => onFormDataChange({ workshopDuration: e.target.value })}
             className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors appearance-none"
           >
             <option value="">{t('booking.selectOption', 'Bitte wählen')}</option>
@@ -193,7 +188,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
           <select
             id="groupSize"
             value={formData.groupSize || ''}
-            onChange={(e) => onChange({ groupSize: e.target.value })}
+            onChange={(e) => onFormDataChange({ groupSize: e.target.value })}
             className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors appearance-none"
           >
             <option value="">{t('booking.selectOption', 'Bitte wählen')}</option>
@@ -218,7 +213,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
                 type="checkbox"
                 id="weekday-morning"
                 checked={formData.preferredDates?.includes('weekday-morning') || false}
-                onChange={() => handleDateChange('weekday-morning')}
+                onChange={() => handlePreferredDateChange('weekday-morning')}
                 className="w-4 h-4 mr-2 accent-[#C8A97E]"
                 disabled={formData.preferredDates?.length === 3 && !formData.preferredDates?.includes('weekday-morning')}
               />
@@ -232,7 +227,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
                 type="checkbox"
                 id="weekday-afternoon"
                 checked={formData.preferredDates?.includes('weekday-afternoon') || false}
-                onChange={() => handleDateChange('weekday-afternoon')}
+                onChange={() => handlePreferredDateChange('weekday-afternoon')}
                 className="w-4 h-4 mr-2 accent-[#C8A97E]"
                 disabled={formData.preferredDates?.length === 3 && !formData.preferredDates?.includes('weekday-afternoon')}
               />
@@ -246,7 +241,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
                 type="checkbox"
                 id="weekday-evening"
                 checked={formData.preferredDates?.includes('weekday-evening') || false}
-                onChange={() => handleDateChange('weekday-evening')}
+                onChange={() => handlePreferredDateChange('weekday-evening')}
                 className="w-4 h-4 mr-2 accent-[#C8A97E]"
                 disabled={formData.preferredDates?.length === 3 && !formData.preferredDates?.includes('weekday-evening')}
               />
@@ -260,7 +255,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
                 type="checkbox"
                 id="weekend-morning"
                 checked={formData.preferredDates?.includes('weekend-morning') || false}
-                onChange={() => handleDateChange('weekend-morning')}
+                onChange={() => handlePreferredDateChange('weekend-morning')}
                 className="w-4 h-4 mr-2 accent-[#C8A97E]"
                 disabled={formData.preferredDates?.length === 3 && !formData.preferredDates?.includes('weekend-morning')}
               />
@@ -274,7 +269,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
                 type="checkbox"
                 id="weekend-afternoon"
                 checked={formData.preferredDates?.includes('weekend-afternoon') || false}
-                onChange={() => handleDateChange('weekend-afternoon')}
+                onChange={() => handlePreferredDateChange('weekend-afternoon')}
                 className="w-4 h-4 mr-2 accent-[#C8A97E]"
                 disabled={formData.preferredDates?.length === 3 && !formData.preferredDates?.includes('weekend-afternoon')}
               />
@@ -288,7 +283,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
                 type="checkbox"
                 id="weekend-evening"
                 checked={formData.preferredDates?.includes('weekend-evening') || false}
-                onChange={() => handleDateChange('weekend-evening')}
+                onChange={() => handlePreferredDateChange('weekend-evening')}
                 className="w-4 h-4 mr-2 accent-[#C8A97E]"
                 disabled={formData.preferredDates?.length === 3 && !formData.preferredDates?.includes('weekend-evening')}
               />
@@ -308,7 +303,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
           <textarea
             id="message"
             value={formData.message}
-            onChange={(e) => onChange({ message: e.target.value })}
+            onChange={(e) => onFormDataChange({ message: e.target.value })}
             className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors min-h-[100px]"
             placeholder={t('booking.workshopGoals', 'Spezifische Wünsche oder Anforderungen für den Workshop')}
           />

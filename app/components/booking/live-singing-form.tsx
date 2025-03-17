@@ -19,27 +19,24 @@ interface FormData {
 
 interface LiveSingingFormProps {
   formData: FormData;
-  onChange: (data: Partial<FormData>) => void;
+  onFormDataChange: (data: Partial<FormData>) => void;
 }
 
-export default function LiveSingingForm({ formData, onChange }: LiveSingingFormProps) {
+export default function LiveSingingForm({ formData, onFormDataChange }: LiveSingingFormProps) {
   const { t } = useTranslation()
   
   // Handle checkbox changes for music preferences
   const handleMusicPreferenceChange = (preference: string) => {
     const currentPreferences = formData.musicPreferences || []
-    
+    let newPreferences
+
     if (currentPreferences.includes(preference)) {
-      // Remove preference if already selected
-      onChange({
-        musicPreferences: currentPreferences.filter(p => p !== preference)
-      })
+      newPreferences = currentPreferences.filter(p => p !== preference)
     } else {
-      // Add preference if not already selected
-      onChange({
-        musicPreferences: [...currentPreferences, preference]
-      })
+      newPreferences = [...currentPreferences, preference]
     }
+
+    onFormDataChange({ musicPreferences: newPreferences })
   }
   
   return (
@@ -59,7 +56,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
               type="text"
               id="name"
               value={formData.name}
-              onChange={(e) => onChange({ name: e.target.value })}
+              onChange={(e) => onFormDataChange({ name: e.target.value })}
               className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
               placeholder={t('booking.namePlaceholder', 'Ihr vollständiger Name')}
               required
@@ -74,7 +71,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
               type="email"
               id="email"
               value={formData.email}
-              onChange={(e) => onChange({ email: e.target.value })}
+              onChange={(e) => onFormDataChange({ email: e.target.value })}
               className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
               placeholder={t('booking.emailPlaceholder', 'Ihre E-Mail-Adresse')}
               required
@@ -89,7 +86,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
               type="tel"
               id="phone"
               value={formData.phone}
-              onChange={(e) => onChange({ phone: e.target.value })}
+              onChange={(e) => onFormDataChange({ phone: e.target.value })}
               className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
               placeholder={t('booking.phonePlaceholder', 'Ihre Telefonnummer')}
               required
@@ -112,7 +109,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             <button
               type="button"
-              onClick={() => onChange({ eventType: 'wedding' })}
+              onClick={() => onFormDataChange({ eventType: 'wedding' })}
               className={`px-4 py-2 rounded-lg border ${
                 formData.eventType === 'wedding'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -124,7 +121,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
             
             <button
               type="button"
-              onClick={() => onChange({ eventType: 'corporate' })}
+              onClick={() => onFormDataChange({ eventType: 'corporate' })}
               className={`px-4 py-2 rounded-lg border ${
                 formData.eventType === 'corporate'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -136,7 +133,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
             
             <button
               type="button"
-              onClick={() => onChange({ eventType: 'private' })}
+              onClick={() => onFormDataChange({ eventType: 'private' })}
               className={`px-4 py-2 rounded-lg border ${
                 formData.eventType === 'private'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -148,7 +145,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
             
             <button
               type="button"
-              onClick={() => onChange({ eventType: 'other' })}
+              onClick={() => onFormDataChange({ eventType: 'other' })}
               className={`px-4 py-2 rounded-lg border ${
                 formData.eventType === 'other'
                   ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
@@ -182,7 +179,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
                   type="date"
                   id="eventDate"
                   value={formData.eventDate || ''}
-                  onChange={(e) => onChange({ eventDate: e.target.value })}
+                  onChange={(e) => onFormDataChange({ eventDate: e.target.value })}
                   className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
                   required
                 />
@@ -200,7 +197,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
           <select
             id="guestCount"
             value={formData.guestCount || ''}
-            onChange={(e) => onChange({ guestCount: e.target.value })}
+            onChange={(e) => onFormDataChange({ guestCount: e.target.value })}
             className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors appearance-none"
           >
             <option value="">{t('booking.selectOption', 'Bitte wählen')}</option>
@@ -220,7 +217,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
           <textarea
             id="jazzStandards"
             value={formData.jazzStandards || ''}
-            onChange={(e) => onChange({ jazzStandards: e.target.value })}
+            onChange={(e) => onFormDataChange({ jazzStandards: e.target.value })}
             className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors min-h-[100px]"
             placeholder={t('booking.jazzStandardsPlaceholder', 'Spezifische Jazz Standards oder Songs, die Sie hören möchten (z.B. "Fly Me To The Moon", "Autumn Leaves", etc.)')}
           />
@@ -235,7 +232,7 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
           <textarea
             id="message"
             value={formData.message}
-            onChange={(e) => onChange({ message: e.target.value })}
+            onChange={(e) => onFormDataChange({ message: e.target.value })}
             className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors min-h-[100px]"
             placeholder={t('booking.additionalInfoPlaceholder', 'Besondere Wünsche oder Anforderungen')}
           />
