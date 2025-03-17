@@ -16,6 +16,8 @@ import PersonalInfoStep from './personal-info-step'
 import ServiceSpecificStep from './service-specific-step'
 import LegalDocumentModal from './legal-document-modal'
 import { ServiceType, FormData } from '@/app/types/booking'
+import { motion } from 'framer-motion'
+import { X } from 'lucide-react'
 
 interface BookingFormProps {
   onClose: () => void;
@@ -161,82 +163,83 @@ export default function BookingForm({ onClose }: BookingFormProps) {
   }
   
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-      <div className="bg-[#1A1A1A] rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-        <div className="p-6 border-b border-gray-800">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-white">
-              {t('booking.title', 'Buchungsanfrage')}
-            </h2>
+    <div className="fixed inset-0 z-50 overflow-y-auto">
+      <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+          onClick={onClose}
+        />
+
+        <motion.div
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.95 }}
+          transition={{ duration: 0.2 }}
+          className="relative inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl sm:p-6 sm:align-middle"
+        >
+          <div className="absolute right-0 top-0 pr-4 pt-4">
             <button
+              type="button"
+              className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               onClick={onClose}
-              className="text-gray-400 hover:text-white"
             >
               <span className="sr-only">Close</span>
-              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+              <X className="h-6 w-6" aria-hidden="true" />
             </button>
           </div>
-        </div>
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="p-6">
-            {/* Progress Steps */}
-            <div className="mb-8">
-              <nav aria-label="Progress">
-                <ol role="list" className="space-y-4 md:flex md:space-y-0 md:space-x-8">
-                  {steps.map((step) => (
-                    <li key={step.id} className="md:flex-1">
-                      <div
-                        className={`group flex flex-col border-l-4 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4 ${
-                          currentStep >= step.id
-                            ? 'border-[#C8A97E]'
-                            : 'border-gray-700'
-                        }`}
-                      >
-                        <span
-                          className={`text-sm font-medium ${
-                            currentStep >= step.id
-                              ? 'text-[#C8A97E]'
-                              : 'text-gray-500'
-                          }`}
-                        >
-                          {step.name}
-                        </span>
-                      </div>
-                    </li>
-                  ))}
-                </ol>
-              </nav>
-            </div>
+          <div className="sm:flex sm:items-start">
+            <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
+              <div className="max-h-[80vh] overflow-y-auto custom-scrollbar">
+                <div className="space-y-6">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-lg font-medium leading-6 text-gray-900">
+                      {t('booking.title', 'Buchungsanfrage')}
+                    </h3>
+                  </div>
 
-            {/* Form Steps */}
-            <div className="space-y-6">
-              {renderStep()}
-            </div>
-
-            {/* Navigation Buttons */}
-            <div className="mt-8 flex justify-between">
-              <button
-                type="button"
-                onClick={handleBack}
-                disabled={currentStep === 1}
-                className="inline-flex items-center px-4 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#C8A97E] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {t('booking.back', 'Zurück')}
-              </button>
-              <button
-                type="button"
-                onClick={handleNext}
-                disabled={!isStepValid()}
-                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-[#C8A97E] hover:bg-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#C8A97E] disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {currentStep === steps.length
-                  ? t('booking.submit', 'Absenden')
-                  : t('booking.next', 'Weiter')}
-              </button>
+                  <div className="mt-2">
+                    {currentStep === 0 && (
+                      <ServiceSelectionStep
+                        formData={formData}
+                        onFormDataChange={handleFormChange}
+                        onNext={handleNext}
+                      />
+                    )}
+                    {currentStep === 1 && (
+                      <PersonalInfoStep
+                        formData={formData}
+                        onFormDataChange={handleFormChange}
+                        onNext={handleNext}
+                        onBack={handleBack}
+                      />
+                    )}
+                    {currentStep === 2 && (
+                      <ServiceSpecificStep
+                        formData={formData}
+                        onFormDataChange={handleFormChange}
+                        onNext={handleNext}
+                        onBack={handleBack}
+                        serviceType={formData.serviceType}
+                      />
+                    )}
+                    {currentStep === 3 && (
+                      <ConfirmationStep
+                        formData={formData}
+                        onFormDataChange={handleFormChange}
+                        onSubmit={handleSubmit}
+                        onLegalDocumentClick={handleLegalDocumentClick}
+                      />
+                    )}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
 
       <LegalDocumentModal

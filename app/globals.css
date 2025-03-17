@@ -169,24 +169,26 @@
 /* Custom scrollbar styles */
 .custom-scrollbar {
   scrollbar-width: thin;
-  scrollbar-color: var(--primary) transparent;
+  scrollbar-color: #C8A97E #1A1A1A;
 }
 
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
+  width: 8px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+  background: #1A1A1A;
+  border-radius: 4px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--primary);
-  border-radius: 3px;
+  background-color: #C8A97E;
+  border-radius: 4px;
+  border: 2px solid #1A1A1A;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-  background: #b69a6e;
+  background-color: #D4AF37;
 }
 
 /* Mobile optimizations */

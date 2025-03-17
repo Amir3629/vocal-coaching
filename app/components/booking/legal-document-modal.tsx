@@ -1,96 +1,72 @@
-import { useTranslation } from 'react-i18next';
+"use client"
+
+import React from 'react'
+import { X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 
 interface LegalDocumentModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  documentType: 'terms' | 'privacy';
+  isOpen: boolean
+  onClose: () => void
+  title: string
+  children: React.ReactNode
 }
 
-export default function LegalDocumentModal({ isOpen, onClose, documentType }: LegalDocumentModalProps) {
-  const { t } = useTranslation();
-
-  if (!isOpen) return null;
-
-  const getDocumentContent = () => {
-    if (documentType === 'terms') {
-      return (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-white">1. Allgemeine Bedingungen</h3>
-          <p className="text-gray-300">
-            {t('legal.terms.general', 'Diese Allgemeinen Geschäftsbedingungen regeln die Nutzung der Gesangsdienstleistungen von Melvocalcoaching.')}
-          </p>
-          
-          <h3 className="text-lg font-semibold text-white">2. Vertragsschluss</h3>
-          <p className="text-gray-300">
-            {t('legal.terms.contract', 'Der Vertrag kommt durch die Bestätigung der Buchungsanfrage zustande.')}
-          </p>
-          
-          <h3 className="text-lg font-semibold text-white">3. Preise und Zahlungsbedingungen</h3>
-          <p className="text-gray-300">
-            {t('legal.terms.pricing', 'Die Preise für die Gesangsdienstleistungen werden im Voraus festgelegt und sind in Euro zu zahlen.')}
-          </p>
-          
-          <h3 className="text-lg font-semibold text-white">4. Stornierung</h3>
-          <p className="text-gray-300">
-            {t('legal.terms.cancellation', 'Stornierungen sind bis zu 24 Stunden vor der gebuchten Zeit möglich.')}
-          </p>
-        </div>
-      );
-    } else {
-      return (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-white">1. Datenschutz</h3>
-          <p className="text-gray-300">
-            {t('legal.privacy.dataProtection', 'Wir nehmen den Schutz Ihrer persönlichen Daten sehr ernst.')}
-          </p>
-          
-          <h3 className="text-lg font-semibold text-white">2. Datenerhebung</h3>
-          <p className="text-gray-300">
-            {t('legal.privacy.dataCollection', 'Wir erheben nur die Daten, die für die Durchführung unserer Dienstleistungen notwendig sind.')}
-          </p>
-          
-          <h3 className="text-lg font-semibold text-white">3. Datenverarbeitung</h3>
-          <p className="text-gray-300">
-            {t('legal.privacy.dataProcessing', 'Ihre Daten werden sicher verarbeitet und nicht an Dritte weitergegeben.')}
-          </p>
-          
-          <h3 className="text-lg font-semibold text-white">4. Ihre Rechte</h3>
-          <p className="text-gray-300">
-            {t('legal.privacy.yourRights', 'Sie haben das Recht auf Auskunft, Berichtigung oder Löschung Ihrer personenbezogenen Daten.')}
-          </p>
-        </div>
-      );
-    }
-  };
+export default function LegalDocumentModal({
+  isOpen,
+  onClose,
+  title,
+  children
+}: LegalDocumentModalProps) {
+  if (!isOpen) return null
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-[60]">
-      <div className="bg-[#1A1A1A] rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
-        <div className="p-6 border-b border-gray-800">
-          <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-white">
-              {documentType === 'terms' 
-                ? t('legal.terms.title', 'Allgemeine Geschäftsbedingungen')
-                : t('legal.privacy.title', 'Datenschutzerklärung')}
-            </h2>
-            <button
-              onClick={onClose}
-              className="text-gray-400 hover:text-white transition-colors"
-            >
-              <span className="sr-only">Close</span>
-              <svg className="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-              </svg>
-            </button>
-          </div>
-        </div>
+    <AnimatePresence>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="fixed inset-0 z-[100] overflow-y-auto"
+      >
+        <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity"
+            onClick={onClose}
+          />
 
-        <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="p-6">
-            {getDocumentContent()}
-          </div>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            transition={{ duration: 0.2 }}
+            className="relative inline-block transform overflow-hidden rounded-lg bg-white px-4 pt-5 pb-4 text-left align-bottom shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-2xl sm:p-6 sm:align-middle"
+          >
+            <div className="absolute right-0 top-0 pr-4 pt-4">
+              <button
+                type="button"
+                className="rounded-md bg-white text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
+                onClick={onClose}
+              >
+                <span className="sr-only">Close</span>
+                <X className="h-6 w-6" aria-hidden="true" />
+              </button>
+            </div>
+
+            <div className="sm:flex sm:items-start">
+              <div className="mt-3 text-center sm:mt-0 sm:text-left w-full">
+                <h3 className="text-lg font-medium leading-6 text-gray-900 mb-4">
+                  {title}
+                </h3>
+                <div className="mt-2 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                  {children}
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
-      </div>
-    </div>
-  );
+      </motion.div>
+    </AnimatePresence>
+  )
 } 
