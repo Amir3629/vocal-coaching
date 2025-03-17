@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import LegalDocumentModal from '../legal-document-modal'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
+import { FormData } from '@/app/types/booking'
 
 // Dynamically import legal document contents
 const DatenschutzContent = dynamic(
@@ -26,44 +27,19 @@ const AGBContent = dynamic(
 // Service types
 type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
 
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  
-  // Live Singing fields
-  eventType?: 'wedding' | 'corporate' | 'private' | 'other';
-  eventDate?: string;
-  guestCount?: string;
-  musicPreferences?: string[];
-  jazzStandards?: string;
-  
-  // Vocal Coaching fields
-  sessionType?: '1:1' | 'group' | 'online';
-  skillLevel?: 'beginner' | 'intermediate' | 'advanced';
-  focusArea?: string[];
-  preferredDate?: string;
-  preferredTime?: string;
-  
-  // Workshop fields
-  workshopTheme?: string;
-  groupSize?: string;
-  preferredDates?: string[];
-  workshopDuration?: string;
-  
-  // Legal
-  termsAccepted: boolean;
-  privacyAccepted: boolean;
-}
-
 interface ConfirmationStepProps {
   formData: FormData;
-  serviceType: ServiceType;
-  onChange: (data: Partial<FormData>) => void;
+  onFormDataChange: (data: FormData) => void;
+  onSubmit: () => void;
+  onLegalDocumentClick: (type: 'terms' | 'privacy') => void;
 }
 
-export default function ConfirmationStep({ formData, serviceType, onChange }: ConfirmationStepProps) {
+export default function ConfirmationStep({ 
+  formData, 
+  onFormDataChange, 
+  onSubmit,
+  onLegalDocumentClick 
+}: ConfirmationStepProps) {
   const { t } = useTranslation()
   const router = useRouter()
   const [showAGB, setShowAGB] = useState(false)
@@ -94,7 +70,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   
   // Get service name based on type
   const getServiceName = () => {
-    switch(serviceType) {
+    switch(formData.serviceType) {
       case 'gesangsunterricht':
         return t('booking.jazzWorkshop', 'Jazz Workshop');
       case 'vocal-coaching':
@@ -198,7 +174,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   
   // Get service-specific details for email
   const getServiceSpecificDetails = () => {
-    switch (serviceType) {
+    switch (formData.serviceType) {
       case 'professioneller-gesang':
         return {
           event_type: formData.eventType,
@@ -230,11 +206,11 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   const validateForm = () => {
     const missing: string[] = [];
     
-    if (!formData.termsAccepted) {
+    if (!formData.acceptedTerms) {
       missing.push(t('booking.termsAndConditions', 'AGB'));
     }
     
-    if (!formData.privacyAccepted) {
+    if (!formData.acceptedPrivacy) {
       missing.push(t('booking.privacyPolicy', 'Datenschutzerklärung'));
     }
     
@@ -245,7 +221,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   // Handle form submission
   const handleSubmit = async () => {
     // Validate form
-    const requiredFields = ['name', 'email', 'phone', 'termsAccepted', 'privacyAccepted']
+    const requiredFields = ['name', 'email', 'phone', 'acceptedTerms', 'acceptedPrivacy']
     const missing = requiredFields.filter(field => !formData[field as keyof FormData])
     
     if (missing.length > 0) {
@@ -266,7 +242,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
           email: formData.email,
           phone: formData.phone,
           message: formData.message,
-          service_type: serviceType,
+          service_type: formData.serviceType,
           ...getServiceSpecificDetails()
         }
       }
@@ -296,6 +272,14 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
     }
   }
   
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, type, checked } = e.target;
+    onFormDataChange({
+      ...formData,
+      [name]: type === 'checkbox' ? checked : value
+    });
+  };
+
   return (
     <div className="space-y-6">
       <div className="space-y-4">
@@ -310,10 +294,10 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
           <div className="flex items-center h-5">
             <input
               id="privacy-policy"
-              name="privacy-policy"
+              name="acceptedPrivacy"
               type="checkbox"
-              checked={acceptedPrivacyPolicy}
-              onChange={(e) => setAcceptedPrivacyPolicy(e.target.checked)}
+              checked={formData.acceptedPrivacy}
+              onChange={handleChange}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
           </div>
@@ -322,7 +306,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
               Ich akzeptiere die{' '}
               <button
                 type="button"
-                onClick={() => setIsPrivacyPolicyOpen(true)}
+                onClick={() => onLegalDocumentClick('privacy')}
                 className="text-blue-600 hover:text-blue-500"
               >
                 Datenschutzerklärung
@@ -335,10 +319,10 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
           <div className="flex items-center h-5">
             <input
               id="terms"
-              name="terms"
+              name="acceptedTerms"
               type="checkbox"
-              checked={acceptedTerms}
-              onChange={(e) => setAcceptedTerms(e.target.checked)}
+              checked={formData.acceptedTerms}
+              onChange={handleChange}
               className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
             />
           </div>
@@ -347,7 +331,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
               Ich akzeptiere die{' '}
               <button
                 type="button"
-                onClick={() => setIsTermsOpen(true)}
+                onClick={() => onLegalDocumentClick('terms')}
                 className="text-blue-600 hover:text-blue-500"
               >
                 AGB
@@ -361,7 +345,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
         <button
           type="button"
           onClick={handleSubmit}
-          disabled={!acceptedPrivacyPolicy || !acceptedTerms}
+          disabled={!formData.acceptedPrivacy || !formData.acceptedTerms}
           className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           Anfrage senden
