@@ -206,21 +206,21 @@ export default function BookingForm() {
             return (
               <LiveSingingForm 
                 formData={formData} 
-                onChange={handleFormChange} 
+                onFormDataChange={handleFormChange} 
               />
             )
           case 'vocal-coaching':
             return (
               <VocalCoachingForm 
                 formData={formData} 
-                onChange={handleFormChange} 
+                onFormDataChange={handleFormChange} 
               />
             )
           case 'gesangsunterricht':
             return (
               <WorkshopForm 
                 formData={formData} 
-                onChange={handleFormChange} 
+                onFormDataChange={handleFormChange} 
               />
             )
           default:
