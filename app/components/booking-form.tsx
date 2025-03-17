@@ -223,19 +223,18 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
           
           {/* Service Selection Step */}
           {currentStep === 'service' && (
-            <div className="space-y-4 animate-in fade-in duration-500">
-              <h2 className="text-xl font-semibold text-white mb-4">
-                {t('booking.selectService', 'Wählen Sie einen Dienst')}
-              </h2>
-              
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                {/* ... service cards ... */}
-              </div>
-            </div>
+            <ServiceSelection 
+              selectedService={serviceType} 
+              onSelect={handleServiceSelect} 
+            />
           )}
           
           {/* Details Step */}
-          {currentStep === 'details' && renderServiceForm()}
+          {currentStep === 'details' && (
+            <div className="space-y-4 animate-in fade-in duration-500">
+              {renderServiceForm()}
+            </div>
+          )}
           
           {/* Confirmation Step */}
           {currentStep === 'confirm' && (
@@ -248,49 +247,42 @@ export default function BookingForm({ isOpen: externalIsOpen, onClose }: Booking
         </div>
         
         {/* Navigation Buttons */}
-        <div className="bg-[#1A1A1A] p-3 border-t border-gray-800 flex justify-between">
-          {/* Back Button */}
-          {currentStep > 'service' && (
+        <div className="bg-[#1A1A1A] p-4 border-t border-gray-800">
+          <div className="flex justify-between items-center max-w-2xl mx-auto">
+            {/* Back Button */}
+            {currentStep !== 'service' && (
+              <button
+                onClick={goToPrevStep}
+                className="flex items-center text-gray-400 hover:text-white transition-colors"
+              >
+                <ArrowLeft className="w-5 h-5 mr-2" />
+                {t('booking.back', 'Zurück')}
+              </button>
+            )}
+            
+            {/* Next/Submit Button */}
             <button
-              type="button"
-              onClick={goToPrevStep}
-              className="px-3 py-1.5 border border-gray-700 rounded-lg text-gray-300 hover:bg-gray-800 transition-colors text-sm"
-            >
-              {t('booking.back', 'Zurück')}
-            </button>
-          )}
-          
-          {/* Next Button - Only show on Service and Details steps */}
-          {currentStep < 'confirm' && (
-            <button
-              type="button"
-              onClick={goToNextStep}
+              onClick={currentStep === 'confirm' ? handleSubmit : goToNextStep}
               disabled={!isCurrentStepValid()}
-              className={`px-4 py-1.5 rounded-lg text-sm ${
-                isCurrentStepValid() 
-                  ? 'bg-[#C8A97E] text-black hover:bg-[#D4AF37]' 
-                  : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-              } transition-colors ml-auto`}
-            >
-              {t('booking.next', 'Weiter')}
-            </button>
-          )}
-          
-          {/* Submit Button */}
-          {currentStep === 'confirm' && (
-            <button
-              type="button"
-              onClick={handleSubmit}
-              disabled={!isCurrentStepValid()}
-              className={`px-4 py-1.5 rounded-lg text-sm ${
+              className={`flex items-center px-6 py-2 rounded-lg transition-all duration-300 ${
                 isCurrentStepValid()
-                  ? 'bg-[#C8A97E] text-black hover:bg-[#D4AF37]'
-                  : 'bg-gray-700 text-gray-400 cursor-not-allowed'
-              } transition-colors ml-auto`}
+                  ? 'bg-[#C8A97E] text-black hover:bg-[#B69A6E]'
+                  : 'bg-gray-800 text-gray-400 cursor-not-allowed'
+              }`}
             >
-              {t('booking.submit', 'Absenden')}
+              {currentStep === 'confirm' ? (
+                <>
+                  {t('booking.submit', 'Absenden')}
+                  <Check className="w-5 h-5 ml-2" />
+                </>
+              ) : (
+                <>
+                  {t('booking.next', 'Weiter')}
+                  <ArrowRight className="w-5 h-5 ml-2" />
+                </>
+              )}
             </button>
-          )}
+          </div>
         </div>
       </div>
     </div>
