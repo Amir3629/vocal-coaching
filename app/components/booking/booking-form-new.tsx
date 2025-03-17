@@ -10,9 +10,7 @@ import WorkshopForm from './workshop-form'
 import ConfirmationStep from './confirmation-step'
 import SubmitButton from './submit-button'
 import { useRouter } from 'next/navigation'
-
-// Service types
-type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
+import { ServiceType } from '@/app/types/booking'
 
 // Form data interface
 interface FormData {
