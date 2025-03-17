@@ -10,6 +10,10 @@ import WorkshopForm from './workshop-form'
 import ConfirmationStep from './confirmation-step'
 import SubmitButton from './submit-button'
 import { useRouter, useSearchParams } from 'next/navigation'
+import { XMarkIcon } from '@heroicons/react/24/outline'
+import ServiceSelectionStep from './service-selection-step'
+import PersonalInfoStep from './personal-info-step'
+import ServiceSpecificStep from './service-specific-step'
 
 // Service types
 type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
@@ -45,7 +49,11 @@ interface FormData {
   privacyAccepted: boolean;
 }
 
-export default function BookingForm() {
+interface BookingFormProps {
+  onClose: () => void;
+}
+
+export default function BookingForm({ onClose }: BookingFormProps) {
   const { t } = useTranslation()
   const router = useRouter()
   const searchParams = useSearchParams()
@@ -132,71 +140,17 @@ export default function BookingForm() {
     switch (currentStep) {
       case 0:
         return (
-          <ServiceSelection 
-            selectedService={selectedService} 
-            onSelect={handleServiceSelect} 
+          <ServiceSelectionStep
+            selectedService={selectedService}
+            onServiceSelect={handleServiceSelect}
           />
         )
       case 1:
         return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="name" className="block text-sm font-medium text-white">
-                  {t('booking.name', 'Name')} *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => handleFormChange({ name: e.target.value })}
-                  className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-white">
-                  {t('booking.email', 'E-Mail')} *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={(e) => handleFormChange({ email: e.target.value })}
-                  className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="phone" className="block text-sm font-medium text-white">
-                  {t('booking.phone', 'Telefon')} *
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => handleFormChange({ phone: e.target.value })}
-                  className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <label htmlFor="message" className="block text-sm font-medium text-white">
-                {t('booking.message', 'Nachricht')}
-              </label>
-              <textarea
-                id="message"
-                value={formData.message}
-                onChange={(e) => handleFormChange({ message: e.target.value })}
-                rows={4}
-                className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-              />
-            </div>
-          </div>
+          <PersonalInfoStep
+            formData={formData}
+            onChange={handleFormChange}
+          />
         )
       case 2:
         switch (selectedService) {
@@ -262,60 +216,106 @@ export default function BookingForm() {
   }
   
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-8">
-        <ProgressBar 
-          currentStep={currentStep} 
-          totalSteps={4} 
-          labels={[
-            t('booking.service', 'Dienst'),
-            t('booking.personal', 'Persönlich'),
-            t('booking.details', 'Details'),
-            t('booking.confirm', 'Bestätigen')
-          ]}
-        />
-      </div>
-      
-      <div className="mb-6">
-        <h2 className="text-2xl font-bold text-white">
-          {getStepTitle()}
-        </h2>
-        <p className="text-gray-400 mt-2">
-          {currentStep === 0 && t('booking.selectServiceDesc', 'Wählen Sie den gewünschten Dienst aus.')}
-          {currentStep === 1 && t('booking.personalInfoDesc', 'Geben Sie Ihre Kontaktdaten ein.')}
-          {currentStep === 2 && t('booking.serviceDetailsDesc', 'Geben Sie weitere Details zu Ihrer Anfrage an.')}
-          {currentStep === 3 && t('booking.confirmationDesc', 'Überprüfen Sie Ihre Angaben und senden Sie die Anfrage ab.')}
-        </p>
-      </div>
-      
-      <div className="bg-[#121212] border border-gray-800 rounded-xl p-6 mb-6">
-        {renderStep()}
-      </div>
-      
-      <div className="mt-8 flex justify-between">
-        {currentStep > 0 && (
-          <button
-            type="button"
-            onClick={handlePrevStep}
-            className="px-6 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors"
-          >
-            {t('booking.back', 'Zurück')}
-          </button>
-        )}
-        
-        <div className={currentStep > 0 ? 'ml-auto' : 'w-full'}>
-          {currentStep < 3 ? (
-            <SubmitButton 
-              onClick={handleNextStep} 
-              disabled={!isStepValid()}
-            />
-          ) : (
-            <SubmitButton 
-              isLastStep
-              onClick={handleSubmit}
-              isSubmitting={isSubmitting}
-            />
-          )}
+    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+      <div className="bg-[#1A1A1A] rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+        <div className="p-6 border-b border-gray-800">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-semibold text-white">
+              {t('booking.title', 'Buchungsanfrage')}
+            </h2>
+            <button
+              onClick={onClose}
+              className="text-gray-400 hover:text-white"
+            >
+              <span className="sr-only">Close</span>
+              <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+            </button>
+          </div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div className="p-6">
+            {/* Progress Steps */}
+            <div className="mb-8">
+              <nav aria-label="Progress">
+                <ol role="list" className="space-y-4 md:flex md:space-y-0 md:space-x-8">
+                  {steps.map((step, index) => (
+                    <li key={step.name} className="md:flex-1">
+                      <div
+                        className={`group flex flex-col border-l-4 py-2 pl-4 md:border-l-0 md:border-t-4 md:pb-0 md:pl-0 md:pt-4 ${
+                          currentStep >= index
+                            ? 'border-[#C8A97E]'
+                            : 'border-gray-700'
+                        }`}
+                      >
+                        <span
+                          className={`text-sm font-medium ${
+                            currentStep >= index
+                              ? 'text-[#C8A97E]'
+                              : 'text-gray-500'
+                          }`}
+                        >
+                          {step.name}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            </div>
+
+            {/* Form Steps */}
+            <div className="space-y-6">
+              {currentStep === 0 && (
+                <ServiceSelectionStep
+                  selectedService={selectedService}
+                  onServiceSelect={handleServiceSelect}
+                />
+              )}
+              {currentStep === 1 && (
+                <PersonalInfoStep
+                  formData={formData}
+                  onChange={handleFormChange}
+                />
+              )}
+              {currentStep === 2 && (
+                <ServiceSpecificStep
+                  serviceType={selectedService}
+                  formData={formData}
+                  onChange={handleFormChange}
+                />
+              )}
+              {currentStep === 3 && (
+                <ConfirmationStep
+                  formData={formData}
+                  serviceType={selectedService}
+                  onSubmit={handleSubmit}
+                />
+              )}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="mt-8 flex justify-between">
+              <button
+                type="button"
+                onClick={handlePrevStep}
+                disabled={currentStep === 0}
+                className="inline-flex items-center px-4 py-2 border border-gray-700 text-sm font-medium rounded-md text-gray-300 bg-transparent hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#C8A97E] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {t('booking.back', 'Zurück')}
+              </button>
+              <button
+                type="button"
+                onClick={handleNextStep}
+                disabled={!isStepValid()}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-black bg-[#C8A97E] hover:bg-[#D4AF37] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#C8A97E] disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {currentStep === steps.length - 1
+                  ? t('booking.submit', 'Absenden')
+                  : t('booking.next', 'Weiter')}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -505,6 +505,30 @@
     scrollbar-width: thin;
     scrollbar-color: #C8A97E #1A1A1A;
   }
+
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: #C8A97E #1A1A1A;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    background: #1A1A1A;
+    border-radius: 4px;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    background-color: #C8A97E;
+    border-radius: 4px;
+    border: 2px solid #1A1A1A;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background-color: #D4AF37;
+  }
 }
 
 /* 3D Transform Classes */
