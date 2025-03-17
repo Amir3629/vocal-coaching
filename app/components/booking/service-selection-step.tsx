@@ -1,8 +1,10 @@
 import { useTranslation } from 'react-i18next';
 
+type ServiceType = 'vocal-coaching' | 'gesangsunterricht' | 'professioneller-gesang';
+
 interface ServiceSelectionStepProps {
-  selectedService: string | null;
-  onServiceSelect: (service: string) => void;
+  selectedService: ServiceType | null;
+  onServiceSelect: (service: ServiceType) => void;
 }
 
 export default function ServiceSelectionStep({ selectedService, onServiceSelect }: ServiceSelectionStepProps) {
@@ -10,17 +12,17 @@ export default function ServiceSelectionStep({ selectedService, onServiceSelect 
 
   const services = [
     {
-      id: 'vocal-coaching',
+      id: 'vocal-coaching' as ServiceType,
       name: t('services.vocalCoaching', 'Vocal Coaching'),
       description: t('services.vocalCoachingDesc', 'Professionelles Coaching für Ihre Stimme'),
     },
     {
-      id: 'gesangsunterricht',
+      id: 'gesangsunterricht' as ServiceType,
       name: t('services.gesangsunterricht', 'Gesangsunterricht'),
       description: t('services.gesangsunterrichtDesc', 'Individueller Gesangsunterricht'),
     },
     {
-      id: 'professioneller-gesang',
+      id: 'professioneller-gesang' as ServiceType,
       name: t('services.professionalSinging', 'Professioneller Gesang'),
       description: t('services.professionalSingingDesc', 'Professionelle Gesangsdarbietungen'),
     },

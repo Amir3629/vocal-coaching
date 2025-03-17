@@ -3,8 +3,10 @@ import VocalCoachingForm from './vocal-coaching-form';
 import WorkshopForm from './workshop-form';
 import LiveSingingForm from './live-singing-form';
 
+type ServiceType = 'vocal-coaching' | 'gesangsunterricht' | 'professioneller-gesang';
+
 interface ServiceSpecificStepProps {
-  serviceType: string | null;
+  serviceType: ServiceType | null;
   formData: any;
   onChange: (data: any) => void;
 }
