@@ -1,25 +1,25 @@
-import React from 'react'
-import BookingForm from '../components/booking/booking-form'
+'use client';
 
-export const metadata = {
-  title: 'Booking | Melanie Becker Vocal Coaching',
-  description: 'Book a jazz performance, vocal coaching session, or workshop with Melanie Becker.',
-}
+import { useRouter } from 'next/navigation';
+import BookingForm from '../components/booking/booking-form';
 
 export default function BookingPage() {
+  const router = useRouter();
+
   return (
-    <div className="container mx-auto px-4 py-16">
-      <div className="max-w-4xl mx-auto mb-12 text-center">
-        <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Booking
-        </h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-          Buchen Sie einen Live-Auftritt, eine Coaching-Session oder einen Workshop.
-          Füllen Sie das Formular aus und wir melden uns bei Ihnen.
-        </p>
+    <div className="min-h-screen bg-[#121212] text-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold mb-4">
+            Buchungsanfrage
+          </h1>
+          <p className="text-xl text-gray-400">
+            Wählen Sie den gewünschten Dienst und füllen Sie das Formular aus.
+          </p>
+        </div>
+        
+        <BookingForm onClose={() => router.push('/')} />
       </div>
-      
-      <BookingForm />
     </div>
-  )
+  );
 } 
