@@ -1,5 +1,4 @@
 import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
 
 const LegalDocumentModal = ({ isOpen, setIsOpen, title, content }) => {
   return (
@@ -32,7 +31,7 @@ const LegalDocumentModal = ({ isOpen, setIsOpen, title, content }) => {
                 onClick={() => setIsOpen(false)}
               >
                 <span className="sr-only">Close</span>
-                <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                <span className="text-2xl">&times;</span>
               </button>
             </div>
             <div className="sm:flex sm:items-start">
