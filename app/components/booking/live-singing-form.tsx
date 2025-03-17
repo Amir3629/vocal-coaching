@@ -170,53 +170,22 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
           </div>
           
           <div className="bg-[#1A1A1A]/50 border border-[#C8A97E]/20 rounded-lg p-4">
-            <div className="flex items-start mb-4">
-              <div className="bg-[#C8A97E]/10 p-2 rounded-full mr-3">
-                <Calendar className="w-5 h-5 text-[#C8A97E]" />
-              </div>
-              <div>
-                <h4 className="text-white font-medium mb-1">
-                  {t('booking.directBooking', 'Direkte Terminbuchung')}
-                </h4>
-                <p className="text-gray-400 text-sm mb-3">
-                  {t('booking.checkPerformanceAvailability', 'Sehen Sie meine Verfügbarkeit für Auftritte und buchen Sie direkt einen Termin.')}
-                </p>
-                <a 
-                  href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ30T2yfDb7XKvIARrVpIy2KIPltFAg7-YUnQlejiuhoJaIU3tvpj3ZR6Vn5klhf33WZjAu9QmYR"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center px-4 py-2 bg-[#C8A97E] text-black rounded-lg hover:bg-[#D4AF37] transition-colors text-sm font-medium"
-                >
-                  {t('booking.openCalendar', 'Kalender öffnen')}
-                  <ExternalLink className="w-4 h-4 ml-2" />
-                </a>
-              </div>
-            </div>
-            
-            <div className="border-t border-gray-800 pt-4 mt-4">
-              <p className="text-sm text-gray-400">
-                {t('booking.orSpecifyEventDate', 'Oder geben Sie das Datum Ihrer Veranstaltung an:')}
-              </p>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-3">
-                <div className="space-y-2">
-                  <label htmlFor="eventDate" className="block text-sm font-medium text-white">
-                    {t('booking.eventDate', 'Datum der Veranstaltung')} *
-                  </label>
-                  <div className="relative">
-                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                      <Calendar className="h-5 w-5 text-gray-500" />
-                    </div>
-                    <input
-                      type="date"
-                      id="eventDate"
-                      value={formData.eventDate || ''}
-                      onChange={(e) => onChange({ eventDate: e.target.value })}
-                      className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-                      required
-                    />
-                  </div>
+            <div className="space-y-2">
+              <label htmlFor="eventDate" className="block text-sm font-medium text-white">
+                {t('booking.eventDate', 'Datum der Veranstaltung')} *
+              </label>
+              <div className="relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Calendar className="h-5 w-5 text-gray-500" />
                 </div>
+                <input
+                  type="date"
+                  id="eventDate"
+                  value={formData.eventDate || ''}
+                  onChange={(e) => onChange({ eventDate: e.target.value })}
+                  className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
+                  required
+                />
               </div>
             </div>
           </div>

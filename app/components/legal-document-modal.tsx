@@ -3,6 +3,7 @@
 import React, { Fragment, useRef } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import { X } from 'lucide-react'
+import { motion } from 'framer-motion'
 
 interface LegalDocumentModalProps {
   children: React.ReactNode
@@ -49,18 +50,42 @@ export default function LegalDocumentModal({
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-[#121212] border border-gray-800 text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl">
-                <div className="absolute right-0 top-0 pr-4 pt-4 block">
-                  <button
+                <div className="absolute right-0 top-0 pr-4 pt-4 block z-10">
+                  <motion.button
                     type="button"
-                    className="rounded-md text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#C8A97E]"
+                    className="rounded-full bg-[#1A1A1A] p-2 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-[#C8A97E] transition-all duration-200 hover:bg-[#C8A97E]/20"
                     onClick={onClose}
                     ref={cancelButtonRef}
+                    whileHover={{ scale: 1.1 }}
+                    whileTap={{ scale: 0.95 }}
                   >
                     <span className="sr-only">Close</span>
                     <X className="h-6 w-6" aria-hidden="true" />
-                  </button>
+                  </motion.button>
                 </div>
-                <div className="max-h-[80vh] overflow-y-auto">
+                <div 
+                  className="max-h-[80vh] overflow-y-auto p-6"
+                  style={{
+                    scrollbarWidth: 'thin',
+                    scrollbarColor: '#C8A97E #1A1A1A',
+                  }}
+                >
+                  <style jsx>{`
+                    div::-webkit-scrollbar {
+                      width: 6px;
+                    }
+                    div::-webkit-scrollbar-track {
+                      background: #1A1A1A;
+                      border-radius: 10px;
+                    }
+                    div::-webkit-scrollbar-thumb {
+                      background: #C8A97E;
+                      border-radius: 10px;
+                    }
+                    div::-webkit-scrollbar-thumb:hover {
+                      background: #B69A6E;
+                    }
+                  `}</style>
                   {children}
                 </div>
               </Dialog.Panel>

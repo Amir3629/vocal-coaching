@@ -192,6 +192,36 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
     return formData.preferredDates.map(d => dateMap[d] || d).join(', ');
   }
   
+  // Get service-specific details for email
+  const getServiceSpecificDetails = () => {
+    switch (serviceType) {
+      case 'professioneller-gesang':
+        return {
+          event_type: formData.eventType,
+          event_date: formData.eventDate,
+          guest_count: formData.guestCount,
+          jazz_standards: formData.jazzStandards
+        }
+      case 'vocal-coaching':
+        return {
+          session_type: formData.sessionType,
+          skill_level: formData.skillLevel,
+          focus_areas: formData.focusArea?.join(', '),
+          preferred_date: formData.preferredDate,
+          preferred_time: formData.preferredTime
+        }
+      case 'gesangsunterricht':
+        return {
+          workshop_theme: formData.workshopTheme,
+          group_size: formData.groupSize,
+          preferred_dates: formData.preferredDates?.join(', '),
+          workshop_duration: formData.workshopDuration
+        }
+      default:
+        return {}
+    }
+  }
+  
   // Check if all required fields are filled
   const validateForm = () => {
     const missing: string[] = [];
@@ -209,17 +239,56 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   }
   
   // Handle form submission
-  const handleSubmit = () => {
-    if (validateForm()) {
-      setIsSubmitting(true)
+  const handleSubmit = async () => {
+    // Validate form
+    const requiredFields = ['name', 'email', 'phone', 'termsAccepted', 'privacyAccepted']
+    const missing = requiredFields.filter(field => !formData[field as keyof FormData])
+    
+    if (missing.length > 0) {
+      setMissingFields(missing)
+      return
+    }
+    
+    setIsSubmitting(true)
+    
+    try {
+      // Prepare email data
+      const emailData = {
+        service_id: 'service_xxxxxxx', // Replace with your EmailJS service ID
+        template_id: 'template_xxxxxxx', // Replace with your EmailJS template ID
+        user_id: 'user_xxxxxxxxxx', // Replace with your EmailJS user ID
+        template_params: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+          message: formData.message,
+          service_type: serviceType,
+          ...getServiceSpecificDetails()
+        }
+      }
+      
+      // Send email (commented out for now)
+      // const response = await emailjs.send(
+      //   emailData.service_id,
+      //   emailData.template_id,
+      //   emailData.template_params,
+      //   emailData.user_id
+      // )
+      
+      // Show success notification
       setShowSuccessNotification(true)
       
-      // Simulate API call
+      // Hide notification after 5 seconds
       setTimeout(() => {
-        setIsSubmitting(false)
-        // Redirect to success page
-        router.push('/booking/success')
-      }, 2000)
+        setShowSuccessNotification(false)
+      }, 5000)
+      
+      // No redirection to success page
+    } catch (error) {
+      console.error('Error sending email:', error)
+      // Handle error
+    } finally {
+      setIsSubmitting(false)
     }
   }
   
@@ -467,7 +536,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
             ) : (
               <>
                 <Check className="w-5 h-5 mr-2" />
-                {t('booking.submitBooking', 'Buchung absenden')}
+                {t('booking.submit', 'Anfrage senden')}
               </>
             )}
           </button>
@@ -482,7 +551,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
             transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-4 flex items-center z-50 min-w-[300px]"
+            className="fixed bottom-8 right-8 bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-4 flex items-center z-50 min-w-[300px] max-w-md"
           >
             <div className="w-10 h-10 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mr-3">
               <Check className="w-5 h-5 text-[#C8A97E]" />
