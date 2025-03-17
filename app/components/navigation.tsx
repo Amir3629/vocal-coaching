@@ -41,6 +41,7 @@ export default function Navigation() {
     { href: "/#references", label: t('nav.references') },
     { href: "/#testimonials", label: t('nav.testimonials') },
     { href: "/#contact", label: t('nav.contact') },
+    { href: "/booking", label: t('nav.booking', 'Booking') },
   ]
 
   useEffect(() => {
@@ -73,7 +74,11 @@ export default function Navigation() {
     e.preventDefault()
     closeMenu()
 
-    if (pathname === '/') {
+    if (link.href.startsWith('/') && !link.href.startsWith('/#')) {
+      // Direct page navigation
+      router.push(link.href)
+    } else if (pathname === '/') {
+      // Hash navigation on home page
       const element = document.querySelector(link.href.split('#')[1] ? `#${link.href.split('#')[1]}` : 'body')
       if (element) {
         const elementPosition = element.getBoundingClientRect().top + window.pageYOffset
@@ -83,6 +88,7 @@ export default function Navigation() {
         })
       }
     } else {
+      // Hash navigation from another page
       router.push(`/${link.href}`)
     }
   }

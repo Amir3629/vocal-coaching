@@ -1,8 +1,27 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { Check, Calendar, Users, Music, BookOpen, Target, Info } from 'lucide-react'
+import { Check, Calendar, Users, Music, BookOpen, Target, Info, Clock, AlertCircle, X } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
+import LegalDocumentModal from '../legal-document-modal'
+import dynamic from 'next/dynamic'
+import { useRouter } from 'next/navigation'
+
+// Dynamically import legal document contents
+const DatenschutzContent = dynamic(
+  () => import("@/app/datenschutz/page").catch(() => () => (
+    <div className="text-red-500">Failed to load Datenschutz content</div>
+  )),
+  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
+)
+
+const AGBContent = dynamic(
+  () => import("@/app/agb/page").catch(() => () => (
+    <div className="text-red-500">Failed to load AGB content</div>
+  )),
+  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
+)
 
 // Service types
 type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
@@ -18,19 +37,24 @@ interface FormData {
   eventDate?: string;
   guestCount?: string;
   musicPreferences?: string[];
+  jazzStandards?: string;
   
   // Vocal Coaching fields
   sessionType?: '1:1' | 'group' | 'online';
   skillLevel?: 'beginner' | 'intermediate' | 'advanced';
   focusArea?: string[];
+  preferredDate?: string;
+  preferredTime?: string;
   
   // Workshop fields
   workshopTheme?: string;
   groupSize?: string;
   preferredDates?: string[];
+  workshopDuration?: string;
   
   // Legal
   termsAccepted: boolean;
+  privacyAccepted: boolean;
 }
 
 interface ConfirmationStepProps {
@@ -41,6 +65,12 @@ interface ConfirmationStepProps {
 
 export default function ConfirmationStep({ formData, serviceType, onChange }: ConfirmationStepProps) {
   const { t } = useTranslation()
+  const router = useRouter()
+  const [showAGB, setShowAGB] = useState(false)
+  const [showDatenschutz, setShowDatenschutz] = useState(false)
+  const [showSuccessNotification, setShowSuccessNotification] = useState(false)
+  const [missingFields, setMissingFields] = useState<string[]>([])
+  const [isSubmitting, setIsSubmitting] = useState(false)
   
   // Format date for display
   const formatDate = (dateString?: string) => {
@@ -62,11 +92,11 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   const getServiceName = () => {
     switch(serviceType) {
       case 'gesangsunterricht':
-        return t('booking.gesangsunterricht', 'Gesangsunterricht');
+        return t('booking.jazzWorkshop', 'Jazz Workshop');
       case 'vocal-coaching':
-        return t('booking.vocalCoaching', 'Vocal Coaching');
+        return t('booking.vocalCoachingAndGesang', 'Vocal Coaching & Gesangsunterricht');
       case 'professioneller-gesang':
-        return t('booking.professionellerGesang', 'Professioneller Gesang');
+        return t('booking.liveJazzPerformance', 'Live Jazz Performance');
       default:
         return '';
     }
@@ -130,6 +160,22 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
     }
   }
   
+  // Get workshop duration
+  const getWorkshopDuration = () => {
+    switch(formData.workshopDuration) {
+      case '2h':
+        return t('booking.twoHours', '2 Stunden');
+      case '4h':
+        return t('booking.fourHours', '4 Stunden');
+      case 'full-day':
+        return t('booking.fullDay', 'Ganztägig (6-8 Stunden)');
+      case 'multi-day':
+        return t('booking.multiDay', 'Mehrtägig (nach Vereinbarung)');
+      default:
+        return '';
+    }
+  }
+  
   // Get preferred dates formatted
   const getPreferredDatesFormatted = () => {
     if (!formData.preferredDates || formData.preferredDates.length === 0) return '';
@@ -144,6 +190,37 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
     };
     
     return formData.preferredDates.map(d => dateMap[d] || d).join(', ');
+  }
+  
+  // Check if all required fields are filled
+  const validateForm = () => {
+    const missing: string[] = [];
+    
+    if (!formData.termsAccepted) {
+      missing.push(t('booking.termsAndConditions', 'AGB'));
+    }
+    
+    if (!formData.privacyAccepted) {
+      missing.push(t('booking.privacyPolicy', 'Datenschutzerklärung'));
+    }
+    
+    setMissingFields(missing);
+    return missing.length === 0;
+  }
+  
+  // Handle form submission
+  const handleSubmit = () => {
+    if (validateForm()) {
+      setIsSubmitting(true)
+      setShowSuccessNotification(true)
+      
+      // Simulate API call
+      setTimeout(() => {
+        setIsSubmitting(false)
+        // Redirect to success page
+        router.push('/booking/success')
+      }, 2000)
+    }
   }
   
   return (
@@ -202,10 +279,10 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
                   <p className="text-gray-400 text-sm">{t('booking.guestCount', 'Anzahl der Gäste')}:</p>
                   <p className="text-white">{formData.guestCount}</p>
                 </div>
-                {formData.musicPreferences && formData.musicPreferences.length > 0 && (
-                  <div>
-                    <p className="text-gray-400 text-sm">{t('booking.musicPreferences', 'Musikvorlieben')}:</p>
-                    <p className="text-white">{formData.musicPreferences.join(', ')}</p>
+                {formData.jazzStandards && (
+                  <div className="col-span-2">
+                    <p className="text-gray-400 text-sm">{t('booking.jazzStandards', 'Jazz Standards')}:</p>
+                    <p className="text-white">{formData.jazzStandards}</p>
                   </div>
                 )}
               </div>
@@ -232,6 +309,27 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
                     <p className="text-white">{formData.focusArea.join(', ')}</p>
                   </div>
                 )}
+                {formData.preferredDate && (
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.preferredDate', 'Bevorzugtes Datum')}:</p>
+                    <p className="text-white">{formatDate(formData.preferredDate)}</p>
+                  </div>
+                )}
+                {formData.preferredTime && (
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.preferredTime', 'Bevorzugte Uhrzeit')}:</p>
+                    <p className="text-white">{formData.preferredTime}</p>
+                  </div>
+                )}
+              </div>
+              
+              <div className="mt-3 bg-[#1A1A1A]/50 p-3 rounded-lg border border-[#C8A97E]/20">
+                <div className="flex items-start">
+                  <Calendar className="w-5 h-5 text-[#C8A97E] mr-2 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-gray-300">
+                    {t('booking.calendarIntegration', 'Sie können auch direkt einen Termin in meinem Kalender buchen. Klicken Sie auf "Kalender öffnen" im vorherigen Schritt oder besuchen Sie den Kalender nach Abschluss der Buchung.')}
+                  </p>
+                </div>
               </div>
             </div>
           )}
@@ -250,6 +348,12 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
                   <p className="text-gray-400 text-sm">{t('booking.groupSize', 'Gruppengröße')}:</p>
                   <p className="text-white">{formData.groupSize}</p>
                 </div>
+                {formData.workshopDuration && (
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.workshopDuration', 'Workshop-Dauer')}:</p>
+                    <p className="text-white">{getWorkshopDuration()}</p>
+                  </div>
+                )}
                 {formData.preferredDates && formData.preferredDates.length > 0 && (
                   <div className="col-span-2">
                     <p className="text-gray-400 text-sm">{t('booking.preferredDates', 'Bevorzugte Termine')}:</p>
@@ -274,35 +378,164 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
       
       {/* Terms and Conditions */}
       <div className="pt-4">
-        <div className="flex items-start mb-4">
-          <div className="flex items-center h-5">
-            <input
-              id="terms"
-              type="checkbox"
-              checked={formData.termsAccepted}
-              onChange={(e) => onChange({ termsAccepted: e.target.checked })}
-              className="w-4 h-4 accent-[#C8A97E] focus:ring-[#C8A97E] focus:ring-2"
-              required
-            />
+        {/* Error message for missing fields */}
+        <AnimatePresence>
+          {missingFields.length > 0 && (
+            <motion.div 
+              initial={{ opacity: 0, y: -10 }}
+              animate={{ opacity: 1, y: 0, transition: { type: "spring", stiffness: 500, damping: 30 } }}
+              exit={{ opacity: 0, y: -10 }}
+              className="mb-4 p-3 bg-red-900/30 border border-red-500/50 rounded-lg flex items-start"
+            >
+              <AlertCircle className="w-5 h-5 text-red-500 mr-2 flex-shrink-0 mt-0.5" />
+              <div>
+                <p className="text-red-200 text-sm">
+                  {t('booking.acceptTermsError', 'Bitte akzeptieren Sie die folgenden Bedingungen:')}
+                </p>
+                <ul className="list-disc list-inside text-red-300 text-sm mt-1">
+                  {missingFields.map((field, index) => (
+                    <li key={index}>{field}</li>
+                  ))}
+                </ul>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
+        
+        <div className="space-y-3">
+          <div className="flex items-start">
+            <div className="flex items-center h-5">
+              <input
+                id="terms"
+                type="checkbox"
+                checked={formData.termsAccepted}
+                onChange={(e) => onChange({ termsAccepted: e.target.checked })}
+                className="w-4 h-4 accent-[#C8A97E] focus:ring-[#C8A97E] focus:ring-2"
+                required
+              />
+            </div>
+            <label htmlFor="terms" className="ml-2 text-sm text-gray-300">
+              {t('booking.termsAgreement', 'Ich akzeptiere die ')}
+              <button 
+                type="button"
+                onClick={() => setShowAGB(true)}
+                className="text-[#C8A97E] hover:underline focus:outline-none"
+              >
+                {t('booking.termsAndConditions', 'AGB')}
+              </button>
+              . *
+            </label>
           </div>
-          <label htmlFor="terms" className="ml-2 text-sm text-gray-300">
-            {t('booking.termsAgreement', 'Ich akzeptiere die ')}
-            <a href="/agb" target="_blank" className="text-[#C8A97E] hover:underline">
-              {t('booking.termsAndConditions', 'AGB')}
-            </a>
-            {' '}{t('booking.andThe', 'und die ')}
-            <a href="/datenschutz" target="_blank" className="text-[#C8A97E] hover:underline">
-              {t('booking.privacyPolicy', 'Datenschutzerklärung')}
-            </a>
-            . *
-          </label>
+          
+          <div className="flex items-start">
+            <div className="flex items-center h-5">
+              <input
+                id="privacy"
+                type="checkbox"
+                checked={formData.privacyAccepted || false}
+                onChange={(e) => onChange({ privacyAccepted: e.target.checked })}
+                className="w-4 h-4 accent-[#C8A97E] focus:ring-[#C8A97E] focus:ring-2"
+                required
+              />
+            </div>
+            <label htmlFor="privacy" className="ml-2 text-sm text-gray-300">
+              {t('booking.privacyAgreement', 'Ich akzeptiere die ')}
+              <button 
+                type="button"
+                onClick={() => setShowDatenschutz(true)}
+                className="text-[#C8A97E] hover:underline focus:outline-none"
+              >
+                {t('booking.privacyPolicy', 'Datenschutzerklärung')}
+              </button>
+              . *
+            </label>
+          </div>
         </div>
         
         <p className="text-sm text-gray-400 mt-4">
           <Info className="w-4 h-4 inline-block mr-1 text-[#C8A97E]" />
           {t('booking.confirmationNote', 'Nach dem Absenden der Buchungsanfrage werden wir uns zeitnah mit Ihnen in Verbindung setzen, um die Details zu besprechen und einen Termin zu vereinbaren.')}
         </p>
+        
+        {/* Submit Button */}
+        <div className="mt-6">
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={isSubmitting}
+            className="w-full py-3 bg-[#C8A97E] text-black font-medium rounded-lg hover:bg-[#D4AF37] transition-colors flex items-center justify-center"
+          >
+            {isSubmitting ? (
+              <>
+                <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                {t('booking.submitting', 'Wird gesendet...')}
+              </>
+            ) : (
+              <>
+                <Check className="w-5 h-5 mr-2" />
+                {t('booking.submitBooking', 'Buchung absenden')}
+              </>
+            )}
+          </button>
+        </div>
       </div>
+      
+      {/* Success Notification */}
+      <AnimatePresence>
+        {showSuccessNotification && (
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            transition={{ type: "spring", stiffness: 500, damping: 30 }}
+            className="fixed bottom-8 left-1/2 transform -translate-x-1/2 bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-4 flex items-center z-50 min-w-[300px]"
+          >
+            <div className="w-10 h-10 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mr-3">
+              <Check className="w-5 h-5 text-[#C8A97E]" />
+            </div>
+            <div>
+              <h4 className="text-white font-medium">
+                {t('booking.bookingSuccess', 'Buchung erfolgreich!')}
+              </h4>
+              <p className="text-gray-400 text-sm">
+                {t('booking.bookingSuccessMessage', 'Wir werden uns in Kürze bei Ihnen melden.')}
+              </p>
+            </div>
+            <button
+              onClick={() => setShowSuccessNotification(false)}
+              className="ml-auto text-gray-400 hover:text-white"
+            >
+              <X className="w-5 h-5" />
+            </button>
+          </motion.div>
+        )}
+      </AnimatePresence>
+      
+      {/* Legal Document Modals */}
+      <LegalDocumentModal isOpen={showAGB} onClose={() => setShowAGB(false)}>
+        <div className="p-4">
+          <h2 className="text-2xl font-bold mb-6 text-white">
+            {t('booking.termsAndConditions', 'AGB')}
+          </h2>
+          <div className="prose prose-invert max-w-none">
+            <AGBContent />
+          </div>
+        </div>
+      </LegalDocumentModal>
+      
+      <LegalDocumentModal isOpen={showDatenschutz} onClose={() => setShowDatenschutz(false)}>
+        <div className="p-4">
+          <h2 className="text-2xl font-bold mb-6 text-white">
+            {t('booking.privacyPolicy', 'Datenschutzerklärung')}
+          </h2>
+          <div className="prose prose-invert max-w-none">
+            <DatenschutzContent />
+          </div>
+        </div>
+      </LegalDocumentModal>
     </div>
   )
 } 

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { BookOpen, Users, Calendar, Info } from 'lucide-react'
+import { BookOpen, Users, Calendar, Info, Clock } from 'lucide-react'
 
 interface FormData {
   name: string;
@@ -12,6 +12,7 @@ interface FormData {
   workshopTheme?: string;
   groupSize?: string;
   preferredDates?: string[];
+  workshopDuration?: string;
   termsAccepted: boolean;
 }
 
@@ -101,7 +102,7 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
       <div className="border-t border-gray-800 pt-6 space-y-4">
         <h3 className="text-xl font-semibold text-white mb-4 flex items-center">
           <BookOpen className="w-5 h-5 mr-2 text-[#C8A97E]" />
-          {t('booking.workshopDetails', 'Workshop Details')}
+          {t('booking.jazzWorkshopDetails', 'Jazz Workshop Details')}
         </h3>
         
         {/* Workshop Theme */}
@@ -161,6 +162,26 @@ export default function WorkshopForm({ formData, onChange }: WorkshopFormProps) 
               </div>
             </button>
           </div>
+        </div>
+        
+        {/* Workshop Duration */}
+        <div>
+          <label htmlFor="workshopDuration" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
+            <Clock className="w-4 h-4 mr-1 text-[#C8A97E]" />
+            {t('booking.workshopDuration', 'Workshop-Dauer')} *
+          </label>
+          <select
+            id="workshopDuration"
+            value={formData.workshopDuration || ''}
+            onChange={(e) => onChange({ workshopDuration: e.target.value })}
+            className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors appearance-none"
+          >
+            <option value="">{t('booking.selectOption', 'Bitte wählen')}</option>
+            <option value="2h">{t('booking.twoHours', '2 Stunden')}</option>
+            <option value="4h">{t('booking.fourHours', '4 Stunden')}</option>
+            <option value="full-day">{t('booking.fullDay', 'Ganztägig (6-8 Stunden)')}</option>
+            <option value="multi-day">{t('booking.multiDay', 'Mehrtägig (nach Vereinbarung)')}</option>
+          </select>
         </div>
         
         {/* Group Size */}

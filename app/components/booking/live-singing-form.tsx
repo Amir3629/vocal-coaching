@@ -13,6 +13,7 @@ interface FormData {
   eventDate?: string;
   guestCount?: string;
   musicPreferences?: string[];
+  jazzStandards?: string;
   termsAccepted: boolean;
 }
 
@@ -195,57 +196,19 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
           </select>
         </div>
         
-        {/* Music Preferences */}
+        {/* Jazz Standards */}
         <div>
-          <label className="block text-sm font-medium text-gray-300 mb-2 flex items-center">
+          <label htmlFor="jazzStandards" className="block text-sm font-medium text-gray-300 mb-1 flex items-center">
             <Music className="w-4 h-4 mr-1 text-[#C8A97E]" />
-            {t('booking.musicPreferences', 'Musikvorlieben')}
+            {t('booking.jazzStandards', 'Jazz Standards')}
           </label>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="jazz"
-                checked={formData.musicPreferences?.includes('jazz') || false}
-                onChange={() => handleMusicPreferenceChange('jazz')}
-                className="w-4 h-4 mr-2 accent-[#C8A97E]"
-              />
-              <label htmlFor="jazz" className="text-gray-300 text-sm">Jazz</label>
-            </div>
-            
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="pop"
-                checked={formData.musicPreferences?.includes('pop') || false}
-                onChange={() => handleMusicPreferenceChange('pop')}
-                className="w-4 h-4 mr-2 accent-[#C8A97E]"
-              />
-              <label htmlFor="pop" className="text-gray-300 text-sm">Pop</label>
-            </div>
-            
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="classical"
-                checked={formData.musicPreferences?.includes('classical') || false}
-                onChange={() => handleMusicPreferenceChange('classical')}
-                className="w-4 h-4 mr-2 accent-[#C8A97E]"
-              />
-              <label htmlFor="classical" className="text-gray-300 text-sm">{t('booking.classical', 'Klassik')}</label>
-            </div>
-            
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="rock"
-                checked={formData.musicPreferences?.includes('rock') || false}
-                onChange={() => handleMusicPreferenceChange('rock')}
-                className="w-4 h-4 mr-2 accent-[#C8A97E]"
-              />
-              <label htmlFor="rock" className="text-gray-300 text-sm">Rock</label>
-            </div>
-          </div>
+          <textarea
+            id="jazzStandards"
+            value={formData.jazzStandards || ''}
+            onChange={(e) => onChange({ jazzStandards: e.target.value })}
+            className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors min-h-[100px]"
+            placeholder={t('booking.jazzStandardsPlaceholder', 'Spezifische Jazz Standards oder Songs, die Sie hören möchten (z.B. "Fly Me To The Moon", "Autumn Leaves", etc.)')}
+          />
         </div>
         
         {/* Additional Information */}

@@ -2,7 +2,7 @@
 
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { Users, BarChart, Target, Info } from 'lucide-react'
+import { Users, BarChart, Target, Info, Calendar, ExternalLink } from 'lucide-react'
 
 interface FormData {
   name: string;
@@ -12,6 +12,8 @@ interface FormData {
   sessionType?: '1:1' | 'group' | 'online';
   skillLevel?: 'beginner' | 'intermediate' | 'advanced';
   focusArea?: string[];
+  preferredDate?: string;
+  preferredTime?: string;
   termsAccepted: boolean;
 }
 
@@ -22,6 +24,9 @@ interface VocalCoachingFormProps {
 
 export default function VocalCoachingForm({ formData, onChange }: VocalCoachingFormProps) {
   const { t } = useTranslation()
+  
+  // Google Calendar appointment scheduling link
+  const googleCalendarLink = "https://calendar.google.com/calendar/appointments/schedules/AcZssZ30T2yfDb7XKvIARrVpIy2KIPltFAg7-YUnQlejiuhoJaIU3tvpj3ZR6Vn5klhf33WZjAu9QmYR"
   
   // Handle checkbox changes for focus areas
   const handleFocusAreaChange = (area: string) => {
@@ -38,6 +43,11 @@ export default function VocalCoachingForm({ formData, onChange }: VocalCoachingF
         focusArea: [...currentAreas, area]
       })
     }
+  }
+  
+  // Open Google Calendar in a new tab
+  const openGoogleCalendar = () => {
+    window.open(googleCalendarLink, '_blank')
   }
   
   return (
@@ -289,6 +299,84 @@ export default function VocalCoachingForm({ formData, onChange }: VocalCoachingF
               <label htmlFor="interpretation" className="text-gray-300 text-sm">
                 {t('booking.interpretation', 'Interpretation')}
               </label>
+            </div>
+          </div>
+        </div>
+        
+        {/* Schedule Session */}
+        <div className="mt-6">
+          <h4 className="text-lg font-medium text-white mb-3 flex items-center">
+            <Calendar className="w-5 h-5 mr-2 text-[#C8A97E]" />
+            {t('booking.scheduleSession', 'Termin planen')}
+          </h4>
+          
+          <div className="bg-[#1A1A1A] border border-gray-800 rounded-lg p-5">
+            <div className="flex flex-col md:flex-row items-start md:items-center justify-between">
+              <div>
+                <h5 className="text-white font-medium mb-2">
+                  {t('booking.liveCalendar', 'Live-Kalender Verfügbarkeit')}
+                </h5>
+                <p className="text-gray-400 text-sm mb-4 md:mb-0">
+                  {t('booking.checkAvailability', 'Sehen Sie meine aktuelle Verfügbarkeit und buchen Sie direkt einen Termin.')}
+                </p>
+              </div>
+              
+              <button
+                type="button"
+                onClick={openGoogleCalendar}
+                className="px-4 py-2 bg-[#C8A97E] text-black rounded-lg hover:bg-[#D4AF37] transition-colors flex items-center"
+              >
+                <Calendar className="w-4 h-4 mr-2" />
+                {t('booking.viewCalendar', 'Kalender öffnen')}
+                <ExternalLink className="w-3 h-3 ml-1" />
+              </button>
+            </div>
+            
+            <div className="mt-4 border-t border-gray-700 pt-4">
+              <div className="flex items-start">
+                <Info className="w-5 h-5 text-[#C8A97E] mr-2 flex-shrink-0 mt-0.5" />
+                <p className="text-sm text-gray-400">
+                  {t('booking.calendarInfo', 'Der Kalender zeigt meine Verfügbarkeit in Echtzeit. Wählen Sie einen freien Termin, der Ihnen passt, und buchen Sie direkt online. Nach der Buchung erhalten Sie eine Bestätigungs-E-Mail mit allen Details.')}
+                </p>
+              </div>
+            </div>
+          </div>
+          
+          <div className="mt-6 text-center">
+            <p className="text-sm text-gray-400">
+              {t('booking.orSpecifyPreference', 'Oder geben Sie Ihre Terminpräferenz an, falls Sie keinen passenden Termin im Kalender finden:')}
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+            <div>
+              <label htmlFor="preferredDate" className="block text-sm font-medium text-gray-300 mb-1">
+                {t('booking.preferredDate', 'Bevorzugtes Datum')}
+              </label>
+              <input
+                type="date"
+                id="preferredDate"
+                value={formData.preferredDate || ''}
+                onChange={(e) => onChange({ preferredDate: e.target.value })}
+                className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
+              />
+            </div>
+            
+            <div>
+              <label htmlFor="preferredTime" className="block text-sm font-medium text-gray-300 mb-1">
+                {t('booking.preferredTime', 'Bevorzugte Uhrzeit')}
+              </label>
+              <select
+                id="preferredTime"
+                value={formData.preferredTime || ''}
+                onChange={(e) => onChange({ preferredTime: e.target.value })}
+                className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg text-white focus:border-[#C8A97E] focus:outline-none transition-colors"
+              >
+                <option value="">{t('booking.selectTime', '-- Zeit auswählen --')}</option>
+                <option value="morning">{t('booking.morning', 'Vormittag (8:00 - 12:00)')}</option>
+                <option value="afternoon">{t('booking.afternoon', 'Nachmittag (12:00 - 17:00)')}</option>
+                <option value="evening">{t('booking.evening', 'Abend (17:00 - 21:00)')}</option>
+              </select>
             </div>
           </div>
         </div>
