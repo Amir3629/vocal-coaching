@@ -163,23 +163,23 @@ const resources = {
 }
 
 const i18nConfig: InitOptions = {
-  resources,
+      resources,
   lng: 'de',
-  fallbackLng: 'de',
+    fallbackLng: 'de',
   supportedLngs: ['de', 'en'],
   debug: true,
-  interpolation: {
-    escapeValue: false,
-  },
-  detection: {
+    interpolation: {
+        escapeValue: false,
+      },
+    detection: {
     order: ['querystring', 'localStorage', 'navigator', 'htmlTag'],
     lookupQuerystring: 'lng',
-    lookupLocalStorage: 'language',
-    caches: ['localStorage'],
-  },
-  react: {
-    useSuspense: false,
-  },
+        lookupLocalStorage: 'language',
+      caches: ['localStorage'],
+    },
+      react: {
+        useSuspense: false,
+      },
 }
 
 // Initialize i18next

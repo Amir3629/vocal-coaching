@@ -130,18 +130,18 @@ export default function AboutSectionNew() {
             >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">{t('about.philosophy.title', 'Meine Philosophie')}</h3>
+                    <h3 className="text-xl font-semibold text-white mb-4">{t('about.philosophy.title', 'Meine Philosophie')}</h3>
                   <p className="text-gray-300 mb-4">
-                    {t('about.philosophy.content', 'Ich glaube an einen ganzheitlichen Ansatz beim Gesangsunterricht. Jede Stimme ist einzigartig, und mein Ziel ist es, Ihre natürlichen Stärken zu fördern und gleichzeitig technische Herausforderungen zu überwinden. Durch die Kombination von wissenschaftlich fundierten Methoden mit kreativer Ausdrucksfreiheit schaffe ich einen Raum, in dem Sie Ihre stimmlichen Fähigkeiten voll entfalten können.')}
-                  </p>
-                </div>
+                      {t('about.philosophy.content', 'Ich glaube an einen ganzheitlichen Ansatz beim Gesangsunterricht. Jede Stimme ist einzigartig, und mein Ziel ist es, Ihre natürlichen Stärken zu fördern und gleichzeitig technische Herausforderungen zu überwinden. Durch die Kombination von wissenschaftlich fundierten Methoden mit kreativer Ausdrucksfreiheit schaffe ich einen Raum, in dem Sie Ihre stimmlichen Fähigkeiten voll entfalten können.')}
+                    </p>
+                  </div>
                 
                 <div>
-                  <h3 className="text-xl font-semibold text-white mb-4">{t('about.approach.title', 'Mein Ansatz')}</h3>
+                    <h3 className="text-xl font-semibold text-white mb-4">{t('about.approach.title', 'Mein Ansatz')}</h3>
                   <p className="text-gray-300 mb-4">
-                    {t('about.approach.content', 'Als zertifizierte Complete Vocal Technique (CVT) Lehrerin biete ich einen strukturierten, aber flexiblen Unterrichtsansatz. Ich passe meine Methoden an Ihre individuellen Bedürfnisse an, ob Sie Anfänger sind oder bereits professionell singen. Mein Unterricht umfasst Stimmtechnik, Repertoireentwicklung, Bühnenpräsenz und Ausdrucksfähigkeit – alles, was Sie brauchen, um Ihr volles Potenzial zu entfalten.')}
-                  </p>
-                </div>
+                      {t('about.approach.content', 'Als zertifizierte Complete Vocal Technique (CVT) Lehrerin biete ich einen strukturierten, aber flexiblen Unterrichtsansatz. Ich passe meine Methoden an Ihre individuellen Bedürfnisse an, ob Sie Anfänger sind oder bereits professionell singen. Mein Unterricht umfasst Stimmtechnik, Repertoireentwicklung, Bühnenpräsenz und Ausdrucksfähigkeit – alles, was Sie brauchen, um Ihr volles Potenzial zu entfalten.')}
+                    </p>
+                  </div>
               </div>
               
               <motion.div 
@@ -170,13 +170,13 @@ export default function AboutSectionNew() {
                 animate="visible"
                 transition={{ delay: 0.9 }}
               >
-                <h3 className="text-xl font-semibold text-white mb-4">{t('about.certifications.title', 'Zertifizierungen & Ausbildung')}</h3>
+                  <h3 className="text-xl font-semibold text-white mb-4">{t('about.certifications.title', 'Zertifizierungen & Ausbildung')}</h3>
                 <ul className="list-disc list-inside text-gray-300 space-y-2">
                   <li>{t('about.certifications.cvt', 'Zertifizierte Complete Vocal Technique (CVT) Lehrerin')}</li>
                   <li>{t('about.certifications.degree', 'Abschluss in Musikpädagogik mit Schwerpunkt Gesang')}</li>
                   <li>{t('about.certifications.jazz', 'Spezialisierung auf Jazz- und Improvisationstechniken')}</li>
                   <li>{t('about.certifications.performance', 'Fortbildungen in Bühnenpräsenz und Performance-Psychologie')}</li>
-                </ul>
+                  </ul>
               </motion.div>
             </motion.div>
           )}

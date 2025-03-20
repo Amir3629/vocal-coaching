@@ -336,18 +336,18 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
                 {t('booking.eventDetails', 'Veranstaltungsdetails')}
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div>
-                  <p className="text-gray-400 text-sm">{t('booking.eventType', 'Art der Veranstaltung')}:</p>
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.eventType', 'Art der Veranstaltung')}:</p>
                   <p className="text-white">{getEventTypeName()}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">{t('booking.eventDate', 'Datum der Veranstaltung')}:</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.eventDate', 'Datum der Veranstaltung')}:</p>
                   <p className="text-white">{formatDate(formData.eventDate)}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">{t('booking.guestCount', 'Anzahl der Gäste')}:</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.guestCount', 'Anzahl der Gäste')}:</p>
                   <p className="text-white">{formData.guestCount}</p>
-                </div>
+                  </div>
                 {formData.jazzStandards && (
                   <div className="col-span-2">
                     <p className="text-gray-400 text-sm">{t('booking.jazzStandards', 'Jazz Standards')}:</p>
@@ -364,14 +364,14 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
                 {t('booking.sessionDetails', 'Session Details')}
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div>
-                  <p className="text-gray-400 text-sm">{t('booking.sessionType', 'Art der Session')}:</p>
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.sessionType', 'Art der Session')}:</p>
                   <p className="text-white">{getSessionTypeName()}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">{t('booking.skillLevel', 'Erfahrungslevel')}:</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.skillLevel', 'Erfahrungslevel')}:</p>
                   <p className="text-white">{getSkillLevelName()}</p>
-                </div>
+                  </div>
                 {formData.focusArea && formData.focusArea.length > 0 && (
                   <div className="col-span-2">
                     <p className="text-gray-400 text-sm">{t('booking.focusAreas', 'Schwerpunkte')}:</p>
@@ -400,14 +400,14 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
                 {t('booking.workshopDetails', 'Workshop Details')}
               </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                <div>
-                  <p className="text-gray-400 text-sm">{t('booking.workshopTheme', 'Workshop-Thema')}:</p>
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.workshopTheme', 'Workshop-Thema')}:</p>
                   <p className="text-white">{getWorkshopThemeName()}</p>
-                </div>
-                <div>
-                  <p className="text-gray-400 text-sm">{t('booking.groupSize', 'Gruppengröße')}:</p>
+                  </div>
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.groupSize', 'Gruppengröße')}:</p>
                   <p className="text-white">{formData.groupSize}</p>
-                </div>
+                  </div>
                 {formData.workshopDuration && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.workshopDuration', 'Workshop-Dauer')}:</p>
@@ -585,7 +585,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
             {t('booking.termsAndConditions', 'AGB')}
           </h2>
           <div className="prose prose-invert max-w-none">
-            <AGBContent />
+          <AGBContent />
           </div>
         </div>
       </LegalDocumentModal>
@@ -596,7 +596,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
             {t('booking.privacyPolicy', 'Datenschutzerklärung')}
           </h2>
           <div className="prose prose-invert max-w-none">
-            <DatenschutzContent />
+          <DatenschutzContent />
           </div>
         </div>
       </LegalDocumentModal>
