@@ -4,7 +4,7 @@ import { Music, Mic, Users2, Theater } from "lucide-react"
 import ServiceCard from "./service-card"
 import { motion } from "framer-motion"
 import { useLanguage } from "./language-switcher"
-import { useTranslation } from '../hooks/use-translation'
+import { useTranslation } from 'react-i18next'
 
 interface ServiceDetails {
   includes: string[];
