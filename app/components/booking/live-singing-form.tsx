@@ -1,8 +1,10 @@
 "use client"
 
-import React from 'react'
+import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Calendar, Users, Music, Info, ExternalLink } from 'lucide-react'
+import GoogleCalendarPicker from '../ui/google-calendar-picker'
+import { z } from 'zod'
 
 interface FormData {
   name: string;
@@ -15,6 +17,7 @@ interface FormData {
   musicPreferences?: string[];
   jazzStandards?: string;
   termsAccepted: boolean;
+  performanceType?: 'solo' | 'band';
 }
 
 interface LiveSingingFormProps {
@@ -41,6 +44,16 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
       })
     }
   }
+  
+  const schema = z.object({
+    eventType: z.string().min(1, 'Please select an event type'),
+    performanceType: z.string().min(1, 'Please select a performance type'),
+    date: z.date({
+      required_error: 'Please select a date',
+      invalid_type_error: 'Please enter a valid date',
+    }),
+    // ... existing code ...
+  })
   
   return (
     <div className="space-y-8 animate-in fade-in duration-500">
@@ -160,6 +173,38 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
           </div>
         </div>
         
+        {/* Performance Type: Solo or Band */}
+        <div>
+          <label className="block text-sm font-medium text-gray-300 mb-2">
+            {t('booking.performanceType', 'Auftrittsart')} *
+          </label>
+          <div className="grid grid-cols-2 gap-3">
+            <button
+              type="button"
+              onClick={() => onChange({ performanceType: 'solo' })}
+              className={`px-4 py-2 rounded-lg border ${
+                formData.performanceType === 'solo'
+                  ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
+                  : 'border-gray-700 text-gray-400 hover:border-gray-600'
+              } transition-colors text-sm`}
+            >
+              {t('booking.solo', 'Solo')}
+            </button>
+            
+            <button
+              type="button"
+              onClick={() => onChange({ performanceType: 'band' })}
+              className={`px-4 py-2 rounded-lg border ${
+                formData.performanceType === 'band'
+                  ? 'bg-[#C8A97E]/20 border-[#C8A97E] text-white'
+                  : 'border-gray-700 text-gray-400 hover:border-gray-600'
+              } transition-colors text-sm`}
+            >
+              {t('booking.withBand', 'Mit Band')}
+            </button>
+          </div>
+        </div>
+        
         {/* Event Date */}
         <div className="space-y-4">
           <div className="flex items-center">
@@ -169,25 +214,25 @@ export default function LiveSingingForm({ formData, onChange }: LiveSingingFormP
             </h3>
           </div>
           
-          <div className="bg-[#1A1A1A]/50 border border-[#C8A97E]/20 rounded-lg p-4">
-            <div className="space-y-2">
-              <label htmlFor="eventDate" className="block text-sm font-medium text-white">
-                {t('booking.eventDate', 'Datum der Veranstaltung')} *
-              </label>
-              <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Calendar className="h-5 w-5 text-gray-500" />
-                </div>
-                <input
-                  type="date"
-                  id="eventDate"
-                  value={formData.eventDate || ''}
-                  onChange={(e) => onChange({ eventDate: e.target.value })}
-                  className="w-full pl-10 px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-                  required
-                />
-              </div>
-            </div>
+          <div className="bg-[#111]/50 border border-[#C8A97E]/20 rounded-lg p-4">
+            <p className="text-sm text-gray-300 mb-4">
+              {t('booking.livePerformanceCalendarInfo', 'Wählen Sie ein Datum für Ihre Veranstaltung. Prüfen Sie meine Verfügbarkeit direkt im Kalender.')}
+            </p>
+            
+            <GoogleCalendarPicker 
+              onChange={(date) => {
+                if (date) {
+                  onChange({ 
+                    eventDate: date.toISOString().split('T')[0] 
+                  });
+                } else {
+                  onChange({ eventDate: undefined });
+                }
+              }}
+              value={formData.eventDate ? new Date(formData.eventDate) : undefined}
+              placeholder={t('booking.selectDatePlaceholder', 'Datum auswählen')}
+              className="mb-4"
+            />
           </div>
         </div>
         

@@ -11,40 +11,8 @@ import ConfirmationStep from './confirmation-step'
 import SubmitButton from './submit-button'
 import { useRouter, useSearchParams } from 'next/navigation'
 import LegalDocumentModal from '../legal-document-modal'
-
-// Service types
-type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
-
-// Form data interface
-interface FormData {
-  name: string;
-  email: string;
-  phone: string;
-  message: string;
-  
-  // Live Singing fields
-  eventType?: 'wedding' | 'corporate' | 'private' | 'other';
-  eventDate?: string;
-  guestCount?: string;
-  jazzStandards?: string;
-  
-  // Vocal Coaching fields
-  sessionType?: '1:1' | 'group' | 'online';
-  skillLevel?: 'beginner' | 'intermediate' | 'advanced';
-  focusArea?: string[];
-  preferredDate?: string;
-  preferredTime?: string;
-  
-  // Workshop fields
-  workshopTheme?: string;
-  groupSize?: string;
-  preferredDates?: string[];
-  workshopDuration?: string;
-  
-  // Legal
-  termsAccepted: boolean;
-  privacyAccepted: boolean;
-}
+import { ServiceType, FormData } from '@/app/types/booking'
+import PersonalInfoStep from './personal-info-step'
 
 export default function BookingForm() {
   const { t } = useTranslation()
@@ -86,7 +54,6 @@ export default function BookingForm() {
   const handleNextStep = () => {
     if (currentStep < 3) {
       setCurrentStep(currentStep + 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
   
@@ -94,7 +61,6 @@ export default function BookingForm() {
   const handlePrevStep = () => {
     if (currentStep > 0) {
       setCurrentStep(currentStep - 1)
-      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }
   
@@ -140,64 +106,10 @@ export default function BookingForm() {
         )
       case 1:
         return (
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <label htmlFor="name" className="block text-sm font-medium text-white">
-                  {t('booking.name', 'Name')} *
-                </label>
-                <input
-                  type="text"
-                  id="name"
-                  value={formData.name}
-                  onChange={(e) => handleFormChange({ name: e.target.value })}
-                  className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-white">
-                  {t('booking.email', 'E-Mail')} *
-                </label>
-                <input
-                  type="email"
-                  id="email"
-                  value={formData.email}
-                  onChange={(e) => handleFormChange({ email: e.target.value })}
-                  className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-                  required
-                />
-              </div>
-              
-              <div className="space-y-2">
-                <label htmlFor="phone" className="block text-sm font-medium text-white">
-                  {t('booking.phone', 'Telefon')} *
-                </label>
-                <input
-                  type="tel"
-                  id="phone"
-                  value={formData.phone}
-                  onChange={(e) => handleFormChange({ phone: e.target.value })}
-                  className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-                  required
-                />
-              </div>
-            </div>
-            
-            <div className="space-y-2">
-              <label htmlFor="message" className="block text-sm font-medium text-white">
-                {t('booking.message', 'Nachricht')}
-              </label>
-              <textarea
-                id="message"
-                value={formData.message}
-                onChange={(e) => handleFormChange({ message: e.target.value })}
-                rows={4}
-                className="w-full px-4 py-2 bg-[#1A1A1A] border border-gray-800 rounded-lg focus:ring-[#C8A97E] focus:border-[#C8A97E] text-white"
-              />
-            </div>
-          </div>
+          <PersonalInfoStep
+            formData={formData}
+            onChange={handleFormChange}
+          />
         )
       case 2:
         switch (selectedService) {

@@ -4,15 +4,13 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import ProgressBar from './progress-bar'
 import ServiceSelection from './service-selection'
-import LiveSingingForm from './live-singing-form'
-import VocalCoachingForm from './vocal-coaching-form'
-import WorkshopForm from './workshop-form'
+import WorkshopFormStep from './workshop-form'
+import VocalCoachingFormStep from './vocal-coaching-form'
+import LiveSingingFormStep from './live-singing-form'
 import ConfirmationStep from './confirmation-step'
 import SubmitButton from './submit-button'
 import { useRouter } from 'next/navigation'
-
-// Service types
-type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
+import { ServiceType, BookingFormData } from '@/app/types/booking'
 
 // Form data interface
 interface FormData {
@@ -26,6 +24,7 @@ interface FormData {
   eventDate?: string;
   guestCount?: string;
   jazzStandards?: string;
+  performanceType?: 'solo' | 'band';
   
   // Vocal Coaching fields
   sessionType?: '1:1' | 'group' | 'online';
@@ -53,7 +52,7 @@ export default function BookingForm() {
   const [isSubmitting, setIsSubmitting] = useState(false)
   
   // Initialize form data with empty values
-  const [formData, setFormData] = useState<FormData>({
+  const [formData, setFormData] = useState<BookingFormData>({
     name: '',
     email: '',
     phone: '',
@@ -68,7 +67,7 @@ export default function BookingForm() {
   }
   
   // Handle form data changes
-  const handleFormChange = (data: Partial<FormData>) => {
+  const handleFormChange = (data: Partial<BookingFormData>) => {
     setFormData(prev => ({ ...prev, ...data }))
   }
   
@@ -193,21 +192,21 @@ export default function BookingForm() {
         switch (selectedService) {
           case 'professioneller-gesang':
             return (
-              <LiveSingingForm 
+              <LiveSingingFormStep 
                 formData={formData} 
                 onChange={handleFormChange} 
               />
             )
           case 'vocal-coaching':
             return (
-              <VocalCoachingForm 
+              <VocalCoachingFormStep 
                 formData={formData} 
                 onChange={handleFormChange} 
               />
             )
           case 'gesangsunterricht':
             return (
-              <WorkshopForm 
+              <WorkshopFormStep 
                 formData={formData} 
                 onChange={handleFormChange} 
               />
@@ -238,7 +237,7 @@ export default function BookingForm() {
       case 2:
         // Basic validation for service-specific forms
         if (selectedService === 'professioneller-gesang') {
-          return !!formData.eventType && !!formData.eventDate
+          return !!formData.eventType && !!formData.eventDate && !!formData.performanceType
         } else if (selectedService === 'vocal-coaching') {
           return !!formData.sessionType && !!formData.skillLevel
         } else if (selectedService === 'gesangsunterricht') {

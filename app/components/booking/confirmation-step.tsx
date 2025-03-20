@@ -8,21 +8,6 @@ import LegalDocumentModal from '../legal-document-modal'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/navigation'
 
-// Dynamically import legal document contents
-const DatenschutzContent = dynamic(
-  () => import("@/app/datenschutz/page").catch(() => () => (
-    <div className="text-red-500">Failed to load Datenschutz content</div>
-  )),
-  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
-)
-
-const AGBContent = dynamic(
-  () => import("@/app/agb/page").catch(() => () => (
-    <div className="text-red-500">Failed to load AGB content</div>
-  )),
-  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
-)
-
 // Service types
 type ServiceType = 'gesangsunterricht' | 'vocal-coaching' | 'professioneller-gesang' | null
 
@@ -38,6 +23,7 @@ interface FormData {
   guestCount?: string;
   musicPreferences?: string[];
   jazzStandards?: string;
+  performanceType?: 'solo' | 'band';
   
   // Vocal Coaching fields
   sessionType?: '1:1' | 'group' | 'online';
@@ -61,9 +47,82 @@ interface ConfirmationStepProps {
   formData: FormData;
   serviceType: ServiceType;
   onChange: (data: Partial<FormData>) => void;
+  onClose?: () => void;
 }
 
-export default function ConfirmationStep({ formData, serviceType, onChange }: ConfirmationStepProps) {
+// Dynamically import legal document contents
+const DatenschutzContent = dynamic(
+  () => import("@/app/legal/datenschutz/page").catch(() => () => (
+    <div className="text-red-500">Failed to load Datenschutz content</div>
+  )),
+  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
+)
+
+const AGBContent = dynamic(
+  () => import("@/app/legal/agb/page").catch(() => () => (
+    <div className="text-red-500">Failed to load AGB content</div>
+  )),
+  { loading: () => <p className="text-gray-400">Loading...</p>, ssr: false }
+)
+
+// Letter animation variants for success message
+const letterVariants = {
+  hidden: { opacity: 0, y: 10 },
+  visible: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: {
+      delay: i * 0.03,
+      duration: 0.4,
+      ease: [0.2, 0.65, 0.3, 0.9],
+    },
+  }),
+};
+
+// Container animation variants
+const containerVariants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: {
+      staggerChildren: 0.03,
+      delayChildren: 0.2,
+      duration: 0.5,
+    },
+  },
+};
+
+// Animated text component for letter-by-letter animation
+const AnimatedText = ({ text }: { text: string }) => {
+  return (
+    <motion.div
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+      className="inline-flex flex-wrap justify-center"
+    >
+      {text.split(' ').map((word, wordIndex) => (
+        <span key={`word-${wordIndex}`} className="whitespace-nowrap mr-1">
+          {Array.from(word).map((letter, letterIndex) => (
+            <motion.span
+              key={`letter-${wordIndex}-${letterIndex}`}
+              variants={letterVariants}
+              custom={wordIndex * 5 + letterIndex}
+              style={{ 
+                display: 'inline-block',
+                textAlign: 'center'
+              }}
+            >
+              {letter}
+            </motion.span>
+          ))}
+        </span>
+      ))}
+    </motion.div>
+  );
+};
+
+export default function ConfirmationStep({ formData, serviceType, onChange, onClose }: ConfirmationStepProps) {
   const { t } = useTranslation()
   const router = useRouter()
   const [showAGB, setShowAGB] = useState(false)
@@ -78,7 +137,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
     
     try {
       const date = new Date(dateString);
-      return new Intl.DateTimeFormat(undefined, {
+      return new Intl.DateTimeFormat('de-DE', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
@@ -113,6 +172,18 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
         return t('booking.private', 'Private Feier');
       case 'other':
         return t('booking.other', 'Sonstiges');
+      default:
+        return '';
+    }
+  }
+  
+  // Get performance type name
+  const getPerformanceTypeName = () => {
+    switch(formData.performanceType) {
+      case 'solo':
+        return t('booking.solo', 'Solo');
+      case 'band':
+        return t('booking.withBand', 'Mit Band');
       default:
         return '';
     }
@@ -200,7 +271,8 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
           event_type: formData.eventType,
           event_date: formData.eventDate,
           guest_count: formData.guestCount,
-          jazz_standards: formData.jazzStandards
+          jazz_standards: formData.jazzStandards,
+          performance_type: formData.performanceType
         }
       case 'vocal-coaching':
         return {
@@ -241,71 +313,82 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
   // Handle form submission
   const handleSubmit = async () => {
     // Validate form
-    const requiredFields = ['name', 'email', 'phone', 'termsAccepted', 'privacyAccepted']
-    const missing = requiredFields.filter(field => !formData[field as keyof FormData])
-    
-    if (missing.length > 0) {
-      setMissingFields(missing)
-      return
+    if (!validateForm()) {
+      return;
     }
     
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     
     try {
-      // Prepare email data
-      const emailData = {
-        service_id: 'service_xxxxxxx', // Replace with your EmailJS service ID
-        template_id: 'template_xxxxxxx', // Replace with your EmailJS template ID
-        user_id: 'user_xxxxxxxxxx', // Replace with your EmailJS user ID
-        template_params: {
+      // Create the booking data to send
+      const bookingData = {
+        service_type: serviceType,
+        contact: {
           name: formData.name,
           email: formData.email,
           phone: formData.phone,
-          message: formData.message,
-          service_type: serviceType,
-          ...getServiceSpecificDetails()
-        }
-      }
+          message: formData.message
+        },
+        // Add service-specific details
+        ...getServiceSpecificDetails(),
+        // Add legal acceptance
+        terms_accepted: formData.termsAccepted,
+        privacy_accepted: formData.privacyAccepted,
+        timestamp: new Date().toISOString()
+      };
       
-      // Send email (commented out for now)
-      // const response = await emailjs.send(
-      //   emailData.service_id,
-      //   emailData.template_id,
-      //   emailData.template_params,
-      //   emailData.user_id
-      // )
+      // Simulate API call with a delay
+      console.log('Booking data to be sent:', bookingData);
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Show success notification
-      setShowSuccessNotification(true)
+      // Show success notification with animated text
+      setShowSuccessNotification(true);
       
-      // Hide notification after 5 seconds
+      // After showing the success notification for a moment
       setTimeout(() => {
-        setShowSuccessNotification(false)
-      }, 5000)
+        // First fade out the success notification
+        setShowSuccessNotification(false);
+        
+        // Then close the modal with a slight delay
+        if (onClose) {
+          setTimeout(() => {
+            // Call onClose to close the booking form
+            onClose();
+            
+            // After modal is closed, scroll smoothly to top
+            setTimeout(() => {
+              window.scrollTo({ top: 0, behavior: 'smooth' });
+            }, 500);
+          }, 500);
+        } else {
+          // If no onClose function, just scroll to top after notification is gone
+          setTimeout(() => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }, 500);
+        }
+      }, 3000);
       
-      // No redirection to success page
     } catch (error) {
-      console.error('Error sending email:', error)
-      // Handle error
+      console.error('Error sending data:', error);
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
   }
   
   return (
-    <div className="py-4 space-y-6 animate-in fade-in duration-500">
+    <div className="py-4 space-y-6 animate-in fade-in duration-500 max-w-4xl mx-auto">
       <div className="space-y-4">
         <h3 className="text-xl font-semibold text-white mb-4">
-          {t('booking.bookingSummary', 'Buchungsübersicht')}
+          {t('booking.bookingSummary', 'Buchung bestätigen')}
         </h3>
         
-        <div className="bg-[#1A1A1A] rounded-lg p-5 border border-gray-800">
+        <div className="bg-[#1A1A1A] rounded-lg p-5 border border-gray-800 shadow-lg">
           {/* Service Type */}
           <div className="mb-4 pb-3 border-b border-gray-800">
             <h4 className="text-lg font-medium text-white mb-2">
               {t('booking.selectedService', 'Ausgewählter Dienst')}
             </h4>
-            <p className="text-[#C8A97E]">{getServiceName()}</p>
+            <p className="text-[#C8A97E] font-medium">{getServiceName()}</p>
           </div>
           
           {/* Personal Information */}
@@ -313,18 +396,18 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
             <h4 className="text-lg font-medium text-white mb-2">
               {t('booking.personalInfo', 'Persönliche Informationen')}
             </h4>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               <div>
                 <p className="text-gray-400 text-sm">{t('booking.name', 'Name')}:</p>
-                <p className="text-white">{formData.name}</p>
+                <p className="text-white font-medium">{formData.name || 'N/A'}</p>
               </div>
               <div>
                 <p className="text-gray-400 text-sm">{t('booking.email', 'E-Mail')}:</p>
-                <p className="text-white">{formData.email}</p>
+                <p className="text-white font-medium">{formData.email || 'N/A'}</p>
               </div>
               <div>
                 <p className="text-gray-400 text-sm">{t('booking.phone', 'Telefon')}:</p>
-                <p className="text-white">{formData.phone}</p>
+                <p className="text-white font-medium">{formData.phone || 'N/A'}</p>
               </div>
             </div>
           </div>
@@ -335,23 +418,39 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
               <h4 className="text-lg font-medium text-white mb-2">
                 {t('booking.eventDetails', 'Veranstaltungsdetails')}
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {formData.eventType && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.eventType', 'Art der Veranstaltung')}:</p>
-                  <p className="text-white">{getEventTypeName()}</p>
+                    <p className="text-white font-medium">{getEventTypeName()}</p>
                   </div>
+                )}
+                {formData.performanceType && (
+                  <div>
+                    <p className="text-gray-400 text-sm">{t('booking.performanceType', 'Auftrittsart')}:</p>
+                    <p className="text-white font-medium">
+                      {formData.performanceType === 'solo' 
+                        ? t('booking.solo', 'Solo') 
+                        : t('booking.withBand', 'Mit Band')}
+                    </p>
+                  </div>
+                )}
+                {formData.eventDate && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.eventDate', 'Datum der Veranstaltung')}:</p>
-                  <p className="text-white">{formatDate(formData.eventDate)}</p>
+                    <p className="text-white font-medium">{formatDate(formData.eventDate)}</p>
                   </div>
+                )}
+                {formData.guestCount && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.guestCount', 'Anzahl der Gäste')}:</p>
-                  <p className="text-white">{formData.guestCount}</p>
+                    <p className="text-white font-medium">{formData.guestCount}</p>
                   </div>
+                )}
                 {formData.jazzStandards && (
                   <div className="col-span-2">
                     <p className="text-gray-400 text-sm">{t('booking.jazzStandards', 'Jazz Standards')}:</p>
-                    <p className="text-white">{formData.jazzStandards}</p>
+                    <p className="text-white font-medium">{formData.jazzStandards}</p>
                   </div>
                 )}
               </div>
@@ -363,31 +462,35 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
               <h4 className="text-lg font-medium text-white mb-2">
                 {t('booking.sessionDetails', 'Session Details')}
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {formData.sessionType && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.sessionType', 'Art der Session')}:</p>
-                  <p className="text-white">{getSessionTypeName()}</p>
+                    <p className="text-white font-medium">{getSessionTypeName()}</p>
                   </div>
+                )}
+                {formData.skillLevel && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.skillLevel', 'Erfahrungslevel')}:</p>
-                  <p className="text-white">{getSkillLevelName()}</p>
+                    <p className="text-white font-medium">{getSkillLevelName()}</p>
                   </div>
+                )}
                 {formData.focusArea && formData.focusArea.length > 0 && (
                   <div className="col-span-2">
                     <p className="text-gray-400 text-sm">{t('booking.focusAreas', 'Schwerpunkte')}:</p>
-                    <p className="text-white">{formData.focusArea.join(', ')}</p>
+                    <p className="text-white font-medium">{formData.focusArea.join(', ')}</p>
                   </div>
                 )}
                 {formData.preferredDate && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.preferredDate', 'Bevorzugtes Datum')}:</p>
-                    <p className="text-white">{formatDate(formData.preferredDate)}</p>
+                    <p className="text-white font-medium">{formatDate(formData.preferredDate)}</p>
                   </div>
                 )}
                 {formData.preferredTime && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.preferredTime', 'Bevorzugte Uhrzeit')}:</p>
-                    <p className="text-white">{formData.preferredTime}</p>
+                    <p className="text-white font-medium">{formData.preferredTime}</p>
                   </div>
                 )}
               </div>
@@ -399,25 +502,29 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
               <h4 className="text-lg font-medium text-white mb-2">
                 {t('booking.workshopDetails', 'Workshop Details')}
               </h4>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {formData.workshopTheme && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.workshopTheme', 'Workshop-Thema')}:</p>
-                  <p className="text-white">{getWorkshopThemeName()}</p>
+                    <p className="text-white font-medium">{getWorkshopThemeName()}</p>
                   </div>
+                )}
+                {formData.groupSize && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.groupSize', 'Gruppengröße')}:</p>
-                  <p className="text-white">{formData.groupSize}</p>
+                    <p className="text-white font-medium">{formData.groupSize}</p>
                   </div>
+                )}
                 {formData.workshopDuration && (
                   <div>
                     <p className="text-gray-400 text-sm">{t('booking.workshopDuration', 'Workshop-Dauer')}:</p>
-                    <p className="text-white">{getWorkshopDuration()}</p>
+                    <p className="text-white font-medium">{getWorkshopDuration()}</p>
                   </div>
                 )}
                 {formData.preferredDates && formData.preferredDates.length > 0 && (
                   <div className="col-span-2">
                     <p className="text-gray-400 text-sm">{t('booking.preferredDates', 'Bevorzugte Termine')}:</p>
-                    <p className="text-white">{getPreferredDatesFormatted()}</p>
+                    <p className="text-white font-medium">{getPreferredDatesFormatted()}</p>
                   </div>
                 )}
               </div>
@@ -437,7 +544,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
       </div>
       
       {/* Terms and Conditions */}
-      <div className="pt-4 bg-transparent">
+      <div className="pt-4">
         {/* Error message for missing fields */}
         <AnimatePresence>
           {missingFields.length > 0 && (
@@ -462,11 +569,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
           )}
         </AnimatePresence>
         
-        <div className="space-y-3 bg-[#1A1A1A] p-4 rounded-lg border border-gray-800">
-          <h4 className="text-lg font-medium text-white mb-3">
-            {t('booking.legalTerms', 'Buchungsbedingungen')}
-          </h4>
-          
+        <div className="space-y-3 bg-[#121212] rounded-lg p-4 border border-gray-800 shadow-lg">
           <div className="flex items-start">
             <div className="flex items-center h-5">
               <input
@@ -496,7 +599,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
               <input
                 id="privacy"
                 type="checkbox"
-                checked={formData.privacyAccepted || false}
+                checked={formData.privacyAccepted}
                 onChange={(e) => onChange({ privacyAccepted: e.target.checked })}
                 className="w-4 h-4 accent-[#C8A97E] focus:ring-[#C8A97E] focus:ring-2"
                 required
@@ -514,20 +617,15 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
               . *
             </label>
           </div>
-          
-          <p className="text-sm text-gray-400 mt-4">
-            <Info className="w-4 h-4 inline-block mr-1 text-[#C8A97E]" />
-            {t('booking.confirmationNote', 'Nach dem Absenden der Buchungsanfrage werden wir uns zeitnah mit Ihnen in Verbindung setzen, um die Details zu besprechen und einen Termin zu vereinbaren.')}
-          </p>
         </div>
         
         {/* Submit Button */}
-        <div className="mt-6">
+        <div className="mt-6 flex justify-center">
           <button
             type="button"
             onClick={handleSubmit}
             disabled={isSubmitting}
-            className="w-full py-3 bg-[#C8A97E] text-black font-medium rounded-lg hover:bg-[#D4AF37] transition-colors flex items-center justify-center"
+            className="py-3 px-10 w-full md:w-auto md:min-w-[200px] bg-[#C8A97E] text-black font-medium rounded-lg hover:bg-[#D4AF37] transition-colors flex items-center justify-center"
           >
             {isSubmitting ? (
               <>
@@ -540,7 +638,7 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
             ) : (
               <>
                 <Check className="w-5 h-5 mr-2" />
-                {t('booking.submit', 'Anfrage senden')}
+                {t('booking.submit', 'Absenden')}
               </>
             )}
           </button>
@@ -551,53 +649,72 @@ export default function ConfirmationStep({ formData, serviceType, onChange }: Co
       <AnimatePresence>
         {showSuccessNotification && (
           <motion.div
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 50 }}
-            transition={{ type: "spring", stiffness: 500, damping: 30 }}
-            className="fixed bottom-8 right-8 bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-4 flex items-center z-50 min-w-[300px] max-w-md"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.5 }}
+            className="fixed inset-0 flex items-center justify-center z-50 bg-black/80 backdrop-blur-sm"
+            style={{ position: 'fixed' }}
           >
-            <div className="w-10 h-10 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mr-3">
-              <Check className="w-5 h-5 text-[#C8A97E]" />
-            </div>
-            <div>
-              <h4 className="text-white font-medium">
-                {t('booking.bookingSuccess', 'Buchung erfolgreich!')}
-              </h4>
-              <p className="text-gray-400 text-sm">
-                {t('booking.bookingSuccessMessage', 'Wir werden uns in Kürze bei Ihnen melden.')}
-              </p>
-            </div>
-            <button
-              onClick={() => setShowSuccessNotification(false)}
-              className="ml-auto text-gray-400 hover:text-white"
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 20 }}
+              transition={{ 
+                duration: 0.5, 
+                ease: [0.16, 1, 0.3, 1],
+                delay: 0.1
+              }}
+              className="bg-[#1A1A1A] border border-[#C8A97E] rounded-lg shadow-lg p-6 max-w-md mx-4 flex flex-col items-center text-center"
             >
-              <X className="w-5 h-5" />
-            </button>
+              <motion.div 
+                className="w-16 h-16 rounded-full bg-[#C8A97E]/20 flex items-center justify-center mb-4"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 260, 
+                  damping: 20,
+                  delay: 0.2
+                }}
+              >
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ delay: 0.4, duration: 0.3 }}
+                >
+                  <Check className="w-8 h-8 text-[#C8A97E]" />
+                </motion.div>
+              </motion.div>
+              <h4 className="text-white font-medium text-xl mb-2">
+                <AnimatedText text={t('booking.bookingSuccess', 'Buchung erfolgreich!')} />
+              </h4>
+              <p className="text-gray-300">
+                <AnimatedText text={t('booking.bookingSuccessMessage', 'Wir werden uns in Kürze bei Ihnen melden.')} />
+              </p>
+            </motion.div>
           </motion.div>
         )}
       </AnimatePresence>
       
       {/* Legal Document Modals */}
-      <LegalDocumentModal isOpen={showAGB} onClose={() => setShowAGB(false)}>
-        <div className="p-4">
-          <h2 className="text-2xl font-bold mb-6 text-white">
-            {t('booking.termsAndConditions', 'AGB')}
-          </h2>
-          <div className="prose prose-invert max-w-none">
+      <LegalDocumentModal 
+        isOpen={showAGB} 
+        onClose={() => setShowAGB(false)}
+        title={t('booking.termsAndConditions', 'AGB')}
+      >
+        <div className="p-1 legal-agb">
           <AGBContent />
-          </div>
         </div>
       </LegalDocumentModal>
       
-      <LegalDocumentModal isOpen={showDatenschutz} onClose={() => setShowDatenschutz(false)}>
-        <div className="p-4">
-          <h2 className="text-2xl font-bold mb-6 text-white">
-            {t('booking.privacyPolicy', 'Datenschutzerklärung')}
-          </h2>
-          <div className="prose prose-invert max-w-none">
+      <LegalDocumentModal 
+        isOpen={showDatenschutz} 
+        onClose={() => setShowDatenschutz(false)}
+        title={t('booking.privacyPolicy', 'Datenschutzerklärung')}
+      >
+        <div className="p-1 legal-datenschutz">
           <DatenschutzContent />
-          </div>
         </div>
       </LegalDocumentModal>
     </div>

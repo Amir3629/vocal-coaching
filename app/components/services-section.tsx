@@ -4,7 +4,7 @@ import { Music, Mic, Users2, Theater } from "lucide-react"
 import ServiceCard from "./service-card"
 import { motion } from "framer-motion"
 import { useLanguage } from "./language-switcher"
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from '../hooks/use-translation'
 
 interface ServiceDetails {
   includes: string[];
@@ -22,7 +22,7 @@ interface ServiceTranslation {
 }
 
 export default function ServicesSection() {
-  const { currentLang } = useLanguage()
+  const { currentLanguage } = useLanguage()
   const { t } = useTranslation()
 
   const services = [
@@ -107,7 +107,7 @@ export default function ServicesSection() {
             image="/images/services/singing.jpg"
             icon="microphone"
             delay={0.1}
-            link={`/booking?service=${currentLang === 'en' ? 'live-singing' : 'professioneller-gesang'}`}
+            link={`/booking?service=${currentLanguage === 'en' ? 'live-singing' : 'professioneller-gesang'}`}
           />
           
           <ServiceCard
@@ -119,7 +119,7 @@ export default function ServicesSection() {
             image="/images/services/coaching.jpg"
             icon="music"
             delay={0.2}
-            link={`/booking?service=${currentLang === 'en' ? 'vocal-coaching' : 'gesangsunterricht'}`}
+            link={`/booking?service=${currentLanguage === 'en' ? 'vocal-coaching' : 'gesangsunterricht'}`}
           />
           
           <ServiceCard
